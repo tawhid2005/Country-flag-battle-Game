@@ -2118,17 +2118,37 @@
       100% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.9); transform: scale(1.03); }
     }
 
-    /* Currency Switcher Toggle */
+    /* Currency Switcher Toggle (Hidden for automatic seamless geolocation detection) */
     .currency-toggle-wrapper {
+      display: none !important;
+    }
+
+    .cyber-lock-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #cbd5e1;
+      font-size: 20px;
+      line-height: 1;
       display: flex;
-      background: rgba(2, 6, 23, 0.85);
-      border: 1px solid rgba(0, 229, 255, 0.35);
-      border-radius: 999px;
-      padding: 3px;
-      gap: 4px;
-      margin: 0 auto 12px auto;
-      width: 100%;
-      max-width: 320px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 25;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .cyber-lock-close-btn:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #ffffff;
+      transform: scale(1.1);
     }
 
     .currency-toggle-btn {
@@ -3231,9 +3251,12 @@
       <button class="drawer-btn" id="btn-reset-leaderboard">🗑️ RESET LEADERBOARD</button>
     
       <!-- Security & License Status -->
-      <div class="drawer-auth-badge" id="drawer-auth-status">
+      <div class="drawer-auth-badge" id="drawer-auth-status" style="cursor: pointer;" title="Click to view subscription pricing">
         <div class="drawer-auth-user">🔒 Initializing...</div>
       </div>
+      <button class="drawer-btn" id="drawer-btn-pricing" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.45)); border: 1.5px solid #fbbf24; color: #fbbf24; font-weight: 900; box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);">
+        💎 SUBSCRIPTION PLANS &amp; PASSES
+      </button>
       <button class="drawer-btn" id="drawer-btn-admin-panel" style="display:none; background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.35)); border-color: #fbbf24; color: #fbbf24;">
         👑 ADMIN LICENSE MANAGER
       </button>
@@ -3247,6 +3270,9 @@
          ========================================================================== -->
     <div id="cyber-lock-modal" class="" role="dialog" aria-modal="true">
       <div class="cyber-lock-grid-bg"></div>
+
+      <!-- Close Button (Allows closing when trial or session is active) -->
+      <button class="cyber-lock-close-btn" id="btn-close-cyber-lock" title="Close Modal">&times;</button>
 
       <!-- 10-Minute Free Trial Ended Banner (Shown after 10m) -->
       <div id="cyber-trial-banner" class="cyber-trial-banner" style="display: none;">
@@ -3365,7 +3391,7 @@
             <span>📋 COPY ORDER MESSAGE (FOR MESSENGER/SMS)</span>
           </button>
 
-          <div style="font-size: 10px; color: #64748b; text-align: center;">
+          <div id="order-card-payment-footer" style="font-size: 10px; color: #64748b; text-align: center;">
             💳 Payment: bKash / Nagad / Rocket accepted by Admin.
           </div>
         </div>
@@ -5158,24 +5184,52 @@
         return hash;
       }
 
-      // Detect if user is from Bangladesh or International
+      // Seamless Automatic Geolocation Detection (Bangladesh vs Global USD)
       detectCountryAndCurrency() {
-        const saved = localStorage.getItem('cfb_user_currency');
-        if (saved === 'bdt' || saved === 'usd') {
-          this.selectedCurrency = saved;
-          return;
-        }
+        // Priority 1: Direct URL override for testing/admin (?currency=bdt or ?currency=usd)
+        try {
+          if (typeof window !== 'undefined' && window.location) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const curParam = (urlParams.get('currency') || '').toLowerCase();
+            if (curParam === 'bdt' || curParam === 'usd') {
+              this.selectedCurrency = curParam;
+              return;
+            }
+          }
+        } catch(e) {}
+
+        // Priority 2: Precise TimeZone & Locale Detection
         try {
           const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
           const lang = (navigator.language || '').toLowerCase();
-          if (tz.includes('Dhaka') || lang.includes('bn') || lang.includes('bd')) {
-            this.selectedCurrency = 'bdt';
-          } else {
-            this.selectedCurrency = 'usd';
-          }
+          const languages = (navigator.languages || []).map(l => l.toLowerCase()).join(',');
+
+          const isBangladesh = tz.includes('Dhaka') ||
+                               tz.includes('Bangladesh') ||
+                               lang === 'bn' ||
+                               lang.startsWith('bn-') ||
+                               languages.includes('bn-bd');
+
+          this.selectedCurrency = isBangladesh ? 'bdt' : 'usd';
         } catch(e) {
           this.selectedCurrency = 'usd';
         }
+
+        // Priority 3: Silent async IP verification fallback
+        try {
+          fetch('https://api.country.is', { signal: AbortSignal.timeout(3500) })
+            .then(res => res.json())
+            .then(data => {
+              if (data && data.country) {
+                const detected = data.country.toUpperCase() === 'BD' ? 'bdt' : 'usd';
+                if (detected !== this.selectedCurrency) {
+                  this.selectedCurrency = detected;
+                  this.renderPricingCards();
+                }
+              }
+            })
+            .catch(() => {});
+        } catch(e) {}
       }
 
       // Check multi-storage 10-minute trial status
@@ -5425,6 +5479,15 @@
         if (orderPlanDuration) orderPlanDuration.textContent = plan.days + ' Days Unlimited Access';
         if (orderPlanPrice) orderPlanPrice.textContent = currency === 'usd' ? ('$' + plan.price.toFixed(2) + ' USD') : (plan.price + ' TK');
         if (orderMsgPreview) orderMsgPreview.textContent = currentOrderMsg;
+
+        const orderFooter = document.getElementById('order-card-payment-footer');
+        if (orderFooter) {
+          if (currency === 'usd') {
+            orderFooter.innerHTML = '💳 Payment: PayPal, Credit/Debit Card, Crypto (USDT), or WhatsApp (+8801711729858). Instant Delivery.';
+          } else {
+            orderFooter.innerHTML = '💳 Payment: bKash (Personal/Send Money), Nagad, অথবা Rocket (+8801711729858). তাৎক্ষণিক এক্টিভেশন।';
+          }
+        }
 
         if (orderModal) orderModal.classList.add('show');
       }
@@ -5813,14 +5876,42 @@
           });
         }
 
-        // HUD Trial Badge Click: opens subscription options
+        // Modal Close Button (Allows closing when trial or session is active)
+        const closeLockBtn = document.getElementById('btn-close-cyber-lock');
+        if (closeLockBtn) {
+          closeLockBtn.addEventListener('click', () => {
+            if (this.isAccessAllowed()) {
+              this.showLockModal(false);
+            } else {
+              this.showLoginAlert('⏱️ Your 10-Minute Free Trial has ended! Choose a streamer pass below or login to continue.', 'error');
+            }
+          });
+        }
+
+        // Helper to open subscription pricing modal
+        const openPricingPopup = () => {
+          if (this.app) this.app.toggleDrawer(false);
+          this.showLockModal(true);
+          const tabPricing = document.getElementById('tab-btn-pricing');
+          if (tabPricing) tabPricing.click();
+        };
+
+        // HUD Trial Badge Click: opens subscription options popup
         const hudTrialBadge = document.getElementById('hud-trial-badge');
         if (hudTrialBadge) {
-          hudTrialBadge.addEventListener('click', () => {
-            this.showLockModal(true);
-            const tabPricing = document.getElementById('tab-btn-pricing');
-            if (tabPricing) tabPricing.click();
-          });
+          hudTrialBadge.addEventListener('click', openPricingPopup);
+        }
+
+        // Streamer Drawer Subscription Button
+        const drawerBtnPricing = document.getElementById('drawer-btn-pricing');
+        if (drawerBtnPricing) {
+          drawerBtnPricing.addEventListener('click', openPricingPopup);
+        }
+
+        // Streamer Drawer Auth Status Box Click
+        const drawerAuthBox = document.getElementById('drawer-auth-status');
+        if (drawerAuthBox) {
+          drawerAuthBox.addEventListener('click', openPricingPopup);
         }
 
         if (btnCloseOrder && orderModal) {
