@@ -1,0 +1,3398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Country Flag Battle Royale 24/7 | YouTube Live 9:16</title>
+  <meta name="description"
+    content="24/7 Autonomous Country Flag Battle Royale Simulator for YouTube Vertical Live stream. Matter.js Physics with Procedural Audio.">
+
+  <!-- Matter.js Physics Engine CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+  <!-- Google Fonts: Orbitron & Inter for Broadcast Look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       WORLD-CLASS ESPORTS BROADCAST DESIGN SYSTEM (9:16 VERTICAL STREAM)
+       ========================================================================== */
+    :root {
+      --bg-space: #02040a;
+      --bg-stadium: radial-gradient(circle at 50% 42%, #0e1938 0%, #070d1e 55%, #02040a 100%);
+      --accent-gold: #fbbf24;
+      --accent-gold-bright: #fef08a;
+      --accent-gold-glow: rgba(251, 191, 36, 0.65);
+      --accent-cyan: #00e5ff;
+      --accent-cyan-glow: rgba(0, 229, 255, 0.7);
+      --accent-danger: #f43f5e;
+      --accent-purple: #c084fc;
+      --accent-emerald: #10b981;
+      --font-display: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-space);
+      font-family: var(--font-body);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Ambient stadium light cone */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at 50% 40%, rgba(20, 35, 75, 0.5) 0%, rgba(6, 10, 22, 0.95) 75%, #02040a 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       9:16 VERTICAL BROADCAST CONTAINER (OBS & YOUTUBE LIVE FIT)
+       ========================================================================== */
+    #broadcast-viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      max-width: calc(100vh * 9 / 16);
+      max-height: 100vh;
+      aspect-ratio: 9 / 16;
+      background: var(--bg-stadium);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(0, 229, 255, 0.2);
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 1;
+    }
+
+    @media (max-aspect-ratio: 9/16) {
+      #broadcast-viewport {
+        width: 100vw;
+        height: calc(100vw * 16 / 9);
+        max-width: 100vw;
+        max-height: 100vh;
+      }
+    }
+
+    body.clean-mode {
+      cursor: none !important;
+    }
+
+    body.clean-mode #streamer-drawer-toggle,
+    body.clean-mode #streamer-drawer {
+      display: none !important;
+    }
+
+    /* Stadium Sweeping Spotlights */
+    .stadium-light-left {
+      position: absolute;
+      top: -100px;
+      left: -80px;
+      width: 320px;
+      height: 600px;
+      background: conic-gradient(from 135deg at 20% 0%, rgba(0, 229, 255, 0.15) 0deg, rgba(0, 229, 255, 0.03) 40deg, transparent 70deg);
+      transform-origin: top left;
+      animation: sweepLeft 9s infinite alternate ease-in-out;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .stadium-light-right {
+      position: absolute;
+      top: -100px;
+      right: -80px;
+      width: 320px;
+      height: 600px;
+      background: conic-gradient(from 225deg at 80% 0%, rgba(192, 132, 252, 0.15) 0deg, rgba(192, 132, 252, 0.03) 40deg, transparent 70deg);
+      transform-origin: top right;
+      animation: sweepRight 11s infinite alternate ease-in-out;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes sweepLeft {
+      0% {
+        transform: rotate(-8deg);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: rotate(14deg);
+        opacity: 0.9;
+      }
+    }
+
+    @keyframes sweepRight {
+      0% {
+        transform: rotate(8deg);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: rotate(-14deg);
+        opacity: 0.9;
+      }
+    }
+
+    /* ==========================================================================
+       CANVAS LAYER
+       ========================================================================== */
+    #battle-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      display: block;
+    }
+
+    /* Soft Anamorphic Lens Vignette */
+    #climax-vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      background: radial-gradient(circle at center, transparent 46%, rgba(244, 63, 94, 0.15) 75%, rgba(140, 0, 35, 0.65) 100%);
+    }
+
+    #climax-vignette.active {
+      opacity: 1;
+      animation: climaxPulse 1.4s infinite alternate ease-in-out;
+    }
+
+    #climax-vignette.duel-mode {
+      opacity: 1;
+      animation: duelHeartbeatPulse 0.9s infinite ease-in-out;
+    }
+
+    @keyframes climaxPulse {
+      0% {
+        opacity: 0.65;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes duelHeartbeatPulse {
+      0% {
+        opacity: 0.6;
+      }
+
+      20% {
+        opacity: 1;
+      }
+
+      40% {
+        opacity: 0.75;
+      }
+
+      55% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.6;
+      }
+    }
+
+    /* ==========================================================================
+       BROADCAST HUD (HEADS-UP DISPLAY)
+       ========================================================================== */
+    .hud-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 12px 12px 10px 12px;
+    }
+
+    .hud-header-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+
+    /* Top Broadcast Bar (Organized, No Overlap) */
+    .hud-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 6px;
+    }
+
+    .hud-top-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .hud-top-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .badge-live-stream {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.35), rgba(15, 23, 42, 0.94));
+      border: 1px solid rgba(244, 63, 94, 0.65);
+      backdrop-filter: blur(14px);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: #ffe4e6;
+      box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .badge-live-stream .dot-live {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #f43f5e;
+      box-shadow: 0 0 8px #f43f5e;
+      animation: liveBlink 0.9s infinite alternate;
+    }
+
+    .badge-live-stream .live-viewers {
+      font-size: 9.5px;
+      color: #cbd5e1;
+      font-weight: 700;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      padding-left: 5px;
+      margin-left: 2px;
+    }
+
+    @keyframes liveBlink {
+      from {
+        opacity: 0.3;
+        transform: scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+
+    .badge-round {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(15, 23, 42, 0.94));
+      border: 1px solid rgba(168, 85, 247, 0.65);
+      backdrop-filter: blur(14px);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: #f3e8ff;
+      text-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .badge-alive {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.28), rgba(15, 23, 42, 0.94));
+      border: 1px solid rgba(0, 229, 255, 0.65);
+      backdrop-filter: blur(14px);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: #00e5ff;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.7);
+      box-shadow: 0 4px 15px rgba(0, 229, 255, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .badge-alive.danger {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.4), rgba(15, 23, 42, 0.96));
+      border-color: #f43f5e;
+      color: #f43f5e;
+      text-shadow: 0 0 14px #f43f5e;
+      animation: alertFlash 0.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes alertFlash {
+      0% {
+        transform: scale(1);
+        filter: brightness(1);
+      }
+
+      100% {
+        transform: scale(1.06);
+        filter: brightness(1.35);
+      }
+    }
+
+    #streamer-drawer-toggle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      pointer-events: auto;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      flex-shrink: 0;
+    }
+
+    #streamer-drawer-toggle:hover {
+      background: rgba(0, 229, 255, 0.25);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      transform: rotate(45deg);
+    }
+
+    /* Horizontal Top Leaderboard Strip */
+    .hud-top-leaderboard-strip {
+      width: 100%;
+      background: linear-gradient(90deg, rgba(13, 22, 44, 0.95), rgba(20, 32, 64, 0.92));
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      backdrop-filter: blur(16px);
+      border-radius: 12px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), 0 0 12px rgba(251, 191, 36, 0.15);
+    }
+
+    .hud-top-leaderboard-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .leaderboard-strip-label {
+      font-family: var(--font-display);
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding-right: 6px;
+      border-right: 1px solid rgba(255, 255, 255, 0.18);
+      text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+    }
+
+    .leaderboard-strip-items {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+      justify-content: flex-start;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .leaderboard-strip-items::-webkit-scrollbar {
+      display: none;
+    }
+
+    .leaderboard-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 2px 7px 2px 4px;
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #f1f5f9;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .leaderboard-pill.gold {
+      background: linear-gradient(90deg, rgba(251, 191, 36, 0.28), rgba(255, 255, 255, 0.05));
+      border-color: rgba(251, 191, 36, 0.7);
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .leaderboard-pill-flag {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 1.2px solid rgba(255, 255, 255, 0.9);
+      object-fit: cover;
+      display: block;
+    }
+
+    .leaderboard-pill-code {
+      font-family: var(--font-display);
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    .leaderboard-pill-score {
+      font-family: var(--font-display);
+      font-size: 8.5px;
+      font-weight: 900;
+      color: var(--accent-gold);
+      background: rgba(0, 0, 0, 0.55);
+      padding: 1px 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(251, 191, 36, 0.35);
+    }
+
+    /* ==========================================================================
+       ESPORTS 1V1 FINAL DUEL SHOWDOWN BANNER
+       ========================================================================== */
+    #final-duel-banner {
+      width: 100%;
+      position: relative;
+      background: linear-gradient(135deg, rgba(28, 12, 24, 0.96) 0%, rgba(12, 18, 36, 0.98) 50%, rgba(10, 26, 38, 0.96) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-top: 2px solid #f43f5e;
+      border-bottom: 2px solid #00e5ff;
+      border-radius: 14px;
+      backdrop-filter: blur(16px);
+      padding: 8px 14px;
+      margin-top: 4px;
+      box-shadow: 0 0 30px rgba(244, 63, 94, 0.45), 0 8px 25px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      overflow: hidden;
+      animation: duelSlam 0.5s cubic-bezier(0.16, 1.2, 0.3, 1) forwards, duelPulseGlow 1.2s infinite alternate ease-in-out;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #final-duel-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: skewX(-25deg);
+      animation: duelShine 2.5s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes duelShine {
+      0% { left: -100%; }
+      35%, 100% { left: 160%; }
+    }
+
+    #final-duel-banner.hidden {
+      display: none !important;
+    }
+
+    @keyframes duelSlam {
+      0% {
+        transform: translateY(-30px) scale(0.88);
+        opacity: 0;
+        filter: brightness(2.2);
+      }
+      70% {
+        transform: translateY(2px) scale(1.03);
+        opacity: 1;
+        filter: brightness(1.3);
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        filter: brightness(1);
+      }
+    }
+
+    @keyframes duelPulseGlow {
+      0% {
+        box-shadow: 0 0 20px rgba(244, 63, 94, 0.35), 0 8px 25px rgba(0, 0, 0, 0.85);
+      }
+      100% {
+        box-shadow: 0 0 40px rgba(244, 63, 94, 0.75), 0 0 20px rgba(0, 229, 255, 0.4), 0 8px 30px rgba(0, 0, 0, 0.95);
+      }
+    }
+
+    .duel-title {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1.8px;
+      color: #fbbf24;
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.85);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .duel-versus-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 4px;
+      gap: 8px;
+    }
+
+    .duel-combatant {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-display);
+      font-size: 11.5px;
+      font-weight: 900;
+      color: #ffffff;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .duel-combatant.left {
+      justify-content: flex-start;
+      text-shadow: 0 0 10px rgba(244, 63, 94, 0.8);
+    }
+
+    .duel-combatant.right {
+      justify-content: flex-end;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+    }
+
+    .duel-combatant span.duel-country-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 110px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .duel-combatant canvas {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.85);
+      flex-shrink: 0;
+    }
+
+    .duel-vs-badge {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 900;
+      color: #ffffff;
+      background: linear-gradient(135deg, #f43f5e, #ea580c);
+      padding: 3px 9px;
+      border-radius: 8px;
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      letter-spacing: 1px;
+      flex-shrink: 0;
+      animation: vsPulse 0.9s infinite alternate ease-in-out;
+    }
+
+    @keyframes vsPulse {
+      0% { transform: scale(0.95); filter: brightness(1); }
+      100% { transform: scale(1.08); filter: brightness(1.3); }
+    }
+
+    /* ==========================================================================
+       LOWER BROADCAST DECK (KILLFEED, HYPE METER & TICKER)
+       ========================================================================== */
+    .hud-bottom-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      width: 100%;
+    }
+
+    /* Live Elimination Killfeed Bar */
+    .hud-killfeed-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 28px;
+      overflow: hidden;
+    }
+
+    .killfeed-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(244, 63, 94, 0.6);
+      border-radius: 16px;
+      padding: 4px 11px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #fecdd3;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+      animation: killfeedSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .killfeed-tag canvas {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid #ffffff;
+    }
+
+    .killfeed-tag.shield-save {
+      border-color: rgba(0, 229, 255, 0.7);
+      color: #a5f3fc;
+    }
+
+    @keyframes killfeedSlide {
+      0% {
+        transform: translateY(14px) scale(0.9);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Stream Engagement Hype Bar */
+    .hud-hype-strip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(13, 22, 44, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 5px 12px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .hype-label {
+      font-family: var(--font-display);
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #fbbf24;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hype-progress-bg {
+      flex: 1;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hype-progress-fill {
+      width: 88%;
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #f43f5e, #00e5ff);
+      border-radius: 4px;
+      animation: hypeGlow 2s infinite alternate ease-in-out;
+    }
+
+    @keyframes hypeGlow {
+      from {
+        filter: brightness(0.95);
+      }
+
+      to {
+        filter: brightness(1.25);
+      }
+    }
+
+    /* Bottom Interactive Engagement Ticker */
+    .hud-bottom-ticker {
+      width: 100%;
+      background: linear-gradient(90deg, rgba(10, 18, 38, 0.96), rgba(18, 28, 56, 0.96));
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      border-radius: 14px;
+      backdrop-filter: blur(14px);
+      padding: 8px 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 22px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 229, 255, 0.2);
+      position: relative;
+    }
+
+    .ticker-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: #ffffff;
+      min-height: 20px;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* ==========================================================================
+       ROYAL PODIUM VICTORY CELEBRATION MODAL (PAGE 1 REDESIGN)
+       ========================================================================== */
+    #victory-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 50;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 45%, rgba(14, 25, 54, 0.98) 0%, rgba(4, 8, 20, 0.99) 75%, #02040a 100%);
+      backdrop-filter: blur(30px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+      padding: 24px 20px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #victory-modal.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* Golden Celebration Sweeping Spotlights */
+    .victory-spotlight-left {
+      position: absolute;
+      top: -120px;
+      left: -60px;
+      width: 400px;
+      height: 700px;
+      background: conic-gradient(from 120deg at 20% 0%, rgba(251, 191, 36, 0.25) 0deg, rgba(251, 191, 36, 0.04) 35deg, transparent 65deg);
+      transform-origin: top left;
+      animation: vicSweepL 6s infinite alternate ease-in-out;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .victory-spotlight-right {
+      position: absolute;
+      top: -120px;
+      right: -60px;
+      width: 400px;
+      height: 700px;
+      background: conic-gradient(from 240deg at 80% 0%, rgba(251, 191, 36, 0.25) 0deg, rgba(251, 191, 36, 0.04) 35deg, transparent 65deg);
+      transform-origin: top right;
+      animation: vicSweepR 7s infinite alternate ease-in-out;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes vicSweepL {
+      0% {
+        transform: rotate(-5deg);
+      }
+
+      100% {
+        transform: rotate(18deg);
+      }
+    }
+
+    @keyframes vicSweepR {
+      0% {
+        transform: rotate(5deg);
+      }
+
+      100% {
+        transform: rotate(-18deg);
+      }
+    }
+
+    /* Golden Sunburst Halo behind Champion Card */
+    .victory-sunburst-rays {
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
+      background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.18) 0deg 15deg, transparent 15deg 30deg);
+      animation: rotateRays 20s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(1px);
+    }
+
+    @keyframes rotateRays {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Top Champion Badge */
+    .victory-badge {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(20, 30, 60, 0.95));
+      border: 2px solid rgba(251, 191, 36, 0.95);
+      border-radius: 30px;
+      padding: 7px 24px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #fbbf24;
+      box-shadow: 0 0 35px rgba(251, 191, 36, 0.6), 0 4px 15px rgba(0, 0, 0, 0.6);
+      margin-bottom: 22px;
+      animation: floatBadge 2.2s infinite alternate ease-in-out;
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+    }
+
+    @keyframes floatBadge {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-6px);
+      }
+    }
+
+    /* Royal Champion Flag Card with Gold Bevel and Laurel Wreath */
+    .winner-card-container {
+      position: relative;
+      z-index: 2;
+      width: 175px;
+      height: 175px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    /* Glowing Laurel Wreath Ring */
+    .winner-laurel-wreath {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      pointer-events: none;
+      z-index: 1;
+      filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.8));
+      animation: pulseWreath 2.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseWreath {
+      0% {
+        transform: scale(0.96);
+        filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.6));
+      }
+
+      100% {
+        transform: scale(1.04);
+        filter: drop-shadow(0 0 25px rgba(251, 191, 36, 0.95));
+      }
+    }
+
+    .winner-flag-card {
+      position: relative;
+      z-index: 2;
+      width: 145px;
+      height: 145px;
+      border-radius: 50%;
+      background: #0d172e;
+      box-shadow: 0 0 65px rgba(251, 191, 36, 0.9), 0 0 25px rgba(255, 255, 255, 0.95), inset 0 0 15px rgba(0, 0, 0, 0.7);
+      border: 5px solid #fbbf24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      animation: winnerFlagZoom 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .winner-flag-card canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @keyframes winnerFlagZoom {
+      0% {
+        transform: scale(0.2) rotate(-25deg);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    /* 3D Golden Crown with Gems perched proudly on top */
+    .winner-crown-wrapper {
+      position: absolute;
+      top: -34px;
+      z-index: 3;
+      font-size: 50px;
+      filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.95)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+      animation: crownBounce 1.2s infinite alternate ease-in-out;
+    }
+
+    @keyframes crownBounce {
+      0% {
+        transform: translateY(0) scale(1) rotate(0deg);
+      }
+
+      100% {
+        transform: translateY(-8px) scale(1.12) rotate(2deg);
+      }
+    }
+
+    /* 3D Metallic Gold Title Typography */
+    .winner-country-title {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 0%, #fef08a 45%, #fbbf24 70%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 18px rgba(251, 191, 36, 0.75));
+      margin-bottom: 4px;
+      max-width: 90%;
+    }
+
+    .winner-subtitle {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* Championship Stats 3-Card Grid */
+    .victory-stats-grid {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 380px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: rgba(15, 25, 50, 0.8);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 12px;
+      padding: 8px 6px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .stat-card .stat-icon {
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    .stat-card .stat-value {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 900;
+      color: #fbbf24;
+      text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+    }
+
+    .stat-card .stat-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* High-Converting YouTube Subscribe Call-To-Action */
+    .subscribe-banner {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(90deg, #f43f5e, #ea580c, #f43f5e);
+      background-size: 200% auto;
+      border-radius: 18px;
+      padding: 13px 24px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #ffffff;
+      box-shadow: 0 0 40px rgba(244, 63, 94, 0.7), 0 6px 20px rgba(0, 0, 0, 0.6);
+      animation: pulseSub 1.1s infinite alternate ease-in-out, gradMove 3s infinite linear;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .subscribe-banner .sub-bell {
+      font-size: 18px;
+      animation: bellRing 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulseSub {
+      0% {
+        transform: scale(0.97);
+      }
+
+      100% {
+        transform: scale(1.04);
+      }
+    }
+
+    @keyframes gradMove {
+      0% {
+        background-position: 0% center;
+      }
+
+      100% {
+        background-position: 200% center;
+      }
+    }
+
+    @keyframes bellRing {
+
+      0%,
+      100% {
+        transform: rotate(0);
+      }
+
+      20% {
+        transform: rotate(15deg);
+      }
+
+      40% {
+        transform: rotate(-15deg);
+      }
+
+      60% {
+        transform: rotate(10deg);
+      }
+
+      80% {
+        transform: rotate(-10deg);
+      }
+    }
+
+    /* High-Tech Circular SVG Countdown Timer */
+    .countdown-circle-widget {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(10, 18, 38, 0.94);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      border-radius: 16px;
+      padding: 8px 18px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      color: #e2e8f0;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 229, 255, 0.2);
+    }
+
+    .timer-svg-box {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timer-svg-box svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .timer-svg-box circle.bg {
+      stroke: rgba(255, 255, 255, 0.15);
+      stroke-width: 3.5;
+      fill: none;
+    }
+
+    .timer-svg-box circle.progress {
+      stroke: #00e5ff;
+      stroke-width: 3.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 94;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+      filter: drop-shadow(0 0 6px #00e5ff);
+    }
+
+    .timer-num-text {
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      color: #00e5ff;
+      text-shadow: 0 0 10px #00e5ff;
+    }
+
+    /* ==========================================================================
+       STREAMER CONTROLS & AUDIO OVERLAYS
+       ========================================================================== */
+    #audio-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 8, 20, 0.95);
+      backdrop-filter: blur(18px);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #audio-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .audio-icon-pulse {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00e5ff, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      box-shadow: 0 0 40px rgba(0, 229, 255, 0.7);
+      margin-bottom: 24px;
+      animation: audioPulse 1.5s infinite ease-out;
+    }
+
+    @keyframes audioPulse {
+      0% {
+        transform: scale(0.9);
+        box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+      }
+
+      50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 50px rgba(0, 229, 255, 0.85);
+      }
+
+      100% {
+        transform: scale(0.9);
+        box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+      }
+    }
+
+    .audio-overlay-title {
+      font-family: var(--font-display);
+      font-size: 21px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 18px rgba(0, 229, 255, 0.6);
+    }
+
+    .audio-overlay-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      max-width: 290px;
+      line-height: 1.5;
+    }
+
+    #streamer-drawer {
+      position: absolute;
+      top: 0;
+      right: -320px;
+      width: 290px;
+      height: 100%;
+      background: rgba(10, 16, 32, 0.98);
+      backdrop-filter: blur(20px);
+      border-left: 1px solid rgba(0, 229, 255, 0.3);
+      z-index: 70;
+      transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 16px;
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.9);
+      pointer-events: auto;
+    }
+
+    #streamer-drawer.open {
+      right: 0;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 12px;
+    }
+
+    .drawer-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      color: #00e5ff;
+      letter-spacing: 1px;
+    }
+
+    .drawer-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .drawer-control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .drawer-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .drawer-label span.val {
+      color: #00e5ff;
+      font-weight: 800;
+    }
+
+    .drawer-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .drawer-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #00e5ff;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00e5ff;
+    }
+
+    .drawer-select {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: #ffffff;
+      padding: 8px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .drawer-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      color: #ffffff;
+      padding: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .drawer-btn:hover {
+      background: rgba(0, 229, 255, 0.2);
+      border-color: var(--accent-cyan);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 9:16 Dedicated Broadcast Viewport -->
+  <main id="broadcast-viewport">
+
+    <!-- Stadium Ambient Sweeping Spotlights -->
+    <div class="stadium-light-left"></div>
+    <div class="stadium-light-right"></div>
+
+    <!-- Matter.js High-DPI Rendering Canvas -->
+    <canvas id="battle-canvas"></canvas>
+
+    <!-- Cinematic Vignette -->
+    <div id="climax-vignette"></div>
+
+    <!-- Live Heads-Up Display (HUD) Layer -->
+    <div class="hud-layer">
+      <!-- Upper Header Deck -->
+      <div class="hud-header-container">
+        <header class="hud-top-bar">
+          <div class="hud-top-left">
+            <div class="badge-live-stream">
+              <span class="dot-live"></span>
+              <span>LIVE</span>
+              <span class="live-viewers" id="hud-viewers-count">14.8K</span>
+            </div>
+
+            <div class="badge-round">
+              <span id="hud-round-label">ROUND #1</span>
+            </div>
+          </div>
+
+          <div class="hud-top-right">
+            <div class="badge-alive" id="hud-alive-badge">
+              ALIVE: <span id="hud-alive-count">50</span>/<span id="hud-total-count">50</span>
+            </div>
+            <button id="streamer-drawer-toggle" title="Settings (H)">⚙️</button>
+          </div>
+        </header>
+
+        <!-- Top Survivors Leaderboard -->
+        <aside class="hud-top-leaderboard-strip" id="hud-leaderboard-strip">
+          <div class="leaderboard-strip-label">👑 TOP SURVIVORS:</div>
+          <div class="leaderboard-strip-items" id="leaderboard-strip-items">
+            <!-- Dynamically populated -->
+          </div>
+        </aside>
+
+        <!-- 1v1 Final Duel Banner (Showdown Card) -->
+        <div id="final-duel-banner" class="hidden">
+          <div class="duel-title">⚡ 1V1 FINAL DUEL • SHOWDOWN ⚡</div>
+          <div class="duel-versus-row">
+            <div class="duel-combatant left">
+              <canvas id="duel-flag-1" width="28" height="28"></canvas>
+              <span class="duel-country-name" id="duel-name-1">USA</span>
+            </div>
+            <div class="duel-vs-badge">VS</div>
+            <div class="duel-combatant right">
+              <span class="duel-country-name" id="duel-name-2">BRA</span>
+              <canvas id="duel-flag-2" width="28" height="28"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lower Broadcast Deck (Killfeed, Hype Bar, Ticker) -->
+      <div class="hud-bottom-deck">
+        <!-- Live Elimination Killfeed Bar -->
+        <div class="hud-killfeed-container" id="hud-killfeed-bar">
+          <!-- Populated dynamically on eliminations -->
+        </div>
+
+        <!-- Stream Hype Meter -->
+        <div class="hud-hype-strip">
+          <div class="hype-label">⚡ CHAT BOOST</div>
+          <div class="hype-progress-bg">
+            <div class="hype-progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- Bottom Interactive Ticker -->
+        <footer class="hud-bottom-ticker">
+          <div class="ticker-content" id="engagement-ticker-text">
+            💬 TYPE YOUR COUNTRY TO BOOST THEIR POWER!
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Royal Podium Victory Modal (Page 1 Redesign) -->
+    <section id="victory-modal" aria-live="polite">
+      <div class="victory-spotlight-left"></div>
+      <div class="victory-spotlight-right"></div>
+      <div class="victory-sunburst-rays"></div>
+
+      <div class="victory-badge">👑 WORLD ROYALE CHAMPION 👑</div>
+
+      <!-- Laurel Wreath & Flag Card Container -->
+      <div class="winner-card-container">
+        <!-- Golden Laurel Wreath SVG Frame -->
+        <svg class="winner-laurel-wreath" viewBox="0 0 200 200" fill="none">
+          <circle cx="100" cy="100" r="82" stroke="rgba(251, 191, 36, 0.4)" stroke-width="2" stroke-dasharray="6 4" />
+          <circle cx="100" cy="100" r="92" stroke="rgba(251, 191, 36, 0.85)" stroke-width="3" />
+          <!-- Laurel Leaves Left -->
+          <path d="M 40 100 C 35 80 50 65 60 55 C 50 70 55 85 58 100" fill="rgba(251, 191, 36, 0.9)" />
+          <path d="M 50 140 C 40 125 45 105 58 95 C 52 110 58 130 68 140" fill="rgba(251, 191, 36, 0.9)" />
+          <!-- Laurel Leaves Right -->
+          <path d="M 160 100 C 165 80 150 65 140 55 C 150 70 145 85 142 100" fill="rgba(251, 191, 36, 0.9)" />
+          <path d="M 150 140 C 160 125 155 105 142 95 C 148 110 142 130 132 140" fill="rgba(251, 191, 36, 0.9)" />
+        </svg>
+
+        <div class="winner-crown-wrapper">👑</div>
+
+        <div class="winner-flag-card" id="modal-flag-wrapper">
+          <canvas id="modal-winner-canvas" width="160" height="160"></canvas>
+        </div>
+      </div>
+
+      <h1 class="winner-country-title" id="modal-winner-name">CHILE</h1>
+      <p class="winner-subtitle" id="modal-winner-stat">OUTLASTED ALL NATIONS • ROUND #1 CHAMPION</p>
+
+      <!-- Championship 3-Card Stats Grid -->
+      <div class="victory-stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🥇</div>
+          <div class="stat-value">#1 GOLD</div>
+          <div class="stat-label">FINISH</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-value" id="modal-stat-wins">1 WIN</div>
+          <div class="stat-label">TOTAL WINS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value">100%</div>
+          <div class="stat-label">SURVIVAL</div>
+        </div>
+      </div>
+
+      <!-- YouTube High-Converting CTA Button -->
+      <div class="subscribe-banner">
+        <span class="sub-bell">🔔</span>
+        <span id="modal-sub-text">SUBSCRIBE TO SUPPORT YOUR NATION!</span>
+      </div>
+
+      <!-- High-Tech Circular SVG Countdown Timer -->
+      <div class="countdown-circle-widget">
+        <div class="timer-svg-box">
+          <svg viewBox="0 0 36 36">
+            <circle class="bg" cx="18" cy="18" r="15" />
+            <circle class="progress" id="timer-svg-progress" cx="18" cy="18" r="15" />
+          </svg>
+          <span class="timer-num-text" id="modal-countdown-num">7</span>
+        </div>
+        <span>NEXT BATTLE BEGINS</span>
+      </div>
+    </section>
+
+    <!-- Tap to unmute audio overlay -->
+    <div id="audio-overlay" role="button" tabindex="0">
+      <div class="audio-icon-pulse">🔊</div>
+      <div class="audio-overlay-title">CLICK TO ENABLE LIVE BROADCAST</div>
+      <p class="audio-overlay-desc">Activates procedural physics synth audio & speech commentary engine.</p>
+    </div>
+
+    <!-- Streamer Drawer -->
+    <aside id="streamer-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title">STREAMER CONTROLS</div>
+        <button class="drawer-close" id="drawer-close-btn">&times;</button>
+      </div>
+
+      <div class="drawer-control-group">
+        <label class="drawer-label">
+          <span>GRAVITY (Y)</span>
+          <span class="val" id="val-gravity">0.42</span>
+        </label>
+        <input type="range" class="drawer-slider" id="slider-gravity" min="0.1" max="1.5" step="0.05" value="0.42">
+      </div>
+
+      <div class="drawer-control-group">
+        <label class="drawer-label">
+          <span>ARENA SPEED</span>
+          <span class="val" id="val-speed">0.022</span>
+        </label>
+        <input type="range" class="drawer-slider" id="slider-speed" min="0.005" max="0.05" step="0.002" value="0.022">
+      </div>
+
+      <div class="drawer-control-group">
+        <label class="drawer-label">COUNTRY COUNT</label>
+        <select class="drawer-select" id="select-country-count">
+          <option value="25">25 Countries (Huge Balls)</option>
+          <option value="50" selected>50 Countries (Standard Live)</option>
+          <option value="80">80 Countries (Extended Royale)</option>
+          <option value="120">120 Countries (Grand Royale)</option>
+        </select>
+      </div>
+
+      <button class="drawer-btn" id="btn-toggle-sound">🔊 AUDIO: ENABLED</button>
+      <button class="drawer-btn" id="btn-toggle-broadcast">🎥 CLEAN BROADCAST MODE</button>
+      <button class="drawer-btn" id="btn-test-win">🧪 TEST VICTORY SCREEN</button>
+      <button class="drawer-btn" id="btn-reset-leaderboard">🗑️ RESET LEADERBOARD</button>
+    </aside>
+
+  </main>
+
+  <!-- ==========================================================================
+       MAIN JAVASCRIPT APPLICATION CODE
+       ========================================================================== -->
+  <script>
+    /**
+     * COUNTRY FLAG BATTLE ROYALE SIMULATOR (YouTube Live 9:16 Edition)
+     * Features:
+     * - 3D Glossy Championship Marbles (Zero dangling box clutter)
+     * - Royal Victory Podium with Sunburst Halo & 3D Gold Typography
+     * - Live Elimination Killfeed & Stream Hype Meter (Fills 9:16 vertical space)
+     * - Authentic Procedural Vector Flags (Fixed Chile, Peru, Czechia, etc.)
+     * - 100% Rock-Solid Stable Camera
+     * - Simulated Audience Live Chat Cheer Balloons
+     */
+
+    // --- 1. COMPREHENSIVE COUNTRY DATABASE ---
+    const COUNTRIES_DB = [
+      { id: 'US', iso: 'us', code: 'USA', name: 'United States', color: '#002868', type: 'us' },
+      { id: 'BR', iso: 'br', code: 'BRA', name: 'Brazil', color: '#009B3A', type: 'brazil' },
+      { id: 'JP', iso: 'jp', code: 'JPN', name: 'Japan', color: '#BC002D', type: 'circle', bg: '#ffffff', fg: '#BC002D' },
+      { id: 'DE', iso: 'de', code: 'GER', name: 'Germany', color: '#DD0000', type: 'h-stripes', colors: ['#000000', '#DD0000', '#FFCE00'] },
+      { id: 'GB', iso: 'gb', code: 'GBR', name: 'United Kingdom', color: '#012169', type: 'uk' },
+      { id: 'FR', iso: 'fr', code: 'FRA', name: 'France', color: '#0055A4', type: 'v-stripes', colors: ['#0055A4', '#ffffff', '#EF4135'] },
+      { id: 'CA', iso: 'ca', code: 'CAN', name: 'Canada', color: '#D80027', type: 'canada' },
+      { id: 'IT', iso: 'it', code: 'ITA', name: 'Italy', color: '#009246', type: 'v-stripes', colors: ['#009246', '#ffffff', '#CE2B37'] },
+      { id: 'ES', iso: 'es', code: 'ESP', name: 'Spain', color: '#AA151B', type: 'spain' },
+      { id: 'MX', iso: 'mx', code: 'MEX', name: 'Mexico', color: '#006847', type: 'v-stripes', colors: ['#006847', '#ffffff', '#CE1126'] },
+      { id: 'AR', iso: 'ar', code: 'ARG', name: 'Argentina', color: '#74ACDF', type: 'argentina' },
+      { id: 'KR', iso: 'kr', code: 'KOR', name: 'South Korea', color: '#0047A0', type: 'korea' },
+      { id: 'IN', iso: 'in', code: 'IND', name: 'India', color: '#FF9933', type: 'india' },
+      { id: 'AU', iso: 'au', code: 'AUS', name: 'Australia', color: '#00008B', type: 'australia' },
+      { id: 'ZA', iso: 'za', code: 'RSA', name: 'South Africa', color: '#007A3D', type: 'south-africa' },
+      { id: 'TR', iso: 'tr', code: 'TUR', name: 'Turkey', color: '#E30A17', type: 'crescent', bg: '#E30A17', fg: '#ffffff' },
+      { id: 'NL', iso: 'nl', code: 'NED', name: 'Netherlands', color: '#21468B', type: 'h-stripes', colors: ['#AE1C28', '#ffffff', '#21468B'] },
+      { id: 'SE', iso: 'se', code: 'SWE', name: 'Sweden', color: '#006AA7', type: 'cross', bg: '#006AA7', fg: '#FECC00' },
+      { id: 'NO', iso: 'no', code: 'NOR', name: 'Norway', color: '#BA0C2F', type: 'cross-border', bg: '#BA0C2F', border: '#ffffff', fg: '#00205B' },
+      { id: 'DK', iso: 'dk', code: 'DEN', name: 'Denmark', color: '#C60C30', type: 'cross', bg: '#C60C30', fg: '#ffffff' },
+      { id: 'FI', iso: 'fi', code: 'FIN', name: 'Finland', color: '#003580', type: 'cross', bg: '#ffffff', fg: '#003580' },
+      { id: 'PL', iso: 'pl', code: 'POL', name: 'Poland', color: '#DC143C', type: 'h-stripes', colors: ['#ffffff', '#DC143C'] },
+      { id: 'UA', iso: 'ua', code: 'UKR', name: 'Ukraine', color: '#0057B8', type: 'h-stripes', colors: ['#0057B8', '#FFD700'] },
+      { id: 'PT', iso: 'pt', code: 'POR', name: 'Portugal', color: '#046A38', type: 'portugal' },
+      { id: 'GR', iso: 'gr', code: 'GRE', name: 'Greece', color: '#0D5EAF', type: 'greece' },
+      { id: 'CH', iso: 'ch', code: 'SUI', name: 'Switzerland', color: '#DA291C', type: 'swiss' },
+      { id: 'AT', iso: 'at', code: 'AUT', name: 'Austria', color: '#ED2939', type: 'h-stripes', colors: ['#ED2939', '#ffffff', '#ED2939'] },
+      { id: 'BE', iso: 'be', code: 'BEL', name: 'Belgium', color: '#ED2939', type: 'v-stripes', colors: ['#000000', '#FFE936', '#ED2939'] },
+      { id: 'IE', iso: 'ie', code: 'IRL', name: 'Ireland', color: '#169B62', type: 'v-stripes', colors: ['#169B62', '#ffffff', '#FF883E'] },
+      { id: 'NZ', iso: 'nz', code: 'NZL', name: 'New Zealand', color: '#CC142B', type: 'australia' },
+      { id: 'SA', iso: 'sa', code: 'KSA', name: 'Saudi Arabia', color: '#006C35', type: 'saudi' },
+      { id: 'EG', iso: 'eg', code: 'EGY', name: 'Egypt', color: '#C09307', type: 'h-stripes', colors: ['#C8102E', '#ffffff', '#000000'] },
+      { id: 'NG', iso: 'ng', code: 'NGA', name: 'Nigeria', color: '#008751', type: 'v-stripes', colors: ['#008751', '#ffffff', '#008751'] },
+      { id: 'ID', iso: 'id', code: 'INA', name: 'Indonesia', color: '#FF0000', type: 'h-stripes', colors: ['#FF0000', '#ffffff'] },
+      { id: 'PH', iso: 'ph', code: 'PHI', name: 'Philippines', color: '#0038A8', type: 'philippines' },
+      { id: 'VN', iso: 'vn', code: 'VIE', name: 'Vietnam', color: '#DA251D', type: 'star-center', bg: '#DA251D', fg: '#FFFF00' },
+      { id: 'TH', iso: 'th', code: 'THA', name: 'Thailand', color: '#A51931', type: 'h-stripes', colors: ['#A51931', '#ffffff', '#2D2A4A', '#ffffff', '#A51931'] },
+      { id: 'MY', iso: 'my', code: 'MAS', name: 'Malaysia', color: '#010066', type: 'malaysia' },
+      { id: 'SG', iso: 'sg', code: 'SGP', name: 'Singapore', color: '#ED2939', type: 'h-stripes', colors: ['#ED2939', '#ffffff'] },
+      { id: 'PK', iso: 'pk', code: 'PAK', name: 'Pakistan', color: '#115740', type: 'crescent', bg: '#115740', fg: '#ffffff' },
+      { id: 'BD', iso: 'bd', code: 'BAN', name: 'Bangladesh', color: '#006A4E', type: 'circle', bg: '#006A4E', fg: '#F42A41', offsetX: -3 },
+      { id: 'CO', iso: 'co', code: 'COL', name: 'Colombia', color: '#FCD116', type: 'h-stripes', colors: ['#FCD116', '#003893', '#CE1126'] },
+      { id: 'CL', iso: 'cl', code: 'CHI', name: 'Chile', color: '#D52B1E', type: 'chile' },
+      { id: 'PE', iso: 'pe', code: 'PER', name: 'Peru', color: '#D91023', type: 'v-stripes', colors: ['#D91023', '#ffffff', '#D91023'] },
+      { id: 'VE', iso: 've', code: 'VEN', name: 'Venezuela', color: '#00247D', type: 'h-stripes', colors: ['#FCD116', '#00247D', '#CF142B'] },
+      { id: 'RO', iso: 'ro', code: 'ROU', name: 'Romania', color: '#002B7F', type: 'v-stripes', colors: ['#002B7F', '#FCD116', '#CE1126'] },
+      { id: 'CZ', iso: 'cz', code: 'CZE', name: 'Czechia', color: '#11457E', type: 'czech' },
+      { id: 'HU', iso: 'hu', code: 'HUN', name: 'Hungary', color: '#477050', type: 'h-stripes', colors: ['#CE2939', '#ffffff', '#477050'] },
+      { id: 'HR', iso: 'hr', code: 'CRO', name: 'Croatia', color: '#FF0000', type: 'h-stripes', colors: ['#FF0000', '#ffffff', '#0000FF'] },
+      { id: 'RS', iso: 'rs', code: 'SRB', name: 'Serbia', color: '#0C4076', type: 'h-stripes', colors: ['#C6363C', '#0C4076', '#ffffff'] },
+      { id: 'BG', iso: 'bg', code: 'BUL', name: 'Bulgaria', color: '#00966E', type: 'h-stripes', colors: ['#ffffff', '#00966E', '#D62612'] }
+    ];
+
+    // Master Broadcast Arena Themes
+    const ARENA_THEMES = [
+      { name: 'Cyber Sapphire', border: '#00e5ff', glow: 'rgba(0, 229, 255, 0.75)', inner: 'rgba(0, 229, 255, 0.05)', floorLine: 'rgba(0, 229, 255, 0.2)', bumper: '#00e5ff' },
+      { name: 'Imperial Gold', border: '#fbbf24', glow: 'rgba(251, 191, 36, 0.75)', inner: 'rgba(251, 191, 36, 0.05)', floorLine: 'rgba(251, 191, 36, 0.2)', bumper: '#fbbf24' },
+      { name: 'Cosmic Violet', border: '#a855f7', glow: 'rgba(168, 85, 247, 0.75)', inner: 'rgba(168, 85, 247, 0.05)', floorLine: 'rgba(168, 85, 247, 0.2)', bumper: '#a855f7' },
+      { name: 'Emerald Stadium', border: '#10b981', glow: 'rgba(16, 185, 129, 0.75)', inner: 'rgba(16, 185, 129, 0.05)', floorLine: 'rgba(16, 185, 129, 0.2)', bumper: '#10b981' },
+      { name: 'Crimson Ruby', border: '#f43f5e', glow: 'rgba(244, 63, 94, 0.75)', inner: 'rgba(244, 63, 94, 0.05)', floorLine: 'rgba(244, 63, 94, 0.2)', bumper: '#f43f5e' }
+    ];
+
+    // --- 2. AUTHENTIC HIGH-RES FLAG TEXTURE ENGINE ---
+    class ProFlagTextureEngine {
+      constructor() {
+        this.cache = new Map();
+      }
+
+      getFlagCanvas(country, size = 128) {
+        const key = `${country.id}_${size}`;
+        if (this.cache.has(key)) return this.cache.get(key);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        // Draw instant authentic procedural vector flag
+        this.drawVectorFlag(ctx, country, size);
+
+        // Async load FlagCDN for ultra high-res
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = `https://flagcdn.com/w160/${country.iso}.png`;
+        img.onload = () => {
+          ctx.clearRect(0, 0, size, size);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+          ctx.clip();
+          const scale = Math.max(size / img.width, size / img.height);
+          const nw = img.width * scale;
+          const nh = img.height * scale;
+          ctx.drawImage(img, (size - nw) / 2, (size - nh) / 2, nw, nh);
+          ctx.restore();
+        };
+
+        this.cache.set(key, canvas);
+        return canvas;
+      }
+
+      drawVectorFlag(ctx, c, s) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2);
+        ctx.clip();
+
+        ctx.fillStyle = c.color || '#222';
+        ctx.fillRect(0, 0, s, s);
+
+        switch (c.type) {
+          case 'us': {
+            for (let i = 0; i < 7; i++) {
+              ctx.fillStyle = i % 2 === 0 ? '#B22234' : '#FFFFFF';
+              ctx.fillRect(0, (i * s) / 7, s, s / 7);
+            }
+            ctx.fillStyle = '#3C3B6E';
+            ctx.fillRect(0, 0, s * 0.52, s * 0.52);
+            ctx.fillStyle = '#FFFFFF';
+            this.drawStar(ctx, s * 0.26, s * 0.26, s * 0.12, 5);
+            break;
+          }
+
+          // Exact Official Chile National Flag (NOT A POKEBALL!)
+          case 'chile': {
+            // White top-right
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, s, s * 0.5);
+            // Solid red bottom
+            ctx.fillStyle = '#D52B1E';
+            ctx.fillRect(0, s * 0.5, s, s * 0.5);
+            // Blue canton top-left
+            ctx.fillStyle = '#0039A6';
+            ctx.fillRect(0, 0, s * 0.5, s * 0.5);
+            // White 5-pointed star in center of blue canton
+            ctx.fillStyle = '#FFFFFF';
+            this.drawStar(ctx, s * 0.25, s * 0.25, s * 0.13, 5);
+            break;
+          }
+
+          case 'brazil': {
+            ctx.fillStyle = '#009739'; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = '#FEDD00';
+            ctx.beginPath();
+            ctx.moveTo(s * 0.08, s * 0.5); ctx.lineTo(s * 0.5, s * 0.14);
+            ctx.lineTo(s * 0.92, s * 0.5); ctx.lineTo(s * 0.5, s * 0.86);
+            ctx.closePath(); ctx.fill();
+            ctx.fillStyle = '#012169';
+            ctx.beginPath(); ctx.arc(s * 0.5, s * 0.5, s * 0.22, 0, Math.PI * 2); ctx.fill();
+            break;
+          }
+
+          case 'uk': {
+            ctx.fillStyle = '#012169'; ctx.fillRect(0, 0, s, s);
+            ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = s * 0.22;
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s, s); ctx.moveTo(s, 0); ctx.lineTo(0, s); ctx.stroke();
+            ctx.strokeStyle = '#C8102E'; ctx.lineWidth = s * 0.11;
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s, s); ctx.moveTo(s, 0); ctx.lineTo(0, s); ctx.stroke();
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(s * 0.38, 0, s * 0.24, s); ctx.fillRect(0, s * 0.38, s, s * 0.24);
+            ctx.fillStyle = '#C8102E'; ctx.fillRect(s * 0.42, 0, s * 0.16, s); ctx.fillRect(0, s * 0.42, s, s * 0.16);
+            break;
+          }
+
+          case 'canada': {
+            ctx.fillStyle = '#D80027'; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(s * 0.25, 0, s * 0.5, s);
+            ctx.fillStyle = '#D80027'; this.drawStar(ctx, s * 0.5, s * 0.5, s * 0.18, 5);
+            break;
+          }
+
+          case 'argentina': {
+            ctx.fillStyle = '#74ACDF'; ctx.fillRect(0, 0, s, s / 3);
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, s / 3, s, s / 3);
+            ctx.fillStyle = '#74ACDF'; ctx.fillRect(0, (s * 2) / 3, s, s / 3);
+            ctx.fillStyle = '#F6B40E';
+            ctx.beginPath(); ctx.arc(s * 0.5, s * 0.5, s * 0.08, 0, Math.PI * 2); ctx.fill();
+            break;
+          }
+
+          case 'spain': {
+            ctx.fillStyle = '#AA151B'; ctx.fillRect(0, 0, s, s * 0.25);
+            ctx.fillStyle = '#F1BF00'; ctx.fillRect(0, s * 0.25, s, s * 0.5);
+            ctx.fillStyle = '#AA151B'; ctx.fillRect(0, s * 0.75, s, s * 0.25);
+            ctx.fillStyle = '#AA151B';
+            ctx.beginPath(); ctx.arc(s * 0.38, s * 0.5, s * 0.08, 0, Math.PI * 2); ctx.fill();
+            break;
+          }
+
+          case 'india': {
+            ctx.fillStyle = '#FF9933'; ctx.fillRect(0, 0, s, s / 3);
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, s / 3, s, s / 3);
+            ctx.fillStyle = '#138808'; ctx.fillRect(0, (s * 2) / 3, s, s / 3);
+            ctx.strokeStyle = '#000080'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(s * 0.5, s * 0.5, s * 0.08, 0, Math.PI * 2); ctx.stroke();
+            break;
+          }
+
+          case 'korea': {
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = '#CD2E3A';
+            ctx.beginPath(); ctx.arc(s * 0.5, s * 0.5, s * 0.2, 0, Math.PI, true); ctx.fill();
+            ctx.fillStyle = '#0047A0';
+            ctx.beginPath(); ctx.arc(s * 0.5, s * 0.5, s * 0.2, 0, Math.PI, false); ctx.fill();
+            break;
+          }
+
+          case 'australia': {
+            ctx.fillStyle = '#00008B'; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = '#FFFFFF';
+            this.drawStar(ctx, s * 0.75, s * 0.3, s * 0.08, 5);
+            this.drawStar(ctx, s * 0.82, s * 0.5, s * 0.07, 5);
+            this.drawStar(ctx, s * 0.68, s * 0.65, s * 0.07, 5);
+            this.drawStar(ctx, s * 0.78, s * 0.8, s * 0.08, 5);
+            break;
+          }
+
+          case 'crescent': {
+            ctx.fillStyle = c.bg; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = c.fg;
+            ctx.beginPath(); ctx.arc(s * 0.44, s * 0.5, s * 0.22, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = c.bg;
+            ctx.beginPath(); ctx.arc(s * 0.51, s * 0.5, s * 0.18, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = c.fg;
+            this.drawStar(ctx, s * 0.66, s * 0.5, s * 0.09, 5);
+            break;
+          }
+
+          case 'circle': {
+            ctx.fillStyle = c.bg; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = c.fg;
+            ctx.beginPath(); ctx.arc(s * 0.5 + (c.offsetX || 0), s * 0.5, s * 0.28, 0, Math.PI * 2); ctx.fill();
+            break;
+          }
+
+          case 'h-stripes': {
+            const count = c.colors.length;
+            const sh = s / count;
+            for (let i = 0; i < count; i++) {
+              ctx.fillStyle = c.colors[i];
+              ctx.fillRect(0, i * sh, s, sh + 0.5);
+            }
+            break;
+          }
+
+          case 'v-stripes': {
+            const count = c.colors.length;
+            const sw = s / count;
+            for (let i = 0; i < count; i++) {
+              ctx.fillStyle = c.colors[i];
+              ctx.fillRect(i * sw, 0, sw + 0.5, s);
+            }
+            break;
+          }
+
+          case 'cross': {
+            ctx.fillStyle = c.bg; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = c.fg;
+            ctx.fillRect(s * 0.32, 0, s * 0.22, s);
+            ctx.fillRect(0, s * 0.39, s, s * 0.22);
+            break;
+          }
+
+          case 'cross-border': {
+            ctx.fillStyle = c.bg; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = c.border;
+            ctx.fillRect(s * 0.28, 0, s * 0.28, s);
+            ctx.fillRect(0, s * 0.36, s, s * 0.28);
+            ctx.fillStyle = c.fg;
+            ctx.fillRect(s * 0.34, 0, s * 0.16, s);
+            ctx.fillRect(0, s * 0.42, s, s * 0.16);
+            break;
+          }
+
+          case 'swiss': {
+            ctx.fillStyle = '#DA291C'; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(s * 0.4, s * 0.2, s * 0.2, s * 0.6);
+            ctx.fillRect(s * 0.2, s * 0.4, s * 0.6, s * 0.2);
+            break;
+          }
+
+          case 'czech': {
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, s, s * 0.5);
+            ctx.fillStyle = '#D7141A'; ctx.fillRect(0, s * 0.5, s, s * 0.5);
+            ctx.fillStyle = '#11457E';
+            ctx.beginPath();
+            ctx.moveTo(0, 0); ctx.lineTo(s * 0.5, s * 0.5); ctx.lineTo(0, s);
+            ctx.closePath(); ctx.fill();
+            break;
+          }
+
+          case 'star-center': {
+            ctx.fillStyle = c.bg; ctx.fillRect(0, 0, s, s);
+            ctx.fillStyle = c.fg;
+            this.drawStar(ctx, s * 0.5, s * 0.5, s * 0.25, 5);
+            break;
+          }
+
+          default: {
+            ctx.fillStyle = c.color || '#333'; ctx.fillRect(0, 0, s, s / 3);
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, s / 3, s, s / 3);
+            ctx.fillStyle = c.color || '#333'; ctx.fillRect(0, (s * 2) / 3, s, s / 3);
+            break;
+          }
+        }
+
+        ctx.restore();
+      }
+
+      drawStar(ctx, cx, cy, r, points = 5) {
+        ctx.beginPath();
+        const step = Math.PI / points;
+        for (let i = 0; i < 2 * points; i++) {
+          const radius = i % 2 === 0 ? r : r * 0.45;
+          const x = cx + Math.cos(i * step - Math.PI / 2) * radius;
+          const y = cy + Math.sin(i * step - Math.PI / 2) * radius;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // --- 3. PROCEDURAL SYNTH AUDIO ---
+    class ProceduralAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.lastBounceTime = 0;
+        this.heartbeatTimer = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioCtx();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        return !this.muted;
+      }
+
+      playBounce(velocity = 5) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        if (now - this.lastBounceTime < 0.04) return;
+        this.lastBounceTime = now;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        const baseFreq = 280 + Math.min(260, velocity * 25);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.035);
+
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.04);
+      }
+
+      playBumperHit() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(620, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.08);
+
+        gain.gain.setValueAtTime(0.24, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.085);
+      }
+
+      playShieldPickup() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+
+      playShieldBreak() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(700, now);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.18);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.19);
+      }
+
+      playBombExplode() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(30, now + 0.35);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.36);
+      }
+
+      playHeartbeat() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(75, now);
+        osc1.frequency.exponentialRampToValueAtTime(45, now + 0.12);
+        gain1.gain.setValueAtTime(0.25, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc1.connect(gain1);
+        gain1.connect(this.ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.13);
+
+        const osc2 = this.ctx.createOscillator();
+        const gain2 = this.ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(65, now + 0.14);
+        osc2.frequency.exponentialRampToValueAtTime(40, now + 0.28);
+        gain2.gain.setValueAtTime(0.22, now + 0.14);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc2.connect(gain2);
+        gain2.connect(this.ctx.destination);
+        osc2.start(now + 0.14);
+        osc2.stop(now + 0.29);
+      }
+
+      playDuelStinger() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(42, now + 0.6);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(420, now);
+        filter.frequency.exponentialRampToValueAtTime(80, now + 0.6);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.62);
+      }
+
+      startHeartbeatLoop() {
+        if (this.heartbeatTimer) return;
+        this.playHeartbeat();
+        this.heartbeatTimer = setInterval(() => {
+          this.playHeartbeat();
+        }, 900);
+      }
+
+      stopHeartbeatLoop() {
+        if (this.heartbeatTimer) {
+          clearInterval(this.heartbeatTimer);
+          this.heartbeatTimer = null;
+        }
+      }
+
+      playEliminate() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(70, now + 0.22);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.23);
+      }
+
+      playVictory() {
+        if (this.muted || !this.ctx) return;
+        const chords = [
+          { freq: 523.25, time: 0 },
+          { freq: 659.25, time: 0.12 },
+          { freq: 783.99, time: 0.24 },
+          { freq: 1046.50, time: 0.36 }
+        ];
+
+        const baseTime = this.ctx.currentTime;
+        chords.forEach(note => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(note.freq, baseTime + note.time);
+
+          gain.gain.setValueAtTime(0.001, baseTime + note.time);
+          gain.gain.linearRampToValueAtTime(0.2, baseTime + note.time + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, baseTime + note.time + 1.2);
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(2400, baseTime + note.time);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(baseTime + note.time);
+          osc.stop(baseTime + note.time + 1.3);
+        });
+      }
+
+      announceWinner(countryName) {
+        if (this.muted || !window.speechSynthesis) return;
+        try {
+          window.speechSynthesis.cancel();
+          const text = `${countryName} is the Champion! Comment your country and subscribe for the next battle!`;
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.05;
+          utterance.pitch = 1.1;
+          utterance.volume = 0.95;
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.warn("SpeechSynthesis error:", e);
+        }
+      }
+    }
+
+    // --- 4. PARTICLE ENGINE (CONFETTI & FIREWORKS) ---
+    class ParticleEngine {
+      constructor() {
+        this.particles = [];
+      }
+
+      spawnElimination(x, y, color) {
+        for (let i = 0; i < 15; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 1.5 + Math.random() * 4.5;
+          this.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: 2 + Math.random() * 3,
+            color: color || '#f43f5e',
+            alpha: 1,
+            decay: 0.025 + Math.random() * 0.02,
+            gravity: 0.12
+          });
+        }
+      }
+
+      spawnBumperHit(x, y, color) {
+        for (let i = 0; i < 10; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 2 + Math.random() * 3.5;
+          this.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: 2.5 + Math.random() * 2,
+            color: color || '#00e5ff',
+            alpha: 1,
+            decay: 0.04,
+            gravity: 0
+          });
+        }
+      }
+
+      spawnExplosionShockwave(x, y) {
+        const colors = ['#f97316', '#f43f5e', '#fbbf24', '#ffffff'];
+        for (let i = 0; i < 35; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 3 + Math.random() * 6.5;
+          this.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: 3 + Math.random() * 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: 1,
+            decay: 0.03,
+            gravity: 0.05
+          });
+        }
+      }
+
+      spawnShieldShatter(x, y) {
+        for (let i = 0; i < 20; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 2 + Math.random() * 5;
+          this.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: 2.5 + Math.random() * 2.5,
+            color: '#00e5ff',
+            alpha: 1,
+            decay: 0.035,
+            gravity: 0.08
+          });
+        }
+      }
+
+      spawnVictoryConfetti(width, height) {
+        const colors = ['#fbbf24', '#00e5ff', '#a855f7', '#10b981', '#ffffff', '#f43f5e'];
+        for (let i = 0; i < 85; i++) {
+          this.particles.push({
+            x: Math.random() * width,
+            y: Math.random() * (height * 0.45),
+            vx: (Math.random() - 0.5) * 7,
+            vy: 2 + Math.random() * 5.5,
+            radius: 3.5 + Math.random() * 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: 1,
+            decay: 0.007 + Math.random() * 0.01,
+            gravity: 0.06,
+            isConfetti: true,
+            rot: Math.random() * Math.PI,
+            vRot: (Math.random() - 0.5) * 0.25
+          });
+        }
+      }
+
+      update() {
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.alpha -= p.decay;
+          if (p.isConfetti) p.rot += p.vRot;
+
+          if (p.alpha <= 0) {
+            this.particles.splice(i, 1);
+          }
+        }
+      }
+
+      draw(ctx) {
+        ctx.save();
+        for (const p of this.particles) {
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillStyle = p.color;
+          if (p.isConfetti) {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.fillRect(-p.radius, -p.radius * 0.6, p.radius * 2, p.radius * 1.2);
+            ctx.restore();
+          } else {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      }
+
+      clear() {
+        this.particles = [];
+      }
+    }
+
+    // --- 5. MAIN BATTLE ROYALE SIMULATOR APPLICATION ---
+    class BattleRoyaleApp {
+      constructor() {
+        this.V_WIDTH = 540;
+        this.V_HEIGHT = 960;
+
+        this.canvas = document.getElementById('battle-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.viewport = document.getElementById('broadcast-viewport');
+
+        this.flagEngine = new ProFlagTextureEngine();
+        this.audio = new ProceduralAudioEngine();
+        this.particles = new ParticleEngine();
+
+        this.Engine = Matter.Engine;
+        this.World = Matter.World;
+        this.Bodies = Matter.Bodies;
+        this.Body = Matter.Body;
+        this.Events = Matter.Events;
+
+        this.engine = null;
+        this.world = null;
+        this.balls = [];
+        this.eliminatedBalls = [];
+        this.arenaSegments = [];
+        this.arenaFins = [];
+        this.centerBumper = null;
+        this.arenaCenter = { x: 270, y: 475 };
+        this.arenaRadius = 195;
+        this.arenaAngle = 0;
+        this.totalSegments = 32;
+        this.gapSegmentCount = 4;
+
+        this.powerups = [];
+
+        // Smooth Camera Zoom (100% Rock-Solid Stable)
+        this.currentZoom = 1.0;
+        this.targetZoom = 1.0;
+
+        this.isDuelMode = false;
+
+        this.roundNumber = 1;
+        this.selectedBatchSize = 50;
+        this.baseRotationSpeed = 0.022;
+        this.currentRotationSpeed = 0.022;
+        this.gravityY = 0.42;
+        this.ballRestitution = 0.98;
+        this.isRoundOver = false;
+        this.roundWinner = null;
+        this.themeIndex = 0;
+
+        this.antiClumpTimer = 0;
+        this.leaderboard = this.loadLeaderboard();
+
+        this.tickerIndex = 0;
+        this.tickerMessages = [
+          "💬 TYPE YOUR COUNTRY TO BOOST THEIR POWER!",
+          "🔔 SUBSCRIBE TO SEE YOUR NATION TRIUMPH!",
+          "🔥 24/7 AUTONOMOUS COUNTRY BATTLE ROYALE",
+          "🏆 DROP A LIKE FOR YOUR NATION'S GLORY!",
+          "⚡ WHO WILL BE THE LAST NATION STANDING?"
+        ];
+
+        this.dom = {
+          roundLabel: document.getElementById('hud-round-label'),
+          aliveBadge: document.getElementById('hud-alive-badge'),
+          aliveCount: document.getElementById('hud-alive-count'),
+          totalCount: document.getElementById('hud-total-count'),
+          viewersCount: document.getElementById('hud-viewers-count'),
+          leaderboardItems: document.getElementById('leaderboard-strip-items'),
+          duelBanner: document.getElementById('final-duel-banner'),
+          duelFlag1: document.getElementById('duel-flag-1'),
+          duelFlag2: document.getElementById('duel-flag-2'),
+          duelName1: document.getElementById('duel-name-1'),
+          duelName2: document.getElementById('duel-name-2'),
+          killfeedBar: document.getElementById('hud-killfeed-bar'),
+          tickerText: document.getElementById('engagement-ticker-text'),
+          climaxVignette: document.getElementById('climax-vignette'),
+          victoryModal: document.getElementById('victory-modal'),
+          modalWinnerCanvas: document.getElementById('modal-winner-canvas'),
+          modalName: document.getElementById('modal-winner-name'),
+          modalSubText: document.getElementById('modal-sub-text'),
+          modalStatWins: document.getElementById('modal-stat-wins'),
+          modalCountdown: document.getElementById('modal-countdown-num'),
+          timerSvgProgress: document.getElementById('timer-svg-progress'),
+          audioOverlay: document.getElementById('audio-overlay'),
+          drawerToggle: document.getElementById('streamer-drawer-toggle'),
+          drawer: document.getElementById('streamer-drawer'),
+          drawerClose: document.getElementById('drawer-close-btn'),
+          sliderGravity: document.getElementById('slider-gravity'),
+          sliderSpeed: document.getElementById('slider-speed'),
+          valGravity: document.getElementById('val-gravity'),
+          valSpeed: document.getElementById('val-speed'),
+          selectCount: document.getElementById('select-country-count'),
+          btnSound: document.getElementById('btn-toggle-sound'),
+          btnBroadcast: document.getElementById('btn-toggle-broadcast'),
+          btnTestWin: document.getElementById('btn-test-win'),
+          btnResetLb: document.getElementById('btn-reset-leaderboard')
+        };
+
+        this.init();
+      }
+
+      init() {
+        this.setupCanvasDPI();
+        window.addEventListener('resize', () => this.setupCanvasDPI());
+
+        this.setupPhysicsEngine();
+        this.setupEventListeners();
+        this.renderHorizontalLeaderboard();
+        this.startEngagementTicker();
+
+        this.startNewRound();
+        requestAnimationFrame((t) => this.gameLoop(t));
+      }
+
+      setupCanvasDPI() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = this.viewport.getBoundingClientRect();
+
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+
+        this.scaleX = this.canvas.width / this.V_WIDTH;
+        this.scaleY = this.canvas.height / this.V_HEIGHT;
+      }
+
+      setupPhysicsEngine() {
+        this.engine = this.Engine.create({
+          enableSleeping: false
+        });
+        this.world = this.engine.world;
+        this.world.gravity.y = this.gravityY;
+        this.world.gravity.x = 0;
+
+        // Collision Events
+        this.Events.on(this.engine, 'collisionStart', (evt) => {
+          for (const pair of evt.pairs) {
+            const { bodyA, bodyB } = pair;
+
+            // Pinball Bumper Bounce
+            if (bodyA.label === 'centerBumper' || bodyB.label === 'centerBumper') {
+              const ballBody = bodyA.label === 'centerBumper' ? bodyB : bodyA;
+              if (ballBody.label === 'ball') {
+                this.audio.playBumperHit();
+                const pos = ballBody.position;
+                const dx = pos.x - this.arenaCenter.x;
+                const dy = pos.y - this.arenaCenter.y;
+                const dist = Math.hypot(dx, dy) || 1;
+                this.Body.setVelocity(ballBody, {
+                  x: (dx / dist) * 11,
+                  y: (dy / dist) * 11
+                });
+                this.particles.spawnBumperHit(pos.x, pos.y, '#00e5ff');
+              }
+            }
+
+            // Power-up Pickups
+            if (bodyA.label === 'powerup' || bodyB.label === 'powerup') {
+              const powerBody = bodyA.label === 'powerup' ? bodyA : bodyB;
+              const ballBody = bodyA.label === 'ball' ? bodyA : bodyB;
+              if (ballBody.label === 'ball') {
+                this.handlePowerupPickup(powerBody, ballBody);
+              }
+            }
+
+            // Ball to ball bounce
+            if (bodyA.label === 'ball' && bodyB.label === 'ball') {
+              const spd = Math.hypot(bodyA.velocity.x, bodyA.velocity.y);
+              if (spd > 2.5) {
+                this.audio.playBounce(spd);
+              }
+            }
+          }
+        });
+      }
+
+      handlePowerupPickup(powerBody, ballBody) {
+        const ball = this.balls.find(b => b.body === ballBody);
+        const pIndex = this.powerups.findIndex(p => p.body === powerBody);
+        if (!ball || pIndex === -1) return;
+
+        const power = this.powerups[pIndex];
+        this.World.remove(this.world, power.body);
+        this.powerups.splice(pIndex, 1);
+
+        if (power.type === 'shield') {
+          ball.hasShield = true;
+          this.audio.playShieldPickup();
+          this.pushKillfeed(ball.country, '🛡️ PICKED UP SHIELD!');
+        } else if (power.type === 'bomb') {
+          this.audio.playBombExplode();
+          this.particles.spawnExplosionShockwave(power.x, power.y);
+          this.pushKillfeed(ball.country, '💣 DETONATED BOMB!');
+          for (const other of this.balls) {
+            const dx = other.body.position.x - power.x;
+            const dy = other.body.position.y - power.y;
+            const d = Math.hypot(dx, dy) || 1;
+            if (d < 140) {
+              const force = (1 - d / 140) * 13;
+              this.Body.setVelocity(other.body, {
+                x: (dx / d) * force,
+                y: (dy / d) * force
+              });
+            }
+          }
+        }
+      }
+
+      // --- 6. ARENA CREATION & PHYSICS DYNAMICS ---
+      createCircularArena() {
+        for (const seg of this.arenaSegments) {
+          this.World.remove(this.world, seg);
+        }
+        for (const fin of this.arenaFins) {
+          this.World.remove(this.world, fin);
+        }
+        if (this.centerBumper) {
+          this.World.remove(this.world, this.centerBumper);
+        }
+
+        this.arenaSegments = [];
+        this.arenaFins = [];
+
+        const segAngle = (Math.PI * 2) / this.totalSegments;
+        const segLen = (2 * Math.PI * this.arenaRadius) / this.totalSegments + 4;
+        const segThick = 18;
+
+        for (let i = 0; i < this.totalSegments - this.gapSegmentCount; i++) {
+          const seg = this.Bodies.rectangle(0, 0, segLen, segThick, {
+            isStatic: true,
+            restitution: this.ballRestitution,
+            friction: 0.005,
+            render: { visible: false },
+            label: 'arenaWall'
+          });
+          seg.baseAngle = i * segAngle;
+          this.arenaSegments.push(seg);
+          this.World.add(this.world, seg);
+        }
+
+        // 4 Kinetic Paddles / Fins to keep balls energetically bouncing
+        for (let f = 0; f < 4; f++) {
+          const fin = this.Bodies.rectangle(0, 0, 42, 12, {
+            isStatic: true,
+            restitution: 1.05,
+            friction: 0.005,
+            render: { visible: false },
+            label: 'arenaFin'
+          });
+          fin.finBaseAngle = f * (Math.PI / 2);
+          fin.finDist = this.arenaRadius * 0.58;
+          this.arenaFins.push(fin);
+          this.World.add(this.world, fin);
+        }
+
+        // Central Super-Bouncy Neon Pinball Bumper
+        this.centerBumper = this.Bodies.circle(this.arenaCenter.x, this.arenaCenter.y, 24, {
+          isStatic: true,
+          restitution: 1.25,
+          friction: 0.001,
+          label: 'centerBumper'
+        });
+        this.World.add(this.world, this.centerBumper);
+      }
+
+      updateCircularArena() {
+        this.arenaAngle += this.currentRotationSpeed;
+
+        for (const seg of this.arenaSegments) {
+          const currentAng = seg.baseAngle + this.arenaAngle;
+          const x = this.arenaCenter.x + Math.cos(currentAng) * this.arenaRadius;
+          const y = this.arenaCenter.y + Math.sin(currentAng) * this.arenaRadius;
+          this.Body.setPosition(seg, { x, y });
+          this.Body.setAngle(seg, currentAng + Math.PI / 2);
+        }
+
+        // Rotate kinetic paddles
+        for (const fin of this.arenaFins) {
+          const fAng = fin.finBaseAngle + (this.arenaAngle * 1.6);
+          const fx = this.arenaCenter.x + Math.cos(fAng) * fin.finDist;
+          const fy = this.arenaCenter.y + Math.sin(fAng) * fin.finDist;
+          this.Body.setPosition(fin, { x: fx, y: fy });
+          this.Body.setAngle(fin, fAng + Math.PI / 3);
+        }
+      }
+
+      // --- 7. BALL SPAWNING & ROUND LOGIC ---
+      startNewRound() {
+        this.isRoundOver = false;
+        this.roundWinner = null;
+        this.isDuelMode = false;
+        this.targetZoom = 1.0;
+        this.currentZoom = 1.0;
+        this.audio.stopHeartbeatLoop();
+
+        this.dom.victoryModal.classList.remove('show');
+        this.dom.duelBanner.classList.add('hidden');
+        this.dom.climaxVignette.classList.remove('active', 'duel-mode');
+
+        this.themeIndex = (this.roundNumber - 1) % ARENA_THEMES.length;
+        this.currentTheme = ARENA_THEMES[this.themeIndex];
+
+        // Clear existing bodies
+        if (this.balls) {
+          for (const b of this.balls) this.World.remove(this.world, b.body);
+        }
+        if (this.eliminatedBalls) {
+          for (const eb of this.eliminatedBalls) this.World.remove(this.world, eb.body);
+        }
+        if (this.powerups) {
+          for (const p of this.powerups) this.World.remove(this.world, p.body);
+        }
+
+        this.balls = [];
+        this.eliminatedBalls = [];
+        this.powerups = [];
+        this.particles.clear();
+
+        this.createCircularArena();
+
+        // Select countries
+        const count = Math.min(this.selectedBatchSize, COUNTRIES_DB.length);
+        const shuffled = [...COUNTRIES_DB].sort(() => Math.random() - 0.5).slice(0, count);
+
+        // Adjust marble size
+        let marbleRadius = 14;
+        if (count <= 25) marbleRadius = 18;
+        else if (count >= 80) marbleRadius = 11;
+
+        // Spawn marbles in central cluster with initial outward velocity
+        shuffled.forEach((country, idx) => {
+          const spawnRadius = (idx / count) * (this.arenaRadius * 0.42);
+          const angle = idx * 2.399; // Golden angle spiral
+          const x = this.arenaCenter.x + Math.cos(angle) * spawnRadius;
+          const y = this.arenaCenter.y + Math.sin(angle) * spawnRadius - 10;
+
+          const body = this.Bodies.circle(x, y, marbleRadius, {
+            restitution: this.ballRestitution,
+            friction: 0.005,
+            frictionAir: 0.002,
+            density: 0.0025,
+            label: 'ball'
+          });
+
+          // Outward dispersion impulse
+          const dispAngle = Math.random() * Math.PI * 2;
+          const dispSpeed = 2.0 + Math.random() * 3.5;
+          this.Body.setVelocity(body, {
+            x: Math.cos(dispAngle) * dispSpeed,
+            y: Math.sin(dispAngle) * dispSpeed - 1.5
+          });
+
+          this.World.add(this.world, body);
+
+          const flagCanvas = this.flagEngine.getFlagCanvas(country, marbleRadius * 4);
+
+          this.balls.push({
+            body,
+            country,
+            radius: marbleRadius,
+            flagCanvas,
+            escaped: false,
+            hasShield: false
+          });
+        });
+
+        // Spawn 2 mystery power-ups in arena
+        this.spawnPowerup('shield', this.arenaCenter.x - 70, this.arenaCenter.y + 40);
+        this.spawnPowerup('bomb', this.arenaCenter.x + 70, this.arenaCenter.y + 40);
+
+        this.dom.roundLabel.textContent = `ROUND #${this.roundNumber}`;
+        this.updateAliveHUD();
+        this.renderHorizontalLeaderboard();
+      }
+
+      spawnPowerup(type, x, y) {
+        const body = this.Bodies.circle(x, y, 14, {
+          isStatic: true,
+          isSensor: true,
+          label: 'powerup'
+        });
+        this.World.add(this.world, body);
+        this.powerups.push({ body, type, x, y, animTimer: Math.random() * 10 });
+      }
+
+      updateAliveHUD() {
+        const alive = this.balls.length;
+        const total = this.selectedBatchSize;
+
+        this.dom.aliveCount.textContent = alive;
+        this.dom.totalCount.textContent = total;
+
+        if (alive <= 5) {
+          this.dom.aliveBadge.classList.add('danger');
+        } else {
+          this.dom.aliveBadge.classList.remove('danger');
+        }
+
+        // Camera Zoom on Climax
+        if (alive <= 2) {
+          this.targetZoom = 1.25;
+        } else if (alive <= 5) {
+          this.targetZoom = 1.12;
+        } else {
+          this.targetZoom = 1.0;
+        }
+
+        if (alive === 2 && !this.isDuelMode) {
+          this.isDuelMode = true;
+          this.dom.duelBanner.classList.remove('hidden');
+
+          // Re-trigger entrance slam animation
+          this.dom.duelBanner.style.animation = 'none';
+          this.dom.duelBanner.offsetHeight; // trigger reflow
+          this.dom.duelBanner.style.animation = '';
+
+          this.dom.climaxVignette.classList.remove('active');
+          this.dom.climaxVignette.classList.add('duel-mode');
+
+          const b1 = this.balls[0];
+          const b2 = this.balls[1];
+          this.dom.duelName1.textContent = b1.country.name;
+          this.dom.duelName2.textContent = b2.country.name;
+
+          const c1 = this.dom.duelFlag1.getContext('2d');
+          c1.clearRect(0, 0, 28, 28);
+          c1.drawImage(b1.flagCanvas, 0, 0, 28, 28);
+
+          const c2 = this.dom.duelFlag2.getContext('2d');
+          c2.clearRect(0, 0, 28, 28);
+          c2.drawImage(b2.flagCanvas, 0, 0, 28, 28);
+
+          this.audio.playDuelStinger();
+          this.audio.startHeartbeatLoop();
+          this.currentRotationSpeed = this.baseRotationSpeed * 1.45;
+        } else if (alive <= 3 && alive > 2) {
+          this.dom.climaxVignette.classList.add('active');
+          this.dom.climaxVignette.classList.remove('duel-mode');
+          this.dom.duelBanner.classList.add('hidden');
+          this.currentRotationSpeed = this.baseRotationSpeed * 1.35;
+        } else if (alive > 3) {
+          this.dom.climaxVignette.classList.remove('active', 'duel-mode');
+          this.dom.duelBanner.classList.add('hidden');
+          this.currentRotationSpeed = this.baseRotationSpeed;
+        }
+      }
+
+      checkBallPhysicsAndEliminations() {
+        if (this.isRoundOver) return;
+
+        // Anti-clumping impulse
+        this.antiClumpTimer += 1 / 60;
+        if (this.antiClumpTimer > 0.75) {
+          this.antiClumpTimer = 0;
+          for (const b of this.balls) {
+            const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
+            if (spd < 2.0 && b.body.position.y > this.arenaCenter.y + 40) {
+              const horizontalDir = b.body.position.x < this.arenaCenter.x ? 1 : -1;
+              this.Body.setVelocity(b.body, {
+                x: horizontalDir * (4.0 + Math.random() * 4.5),
+                y: -(5.0 + Math.random() * 5.0)
+              });
+            }
+          }
+        }
+
+        for (let i = this.balls.length - 1; i >= 0; i--) {
+          const b = this.balls[i];
+          const pos = b.body.position;
+          const distFromCenter = Math.hypot(pos.x - this.arenaCenter.x, pos.y - this.arenaCenter.y);
+
+          // Shield Rescue
+          if (b.hasShield && distFromCenter > this.arenaRadius + 5) {
+            b.hasShield = false;
+            this.audio.playShieldBreak();
+            this.particles.spawnShieldShatter(pos.x, pos.y);
+            this.pushKillfeed(b.country, '🛡️ SHIELD SAVED!');
+            const dx = this.arenaCenter.x - pos.x;
+            const dy = this.arenaCenter.y - pos.y;
+            const d = Math.hypot(dx, dy) || 1;
+            this.Body.setVelocity(b.body, {
+              x: (dx / d) * 8.5,
+              y: (dy / d) * 8.5 - 3
+            });
+            continue;
+          }
+
+          if (!b.escaped && distFromCenter > this.arenaRadius + 28) {
+            b.escaped = true;
+            this.balls.splice(i, 1);
+            this.eliminatedBalls.push(b);
+
+            this.audio.playEliminate();
+            this.particles.spawnElimination(pos.x, pos.y, b.country.color);
+            this.pushKillfeed(b.country);
+            this.updateAliveHUD();
+
+            if (this.balls.length === 1) {
+              this.triggerVictory(this.balls[0]);
+              return;
+            }
+          }
+        }
+
+        for (let j = this.eliminatedBalls.length - 1; j >= 0; j--) {
+          const eb = this.eliminatedBalls[j];
+          if (eb.body.position.y > this.V_HEIGHT + 60 || eb.body.position.x < -60 || eb.body.position.x > this.V_WIDTH + 60) {
+            this.World.remove(this.world, eb.body);
+            this.eliminatedBalls.splice(j, 1);
+          }
+        }
+      }
+
+      // Royal Podium Victory Trigger (Page 1 Redesign)
+      triggerVictory(winnerBall) {
+        if (this.isRoundOver) return;
+        this.isRoundOver = true;
+        this.audio.stopHeartbeatLoop();
+        this.roundWinner = winnerBall.country;
+
+        this.recordWin(this.roundWinner.code);
+        this.audio.playVictory();
+        this.audio.announceWinner(this.roundWinner.name);
+
+        // Render Winner's Flag in Golden Bevel Card
+        const modalCanvas = this.dom.modalWinnerCanvas;
+        const mCtx = modalCanvas.getContext('2d');
+        mCtx.clearRect(0, 0, modalCanvas.width, modalCanvas.height);
+        const bigFlag = this.flagEngine.getFlagCanvas(this.roundWinner, 160);
+        mCtx.drawImage(bigFlag, 0, 0, modalCanvas.width, modalCanvas.height);
+
+        this.dom.modalName.textContent = this.roundWinner.name;
+        document.getElementById('modal-winner-stat').textContent = `OUTLASTED ALL NATIONS • ROUND #${this.roundNumber} CHAMPION`;
+        this.dom.modalSubText.textContent = `SUBSCRIBE TO SUPPORT ${this.roundWinner.name.toUpperCase()}!`;
+        this.dom.modalStatWins.textContent = `${this.getCountryWins(this.roundWinner.code)} WINS`;
+
+        this.dom.modalCountdown.textContent = '7';
+        this.dom.timerSvgProgress.style.strokeDashoffset = '0';
+
+        this.dom.victoryModal.classList.add('show');
+        this.dom.duelBanner.classList.add('hidden');
+
+        this.particles.spawnVictoryConfetti(this.V_WIDTH, this.V_HEIGHT);
+
+        let countdown = 7;
+        const totalDuration = 7;
+        const interval = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            this.dom.modalCountdown.textContent = countdown;
+            const progress = (totalDuration - countdown) / totalDuration;
+            this.dom.timerSvgProgress.style.strokeDashoffset = `${progress * 94}`;
+            this.particles.spawnVictoryConfetti(this.V_WIDTH, this.V_HEIGHT);
+          } else {
+            clearInterval(interval);
+            this.roundNumber++;
+            this.startNewRound();
+          }
+        }, 1000);
+      }
+
+      // --- 8. HIGH-DPI CANVAS RENDERING (MASTER ESPORTS STADIUM) ---
+      drawArena(ctx) {
+        ctx.save();
+        const theme = this.currentTheme || ARENA_THEMES[0];
+
+        // Stadium Floor Ambient Depth Gradient
+        const radGrad = ctx.createRadialGradient(
+          this.arenaCenter.x, this.arenaCenter.y, 10,
+          this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius
+        );
+        radGrad.addColorStop(0, 'rgba(255, 255, 255, 0.04)');
+        radGrad.addColorStop(0.7, theme.inner);
+        radGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
+
+        ctx.beginPath();
+        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius, 0, Math.PI * 2);
+        ctx.fillStyle = radGrad;
+        ctx.fill();
+
+        // Stadium Floor Laser Markings
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = theme.floorLine;
+        ctx.setLineDash([4, 6]);
+
+        ctx.beginPath();
+        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.38, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.72, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        const notchLen = 14;
+        const r72 = this.arenaRadius * 0.72;
+        const notches = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
+        ctx.beginPath();
+        for (const ang of notches) {
+          const nx = this.arenaCenter.x + Math.cos(ang) * r72;
+          const ny = this.arenaCenter.y + Math.sin(ang) * r72;
+          ctx.moveTo(nx - Math.cos(ang) * notchLen, ny - Math.sin(ang) * notchLen);
+          ctx.lineTo(nx + Math.cos(ang) * notchLen, ny + Math.sin(ang) * notchLen);
+        }
+        ctx.stroke();
+
+        // Outer Boundary Segments with Refined Neon Glow
+        ctx.shadowColor = theme.glow;
+        ctx.shadowBlur = 14;
+        ctx.strokeStyle = theme.border;
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+
+        for (const seg of this.arenaSegments) {
+          const v = seg.vertices;
+          ctx.beginPath();
+          ctx.moveTo(v[0].x, v[0].y);
+          for (let k = 1; k < v.length; k++) {
+            ctx.lineTo(v[k].x, v[k].y);
+          }
+          ctx.closePath();
+          ctx.fillStyle = theme.border;
+          ctx.fill();
+          ctx.stroke();
+        }
+
+        // Translucent Holographic Kinetic Flippers
+        ctx.shadowColor = theme.border;
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        for (const fin of this.arenaFins) {
+          const v = fin.vertices;
+          ctx.beginPath();
+          ctx.moveTo(v[0].x, v[0].y);
+          for (let k = 1; k < v.length; k++) {
+            ctx.lineTo(v[k].x, v[k].y);
+          }
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Central Super-Bouncy Neon Pinball Bumper
+        ctx.shadowColor = theme.bumper;
+        ctx.shadowBlur = 20;
+        ctx.fillStyle = theme.bumper;
+        ctx.beginPath();
+        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Exit Hazard Gate
+        const exitAngle = this.arenaAngle + ((this.totalSegments - this.gapSegmentCount / 2) * (Math.PI * 2 / this.totalSegments));
+        const exitX = this.arenaCenter.x + Math.cos(exitAngle) * (this.arenaRadius + 14);
+        const exitY = this.arenaCenter.y + Math.sin(exitAngle) * (this.arenaRadius + 14);
+
+        ctx.shadowColor = '#f43f5e';
+        ctx.shadowBlur = 16;
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath();
+        ctx.arc(exitX, exitY, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      drawPowerups(ctx) {
+        ctx.save();
+        for (const p of this.powerups) {
+          p.animTimer += 0.05;
+          const bobY = Math.sin(p.animTimer) * 3;
+          const x = p.x;
+          const y = p.y + bobY;
+
+          if (p.type === 'shield') {
+            ctx.shadowColor = '#00e5ff';
+            ctx.shadowBlur = 14;
+            ctx.fillStyle = 'rgba(0, 229, 255, 0.24)';
+            ctx.beginPath();
+            ctx.arc(x, y, 16, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🛡️', x, y + 1);
+          } else if (p.type === 'bomb') {
+            ctx.shadowColor = '#ea580c';
+            ctx.shadowBlur = 14;
+            ctx.fillStyle = 'rgba(234, 88, 12, 0.24)';
+            ctx.beginPath();
+            ctx.arc(x, y, 16, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ea580c';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('💣', x, y + 1);
+          }
+        }
+        ctx.restore();
+      }
+
+      // 3D Glossy Championship Marble (Ultra-Clean, Zero Dangling Overlap)
+      drawBall(ctx, ball) {
+        const pos = ball.body.position;
+        const r = ball.radius;
+
+        ctx.save();
+        ctx.translate(pos.x, pos.y);
+
+        // Shield Aura
+        if (ball.hasShield) {
+          ctx.save();
+          ctx.shadowColor = '#00e5ff';
+          ctx.shadowBlur = 16;
+          ctx.strokeStyle = '#00e5ff';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(0, 0, r + 5, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(0, 229, 255, 0.18)';
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Realistic Soft 3D Drop Shadow
+        if (ball.escaped) {
+          ctx.shadowColor = 'rgba(244, 63, 94, 0.8)';
+          ctx.shadowBlur = 14;
+          ctx.shadowOffsetY = 2;
+        } else {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+          ctx.shadowBlur = 7;
+          ctx.shadowOffsetY = 3;
+        }
+
+        // Draw Official Flag
+        ctx.drawImage(ball.flagCanvas, -r, -r, r * 2, r * 2);
+
+        // Refined Dual-Tone Metallic Championship Bevel
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, r + 0.8, 0, Math.PI * 2);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(10, 16, 30, 0.5)';
+        ctx.stroke();
+
+        // 3D Spherical Glass Highlight (Curved light reflection on top-left)
+        const glint = ctx.createRadialGradient(-r * 0.35, -r * 0.35, 1, -r * 0.35, -r * 0.35, r * 0.7);
+        glint.addColorStop(0, 'rgba(255, 255, 255, 0.65)');
+        glint.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
+        glint.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r - 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = glint;
+        ctx.fill();
+
+        // High-contrast clean 3-letter code inside bottom half of marble when <= 25 alive or in duel
+        if (this.balls.length <= 25 || this.isDuelMode) {
+          ctx.font = `900 ${Math.max(8, r * 0.58)}px var(--font-display)`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = '#000000';
+          ctx.strokeText(ball.country.code, 0, r * 0.45);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(ball.country.code, 0, r * 0.45);
+        }
+
+        ctx.restore();
+      }
+
+      // Game Loop: 100% Rock-Solid Stable Camera
+      gameLoop(timestamp) {
+        if (!this.isRoundOver) {
+          this.Engine.update(this.engine, 1000 / 60);
+          this.updateCircularArena();
+          this.checkBallPhysicsAndEliminations();
+        }
+
+        this.particles.update();
+
+        // Smooth Camera Zoom
+        this.currentZoom += (this.targetZoom - this.currentZoom) * 0.04;
+
+        this.ctx.save();
+        this.ctx.scale(this.scaleX, this.scaleY);
+
+        if (Math.abs(this.currentZoom - 1.0) > 0.001) {
+          this.ctx.translate(this.arenaCenter.x, this.arenaCenter.y);
+          this.ctx.scale(this.currentZoom, this.currentZoom);
+          this.ctx.translate(-this.arenaCenter.x, -this.arenaCenter.y);
+        }
+
+        this.ctx.clearRect(0, 0, this.V_WIDTH, this.V_HEIGHT);
+
+        this.drawBackgroundGrid(this.ctx);
+        this.drawArena(this.ctx);
+        this.drawPowerups(this.ctx);
+
+        for (const ball of this.eliminatedBalls) {
+          this.drawBall(this.ctx, ball);
+        }
+
+        for (const ball of this.balls) {
+          this.drawBall(this.ctx, ball);
+        }
+
+        this.particles.draw(this.ctx);
+        this.ctx.restore();
+
+        requestAnimationFrame((t) => this.gameLoop(t));
+      }
+
+      drawBackgroundGrid(ctx) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.03)';
+        ctx.lineWidth = 1;
+        const gridSize = 40;
+        for (let x = 0; x < this.V_WIDTH; x += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, this.V_HEIGHT);
+          ctx.stroke();
+        }
+        for (let y = 0; y < this.V_HEIGHT; y += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(this.V_WIDTH, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // --- 10. EVENT LISTENERS & STREAMER DRAWER ---
+      setupEventListeners() {
+        const unlockAudio = () => {
+          this.audio.init();
+          this.dom.audioOverlay.classList.add('hidden');
+        };
+        this.dom.audioOverlay.addEventListener('click', unlockAudio);
+        window.addEventListener('keydown', (e) => {
+          if (e.key.toLowerCase() === 'h') {
+            this.toggleDrawer();
+          }
+        });
+
+        this.dom.drawerToggle.addEventListener('click', () => this.toggleDrawer());
+        this.dom.drawerClose.addEventListener('click', () => this.toggleDrawer(false));
+
+        this.dom.sliderGravity.addEventListener('input', (e) => {
+          this.gravityY = parseFloat(e.target.value);
+          this.dom.valGravity.textContent = this.gravityY.toFixed(2);
+          if (this.world) this.world.gravity.y = this.gravityY;
+        });
+
+        this.dom.sliderSpeed.addEventListener('input', (e) => {
+          this.baseRotationSpeed = parseFloat(e.target.value);
+          this.currentRotationSpeed = this.baseRotationSpeed;
+          this.dom.valSpeed.textContent = this.baseRotationSpeed.toFixed(3);
+        });
+
+        this.dom.selectCount.addEventListener('change', (e) => {
+          this.selectedBatchSize = parseInt(e.target.value, 10);
+          this.startNewRound();
+        });
+
+        this.dom.btnSound.addEventListener('click', () => {
+          const enabled = this.audio.toggleMute();
+          this.dom.btnSound.textContent = enabled ? '🔊 AUDIO: ENABLED' : '🔇 AUDIO: MUTED';
+        });
+
+        this.dom.btnBroadcast.addEventListener('click', () => {
+          document.body.classList.toggle('clean-mode');
+        });
+
+        this.dom.btnTestWin.addEventListener('click', () => {
+          if (this.balls.length) {
+            this.triggerVictory(this.balls[0]);
+          }
+        });
+
+        this.dom.btnResetLb.addEventListener('click', () => {
+          localStorage.removeItem('flag_royale_leaderboard');
+          this.leaderboard = {};
+          this.renderHorizontalLeaderboard();
+        });
+      }
+
+      toggleDrawer(force) {
+        if (typeof force === 'boolean') {
+          this.dom.drawer.classList.toggle('open', force);
+        } else {
+          this.dom.drawer.classList.toggle('open');
+        }
+      }
+
+      // --- 11. KILLFEED, TICKER & LEADERBOARD SYSTEM ---
+      pushKillfeed(country, actionText = 'ELIMINATED') {
+        const tag = document.createElement('div');
+        tag.className = 'killfeed-tag';
+        if (actionText.includes('SHIELD')) tag.classList.add('shield-save');
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const cCtx = canvas.getContext('2d');
+        const flag = this.flagEngine.getFlagCanvas(country, 16);
+        cCtx.drawImage(flag, 0, 0, 16, 16);
+
+        tag.appendChild(canvas);
+        const txt = document.createElement('span');
+        txt.textContent = `${country.code} ${actionText}`;
+        tag.appendChild(txt);
+
+        this.dom.killfeedBar.innerHTML = '';
+        this.dom.killfeedBar.appendChild(tag);
+
+        setTimeout(() => {
+          if (tag.parentNode === this.dom.killfeedBar) {
+            tag.remove();
+          }
+        }, 2600);
+      }
+
+      startEngagementTicker() {
+        setInterval(() => {
+          this.tickerIndex = (this.tickerIndex + 1) % this.tickerMessages.length;
+          this.dom.tickerText.style.opacity = '0';
+          setTimeout(() => {
+            this.dom.tickerText.textContent = this.tickerMessages[this.tickerIndex];
+            this.dom.tickerText.style.opacity = '1';
+          }, 400);
+        }, 5000);
+      }
+
+      loadLeaderboard() {
+        try {
+          const data = localStorage.getItem('flag_royale_leaderboard');
+          return data ? JSON.parse(data) : { PER: 2, FRA: 1, USA: 1 };
+        } catch (e) {
+          return { PER: 2, FRA: 1, USA: 1 };
+        }
+      }
+
+      saveLeaderboard() {
+        try {
+          localStorage.setItem('flag_royale_leaderboard', JSON.stringify(this.leaderboard));
+        } catch (e) {
+          console.warn("Storage error", e);
+        }
+      }
+
+      recordWin(countryCode) {
+        this.leaderboard[countryCode] = (this.leaderboard[countryCode] || 0) + 1;
+        this.saveLeaderboard();
+        this.renderHorizontalLeaderboard();
+      }
+
+      getCountryWins(countryCode) {
+        return this.leaderboard[countryCode] || 1;
+      }
+
+      renderHorizontalLeaderboard() {
+        const sorted = Object.entries(this.leaderboard)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 4);
+
+        this.dom.leaderboardItems.innerHTML = '';
+
+        sorted.forEach(([code, score], index) => {
+          const country = COUNTRIES_DB.find(c => c.code === code) || { id: code, iso: code.toLowerCase(), code };
+          const pill = document.createElement('div');
+          pill.className = `leaderboard-pill ${index === 0 ? 'gold' : ''}`;
+
+          const medal = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : '🎖️'));
+
+          const img = document.createElement('img');
+          img.className = 'leaderboard-pill-flag';
+          img.src = `https://flagcdn.com/w40/${country.iso}.png`;
+          img.onerror = () => { img.style.display = 'none'; };
+
+          pill.innerHTML = `
+            <span>${medal}</span>
+            <img class="leaderboard-pill-flag" src="https://flagcdn.com/w40/${country.iso}.png" onerror="this.style.display='none'">
+            <span class="leaderboard-pill-code">${code}</span>
+            <span class="leaderboard-pill-score">${score}W</span>
+          `;
+          this.dom.leaderboardItems.appendChild(pill);
+        });
+      }
+    }
+
+    // Initialize application on window load
+    window.addEventListener('DOMContentLoaded', () => {
+      window.flagRoyale = new BattleRoyaleApp();
+    });
+  </script>
+</body>
+
+</html>
