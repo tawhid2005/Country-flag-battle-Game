@@ -2446,7 +2446,7 @@
         <div class="cyber-input-group">
           <label class="cyber-input-label" for="cyber-input-pass">🔑 PASSWORD</label>
           <div class="cyber-input-wrap">
-            <input type="password" id="cyber-input-pass" class="cyber-input" placeholder="Enter Password" autocomplete="current-password">
+            <input type="password" id="cyber-input-pass" class="cyber-input" placeholder="Enter Password or License Key (CFB-...)" autocomplete="current-password">
             <span class="cyber-input-icon" id="toggle-pass-visibility" title="Show/Hide Password">👁️</span>
           </div>
         </div>
@@ -3568,8 +3568,13 @@
 
         const now = Date.now();
         const expiresAt = now + (days * 24 * 60 * 60 * 1000);
-        const passHash = sha256Sync(cleanUser + ':' + password.trim());
+        const passHash = sha256Sync(cleanUser.toLowerCase() + ':' + password.trim());
         const signature = this.createSignature(cleanUser, expiresAt);
+
+        // Universal Self-Activating Cryptographic License Key (Works on ANY device in the world!)
+        const pTag = (planId || '1m').toLowerCase();
+        const keySig = sha256Sync(cleanUser.toLowerCase() + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
+        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + cleanUser.toLowerCase() + '-' + expiresAt + '-' + keySig;
 
         const license = {
           userId: cleanUser,
@@ -3581,21 +3586,27 @@
           createdAt: now,
           expiresAt: expiresAt,
           signature: signature,
+          licenseKey: licenseKey,
           plainPassHint: password.trim()
         };
 
         this.licenses[cleanUser.toLowerCase()] = license;
         this.saveDatabase();
 
+        const currentOrigin = (typeof window !== 'undefined' && window.location) ? (window.location.origin + window.location.pathname) : '';
+        const activationLink = currentOrigin ? (currentOrigin + '?key=' + licenseKey) : '';
+
         const formattedCard = '🎮 COUNTRY FLAG BATTLE ROYALE — ACCESS LICENSE\n' +
           '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-          '👤 USER ID   : ' + cleanUser + '\n' +
-          '🔑 PASSWORD  : ' + password.trim() + '\n' +
-          '💎 PACKAGE   : ' + planTitle + '\n' +
-          '⏳ VALIDITY  : ' + days + ' Days\n' +
-          '📅 EXPIRES ON: ' + new Date(expiresAt).toLocaleDateString() + ' (' + new Date(expiresAt).toLocaleTimeString() + ')\n' +
+          '👤 USER ID      : ' + cleanUser + '\n' +
+          '🔑 PASSWORD     : ' + password.trim() + '\n' +
+          '⚡ LICENSE KEY  : ' + licenseKey + '\n' +
+          '💎 PACKAGE      : ' + planTitle + '\n' +
+          '⏳ VALIDITY     : ' + days + ' Days\n' +
+          '📅 EXPIRES ON   : ' + new Date(expiresAt).toLocaleDateString() + ' (' + new Date(expiresAt).toLocaleTimeString() + ')\n' +
           '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-          '⚠️ Keep your credentials secure. After expiry, access is automatically locked.';
+          (activationLink ? ('🚀 1-Click Activation Link (Click to Auto-Unlock):\n' + activationLink + '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n') : '') +
+          '👉 Customer can login by entering USER ID & PASSWORD, or by pasting LICENSE KEY in the Password field!';
 
         return {
           success: true,
@@ -3604,9 +3615,82 @@
         };
       }
 
+      // Validate and activate a cryptographic license key
+      activateKey(rawKey, targetUser = null) {
+        const key = String(rawKey).trim();
+        if (!key.startsWith('CFB-')) return { valid: false, message: 'Invalid key format' };
+
+        const parts = key.split('-');
+        if (parts.length < 5) return { valid: false, message: 'Corrupted license key' };
+
+        const [prefix, planTag, keyUser, expStr, sig] = parts;
+        const expiresAt = parseInt(expStr, 10);
+        const expectedSig = sha256Sync(keyUser.toLowerCase() + ':' + expiresAt + ':' + planTag.toLowerCase() + ':' + SECURITY_SALT).slice(0, 8);
+
+        if (sig !== expectedSig) {
+          return { valid: false, message: 'Security Alert: Invalid or tampered License Key!' };
+        }
+
+        if (targetUser && targetUser.toLowerCase() !== keyUser.toLowerCase()) {
+          return { valid: false, message: 'This License Key belongs to user: ' + keyUser };
+        }
+
+        if (Date.now() > expiresAt) {
+          const expDate = new Date(expiresAt).toLocaleDateString();
+          return { valid: false, message: 'This License Key expired on ' + expDate + '!' };
+        }
+
+        // Register license in this device's storage
+        const plan = SUBSCRIPTION_PLANS.find(p => p.id === planTag.toLowerCase());
+        const planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + plan.currency + ')') : (planTag.toUpperCase() + ' Pass');
+
+        const newLicense = {
+          userId: keyUser,
+          passHash: sha256Sync(keyUser.toLowerCase() + ':' + key),
+          planId: planTag.toLowerCase(),
+          planTitle: planTitle,
+          price: plan ? plan.price : 'Subscription',
+          currency: 'TK',
+          createdAt: Date.now(),
+          expiresAt: expiresAt,
+          signature: this.createSignature(keyUser, expiresAt),
+          licenseKey: key,
+          plainPassHint: key
+        };
+
+        this.loadDatabase();
+        this.licenses[keyUser.toLowerCase()] = newLicense;
+        this.saveDatabase();
+
+        this.session = {
+          role: 'subscriber',
+          userId: keyUser,
+          displayName: keyUser,
+          planTitle: planTitle,
+          expiresAt: expiresAt,
+          isPermanent: false
+        };
+        this.saveSession();
+        return { valid: true, session: this.session };
+      }
+
       login(username, password) {
         const u = String(username).trim();
         const p = String(password).trim();
+        if (!u && !p) return { success: false, message: 'Please enter User ID and Password!' };
+
+        // Quick check: If user pasted a full License Key into username or password field
+        if (u.startsWith('CFB-') || p.startsWith('CFB-')) {
+          const keyToUse = p.startsWith('CFB-') ? p : u;
+          const userToCheck = (p.startsWith('CFB-') && u) ? u : null;
+          const keyRes = this.activateKey(keyToUse, userToCheck);
+          if (keyRes.valid) {
+            return { success: true, role: 'subscriber', session: keyRes.session };
+          } else {
+            return { success: false, message: keyRes.message };
+          }
+        }
+
         if (!u || !p) return { success: false, message: 'Please enter User ID and Password!' };
 
         // 1. Check Master Admin Credentials
@@ -3624,15 +3708,18 @@
           return { success: true, role: 'admin', session: this.session };
         }
 
-        // 2. Check Subscriber Account
+        // 2. Check Subscriber Account in local database
         this.loadDatabase();
         const license = this.licenses[u.toLowerCase()];
         if (!license) {
-          return { success: false, message: 'Invalid User ID or Password!' };
+          return { 
+            success: false, 
+            message: 'User "' + u + '" not found! If you received a License Key, paste your CFB-... key into the Password field to activate.' 
+          };
         }
 
-        const expectedHash = sha256Sync(license.userId + ':' + p);
-        if (license.passHash !== expectedHash) {
+        const expectedHash = sha256Sync(license.userId.toLowerCase() + ':' + p);
+        if (license.passHash !== expectedHash && license.plainPassHint !== p && license.licenseKey !== p) {
           return { success: false, message: 'Invalid Password!' };
         }
 
@@ -3739,6 +3826,32 @@
 
       init() {
         this.setupDOM();
+
+        // 1-Click Automatic URL Activation: ?key=CFB-...
+        try {
+          if (typeof window !== 'undefined' && window.location) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const keyParam = urlParams.get('key');
+            if (keyParam && keyParam.startsWith('CFB-')) {
+              const actRes = this.activateKey(keyParam);
+              if (actRes.valid) {
+                // Clean URL cleanly without reloading
+                if (window.history && window.history.replaceState) {
+                  window.history.replaceState({}, document.title, window.location.pathname);
+                }
+                this.showLockModal(false);
+                this.updateDrawerStatus();
+                alert('🎉 SUBSCRIPTION ACTIVATED! Welcome ' + actRes.session.userId + ' (' + actRes.session.planTitle + ')');
+                return;
+              } else {
+                this.showLoginAlert(actRes.message, 'error');
+              }
+            }
+          }
+        } catch(e) {
+          console.error('URL activation check:', e);
+        }
+
         const check = this.checkSession();
         if (check.valid) {
           this.showLockModal(false);
