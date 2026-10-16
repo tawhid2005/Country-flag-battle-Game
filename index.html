@@ -5036,6 +5036,16 @@
         return !!(this.session && (this.session.isPermanent || (this.session.expiresAt && Date.now() <= this.session.expiresAt)));
       }
 
+      isTrialActive() {
+        if (this.isAuthenticated()) return true;
+        const status = this.getTrialStatus();
+        return !status.isExpired && status.remainingSec > 0;
+      }
+
+      isAccessAllowed() {
+        return this.isAuthenticated() || this.isTrialActive();
+      }
+
       logout() {
         this.session = null;
         this.saveSession();
@@ -6705,7 +6715,7 @@
 
       // Game Loop: 100% Rock-Solid Stable Camera
       gameLoop(timestamp) {
-        if (!this.security.isAuthenticated()) {
+        if (!this.security.isAccessAllowed()) {
           requestAnimationFrame((t) => this.gameLoop(t));
           return;
         }
