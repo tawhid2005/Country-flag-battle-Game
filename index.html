@@ -2059,7 +2059,6 @@
             <div class="badge-alive" id="hud-alive-badge">
               ALIVE: <span id="hud-alive-count">50</span>/<span id="hud-total-count">50</span>
             </div>
-            <button id="hud-admin-crown-btn" title="Admin License Portal (👑)" style="display: none; background: rgba(251, 191, 36, 0.2); border: 1px solid #fbbf24; color: #fbbf24; border-radius: 8px; font-size: 14px; padding: 4px 8px; cursor: pointer; box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);">👑</button>
             <button id="streamer-drawer-toggle" title="Settings (H)">⚙️</button>
           </div>
         </header>
@@ -3552,13 +3551,11 @@
             box.innerHTML = '<div class="drawer-auth-user">👑 ' + this.session.displayName + '</div>' +
               '<div class="drawer-auth-plan" style="color: #fbbf24;">LIFETIME UNLIMITED ACCESS</div>';
             if (adminBtn) adminBtn.style.display = 'flex';
-            const crownBtn = document.getElementById('hud-admin-crown-btn'); if (crownBtn) crownBtn.style.display = 'inline-flex';
           } else {
             const rem = this.formatTimeRemaining(this.session.expiresAt);
             box.innerHTML = '<div class="drawer-auth-user">👤 ' + this.session.displayName + '</div>' +
               '<div class="drawer-auth-plan">' + this.session.planTitle + ' • <span style="color:#00e5ff; font-weight:800;">' + rem + '</span></div>';
             if (adminBtn) adminBtn.style.display = 'none';
-            const crownBtn = document.getElementById('hud-admin-crown-btn'); if (crownBtn) crownBtn.style.display = 'none';
           }
         } else {
           box.innerHTML = '<div class="drawer-auth-user">🔒 Not Authenticated</div><div class="drawer-auth-plan">Access Locked</div>';
@@ -3647,13 +3644,6 @@
         const adminModal = document.getElementById('admin-license-modal');
         const adminClose = document.getElementById('admin-modal-close-btn');
 
-        const hudCrownBtn = document.getElementById('hud-admin-crown-btn');
-        if (hudCrownBtn && adminModal) {
-          hudCrownBtn.addEventListener('click', () => {
-            adminModal.classList.add('show');
-            this.renderAdminSubscribers();
-          });
-        }
         if (btnAdminPanel && adminModal) {
           btnAdminPanel.addEventListener('click', () => {
             adminModal.classList.add('show');
