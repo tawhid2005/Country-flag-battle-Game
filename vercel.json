@@ -1,9 +1,13 @@
 {
   "version": 2,
-  "cleanUrls": true,
+  "cleanUrls": false,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/(sitemap\\.xml|robots\\.txt|googlee59d340a4eeb0771\\.html)",
+      "destination": "/$1"
+    },
+    {
+      "source": "/((?!googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt).*)",
       "destination": "/index.html"
     }
   ],
@@ -22,6 +26,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/googlee59d340a4eeb0771.html",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
         }
       ]
     },
