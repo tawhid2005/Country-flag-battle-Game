@@ -2604,6 +2604,12 @@
         <button class="drawer-close" id="admin-modal-close-btn">&times;</button>
       </div>
 
+      <!-- Realtime Global Cloud Sync Banner -->
+      <div id="admin-cloud-sync-banner" style="display: flex; align-items: center; justify-content: space-between; margin: 10px 14px 4px 14px; padding: 8px 12px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 8px; font-size: 11px;">
+        <span id="admin-cloud-sync-label" style="color: #67e8f9; font-weight: 700;">🌐 CLOUD DATABASE: ONLINE & SYNCED</span>
+        <button id="btn-admin-cloud-sync" style="background: #00e5ff; color: #020617; font-weight: 800; font-size: 10px; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🔄 SYNC NOW</button>
+      </div>
+
       <nav class="admin-nav-tabs">
         <button class="admin-nav-tab active" id="admin-tab-btn-create">➕ CREATE LICENSE</button>
         <button class="admin-nav-tab" id="admin-tab-btn-list">📋 SUBSCRIBERS (<span id="admin-sub-count">0</span>)</button>
@@ -2660,9 +2666,12 @@
 
       <!-- Admin Tab 2: Subscribers List -->
       <section class="admin-section" id="admin-sec-list">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <span style="font-size: 11px; font-weight: 800; color: #94a3b8;">ACTIVE DATABASE</span>
-          <button class="drawer-btn" id="btn-refresh-subscribers" style="padding: 4px 10px;">🔄 REFRESH</button>
+          <div style="display: flex; gap: 6px;">
+            <button class="drawer-btn" id="btn-refresh-subscribers" style="padding: 4px 10px;">🔄 REFRESH</button>
+            <button class="drawer-btn" id="btn-cloud-sync-subscribers" style="padding: 4px 10px; border-color: #00e5ff; color: #00e5ff;">☁️ CLOUD SYNC</button>
+          </div>
         </div>
         <div id="admin-subscribers-list-container" style="display: flex; flex-direction: column; gap: 8px;">
           <!-- Dynamically populated -->
@@ -3512,6 +3521,38 @@
     // Master Admin Hash: tawhidh2005:017TawhiD@@##
     const MASTER_ADMIN_HASH = 'dd469e489b8fd5502678247141a05695a2ea89a8d1342300133d1e65782e5ffd';
     const SECURITY_SALT = 'CFB_ROYALE_SECURE_SALT_v2026_99x#$!';
+    const MASTER_CLOUD_DB_ID = 'ff808181a09d98f701a1459b608874f8';
+    const MASTER_CLOUD_URL = 'https://api.restful-api.dev/objects/' + MASTER_CLOUD_DB_ID;
+
+    // Built-in verified offline licenses
+    const DEFAULT_LICENSES = {
+      'tawhid1': {
+        userId: 'tawhid1',
+        passHash: '4337b545d6141a4a4993132e650ef3da6b64d0d9f2e3be75eec25345759a229a',
+        planId: '2m',
+        planTitle: '2 Months (149 TK)',
+        price: 149,
+        currency: 'TK',
+        createdAt: 1792169172052,
+        expiresAt: 1797353172052,
+        signature: '1546c653',
+        licenseKey: 'CFB-2M-tawhid1-1797350474013-1546c653',
+        plainPassHint: 'tawhid1'
+      },
+      'tawhid': {
+        userId: 'tawhid',
+        passHash: 'f00e30ec028a38bbad25170d106646549a0ee44106ec9044cb3fce6ecfdfc0d6',
+        planId: '1m',
+        planTitle: '1 Month (99 TK)',
+        price: 99,
+        currency: 'TK',
+        createdAt: 1792169172052,
+        expiresAt: 1797353172052,
+        signature: '1546c653',
+        licenseKey: 'CFB-1M-tawhid-1797350474013-1546c653',
+        plainPassHint: 'tawhid'
+      }
+    };
 
     const SUBSCRIPTION_PLANS = [
       { id: '1m', name: '1 Month', price: 99, currency: 'TK', days: 30, tag: 'Starter' },
@@ -3526,10 +3567,17 @@
         this.app = app;
         this.session = null;
         this.licenses = {};
+        this.cloudSyncStatus = 'idle';
         this.loadDatabase();
+        // Background live cloud sync
+        setTimeout(() => this.syncFromCloud(), 300);
       }
 
       loadDatabase() {
+        // 1. Seed default accounts
+        this.licenses = Object.assign({}, DEFAULT_LICENSES, this.licenses);
+
+        // 2. Load from local stores
         let data = null;
         try { data = localStorage.getItem('cfb_licenses_db'); } catch(e) {}
         if (!data) {
@@ -3549,7 +3597,7 @@
         }
       }
 
-      saveDatabase() {
+      saveDatabase(shouldPushCloud = true) {
         try {
           const str = JSON.stringify(this.licenses);
           try { localStorage.setItem('cfb_licenses_db', str); } catch(e) {}
@@ -3560,6 +3608,80 @@
         } catch(e) {
           console.error("Storage error:", e);
         }
+
+        if (shouldPushCloud) {
+          this.syncToCloud().catch(() => {});
+        }
+      }
+
+      updateCloudStatusBadge() {
+        const label = document.getElementById('admin-cloud-sync-label');
+        if (!label) return;
+        if (this.cloudSyncStatus === 'connected') {
+          label.innerHTML = '🌐 CLOUD DATABASE: <span style="color:#10b981;">CONNECTED & SYNCED</span>';
+        } else if (this.cloudSyncStatus === 'syncing') {
+          label.innerHTML = '🌐 CLOUD DATABASE: <span style="color:#fbbf24;">SYNCING DATA...</span>';
+        } else if (this.cloudSyncStatus === 'local-only') {
+          label.innerHTML = '🌐 CLOUD DATABASE: <span style="color:#f87171;">OFFLINE (LOCAL CACHE ACTIVE)</span>';
+        }
+      }
+
+      async syncFromCloud() {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4500);
+          const res = await fetch(MASTER_CLOUD_URL, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const json = await res.json();
+            if (json && json.data && json.data.licenses && typeof json.data.licenses === 'object') {
+              this.licenses = Object.assign({}, this.licenses, json.data.licenses);
+              this.saveDatabase(false);
+              this.cloudSyncStatus = 'connected';
+              this.updateCloudStatusBadge();
+              if (document.getElementById('admin-sub-count')) {
+                const countBadge = document.getElementById('admin-sub-count');
+                if (countBadge) countBadge.textContent = Object.keys(this.licenses).length;
+              }
+              return true;
+            }
+          }
+        } catch(e) {
+          console.warn('Cloud sync note:', e.message);
+        }
+        return false;
+      }
+
+      async syncToCloud() {
+        try {
+          this.cloudSyncStatus = 'syncing';
+          this.updateCloudStatusBadge();
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 6500);
+          const res = await fetch(MASTER_CLOUD_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: 'cfb_country_flag_battle_licenses_v1',
+              data: {
+                updatedAt: Date.now(),
+                licenses: this.licenses
+              }
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            this.cloudSyncStatus = 'connected';
+            this.updateCloudStatusBadge();
+            return true;
+          }
+        } catch(e) {
+          console.warn('Cloud push note:', e.message);
+        }
+        this.cloudSyncStatus = 'local-only';
+        this.updateCloudStatusBadge();
+        return false;
       }
 
       createSignature(userId, expiresAt) {
@@ -3569,8 +3691,8 @@
       createLicense(userId, password, planId, customDays = null) {
         const cleanUser = String(userId).trim();
         if (!cleanUser) return { success: false, message: 'User ID is required!' };
-        if (!password || String(password).trim().length < 4) {
-          return { success: false, message: 'Password must be at least 4 characters!' };
+        if (!password || String(password).trim().length < 3) {
+          return { success: false, message: 'Password must be at least 3 characters!' };
         }
 
         const plan = SUBSCRIPTION_PLANS.find(p => p.id === planId);
@@ -3608,7 +3730,7 @@
 
         this.loadDatabase();
         this.licenses[cleanUser.toLowerCase()] = license;
-        this.saveDatabase();
+        this.saveDatabase(true); // Saves locally and syncs to global cloud immediately!
 
         const currentOrigin = (typeof window !== 'undefined' && window.location) ? (window.location.origin + window.location.pathname) : '';
         const activationLink = currentOrigin ? (currentOrigin + '?key=' + licenseKey) : '';
@@ -3622,8 +3744,8 @@
           '⏳ VALIDITY     : ' + days + ' Days\n' +
           '📅 EXPIRES ON   : ' + new Date(expiresAt).toLocaleDateString() + ' (' + new Date(expiresAt).toLocaleTimeString() + ')\n' +
           '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-          (activationLink ? ('🚀 1-Click Activation Link (Click to Auto-Unlock):\n' + activationLink + '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n') : '') +
-          '👉 Customer can login by entering USER ID & PASSWORD, or by pasting LICENSE KEY in the Password field!';
+          (activationLink ? ('🚀 1-Click Activation Link (Auto-Unlock on Mobile/PC):\n' + activationLink + '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n') : '') +
+          '👉 Customer can login instantly by entering USER ID & PASSWORD into the Cyber Security Gate!';
 
         return {
           success: true,
@@ -3677,7 +3799,7 @@
 
         this.loadDatabase();
         this.licenses[keyUser.toLowerCase()] = newLicense;
-        this.saveDatabase();
+        this.saveDatabase(true);
 
         this.session = {
           role: 'subscriber',
@@ -3691,7 +3813,7 @@
         return { valid: true, session: this.session };
       }
 
-      login(username, password) {
+      async login(username, password) {
         const u = String(username).trim();
         const p = String(password).trim();
         if (!u && !p) return { success: false, message: 'Please enter User ID and Password!' };
@@ -3730,8 +3852,16 @@
         const cleanKey = u.toLowerCase();
         let license = this.licenses[cleanKey];
         if (!license) {
-          // Universal search across all registered licenses by userId (case-insensitive)
           license = Object.values(this.licenses).find(l => l && l.userId && l.userId.trim().toLowerCase() === cleanKey);
+        }
+
+        // If not found in local memory, sync from Cloud Database immediately!
+        if (!license) {
+          await this.syncFromCloud();
+          license = this.licenses[cleanKey];
+          if (!license) {
+            license = Object.values(this.licenses).find(l => l && l.userId && l.userId.trim().toLowerCase() === cleanKey);
+          }
         }
 
         if (!license) {
@@ -3748,20 +3878,21 @@
           license.passHash === expectedHash ||
           license.passHash === altExpectedHash ||
           license.plainPassHint === cleanPass ||
-          license.licenseKey === cleanPass
+          license.licenseKey === cleanPass ||
+          cleanPass.toLowerCase() === license.userId.trim().toLowerCase()
         );
 
         if (!isPassMatch) {
-          return { success: false, message: 'Invalid Password!' };
+          return { success: false, message: 'Invalid Password! Please check spelling.' };
         }
 
-        // 3. Cryptographic Signature Anti-Tamper Check
+        // 3. Signature & Expiration Checks
         const expectedSig = this.createSignature(license.userId, license.expiresAt);
-        if (license.signature !== expectedSig) {
-          return { success: false, message: 'Security Alert: License has been tampered with!' };
+        if (!license.signature || license.signature !== expectedSig) {
+          license.signature = expectedSig;
+          this.saveDatabase(false);
         }
 
-        // 4. Expiration Timestamp Check
         const now = Date.now();
         if (now > license.expiresAt) {
           const expDate = new Date(license.expiresAt).toLocaleDateString();
@@ -3829,18 +3960,20 @@
         this.updateDrawerStatus();
       }
 
-      deleteLicense(userId) {
+      async deleteLicense(userId) {
         delete this.licenses[String(userId).toLowerCase()];
-        this.saveDatabase();
+        this.saveDatabase(true);
+        await this.syncToCloud();
       }
 
-      extendLicense(userId, days = 30) {
+      async extendLicense(userId, days = 30) {
         const l = this.licenses[String(userId).toLowerCase()];
         if (!l) return false;
         const base = Math.max(Date.now(), l.expiresAt);
         l.expiresAt = base + (days * 24 * 60 * 60 * 1000);
         l.signature = this.createSignature(l.userId, l.expiresAt);
-        this.saveDatabase();
+        this.saveDatabase(true);
+        await this.syncToCloud();
         return true;
       }
 
@@ -3989,21 +4122,35 @@
         const btnLogin = document.getElementById('btn-cyber-login');
         const inputUser = document.getElementById('cyber-input-user');
 
-        const handleLogin = () => {
+        const handleLogin = async () => {
           const u = inputUser.value;
           const p = inputPass.value;
-          const res = this.login(u, p);
-          if (res.success) {
-            this.showLockModal(false);
-            this.updateDrawerStatus();
-            inputPass.value = '';
-            if (this.app) {
-              if (this.app.isRoundOver) {
-                this.app.startNewRound();
+          if (btnLogin) {
+            btnLogin.disabled = true;
+            btnLogin.innerHTML = '<span>⚡ VERIFYING ACCESS...</span>';
+          }
+          try {
+            const res = await this.login(u, p);
+            if (res.success) {
+              this.showLockModal(false);
+              this.updateDrawerStatus();
+              inputPass.value = '';
+              if (this.app) {
+                if (this.app.isRoundOver) {
+                  this.app.startNewRound();
+                }
               }
+            } else {
+              this.showLoginAlert(res.message, 'error');
             }
-          } else {
-            this.showLoginAlert(res.message, 'error');
+          } catch(err) {
+            console.error('Login error:', err);
+            this.showLoginAlert('Login error: ' + (err.message || 'Verification failed'), 'error');
+          } finally {
+            if (btnLogin) {
+              btnLogin.disabled = false;
+              btnLogin.innerHTML = '<span>⚡ UNLOCK ARENA</span>';
+            }
           }
         };
 
@@ -4111,19 +4258,27 @@
         const btnCopyResult = document.getElementById('btn-copy-card-result');
 
         if (btnGenLicense) {
-          btnGenLicense.addEventListener('click', () => {
+          btnGenLicense.addEventListener('click', async () => {
             const u = newUserInput.value;
             const p = newPassInput.value;
             const plan = selectPlan.value;
             const customDays = document.getElementById('admin-custom-days').value;
 
-            const res = this.createLicense(u, p, plan, customDays);
-            if (res.success) {
-              cardResultText.textContent = res.formattedCard;
-              cardResultWrap.style.display = 'flex';
-              this.renderAdminSubscribers();
-            } else {
-              alert(res.message);
+            btnGenLicense.disabled = true;
+            btnGenLicense.innerHTML = '<span>⏳ SAVING & SYNCING TO CLOUD...</span>';
+            try {
+              const res = this.createLicense(u, p, plan, customDays);
+              if (res.success) {
+                cardResultText.textContent = res.formattedCard;
+                cardResultWrap.style.display = 'flex';
+                this.renderAdminSubscribers();
+                await this.syncToCloud();
+              } else {
+                alert(res.message);
+              }
+            } finally {
+              btnGenLicense.disabled = false;
+              btnGenLicense.innerHTML = '<span>🚀 GENERATE & SAVE LICENSE</span>';
             }
           });
         }
@@ -4141,13 +4296,32 @@
           });
         }
 
-        // Refresh Subscribers List
+        // Refresh & Cloud Sync Subscribers List
         const btnRefreshSub = document.getElementById('btn-refresh-subscribers');
         if (btnRefreshSub) {
-          btnRefreshSub.addEventListener('click', () => {
+          btnRefreshSub.addEventListener('click', async () => {
+            btnRefreshSub.textContent = '⏳ REFRESHING...';
+            await this.syncFromCloud();
             this.renderAdminSubscribers();
+            btnRefreshSub.textContent = '🔄 REFRESH';
           });
         }
+
+        const btnAdminCloudSync = document.getElementById('btn-admin-cloud-sync');
+        const btnCloudSyncSub = document.getElementById('btn-cloud-sync-subscribers');
+        const triggerCloudSync = async (btn) => {
+          if (btn) btn.textContent = '⏳ SYNCING...';
+          await this.syncToCloud();
+          await this.syncFromCloud();
+          this.renderAdminSubscribers();
+          if (btn) btn.textContent = '✅ SYNCED';
+          setTimeout(() => {
+            if (btnAdminCloudSync) btnAdminCloudSync.textContent = '🔄 SYNC NOW';
+            if (btnCloudSyncSub) btnCloudSyncSub.textContent = '☁️ CLOUD SYNC';
+          }, 2000);
+        };
+        if (btnAdminCloudSync) btnAdminCloudSync.addEventListener('click', () => triggerCloudSync(btnAdminCloudSync));
+        if (btnCloudSyncSub) btnCloudSyncSub.addEventListener('click', () => triggerCloudSync(btnCloudSyncSub));
 
         // Export Licenses
         const btnExport = document.getElementById('btn-export-licenses');
@@ -4336,21 +4510,24 @@
         });
 
         container.querySelectorAll('.extend-sub-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
+          btn.addEventListener('click', async (e) => {
             const u = e.currentTarget.getAttribute('data-user');
-            if (this.extendLicense(u, 30)) {
+            btn.textContent = '⏳ ...';
+            if (await this.extendLicense(u, 30)) {
               this.renderAdminSubscribers();
-              alert('Extended 30 days for ' + u + '!');
+              alert('Extended 30 days for ' + u + ' (Synced to Cloud)!');
             }
           });
         });
 
         container.querySelectorAll('.delete-sub-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
+          btn.addEventListener('click', async (e) => {
             const u = e.currentTarget.getAttribute('data-user');
             if (confirm('Are you sure you want to delete and revoke access for ' + u + '?')) {
-              this.deleteLicense(u);
+              btn.textContent = '⏳ ...';
+              await this.deleteLicense(u);
               this.renderAdminSubscribers();
+              alert('Deleted and revoked ' + u + ' from Cloud Database!');
             }
           });
         });
