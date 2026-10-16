@@ -14,7 +14,16 @@
     content="country flag battle game, all country flag battle game, 195 country flag battle game, country flag battle game download, country flag battle game online free, country flag battle game free, country flag battle game online, country flag battle game pc, country flag battle into the circle game, world cup country flag drop battle game, how to play flag game, flags of countries games, country flag ball game, country game battle, country flag game app, battle flag game, country battle flags, what is a battle flag, what flag is this game, battle country game, all country battle royale, country flag game free, country flag block game, country flag rules, battle for country flags, battle country, europe country battle royale, european country battle royale, flag battle game, flag country games, free country battle royale games, game country flags, country battle game online, kids country flag game, country flag battle live game, country flag tier list, match country to flag game, match country flags, nation flag game, countries war flags, country battle game free, play country flag, guess the country flag game online, guess the country flag game unblocked, country flag games quiz, country battle royale games, realistic country battle royale, world country battle, world country battle royale, world country battle simulator, 1v1 country game, 2 country flag, country flags 2 multiplayer, 3 flags game, 3x3 flag game, 4 flags game, 5 country flags with circles, 6 flag game, 7 flags game, 9 flags game, flag battle sim, flag battle simulator, flag battles, what is the flag game, interactive flag battle game, world flag battle game, flag battle game download, flag battle game free, flag battle game online free, flag battle, flag battle royale, flag battle simulator codes, strategic battle games, battle games on phone, play battle flag, flag battle roblox, flag battlefield, military flag game, mega battle flags, flag battle game online, flag battle codes, play flag wars, flag quiz battle, quiz flag game, flag battle royale game, 250 flag battle game, 1v1 battle games free, 1v1 flag wars, 1 battle game, 2 battle games, 2 player battle game unblocked, youtube live flag game, tiktok live flag game, obs studio flag game, 9:16 vertical stream game">
   <meta name="author" content="Tawhid (tawhidh2005)">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <meta name="theme-color" content="#02040a">
+  <meta name="theme-color" content="#020617">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Flag Battle">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <meta name="google-site-verification" content="googlee59d340a4eeb0771">
   <link rel="canonical" href="https://countryflagbattlegame.vercel.app/">
 
@@ -328,6 +337,7 @@
     }
 
     body.clean-mode #streamer-drawer-toggle,
+    body.clean-mode #floating-settings-btn,
     body.clean-mode #hud-quick-sound,
     body.clean-mode #streamer-drawer,
     body.clean-mode #seo-game-guide,
@@ -1049,6 +1059,129 @@
       box-shadow: 0 0 24px rgba(0, 229, 255, 0.95);
     }
 
+    /* Floating High-Visibility Quick Settings FAB */
+    .floating-settings-fab {
+      position: absolute;
+      right: 14px;
+      bottom: 88px;
+      z-index: 35;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.96));
+      border: 1.5px solid #00e5ff;
+      border-radius: 999px;
+      padding: 7px 13px 7px 9px;
+      color: #00e5ff;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.45);
+      backdrop-filter: blur(10px);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fabGlowPulse 2.5s infinite alternate ease-in-out;
+    }
+
+    .floating-settings-fab .fab-icon {
+      font-size: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .floating-settings-fab:hover {
+      background: rgba(0, 229, 255, 0.25);
+      border-color: #00e5ff;
+      color: #ffffff;
+      transform: scale(1.08);
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.85);
+    }
+
+    .floating-settings-fab:hover .fab-icon {
+      transform: rotate(60deg);
+    }
+
+    @keyframes fabGlowPulse {
+      0% { box-shadow: 0 0 10px rgba(0, 229, 255, 0.35); }
+      100% { box-shadow: 0 0 22px rgba(0, 229, 255, 0.8); }
+    }
+
+    /* PWA Install Button in HUD */
+    .hud-install-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.45));
+      border: 1px solid rgba(16, 185, 129, 0.7);
+      color: #6ee7b7;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: all 0.2s ease;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+    }
+
+    .hud-install-pill:hover {
+      background: rgba(16, 185, 129, 0.4);
+      color: #ffffff;
+      transform: scale(1.06);
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.75);
+    }
+
+    .hud-sub-right-tools {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+    }
+
+    /* PWA Install Instructions Modal */
+    .cyber-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.88);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .pwa-modal-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      border: 1.5px solid rgba(0, 229, 255, 0.45);
+      border-radius: 20px;
+      padding: 24px 20px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 229, 255, 0.25);
+    }
+
+    .pwa-instruction-step {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .pwa-step-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      background: #00e5ff;
+      color: #020617;
+      padding: 2px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
     /* Secondary HUD Utility Row (Free Trial Countdown & Guide Pill) */
     .hud-sub-bar {
       display: flex;
@@ -1059,10 +1192,6 @@
       gap: 6px;
       pointer-events: auto;
       padding: 0 2px;
-    }
-
-    .hud-sub-bar .hud-guide-pill {
-      margin-left: auto;
     }
 
     /* Horizontal Top Leaderboard Strip */
@@ -3083,7 +3212,10 @@
             <span class="dot-trial"></span>
             <span>TRIAL: <strong id="hud-trial-timer">10:00</strong></span>
           </div>
-          <a href="#seo-game-guide" class="hud-guide-pill" title="Read Complete Game Guide, Rules & Wiki">📖 RULES & GUIDE</a>
+          <div class="hud-sub-right-tools">
+            <button id="hud-btn-install" class="hud-install-pill" title="Install Flag Battle App on Phone or PC">📲 INSTALL APP</button>
+            <a href="#seo-game-guide" class="hud-guide-pill" title="Read Complete Game Guide, Rules & Wiki">📖 RULES & GUIDE</a>
+          </div>
         </div>
 
         <!-- Top Survivors Leaderboard -->
@@ -3133,6 +3265,12 @@
           </div>
         </footer>
       </div>
+
+      <!-- Floating Quick Streamer Controls (High Visibility Thumb-Zone) -->
+      <button id="floating-settings-btn" class="floating-settings-fab" title="Open Streamer Settings & Controls (H / S)">
+        <span class="fab-icon">⚙️</span>
+        <span class="fab-text">SETTINGS</span>
+      </button>
     </div>
 
     <!-- Royal Podium Victory Modal (Page 1 Redesign) -->
@@ -3249,6 +3387,9 @@
       <button class="drawer-btn" id="btn-toggle-broadcast">🎥 CLEAN BROADCAST MODE</button>
       <button class="drawer-btn" id="btn-test-win">🧪 TEST VICTORY SCREEN</button>
       <button class="drawer-btn" id="btn-reset-leaderboard">🗑️ RESET LEADERBOARD</button>
+      <button class="drawer-btn" id="drawer-btn-pwa-install" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.45)); border: 1.5px solid #10b981; color: #6ee7b7; font-weight: 800; box-shadow: 0 0 14px rgba(16, 185, 129, 0.3);">
+        📲 INSTALL APP (IPHONE / ANDROID / PC)
+      </button>
     
       <!-- Security & License Status -->
       <div class="drawer-auth-badge" id="drawer-auth-status" style="cursor: pointer;" title="Click to view subscription pricing">
@@ -3512,9 +3653,41 @@
             💾 SAVE CONTACT SETTINGS
           </button>
         </div>
-      </section>
     </div>
 
+    <!-- PWA Installation Modal (iPhone / Android / PC Guide) -->
+    <div id="pwa-install-modal" class="cyber-modal-backdrop" style="display: none;" role="dialog" aria-modal="true">
+      <div class="pwa-modal-card">
+        <button class="order-modal-close" id="btn-close-pwa-modal">&times;</button>
+        <div style="text-align: center; margin-bottom: 14px;">
+          <img src="/icon-192.png" alt="Country Flag Battle Royale App Icon" style="width: 72px; height: 72px; border-radius: 16px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.5); border: 2px solid rgba(0, 229, 255, 0.6); margin-bottom: 10px;">
+          <h3 style="font-family: var(--font-display); font-size: 16px; color: #00e5ff; margin-bottom: 4px;">INSTALL FLAG BATTLE ROYALE</h3>
+          <p style="font-size: 11px; color: #94a3b8;">Install directly on your iPhone, Android, or PC desktop for instant full-screen gaming!</p>
+        </div>
+
+        <div class="pwa-instructions-list">
+          <div class="pwa-instruction-step">
+            <span class="pwa-step-badge">📱 IPHONE / IPAD</span>
+            <div style="font-size: 12px; color: #e2e8f0; line-height: 1.5; margin-top: 4px;">
+              1. Tap the <strong>Share</strong> button (<strong>⎋</strong>) at the bottom of Safari.<br>
+              2. Scroll down and tap <strong>"Add to Home Screen"</strong> (<strong>⊞</strong>).<br>
+              3. Tap <strong>"Add"</strong> at top-right to save the app icon on your home screen!
+            </div>
+          </div>
+
+          <div class="pwa-instruction-step" style="margin-top: 10px;">
+            <span class="pwa-step-badge" style="background: #10b981; color: #020617;">🤖 ANDROID / 💻 PC &amp; MAC</span>
+            <div style="font-size: 12px; color: #e2e8f0; line-height: 1.5; margin-top: 4px;">
+              Click the button below to install directly to your device home screen or desktop:
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-pwa-direct-install" class="cyber-btn-primary" style="margin-top: 16px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);">
+          <span>📲 CLICK TO INSTALL NOW</span>
+        </button>
+      </div>
+    </div>
 
   </main>
 
@@ -6935,6 +7108,10 @@
         });
 
         this.dom.drawerToggle.addEventListener('click', () => this.toggleDrawer());
+        const floatingSettingsBtn = document.getElementById('floating-settings-btn');
+        if (floatingSettingsBtn) {
+          floatingSettingsBtn.addEventListener('click', () => this.toggleDrawer());
+        }
         this.dom.drawerClose.addEventListener('click', () => this.toggleDrawer(false));
 
         this.dom.sliderGravity.addEventListener('input', (e) => {
@@ -7097,6 +7274,63 @@
     window.addEventListener('DOMContentLoaded', () => {
       window.flagRoyale = new BattleRoyaleApp();
     });
+
+    // --- Progressive Web App (PWA) Install Manager ---
+    (function initPWA() {
+      // 1. Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('PWA ServiceWorker registered:', reg.scope))
+            .catch(err => console.warn('PWA ServiceWorker registration note:', err));
+        });
+      }
+
+      // 2. Install Prompt Handling
+      let deferredPrompt = null;
+      const hudInstallBtn = document.getElementById('hud-btn-install');
+      const drawerInstallBtn = document.getElementById('drawer-btn-pwa-install');
+      const pwaModal = document.getElementById('pwa-install-modal');
+      const closePwaModal = document.getElementById('btn-close-pwa-modal');
+      const directInstallBtn = document.getElementById('btn-pwa-direct-install');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (hudInstallBtn) hudInstallBtn.style.display = 'inline-flex';
+      });
+
+      const openInstallFlow = () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted PWA installation');
+              if (hudInstallBtn) hudInstallBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+          });
+        } else {
+          if (pwaModal) pwaModal.style.display = 'flex';
+        }
+      };
+
+      if (hudInstallBtn) hudInstallBtn.addEventListener('click', openInstallFlow);
+      if (drawerInstallBtn) drawerInstallBtn.addEventListener('click', openInstallFlow);
+      if (directInstallBtn) directInstallBtn.addEventListener('click', openInstallFlow);
+      if (closePwaModal && pwaModal) {
+        closePwaModal.addEventListener('click', () => {
+          pwaModal.style.display = 'none';
+        });
+      }
+
+      window.addEventListener('appinstalled', () => {
+        console.log('Flag Battle Royale PWA installed');
+        if (hudInstallBtn) hudInstallBtn.style.display = 'none';
+        if (pwaModal) pwaModal.style.display = 'none';
+        deferredPrompt = null;
+      });
+    })();
   </script>
 
   <!-- Semantic Search Engine Optimization & Crawlable Content for Googlebot -->
