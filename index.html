@@ -2020,6 +2020,184 @@
       color: #94a3b8;
     }
 
+
+    /* Interactive Subscription Plan Cards */
+    .cyber-plan-card {
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cyber-plan-card:hover {
+      transform: translateY(-2px);
+      border-color: #00e5ff;
+      box-shadow: 0 4px 20px rgba(0, 229, 255, 0.4);
+    }
+    .cyber-plan-card::after {
+      content: 'ORDER 📲';
+      position: absolute;
+      right: 12px;
+      bottom: 6px;
+      font-size: 8px;
+      font-weight: 800;
+      color: #00e5ff;
+      letter-spacing: 0.5px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .cyber-plan-card:hover::after {
+      opacity: 1;
+    }
+
+    /* Order Confirmation Popup Modal */
+    #cyber-order-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 6, 18, 0.94);
+      backdrop-filter: blur(25px);
+      z-index: 105;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    #cyber-order-modal.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .order-modal-card {
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(135deg, rgba(15, 25, 55, 0.98), rgba(6, 12, 30, 0.99));
+      border: 1px solid rgba(0, 229, 255, 0.5);
+      border-radius: 18px;
+      padding: 22px 18px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 229, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+    }
+    .order-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .order-modal-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .order-modal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #00e5ff;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .order-modal-title {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+    .order-plan-highlight-box {
+      background: rgba(6, 14, 32, 0.9);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .order-plan-name {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 900;
+      color: #fbbf24;
+    }
+    .order-plan-details {
+      font-size: 10px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .order-plan-price-tag {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 900;
+      color: #00e5ff;
+      text-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+    }
+    .order-msg-preview {
+      background: rgba(3, 7, 18, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 11px;
+      color: #cbd5e1;
+      font-family: monospace;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      max-height: 110px;
+      overflow-y: auto;
+    }
+    .btn-order-whatsapp {
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 0 20px rgba(37, 211, 102, 0.5);
+      transition: all 0.2s ease;
+    }
+    .btn-order-whatsapp:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 30px rgba(37, 211, 102, 0.75);
+    }
+    .btn-order-copy {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      color: #00e5ff;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-order-copy:hover {
+      background: rgba(0, 229, 255, 0.15);
+    }
+
   </style>
 </head>
 
@@ -2297,7 +2475,7 @@
 
         <div class="cyber-pricing-list">
           <!-- 1 Month: 99 TK -->
-          <div class="cyber-plan-card">
+          <div class="cyber-plan-card" data-plan="1m" title="Click to Order via WhatsApp">
             <div class="cyber-plan-info">
               <div class="cyber-plan-title-row">
                 <span class="cyber-plan-name">1 MONTH</span>
@@ -2311,7 +2489,7 @@
           </div>
 
           <!-- 2 Months: 149 TK -->
-          <div class="cyber-plan-card highlight">
+          <div class="cyber-plan-card highlight" data-plan="2m" title="Click to Order via WhatsApp">
             <div class="cyber-plan-info">
               <div class="cyber-plan-title-row">
                 <span class="cyber-plan-name">2 MONTHS</span>
@@ -2325,7 +2503,7 @@
           </div>
 
           <!-- 4 Months: 239 TK -->
-          <div class="cyber-plan-card">
+          <div class="cyber-plan-card" data-plan="4m" title="Click to Order via WhatsApp">
             <div class="cyber-plan-info">
               <div class="cyber-plan-title-row">
                 <span class="cyber-plan-name">4 MONTHS</span>
@@ -2339,7 +2517,7 @@
           </div>
 
           <!-- 8 Months: 399 TK -->
-          <div class="cyber-plan-card">
+          <div class="cyber-plan-card" data-plan="8m" title="Click to Order via WhatsApp">
             <div class="cyber-plan-info">
               <div class="cyber-plan-title-row">
                 <span class="cyber-plan-name">8 MONTHS</span>
@@ -2353,7 +2531,7 @@
           </div>
 
           <!-- 12 Months: 499 TK -->
-          <div class="cyber-plan-card vip">
+          <div class="cyber-plan-card vip" data-plan="12m" title="Click to Order via WhatsApp">
             <div class="cyber-plan-info">
               <div class="cyber-plan-title-row">
                 <span class="cyber-plan-name">12 MONTHS</span>
@@ -2371,6 +2549,43 @@
           <span>🔑 BACK TO LOGIN</span>
         </button>
       </section>
+
+      <!-- Order Confirmation & Contact Modal -->
+      <div id="cyber-order-modal" role="dialog" aria-modal="true">
+        <div class="order-modal-card">
+          <button class="order-modal-close" id="btn-close-order-modal">&times;</button>
+          
+          <div class="order-modal-header">
+            <span class="order-modal-badge">💎 SUBSCRIPTION ORDER</span>
+            <div class="order-modal-title">DIRECT ADMIN ACTIVATION</div>
+          </div>
+
+          <div class="order-plan-highlight-box">
+            <div>
+              <div class="order-plan-name" id="order-card-plan-name">1 MONTH PASS</div>
+              <div class="order-plan-details" id="order-card-plan-duration">30 Days Unlimited Access</div>
+            </div>
+            <div class="order-plan-price-tag" id="order-card-plan-price">99 TK</div>
+          </div>
+
+          <div style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+            💬 PRE-FORMATTED CUSTOM ORDER MESSAGE:
+          </div>
+          <div class="order-msg-preview" id="order-card-msg-preview"></div>
+
+          <button class="btn-order-whatsapp" id="btn-send-whatsapp-order">
+            <span>📲 SEND ORDER VIA WHATSAPP</span>
+          </button>
+
+          <button class="btn-order-copy" id="btn-copy-order-msg">
+            <span>📋 COPY ORDER MESSAGE (FOR MESSENGER/SMS)</span>
+          </button>
+
+          <div style="font-size: 10px; color: #64748b; text-align: center;">
+            💳 Payment: bKash / Nagad / Rocket accepted by Admin.
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ==========================================================================
@@ -2460,6 +2675,24 @@
           <textarea id="admin-import-json" class="cyber-input" rows="3" placeholder="Paste backup JSON here..."></textarea>
         </div>
         <button class="drawer-btn" id="btn-import-licenses" style="border-color: #00e5ff; color: #00e5ff;">📥 IMPORT & MERGE LICENSES</button>
+
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 12px; margin-top: 10px;">
+          <div style="font-size: 11px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">⚙️ ADMIN CONTACT & WHATSAPP SETTINGS</div>
+          
+          <div class="cyber-input-group">
+            <label class="cyber-input-label">ADMIN WHATSAPP NUMBER (WITH COUNTRY CODE)</label>
+            <input type="text" id="admin-setting-whatsapp" class="cyber-input" placeholder="e.g. 8801700000000">
+          </div>
+
+          <div class="cyber-input-group" style="margin-top: 6px;">
+            <label class="cyber-input-label">BKASH / NAGAD NUMBER (OPTIONAL)</label>
+            <input type="text" id="admin-setting-bkash" class="cyber-input" placeholder="e.g. 017XXXXXXXX">
+          </div>
+
+          <button class="drawer-btn" id="btn-save-admin-settings" style="margin-top: 8px; border-color: #fbbf24; color: #fbbf24;">
+            💾 SAVE CONTACT SETTINGS
+          </button>
+        </div>
       </section>
     </div>
 
@@ -3776,6 +4009,104 @@
             }).catch(() => {
               prompt('Copy your Licenses Backup JSON:', str);
             });
+          });
+        }
+
+
+        // Contact Settings from Storage
+        this.adminWhatsApp = localStorage.getItem('cfb_admin_whatsapp') || '8801700000000';
+        this.adminBkash = localStorage.getItem('cfb_admin_bkash') || '017XXXXXXXX';
+
+        // Order Modal Elements
+        const orderModal = document.getElementById('cyber-order-modal');
+        const btnCloseOrder = document.getElementById('btn-close-order-modal');
+        const orderPlanName = document.getElementById('order-card-plan-name');
+        const orderPlanDuration = document.getElementById('order-card-plan-duration');
+        const orderPlanPrice = document.getElementById('order-card-plan-price');
+        const orderMsgPreview = document.getElementById('order-card-msg-preview');
+        const btnSendWA = document.getElementById('btn-send-whatsapp-order');
+        const btnCopyOrder = document.getElementById('btn-copy-order-msg');
+
+        let currentOrderPlan = null;
+        let currentOrderMsg = '';
+
+        const openOrderModal = (planId) => {
+          const plan = SUBSCRIPTION_PLANS.find(p => p.id === planId) || SUBSCRIPTION_PLANS[0];
+          currentOrderPlan = plan;
+
+          currentOrderMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
+            '🎮 I want to subscribe to Country Flag Battle Royale:\n' +
+            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+            '💎 Plan: ' + plan.name + ' (' + plan.price + ' ' + plan.currency + ')\n' +
+            '⏳ Duration: ' + plan.days + ' Days Access\n' +
+            '💰 Price: ' + plan.price + ' TK\n' +
+            '💳 Payment: bKash / Nagad\n' +
+            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+            'Please send me your bKash/Nagad number and my Login ID & Password!';
+
+          if (orderPlanName) orderPlanName.textContent = plan.name.toUpperCase();
+          if (orderPlanDuration) orderPlanDuration.textContent = plan.days + ' Days Unlimited Access';
+          if (orderPlanPrice) orderPlanPrice.textContent = plan.price + ' ' + plan.currency;
+          if (orderMsgPreview) orderMsgPreview.textContent = currentOrderMsg;
+
+          if (orderModal) orderModal.classList.add('show');
+        };
+
+        // Attach click listeners to plan cards
+        document.querySelectorAll('.cyber-plan-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const planId = card.getAttribute('data-plan') || '1m';
+            openOrderModal(planId);
+          });
+        });
+
+        if (btnCloseOrder && orderModal) {
+          btnCloseOrder.addEventListener('click', () => {
+            orderModal.classList.remove('show');
+          });
+        }
+
+        if (btnSendWA) {
+          btnSendWA.addEventListener('click', () => {
+            const phone = (this.adminWhatsApp || '8801700000000').replace(/[^0-9]/g, '');
+            const encoded = encodeURIComponent(currentOrderMsg);
+            const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
+            window.open(waUrl, '_blank');
+          });
+        }
+
+        if (btnCopyOrder) {
+          btnCopyOrder.addEventListener('click', () => {
+            navigator.clipboard.writeText(currentOrderMsg).then(() => {
+              btnCopyOrder.textContent = '✅ COPIED ORDER MESSAGE!';
+              setTimeout(() => {
+                btnCopyOrder.textContent = '📋 COPY ORDER MESSAGE (FOR MESSENGER/SMS)';
+              }, 2000);
+            }).catch(() => {
+              alert('Copied! Please paste in WhatsApp/Messenger.');
+            });
+          });
+        }
+
+        // Admin Contact Settings Inputs in Admin Panel
+        const inputWA = document.getElementById('admin-setting-whatsapp');
+        const inputBkash = document.getElementById('admin-setting-bkash');
+        const btnSaveSettings = document.getElementById('btn-save-admin-settings');
+
+        if (inputWA) inputWA.value = this.adminWhatsApp;
+        if (inputBkash) inputBkash.value = this.adminBkash;
+
+        if (btnSaveSettings) {
+          btnSaveSettings.addEventListener('click', () => {
+            if (inputWA) {
+              this.adminWhatsApp = inputWA.value.trim() || '8801700000000';
+              localStorage.setItem('cfb_admin_whatsapp', this.adminWhatsApp);
+            }
+            if (inputBkash) {
+              this.adminBkash = inputBkash.value.trim() || '017XXXXXXXX';
+              localStorage.setItem('cfb_admin_bkash', this.adminBkash);
+            }
+            alert('✅ Admin Contact Settings Saved Successfully!');
           });
         }
 
