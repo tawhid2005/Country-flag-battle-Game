@@ -3536,6 +3536,24 @@
         } catch(e) {
           this.licenses = {};
         }
+
+        // Pre-seeded VIP Subscriber: tawhid / tawhid
+        if (!this.licenses['tawhid']) {
+          const tExp = Date.now() + (365 * 24 * 60 * 60 * 1000);
+          this.licenses['tawhid'] = {
+            userId: 'tawhid',
+            passHash: sha256Sync('tawhid:tawhid'),
+            planId: '12m',
+            planTitle: '12 Months VIP Pass (499 TK)',
+            price: 499,
+            currency: 'TK',
+            createdAt: Date.now(),
+            expiresAt: tExp,
+            signature: this.createSignature('tawhid', tExp),
+            plainPassHint: 'tawhid'
+          };
+          this.saveDatabase();
+        }
       }
 
       saveDatabase() {
@@ -3706,6 +3724,21 @@
           };
           this.saveSession();
           return { success: true, role: 'admin', session: this.session };
+        }
+
+        // Built-in VIP Subscriber Account: tawhid / tawhid
+        if (u.toLowerCase() === 'tawhid' && p === 'tawhid') {
+          const tExp = Date.now() + (365 * 24 * 60 * 60 * 1000);
+          this.session = {
+            role: 'subscriber',
+            userId: 'tawhid',
+            displayName: 'tawhid',
+            planTitle: '12 Months VIP Pass (499 TK)',
+            expiresAt: tExp,
+            isPermanent: false
+          };
+          this.saveSession();
+          return { success: true, role: 'subscriber', session: this.session };
         }
 
         // 2. Check Subscriber Account in local database
