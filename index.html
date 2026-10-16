@@ -3530,35 +3530,33 @@
       }
 
       loadDatabase() {
-        try {
-          const data = localStorage.getItem('cfb_licenses_db');
-          this.licenses = data ? JSON.parse(data) : {};
-        } catch(e) {
-          this.licenses = {};
+        let data = null;
+        try { data = localStorage.getItem('cfb_licenses_db'); } catch(e) {}
+        if (!data) {
+          try { data = sessionStorage.getItem('cfb_licenses_db'); } catch(e) {}
+        }
+        if (!data && typeof window !== 'undefined' && window.__cfb_persistent_db) {
+          data = window.__cfb_persistent_db;
         }
 
-        // Pre-seeded VIP Subscriber: tawhid / tawhid
-        if (!this.licenses['tawhid']) {
-          const tExp = Date.now() + (365 * 24 * 60 * 60 * 1000);
-          this.licenses['tawhid'] = {
-            userId: 'tawhid',
-            passHash: sha256Sync('tawhid:tawhid'),
-            planId: '12m',
-            planTitle: '12 Months VIP Pass (499 TK)',
-            price: 499,
-            currency: 'TK',
-            createdAt: Date.now(),
-            expiresAt: tExp,
-            signature: this.createSignature('tawhid', tExp),
-            plainPassHint: 'tawhid'
-          };
-          this.saveDatabase();
+        if (data) {
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed && typeof parsed === 'object') {
+              this.licenses = Object.assign({}, this.licenses, parsed);
+            }
+          } catch(e) {}
         }
       }
 
       saveDatabase() {
         try {
-          localStorage.setItem('cfb_licenses_db', JSON.stringify(this.licenses));
+          const str = JSON.stringify(this.licenses);
+          try { localStorage.setItem('cfb_licenses_db', str); } catch(e) {}
+          try { sessionStorage.setItem('cfb_licenses_db', str); } catch(e) {}
+          if (typeof window !== 'undefined') {
+            window.__cfb_persistent_db = str;
+          }
         } catch(e) {
           console.error("Storage error:", e);
         }
@@ -3608,6 +3606,7 @@
           plainPassHint: password.trim()
         };
 
+        this.loadDatabase();
         this.licenses[cleanUser.toLowerCase()] = license;
         this.saveDatabase();
 
@@ -3726,33 +3725,33 @@
           return { success: true, role: 'admin', session: this.session };
         }
 
-        // Built-in VIP Subscriber Account: tawhid / tawhid
-        if (u.toLowerCase() === 'tawhid' && p === 'tawhid') {
-          const tExp = Date.now() + (365 * 24 * 60 * 60 * 1000);
-          this.session = {
-            role: 'subscriber',
-            userId: 'tawhid',
-            displayName: 'tawhid',
-            planTitle: '12 Months VIP Pass (499 TK)',
-            expiresAt: tExp,
-            isPermanent: false
-          };
-          this.saveSession();
-          return { success: true, role: 'subscriber', session: this.session };
+        // 2. Check Subscriber Account in database
+        this.loadDatabase();
+        const cleanKey = u.toLowerCase();
+        let license = this.licenses[cleanKey];
+        if (!license) {
+          // Universal search across all registered licenses by userId (case-insensitive)
+          license = Object.values(this.licenses).find(l => l && l.userId && l.userId.trim().toLowerCase() === cleanKey);
         }
 
-        // 2. Check Subscriber Account in local database
-        this.loadDatabase();
-        const license = this.licenses[u.toLowerCase()];
         if (!license) {
           return { 
             success: false, 
-            message: 'User "' + u + '" not found! If you received a License Key, paste your CFB-... key into the Password field to activate.' 
+            message: 'User "' + u + '" not found in system database! Please check spelling or create the user in Admin Portal.' 
           };
         }
 
-        const expectedHash = sha256Sync(license.userId.toLowerCase() + ':' + p);
-        if (license.passHash !== expectedHash && license.plainPassHint !== p && license.licenseKey !== p) {
+        const cleanPass = p.trim();
+        const expectedHash = sha256Sync(license.userId.trim().toLowerCase() + ':' + cleanPass);
+        const altExpectedHash = sha256Sync(license.userId.trim() + ':' + cleanPass);
+        const isPassMatch = (
+          license.passHash === expectedHash ||
+          license.passHash === altExpectedHash ||
+          license.plainPassHint === cleanPass ||
+          license.licenseKey === cleanPass
+        );
+
+        if (!isPassMatch) {
           return { success: false, message: 'Invalid Password!' };
         }
 
