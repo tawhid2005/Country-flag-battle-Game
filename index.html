@@ -2393,31 +2393,47 @@
     }
 
     #cyber-lock-modal {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 50% 30%, rgba(10, 20, 48, 0.98) 0%, rgba(3, 7, 20, 0.99) 75%, #01040a 100%);
-      backdrop-filter: blur(28px);
-      z-index: 95;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 6, 23, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 9999;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding: 24px 16px;
-      overflow-y: auto;
-      overflow-x: hidden;
+      justify-content: center;
+      padding: 16px;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
     }
 
     #cyber-lock-modal.show {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
+    }
+
+    .cyber-lock-dialog {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      background: radial-gradient(circle at 50% 15%, rgba(15, 25, 55, 0.98) 0%, rgba(3, 7, 20, 0.99) 75%, #01040a 100%);
+      border: 1.5px solid rgba(0, 229, 255, 0.45);
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 229, 255, 0.25);
+      padding: 24px 18px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Ambient cyber circuit grid */
@@ -3011,25 +3027,25 @@
       opacity: 1;
     }
 
-    /* Order Confirmation Popup Modal */
+    /* Order Confirmation True Overlay Popup Modal */
     #cyber-order-modal {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(2, 6, 18, 0.94);
-      backdrop-filter: blur(25px);
-      z-index: 105;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.86);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
     }
     #cyber-order-modal.show {
       opacity: 1;
@@ -3038,26 +3054,43 @@
     }
     .order-modal-card {
       width: 100%;
-      max-width: 360px;
-      background: linear-gradient(135deg, rgba(15, 25, 55, 0.98), rgba(6, 12, 30, 0.99));
-      border: 1px solid rgba(0, 229, 255, 0.5);
-      border-radius: 18px;
-      padding: 22px 18px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 229, 255, 0.3);
+      max-width: 380px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: linear-gradient(135deg, rgba(15, 25, 55, 0.99), rgba(6, 12, 30, 0.99));
+      border: 1.5px solid rgba(0, 229, 255, 0.6);
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 229, 255, 0.35);
       display: flex;
       flex-direction: column;
       gap: 14px;
       position: relative;
+      animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .order-modal-close {
       position: absolute;
       top: 14px;
       right: 16px;
-      background: none;
-      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: #94a3b8;
-      font-size: 22px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+    .order-modal-close:hover {
+      background: rgba(244, 63, 94, 0.25);
+      border-color: #f43f5e;
+      color: #ffffff;
+      transform: scale(1.08);
     }
     .order-modal-header {
       display: flex;
@@ -3404,16 +3437,17 @@
       <button class="drawer-btn" id="drawer-btn-logout" style="border-color: #f43f5e; color: #f43f5e;">
         🚪 LOG OUT
       </button>
-</aside>
+    </aside>
 
-<!-- ==========================================================================
+  </main>
+
+  <!-- ==========================================================================
          CYBER SECURITY ACCESS GATE MODAL
          ========================================================================== -->
     <div id="cyber-lock-modal" class="" role="dialog" aria-modal="true">
-      <div class="cyber-lock-grid-bg"></div>
-
-      <!-- Close Button (Allows closing when trial or session is active) -->
-      <button class="cyber-lock-close-btn" id="btn-close-cyber-lock" title="Close Modal">&times;</button>
+      <div class="cyber-lock-dialog">
+        <!-- Close Button (Allows closing when trial or session is active) -->
+        <button class="cyber-lock-close-btn" id="btn-close-cyber-lock" title="Close Modal">&times;</button>
 
       <!-- 10-Minute Free Trial Ended Banner (Shown after 10m) -->
       <div id="cyber-trial-banner" class="cyber-trial-banner" style="display: none;">
@@ -3500,41 +3534,42 @@
           <span>🔑 BACK TO LOGIN</span>
         </button>
       </section>
+      </div>
+    </div>
 
-      <!-- Order Confirmation & Contact Modal -->
-      <div id="cyber-order-modal" role="dialog" aria-modal="true">
-        <div class="order-modal-card">
-          <button class="order-modal-close" id="btn-close-order-modal">&times;</button>
-          
-          <div class="order-modal-header">
-            <span class="order-modal-badge">💎 SUBSCRIPTION ORDER</span>
-            <div class="order-modal-title">DIRECT ADMIN ACTIVATION</div>
+    <!-- Order Confirmation & Contact Modal (True Fixed Center Popup) -->
+    <div id="cyber-order-modal" role="dialog" aria-modal="true">
+      <div class="order-modal-card">
+        <button class="order-modal-close" id="btn-close-order-modal">&times;</button>
+        
+        <div class="order-modal-header">
+          <span class="order-modal-badge">💎 SUBSCRIPTION ORDER</span>
+          <div class="order-modal-title">DIRECT ADMIN ACTIVATION</div>
+        </div>
+
+        <div class="order-plan-highlight-box">
+          <div>
+            <div class="order-plan-name" id="order-card-plan-name">1 MONTH PASS</div>
+            <div class="order-plan-details" id="order-card-plan-duration">30 Days Unlimited Access</div>
           </div>
+          <div class="order-plan-price-tag" id="order-card-plan-price">99 TK</div>
+        </div>
 
-          <div class="order-plan-highlight-box">
-            <div>
-              <div class="order-plan-name" id="order-card-plan-name">1 MONTH PASS</div>
-              <div class="order-plan-details" id="order-card-plan-duration">30 Days Unlimited Access</div>
-            </div>
-            <div class="order-plan-price-tag" id="order-card-plan-price">99 TK</div>
-          </div>
+        <div style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+          💬 PRE-FORMATTED CUSTOM ORDER MESSAGE:
+        </div>
+        <div class="order-msg-preview" id="order-card-msg-preview"></div>
 
-          <div style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
-            💬 PRE-FORMATTED CUSTOM ORDER MESSAGE:
-          </div>
-          <div class="order-msg-preview" id="order-card-msg-preview"></div>
+        <button class="btn-order-whatsapp" id="btn-send-whatsapp-order">
+          <span>📲 SEND ORDER VIA WHATSAPP</span>
+        </button>
 
-          <button class="btn-order-whatsapp" id="btn-send-whatsapp-order">
-            <span>📲 SEND ORDER VIA WHATSAPP</span>
-          </button>
+        <button class="btn-order-copy" id="btn-copy-order-msg">
+          <span>📋 COPY ORDER MESSAGE (FOR MESSENGER/SMS)</span>
+        </button>
 
-          <button class="btn-order-copy" id="btn-copy-order-msg">
-            <span>📋 COPY ORDER MESSAGE (FOR MESSENGER/SMS)</span>
-          </button>
-
-          <div id="order-card-payment-footer" style="font-size: 10px; color: #64748b; text-align: center;">
-            💳 Payment: bKash / Nagad / Rocket accepted by Admin.
-          </div>
+        <div id="order-card-payment-footer" style="font-size: 10px; color: #64748b; text-align: center;">
+          💳 Payment: bKash / Nagad / Rocket accepted by Admin.
         </div>
       </div>
     </div>
@@ -3688,8 +3723,6 @@
         </button>
       </div>
     </div>
-
-  </main>
 
   <!-- ==========================================================================
        GOOGLE SEO MASTER GAME GUIDE & ENCYCLOPEDIA (MAXIMUM SEARCH RANKING)
@@ -6092,6 +6125,32 @@
             orderModal.classList.remove('show');
           });
         }
+        if (orderModal) {
+          orderModal.addEventListener('click', (e) => {
+            if (e.target === orderModal) {
+              orderModal.classList.remove('show');
+            }
+          });
+        }
+
+        const cyberLockModalEl = document.getElementById('cyber-lock-modal');
+        if (cyberLockModalEl) {
+          cyberLockModalEl.addEventListener('click', (e) => {
+            if (e.target === cyberLockModalEl && this.isAccessAllowed()) {
+              this.showLockModal(false);
+            }
+          });
+        }
+
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            if (orderModal && orderModal.classList.contains('show')) {
+              orderModal.classList.remove('show');
+            } else if (cyberLockModalEl && cyberLockModalEl.classList.contains('show') && this.isAccessAllowed()) {
+              this.showLockModal(false);
+            }
+          }
+        });
 
         if (btnSendWA) {
           btnSendWA.addEventListener('click', () => {
