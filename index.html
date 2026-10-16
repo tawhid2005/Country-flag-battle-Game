@@ -1059,32 +1059,44 @@
       box-shadow: 0 0 24px rgba(0, 229, 255, 0.95);
     }
 
-    /* Floating High-Visibility Quick Settings Side Icon (Non-intrusive) */
+    /* Bottom Integrated Streamer Settings & Controls Button */
+    .hud-bottom-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      pointer-events: auto;
+    }
+
+    .hud-bottom-row .hud-bottom-ticker {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hud-bottom-settings-btn,
     .floating-settings-fab {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 45;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      background: linear-gradient(135deg, rgba(10, 18, 38, 0.96), rgba(18, 28, 56, 0.98));
+      border: 1.5px solid rgba(0, 229, 255, 0.55);
+      border-radius: 14px;
+      color: #00e5ff;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.98));
-      border: 1.5px solid #00e5ff;
-      border-radius: 50%;
-      color: #00e5ff;
       cursor: pointer;
-      pointer-events: auto;
-      box-shadow: 0 0 16px rgba(0, 229, 255, 0.5), 0 4px 14px rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 229, 255, 0.25);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: auto;
+      flex-shrink: 0;
     }
 
+    .hud-bottom-settings-btn .fab-icon,
     .floating-settings-fab .fab-icon {
-      font-size: 20px;
+      font-size: 19px;
       line-height: 1;
       display: flex;
       align-items: center;
@@ -1092,14 +1104,16 @@
       transition: transform 0.3s ease;
     }
 
+    .hud-bottom-settings-btn:hover,
     .floating-settings-fab:hover {
-      background: rgba(0, 229, 255, 0.3);
-      border-color: #ffffff;
+      background: rgba(0, 229, 255, 0.25);
+      border-color: #00e5ff;
       color: #ffffff;
-      transform: translateY(-50%) scale(1.14);
-      box-shadow: 0 0 25px rgba(0, 229, 255, 0.95);
+      transform: scale(1.08);
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.85);
     }
 
+    .hud-bottom-settings-btn:hover .fab-icon,
     .floating-settings-fab:hover .fab-icon {
       transform: rotate(60deg);
     }
@@ -3330,18 +3344,18 @@
           </div>
         </div>
 
-        <!-- Bottom Interactive Ticker -->
-        <footer class="hud-bottom-ticker">
-          <div class="ticker-content" id="engagement-ticker-text">
-            💬 TYPE YOUR COUNTRY TO BOOST THEIR POWER!
-          </div>
-        </footer>
+        <!-- Bottom Interactive Row (Ticker & Integrated Settings Button) -->
+        <div class="hud-bottom-row">
+          <footer class="hud-bottom-ticker">
+            <div class="ticker-content" id="engagement-ticker-text">
+              💬 TYPE YOUR COUNTRY TO BOOST THEIR POWER!
+            </div>
+          </footer>
+          <button id="floating-settings-btn" class="hud-bottom-settings-btn" title="Open Streamer Settings & Controls (H / S)">
+            <span class="fab-icon">⚙️</span>
+          </button>
+        </div>
       </div>
-
-      <!-- Floating Quick Streamer Controls (Compact Right Side Icon) -->
-      <button id="floating-settings-btn" class="floating-settings-fab" title="Open Streamer Settings & Controls (H / S)">
-        <span class="fab-icon">⚙️</span>
-      </button>
     </div>
 
     <!-- Royal Podium Victory Modal (Page 1 Redesign) -->
