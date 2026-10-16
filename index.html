@@ -1059,43 +1059,45 @@
       box-shadow: 0 0 24px rgba(0, 229, 255, 0.95);
     }
 
-    /* Floating High-Visibility Quick Settings FAB */
+    /* Floating High-Visibility Quick Settings Side Icon (Non-intrusive) */
     .floating-settings-fab {
       position: absolute;
-      right: 14px;
-      bottom: 88px;
-      z-index: 35;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 45;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.96));
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.98));
       border: 1.5px solid #00e5ff;
-      border-radius: 999px;
-      padding: 7px 13px 7px 9px;
+      border-radius: 50%;
       color: #00e5ff;
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.8px;
       cursor: pointer;
       pointer-events: auto;
-      box-shadow: 0 0 16px rgba(0, 229, 255, 0.45);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.5), 0 4px 14px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: fabGlowPulse 2.5s infinite alternate ease-in-out;
     }
 
     .floating-settings-fab .fab-icon {
-      font-size: 15px;
+      font-size: 20px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: transform 0.3s ease;
     }
 
     .floating-settings-fab:hover {
-      background: rgba(0, 229, 255, 0.25);
-      border-color: #00e5ff;
+      background: rgba(0, 229, 255, 0.3);
+      border-color: #ffffff;
       color: #ffffff;
-      transform: scale(1.08);
-      box-shadow: 0 0 25px rgba(0, 229, 255, 0.85);
+      transform: translateY(-50%) scale(1.14);
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.95);
     }
 
     .floating-settings-fab:hover .fab-icon {
@@ -2098,19 +2100,39 @@
       position: absolute;
       top: 0;
       right: -320px;
-      width: 290px;
+      width: 295px;
+      max-width: 85vw;
       height: 100%;
       background: rgba(10, 16, 32, 0.98);
-      backdrop-filter: blur(20px);
-      border-left: 1px solid rgba(0, 229, 255, 0.3);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-left: 1.5px solid rgba(0, 229, 255, 0.35);
       z-index: 70;
       transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
-      padding: 20px;
-      gap: 16px;
-      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.9);
+      padding: 20px 16px 50px 16px;
+      gap: 14px;
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.95);
       pointer-events: auto;
+      overflow-y: auto !important;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+
+    #streamer-drawer::-webkit-scrollbar {
+      width: 5px;
+    }
+    #streamer-drawer::-webkit-scrollbar-track {
+      background: rgba(2, 6, 23, 0.5);
+    }
+    #streamer-drawer::-webkit-scrollbar-thumb {
+      background: rgba(0, 229, 255, 0.4);
+      border-radius: 4px;
+    }
+    #streamer-drawer::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 229, 255, 0.8);
     }
 
     #streamer-drawer.open {
@@ -2806,30 +2828,47 @@
     /* ==========================================================================
        MASTER ADMIN LICENSE MANAGER MODAL
        ========================================================================== */
+    /* Master Admin License Manager Modal (True Fixed Centered Popup) */
     #admin-license-modal {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(4, 8, 20, 0.98);
-      backdrop-filter: blur(25px);
-      z-index: 110;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100005;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
       padding: 16px;
-      overflow-y: auto;
-      overflow-x: hidden;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.35s ease, visibility 0.35s ease;
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
     }
 
     #admin-license-modal.show {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
+    }
+
+    .admin-modal-dialog {
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      background: radial-gradient(circle at 50% 15%, rgba(18, 28, 55, 0.99) 0%, rgba(4, 8, 20, 0.99) 85%);
+      border: 1.5px solid rgba(251, 191, 36, 0.55);
+      border-radius: 20px;
+      padding: 22px 18px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 35px rgba(251, 191, 36, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .admin-modal-header {
@@ -3299,10 +3338,9 @@
         </footer>
       </div>
 
-      <!-- Floating Quick Streamer Controls (High Visibility Thumb-Zone) -->
+      <!-- Floating Quick Streamer Controls (Compact Right Side Icon) -->
       <button id="floating-settings-btn" class="floating-settings-fab" title="Open Streamer Settings & Controls (H / S)">
         <span class="fab-icon">⚙️</span>
-        <span class="fab-text">SETTINGS</span>
       </button>
     </div>
 
@@ -3425,14 +3463,14 @@
       </button>
     
       <!-- Security & License Status -->
-      <div class="drawer-auth-badge" id="drawer-auth-status" style="cursor: pointer;" title="Click to view subscription pricing">
+      <div class="drawer-auth-badge" id="drawer-auth-status" style="cursor: pointer;" title="Account & Admin Status">
         <div class="drawer-auth-user">🔒 Initializing...</div>
       </div>
+      <button class="drawer-btn" id="drawer-btn-admin-panel" style="display:none; background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(245, 158, 11, 0.55)); border: 2px solid #fbbf24; color: #fbbf24; font-weight: 900; box-shadow: 0 0 20px rgba(251, 191, 36, 0.45);">
+        👑 MASTER ADMIN LICENSE MANAGER
+      </button>
       <button class="drawer-btn" id="drawer-btn-pricing" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.45)); border: 1.5px solid #fbbf24; color: #fbbf24; font-weight: 900; box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);">
         💎 SUBSCRIPTION PLANS &amp; PASSES
-      </button>
-      <button class="drawer-btn" id="drawer-btn-admin-panel" style="display:none; background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.35)); border-color: #fbbf24; color: #fbbf24;">
-        👑 ADMIN LICENSE MANAGER
       </button>
       <button class="drawer-btn" id="drawer-btn-logout" style="border-color: #f43f5e; color: #f43f5e;">
         🚪 LOG OUT
@@ -3575,15 +3613,16 @@
     </div>
 
     <!-- ==========================================================================
-         MASTER ADMIN LICENSE & SUBSCRIBER MANAGER MODAL
+         MASTER ADMIN LICENSE & SUBSCRIBER MANAGER MODAL (True Fixed Centered Popup)
          ========================================================================== -->
     <div id="admin-license-modal" role="dialog" aria-modal="true">
-      <div class="admin-modal-header">
-        <div class="admin-modal-title">
-          <span>👑 MASTER ADMIN LICENSE PORTAL</span>
+      <div class="admin-modal-dialog">
+        <div class="admin-modal-header">
+          <div class="admin-modal-title">
+            <span>👑 MASTER ADMIN LICENSE PORTAL</span>
+          </div>
+          <button class="drawer-close" id="admin-modal-close-btn">&times;</button>
         </div>
-        <button class="drawer-close" id="admin-modal-close-btn">&times;</button>
-      </div>
 
       <!-- Realtime Global Cloud Sync Banner -->
       <div id="admin-cloud-sync-banner" style="display: flex; align-items: center; justify-content: space-between; margin: 10px 14px 4px 14px; padding: 8px 12px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 8px; font-size: 11px;">
@@ -3688,6 +3727,8 @@
             💾 SAVE CONTACT SETTINGS
           </button>
         </div>
+      </section>
+      </div>
     </div>
 
     <!-- PWA Installation Modal (iPhone / Android / PC Guide) -->
@@ -5895,6 +5936,7 @@
 
         if (btnAdminPanel && adminModal) {
           btnAdminPanel.addEventListener('click', () => {
+            if (this.app) this.app.toggleDrawer(false);
             adminModal.classList.add('show');
             this.renderAdminSubscribers();
           });
@@ -5902,6 +5944,13 @@
         if (adminClose && adminModal) {
           adminClose.addEventListener('click', () => {
             adminModal.classList.remove('show');
+          });
+        }
+        if (adminModal) {
+          adminModal.addEventListener('click', (e) => {
+            if (e.target === adminModal) {
+              adminModal.classList.remove('show');
+            }
           });
         }
 
@@ -6117,7 +6166,18 @@
         // Streamer Drawer Auth Status Box Click
         const drawerAuthBox = document.getElementById('drawer-auth-status');
         if (drawerAuthBox) {
-          drawerAuthBox.addEventListener('click', openPricingPopup);
+          drawerAuthBox.addEventListener('click', () => {
+            if (this.session && this.session.role === 'admin') {
+              const adminModal = document.getElementById('admin-license-modal');
+              if (adminModal) {
+                if (this.app) this.app.toggleDrawer(false);
+                adminModal.classList.add('show');
+                this.renderAdminSubscribers();
+              }
+            } else {
+              openPricingPopup();
+            }
+          });
         }
 
         if (btnCloseOrder && orderModal) {
@@ -6144,7 +6204,10 @@
 
         window.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') {
-            if (orderModal && orderModal.classList.contains('show')) {
+            const adminModal = document.getElementById('admin-license-modal');
+            if (adminModal && adminModal.classList.contains('show')) {
+              adminModal.classList.remove('show');
+            } else if (orderModal && orderModal.classList.contains('show')) {
               orderModal.classList.remove('show');
             } else if (cyberLockModalEl && cyberLockModalEl.classList.contains('show') && this.isAccessAllowed()) {
               this.showLockModal(false);
