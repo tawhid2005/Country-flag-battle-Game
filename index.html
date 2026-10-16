@@ -2462,7 +2462,12 @@
           <div class="cyber-contact-title">NEED AN ACCOUNT OR RENEWAL?</div>
           <div class="cyber-contact-admin-name">ADMIN: tawhidh2005</div>
           <div class="cyber-contact-methods">
-            <span>📞 WhatsApp</span> • <span>💬 Telegram</span> • <span>💳 bKash/Nagad</span>
+            <a href="https://wa.me/8801711729858" target="_blank" style="color: #25D366; text-decoration: none; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
+              <span>📲 WhatsApp: +8801711729858</span>
+            </a>
+          </div>
+          <div style="font-size: 10px; color: #94a3b8;">
+            <span>💳 bKash / Nagad accepted</span>
           </div>
         </div>
       </section>
@@ -2681,7 +2686,7 @@
           
           <div class="cyber-input-group">
             <label class="cyber-input-label">ADMIN WHATSAPP NUMBER (WITH COUNTRY CODE)</label>
-            <input type="text" id="admin-setting-whatsapp" class="cyber-input" placeholder="e.g. 8801700000000">
+            <input type="text" id="admin-setting-whatsapp" class="cyber-input" placeholder="e.g. 8801711729858">
           </div>
 
           <div class="cyber-input-group" style="margin-top: 6px;">
@@ -4014,7 +4019,7 @@
 
 
         // Contact Settings from Storage
-        this.adminWhatsApp = localStorage.getItem('cfb_admin_whatsapp') || '8801700000000';
+        this.adminWhatsApp = localStorage.getItem('cfb_admin_whatsapp') || '8801711729858';
         this.adminBkash = localStorage.getItem('cfb_admin_bkash') || '017XXXXXXXX';
 
         // Order Modal Elements
@@ -4068,7 +4073,7 @@
 
         if (btnSendWA) {
           btnSendWA.addEventListener('click', () => {
-            const phone = (this.adminWhatsApp || '8801700000000').replace(/[^0-9]/g, '');
+            const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
             const encoded = encodeURIComponent(currentOrderMsg);
             const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
             window.open(waUrl, '_blank');
@@ -4099,7 +4104,7 @@
         if (btnSaveSettings) {
           btnSaveSettings.addEventListener('click', () => {
             if (inputWA) {
-              this.adminWhatsApp = inputWA.value.trim() || '8801700000000';
+              this.adminWhatsApp = inputWA.value.trim() || '8801711729858';
               localStorage.setItem('cfb_admin_whatsapp', this.adminWhatsApp);
             }
             if (inputBkash) {
