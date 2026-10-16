@@ -1424,6 +1424,602 @@
       background: rgba(0, 229, 255, 0.2);
       border-color: var(--accent-cyan);
     }
+
+    /* ==========================================================================
+       CYBER SECURITY ACCESS GATE & SUBSCRIPTION LOCK MODAL
+       ========================================================================== */
+    #cyber-lock-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 30%, rgba(10, 20, 48, 0.98) 0%, rgba(3, 7, 20, 0.99) 75%, #01040a 100%);
+      backdrop-filter: blur(28px);
+      z-index: 95;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 16px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+    }
+
+    #cyber-lock-modal.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* Ambient cyber circuit grid */
+    .cyber-lock-grid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+      background-size: 26px 26px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .cyber-lock-header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .cyber-shield-icon-wrap {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(168, 85, 247, 0.25));
+      border: 2px solid #00e5ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 0 35px rgba(0, 229, 255, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.4);
+      margin-bottom: 12px;
+      animation: shieldPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes shieldPulse {
+      0%, 100% {
+        transform: scale(0.96);
+        box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+      }
+      50% {
+        transform: scale(1.04);
+        box-shadow: 0 0 45px rgba(0, 229, 255, 0.85);
+      }
+    }
+
+    .cyber-lock-title {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      background: linear-gradient(135deg, #ffffff 0%, #00e5ff 60%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+      text-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+    }
+
+    .cyber-lock-subtitle {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    /* Cyber Security Tabs */
+    .cyber-lock-tabs {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 16px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .cyber-lock-tab-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .cyber-lock-tab-btn.active {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(14, 165, 233, 0.4));
+      color: #00e5ff;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+    }
+
+    /* Login Panel Card */
+    .cyber-panel-box {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 360px;
+      background: rgba(13, 22, 45, 0.88);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.75), inset 0 0 15px rgba(0, 229, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .cyber-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cyber-input-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cyber-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .cyber-input {
+      width: 100%;
+      background: rgba(6, 11, 25, 0.85);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 10px;
+      padding: 10px 38px 10px 12px;
+      color: #ffffff;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .cyber-input:focus {
+      border-color: #00e5ff;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    }
+
+    .cyber-input-icon {
+      position: absolute;
+      right: 12px;
+      font-size: 15px;
+      color: #94a3b8;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cyber-btn-primary {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #00e5ff 0%, #0284c7 100%);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #020617;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.55);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .cyber-btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 35px rgba(0, 229, 255, 0.85);
+    }
+
+    .cyber-btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .cyber-status-alert {
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cyber-status-alert.error {
+      display: flex;
+      background: rgba(244, 63, 94, 0.18);
+      border: 1px solid #f43f5e;
+      color: #fca5a5;
+    }
+
+    .cyber-status-alert.success {
+      display: flex;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+    }
+
+    /* Subscription Pricing Tier Cards */
+    .cyber-pricing-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .cyber-plan-card {
+      background: rgba(10, 18, 38, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cyber-plan-card.highlight {
+      border-color: #fbbf24;
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(15, 23, 42, 0.95));
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.25);
+    }
+
+    .cyber-plan-card.vip {
+      border-color: #c084fc;
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.15), rgba(15, 23, 42, 0.95));
+      box-shadow: 0 0 20px rgba(192, 132, 252, 0.3);
+    }
+
+    .cyber-plan-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cyber-plan-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cyber-plan-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .cyber-plan-badge {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cyber-plan-badge.popular {
+      background: #fbbf24;
+      color: #020617;
+    }
+
+    .cyber-plan-badge.vip {
+      background: #c084fc;
+      color: #020617;
+    }
+
+    .cyber-plan-duration {
+      font-size: 10px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .cyber-plan-price-wrap {
+      text-align: right;
+    }
+
+    .cyber-plan-price {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      color: #fbbf24;
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    }
+
+    .cyber-plan-currency {
+      font-size: 10px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-left: 2px;
+    }
+
+    /* Master Admin Contact & Activation Box */
+    .cyber-contact-box {
+      background: rgba(15, 25, 52, 0.95);
+      border: 1px dashed rgba(0, 229, 255, 0.5);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cyber-contact-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #00e5ff;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .cyber-contact-admin-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .cyber-contact-methods {
+      font-size: 10px;
+      font-weight: 700;
+      color: #fbbf24;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* ==========================================================================
+       MASTER ADMIN LICENSE MANAGER MODAL
+       ========================================================================== */
+    #admin-license-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 8, 20, 0.98);
+      backdrop-filter: blur(25px);
+      z-index: 110;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+
+    #admin-license-modal.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .admin-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .admin-modal-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 900;
+      color: #fbbf24;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .admin-nav-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .admin-nav-tab {
+      flex: 1;
+      padding: 8px 6px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .admin-nav-tab.active {
+      background: rgba(251, 191, 36, 0.2);
+      border-color: #fbbf24;
+      color: #fbbf24;
+    }
+
+    .admin-section {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .admin-section.active {
+      display: flex;
+    }
+
+    .admin-license-card-result {
+      background: rgba(6, 12, 28, 0.95);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      border-radius: 10px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #67e8f9;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      user-select: all;
+    }
+
+    .admin-sub-item {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .admin-sub-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-sub-user {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .admin-sub-status {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+
+    .admin-sub-status.active {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid #10b981;
+      color: #10b981;
+    }
+
+    .admin-sub-status.expired {
+      background: rgba(244, 63, 94, 0.2);
+      border: 1px solid #f43f5e;
+      color: #f43f5e;
+    }
+
+    .admin-sub-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .admin-sub-btn {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: background 0.2s;
+    }
+
+    .admin-sub-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .admin-sub-btn.delete {
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #f87171;
+    }
+
+    /* Streamer Drawer Auth status pill */
+    .drawer-auth-badge {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .drawer-auth-user {
+      font-family: var(--font-display);
+      font-weight: 900;
+      color: #00e5ff;
+    }
+
+    .drawer-auth-plan {
+      font-size: 10px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
   </style>
 </head>
 
@@ -1463,6 +2059,7 @@
             <div class="badge-alive" id="hud-alive-badge">
               ALIVE: <span id="hud-alive-count">50</span>/<span id="hud-total-count">50</span>
             </div>
+            <button id="hud-admin-crown-btn" title="Admin License Portal (👑)" style="display: none; background: rgba(251, 191, 36, 0.2); border: 1px solid #fbbf24; color: #fbbf24; border-radius: 8px; font-size: 14px; padding: 4px 8px; cursor: pointer; box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);">👑</button>
             <button id="streamer-drawer-toggle" title="Settings (H)">⚙️</button>
           </div>
         </header>
@@ -1630,7 +2227,243 @@
       <button class="drawer-btn" id="btn-toggle-broadcast">🎥 CLEAN BROADCAST MODE</button>
       <button class="drawer-btn" id="btn-test-win">🧪 TEST VICTORY SCREEN</button>
       <button class="drawer-btn" id="btn-reset-leaderboard">🗑️ RESET LEADERBOARD</button>
-    </aside>
+    
+      <!-- Security & License Status -->
+      <div class="drawer-auth-badge" id="drawer-auth-status">
+        <div class="drawer-auth-user">🔒 Initializing...</div>
+      </div>
+      <button class="drawer-btn" id="drawer-btn-admin-panel" style="display:none; background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.35)); border-color: #fbbf24; color: #fbbf24;">
+        👑 ADMIN LICENSE MANAGER
+      </button>
+      <button class="drawer-btn" id="drawer-btn-logout" style="border-color: #f43f5e; color: #f43f5e;">
+        🚪 LOG OUT
+      </button>
+</aside>
+
+<!-- ==========================================================================
+         CYBER SECURITY ACCESS GATE MODAL
+         ========================================================================== -->
+    <div id="cyber-lock-modal" class="show" role="dialog" aria-modal="true">
+      <div class="cyber-lock-grid-bg"></div>
+
+      <header class="cyber-lock-header">
+        <div class="cyber-shield-icon-wrap">🔒</div>
+        <h1 class="cyber-lock-title">CYBER SECURITY GATE</h1>
+        <div class="cyber-lock-subtitle">24/7 FLAG BATTLE ROYALE • LICENSED ACCESS ONLY</div>
+      </header>
+
+      <div class="cyber-lock-tabs">
+        <button class="cyber-lock-tab-btn active" id="tab-btn-login">🔑 ACCESS LOGIN</button>
+        <button class="cyber-lock-tab-btn" id="tab-btn-pricing">💎 PRICING TIERS</button>
+      </div>
+
+      <!-- Tab 1: Access Login Form -->
+      <section class="cyber-panel-box" id="tab-panel-login">
+        <div class="cyber-input-group">
+          <label class="cyber-input-label" for="cyber-input-user">👤 USER ID / USERNAME</label>
+          <div class="cyber-input-wrap">
+            <input type="text" id="cyber-input-user" class="cyber-input" placeholder="Enter ID or Admin User" autocomplete="username">
+          </div>
+        </div>
+
+        <div class="cyber-input-group">
+          <label class="cyber-input-label" for="cyber-input-pass">🔑 PASSWORD</label>
+          <div class="cyber-input-wrap">
+            <input type="password" id="cyber-input-pass" class="cyber-input" placeholder="Enter Password" autocomplete="current-password">
+            <span class="cyber-input-icon" id="toggle-pass-visibility" title="Show/Hide Password">👁️</span>
+          </div>
+        </div>
+
+        <div id="cyber-login-alert" class="cyber-status-alert"></div>
+
+        <button class="cyber-btn-primary" id="btn-cyber-login">
+          <span>⚡ UNLOCK ARENA</span>
+        </button>
+
+        <!-- Pricing Summary in Login tab -->
+        <div class="cyber-contact-box">
+          <div class="cyber-contact-title">NEED AN ACCOUNT OR RENEWAL?</div>
+          <div class="cyber-contact-admin-name">ADMIN: tawhidh2005</div>
+          <div class="cyber-contact-methods">
+            <span>📞 WhatsApp</span> • <span>💬 Telegram</span> • <span>💳 bKash/Nagad</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: Subscription Pricing Showcase -->
+      <section class="cyber-panel-box" id="tab-panel-pricing" style="display: none;">
+        <div style="font-size: 11px; font-weight: 800; color: #00e5ff; letter-spacing: 0.5px; text-transform: uppercase; text-align: center;">
+          ⚡ OFFICIAL SUBSCRIPTION PLANS
+        </div>
+
+        <div class="cyber-pricing-list">
+          <!-- 1 Month: 99 TK -->
+          <div class="cyber-plan-card">
+            <div class="cyber-plan-info">
+              <div class="cyber-plan-title-row">
+                <span class="cyber-plan-name">1 MONTH</span>
+                <span class="cyber-plan-badge" style="background:#0284c7; color:#fff;">STARTER</span>
+              </div>
+              <span class="cyber-plan-duration">30 Days Unlimited Access</span>
+            </div>
+            <div class="cyber-plan-price-wrap">
+              <span class="cyber-plan-price">99</span><span class="cyber-plan-currency">TK</span>
+            </div>
+          </div>
+
+          <!-- 2 Months: 149 TK -->
+          <div class="cyber-plan-card highlight">
+            <div class="cyber-plan-info">
+              <div class="cyber-plan-title-row">
+                <span class="cyber-plan-name">2 MONTHS</span>
+                <span class="cyber-plan-badge popular">🔥 POPULAR</span>
+              </div>
+              <span class="cyber-plan-duration">60 Days Unlimited Access</span>
+            </div>
+            <div class="cyber-plan-price-wrap">
+              <span class="cyber-plan-price">149</span><span class="cyber-plan-currency">TK</span>
+            </div>
+          </div>
+
+          <!-- 4 Months: 239 TK -->
+          <div class="cyber-plan-card">
+            <div class="cyber-plan-info">
+              <div class="cyber-plan-title-row">
+                <span class="cyber-plan-name">4 MONTHS</span>
+                <span class="cyber-plan-badge" style="background:#10b981; color:#020617;">VALUE</span>
+              </div>
+              <span class="cyber-plan-duration">120 Days Unlimited Access</span>
+            </div>
+            <div class="cyber-plan-price-wrap">
+              <span class="cyber-plan-price">239</span><span class="cyber-plan-currency">TK</span>
+            </div>
+          </div>
+
+          <!-- 8 Months: 399 TK -->
+          <div class="cyber-plan-card">
+            <div class="cyber-plan-info">
+              <div class="cyber-plan-title-row">
+                <span class="cyber-plan-name">8 MONTHS</span>
+                <span class="cyber-plan-badge" style="background:#f59e0b; color:#020617;">PRO</span>
+              </div>
+              <span class="cyber-plan-duration">240 Days Unlimited Access</span>
+            </div>
+            <div class="cyber-plan-price-wrap">
+              <span class="cyber-plan-price">399</span><span class="cyber-plan-currency">TK</span>
+            </div>
+          </div>
+
+          <!-- 12 Months: 499 TK -->
+          <div class="cyber-plan-card vip">
+            <div class="cyber-plan-info">
+              <div class="cyber-plan-title-row">
+                <span class="cyber-plan-name">12 MONTHS</span>
+                <span class="cyber-plan-badge vip">👑 BEST VALUE</span>
+              </div>
+              <span class="cyber-plan-duration">365 Days (1 Full Year Access)</span>
+            </div>
+            <div class="cyber-plan-price-wrap">
+              <span class="cyber-plan-price">499</span><span class="cyber-plan-currency">TK</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="cyber-btn-primary" id="btn-switch-to-login" style="margin-top: 6px;">
+          <span>🔑 BACK TO LOGIN</span>
+        </button>
+      </section>
+    </div>
+
+    <!-- ==========================================================================
+         MASTER ADMIN LICENSE & SUBSCRIBER MANAGER MODAL
+         ========================================================================== -->
+    <div id="admin-license-modal" role="dialog" aria-modal="true">
+      <div class="admin-modal-header">
+        <div class="admin-modal-title">
+          <span>👑 MASTER ADMIN LICENSE PORTAL</span>
+        </div>
+        <button class="drawer-close" id="admin-modal-close-btn">&times;</button>
+      </div>
+
+      <nav class="admin-nav-tabs">
+        <button class="admin-nav-tab active" id="admin-tab-btn-create">➕ CREATE LICENSE</button>
+        <button class="admin-nav-tab" id="admin-tab-btn-list">📋 SUBSCRIBERS (<span id="admin-sub-count">0</span>)</button>
+        <button class="admin-nav-tab" id="admin-tab-btn-backup">💾 BACKUP & TOOLS</button>
+      </nav>
+
+      <!-- Admin Tab 1: Create New Subscriber License -->
+      <section class="admin-section active" id="admin-sec-create">
+        <div class="cyber-input-group">
+          <label class="cyber-input-label">USER ID / USERNAME</label>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="admin-new-user" class="cyber-input" placeholder="e.g. streamer_pro">
+            <button class="drawer-btn" id="btn-gen-userid" style="width: 80px; padding: 0;">🎲 AUTO</button>
+          </div>
+        </div>
+
+        <div class="cyber-input-group">
+          <label class="cyber-input-label">PASSWORD</label>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="admin-new-pass" class="cyber-input" placeholder="e.g. pass1234">
+            <button class="drawer-btn" id="btn-gen-pass" style="width: 80px; padding: 0;">🎲 AUTO</button>
+          </div>
+        </div>
+
+        <div class="cyber-input-group">
+          <label class="cyber-input-label">SUBSCRIPTION PLAN</label>
+          <select id="admin-new-plan" class="drawer-select">
+            <option value="1m">1 Month — 99 TK (30 Days)</option>
+            <option value="2m" selected>2 Months — 149 TK (60 Days)</option>
+            <option value="4m">4 Months — 239 TK (120 Days)</option>
+            <option value="8m">8 Months — 399 TK (240 Days)</option>
+            <option value="12m">12 Months — 499 TK (365 Days)</option>
+            <option value="custom">Custom Days...</option>
+          </select>
+        </div>
+
+        <div class="cyber-input-group" id="admin-custom-days-wrap" style="display: none;">
+          <label class="cyber-input-label">CUSTOM DURATION (DAYS)</label>
+          <input type="number" id="admin-custom-days" class="cyber-input" placeholder="e.g. 45" min="1">
+        </div>
+
+        <button class="cyber-btn-primary" id="btn-generate-license" style="background: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);">
+          <span>🚀 GENERATE & SAVE LICENSE</span>
+        </button>
+
+        <div id="admin-card-result-wrap" style="display: none; flex-direction: column; gap: 8px;">
+          <div style="font-size: 11px; font-weight: 800; color: #10b981;">✅ LICENSE CREATED! READY TO SEND:</div>
+          <div class="admin-license-card-result" id="admin-card-result-text"></div>
+          <button class="drawer-btn" id="btn-copy-card-result" style="border-color: #10b981; color: #10b981;">
+            📋 COPY FOR WHATSAPP / MESSENGER
+          </button>
+        </div>
+      </section>
+
+      <!-- Admin Tab 2: Subscribers List -->
+      <section class="admin-section" id="admin-sec-list">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; font-weight: 800; color: #94a3b8;">ACTIVE DATABASE</span>
+          <button class="drawer-btn" id="btn-refresh-subscribers" style="padding: 4px 10px;">🔄 REFRESH</button>
+        </div>
+        <div id="admin-subscribers-list-container" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- Admin Tab 3: Backup & Restore Tools -->
+      <section class="admin-section" id="admin-sec-backup">
+        <div style="font-size: 11px; color: #94a3b8; line-height: 1.5;">
+          Export all active licenses to JSON to backup or migrate between computers and browsers.
+        </div>
+        <button class="drawer-btn" id="btn-export-licenses">💾 EXPORT LICENSES BACKUP (JSON)</button>
+        <div class="cyber-input-group">
+          <label class="cyber-input-label">IMPORT BACKUP JSON</label>
+          <textarea id="admin-import-json" class="cyber-input" rows="3" placeholder="Paste backup JSON here..."></textarea>
+        </div>
+        <button class="drawer-btn" id="btn-import-licenses" style="border-color: #00e5ff; color: #00e5ff;">📥 IMPORT & MERGE LICENSES</button>
+      </section>
+    </div>
+
 
   </main>
 
@@ -2378,6 +3211,681 @@
     }
 
     // --- 5. MAIN BATTLE ROYALE SIMULATOR APPLICATION ---
+
+    // --- 4.5. CRYPTOGRAPHIC UTILITY & SECURITY ENGINE ---
+    // Pure synchronous SHA-256 implementation (Works 100% offline & without HTTPS)
+    function sha256Sync(ascii) {
+      function rightRotate(value, amount) {
+        return (value >>> amount) | (value << (32 - amount));
+      }
+      var mathPow = Math.pow;
+      var maxWord = mathPow(2, 32);
+      var lengthProperty = 'length';
+      var i, j;
+      var result = '';
+      var words = [];
+      var asciiBitLength = ascii[lengthProperty] * 8;
+      var hash = [];
+      var k = [];
+      var primeCounter = 0;
+      var isComposite = {};
+      for (var candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80';
+      while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i);
+        if (j >> 8) return;
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength);
+      for (j = 0; j < words[lengthProperty];) {
+        var w = words.slice(j, j += 16);
+        var oldHash = hash;
+        hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          var w15 = w[i - 15], w2 = w[i - 2];
+          var s0 = rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3);
+          var s1 = rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10);
+          w[i] = (i < 16) ? w[i] : (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+          var ch = (hash[4] & hash[5]) ^ (~hash[4] & hash[6]);
+          var maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
+          var temp1 = hash[7] + (rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25)) + ch + k[i] + w[i];
+          var temp2 = (rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22)) + maj;
+          hash = [(temp1 + temp2) | 0].concat(hash);
+          hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j >= 0; j--) {
+          var b = (hash[i] >> (8 * j)) & 255;
+          result += ((b < 16) ? 0 : '') + b.toString(16);
+        }
+      }
+      return result;
+    }
+
+    // Master Admin Hash: tawhidh2005:017TawhiD@@##
+    const MASTER_ADMIN_HASH = 'dd469e489b8fd5502678247141a05695a2ea89a8d1342300133d1e65782e5ffd';
+    const SECURITY_SALT = 'CFB_ROYALE_SECURE_SALT_v2026_99x#$!';
+
+    const SUBSCRIPTION_PLANS = [
+      { id: '1m', name: '1 Month', price: 99, currency: 'TK', days: 30, tag: 'Starter' },
+      { id: '2m', name: '2 Months', price: 149, currency: 'TK', days: 60, tag: 'Popular' },
+      { id: '4m', name: '4 Months', price: 239, currency: 'TK', days: 120, tag: 'Value' },
+      { id: '8m', name: '8 Months', price: 399, currency: 'TK', days: 240, tag: 'Pro' },
+      { id: '12m', name: '12 Months', price: 499, currency: 'TK', days: 365, tag: 'Best Value' }
+    ];
+
+    class SecurityEngine {
+      constructor(app) {
+        this.app = app;
+        this.session = null;
+        this.licenses = {};
+        this.loadDatabase();
+      }
+
+      loadDatabase() {
+        try {
+          const data = localStorage.getItem('cfb_licenses_db');
+          this.licenses = data ? JSON.parse(data) : {};
+        } catch(e) {
+          this.licenses = {};
+        }
+      }
+
+      saveDatabase() {
+        try {
+          localStorage.setItem('cfb_licenses_db', JSON.stringify(this.licenses));
+        } catch(e) {
+          console.error("Storage error:", e);
+        }
+      }
+
+      createSignature(userId, expiresAt) {
+        return sha256Sync(userId + ':' + expiresAt + ':' + SECURITY_SALT);
+      }
+
+      createLicense(userId, password, planId, customDays = null) {
+        const cleanUser = String(userId).trim();
+        if (!cleanUser) return { success: false, message: 'User ID is required!' };
+        if (!password || String(password).trim().length < 4) {
+          return { success: false, message: 'Password must be at least 4 characters!' };
+        }
+
+        const plan = SUBSCRIPTION_PLANS.find(p => p.id === planId);
+        let days = plan ? plan.days : 30;
+        let planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + plan.currency + ')') : (days + ' Days Pass');
+
+        if (customDays && parseInt(customDays, 10) > 0) {
+          days = parseInt(customDays, 10);
+          planTitle = days + ' Days Custom Pass';
+        }
+
+        const now = Date.now();
+        const expiresAt = now + (days * 24 * 60 * 60 * 1000);
+        const passHash = sha256Sync(cleanUser + ':' + password.trim());
+        const signature = this.createSignature(cleanUser, expiresAt);
+
+        const license = {
+          userId: cleanUser,
+          passHash: passHash,
+          planId: planId || 'custom',
+          planTitle: planTitle,
+          price: plan ? plan.price : 'Custom',
+          currency: 'TK',
+          createdAt: now,
+          expiresAt: expiresAt,
+          signature: signature,
+          plainPassHint: password.trim()
+        };
+
+        this.licenses[cleanUser.toLowerCase()] = license;
+        this.saveDatabase();
+
+        const formattedCard = '🎮 COUNTRY FLAG BATTLE ROYALE — ACCESS LICENSE\n' +
+          '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+          '👤 USER ID   : ' + cleanUser + '\n' +
+          '🔑 PASSWORD  : ' + password.trim() + '\n' +
+          '💎 PACKAGE   : ' + planTitle + '\n' +
+          '⏳ VALIDITY  : ' + days + ' Days\n' +
+          '📅 EXPIRES ON: ' + new Date(expiresAt).toLocaleDateString() + ' (' + new Date(expiresAt).toLocaleTimeString() + ')\n' +
+          '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+          '⚠️ Keep your credentials secure. After expiry, access is automatically locked.';
+
+        return {
+          success: true,
+          license: license,
+          formattedCard: formattedCard
+        };
+      }
+
+      login(username, password) {
+        const u = String(username).trim();
+        const p = String(password).trim();
+        if (!u || !p) return { success: false, message: 'Please enter User ID and Password!' };
+
+        // 1. Check Master Admin Credentials
+        const adminCheckHash = sha256Sync(u.toLowerCase() + ':' + p);
+        if (adminCheckHash === MASTER_ADMIN_HASH) {
+          this.session = {
+            role: 'admin',
+            userId: 'tawhidh2005',
+            displayName: 'Master Admin (tawhidh2005)',
+            planTitle: '👑 Lifetime Master Admin',
+            expiresAt: null,
+            isPermanent: true
+          };
+          this.saveSession();
+          return { success: true, role: 'admin', session: this.session };
+        }
+
+        // 2. Check Subscriber Account
+        this.loadDatabase();
+        const license = this.licenses[u.toLowerCase()];
+        if (!license) {
+          return { success: false, message: 'Invalid User ID or Password!' };
+        }
+
+        const expectedHash = sha256Sync(license.userId + ':' + p);
+        if (license.passHash !== expectedHash) {
+          return { success: false, message: 'Invalid Password!' };
+        }
+
+        // 3. Cryptographic Signature Anti-Tamper Check
+        const expectedSig = this.createSignature(license.userId, license.expiresAt);
+        if (license.signature !== expectedSig) {
+          return { success: false, message: 'Security Alert: License has been tampered with!' };
+        }
+
+        // 4. Expiration Timestamp Check
+        const now = Date.now();
+        if (now > license.expiresAt) {
+          const expDate = new Date(license.expiresAt).toLocaleDateString();
+          return {
+            success: false,
+            message: 'Subscription expired on ' + expDate + '! Contact Admin @tawhidh2005 to renew.'
+          };
+        }
+
+        // Active Subscriber Session
+        this.session = {
+          role: 'subscriber',
+          userId: license.userId,
+          displayName: license.userId,
+          planTitle: license.planTitle,
+          expiresAt: license.expiresAt,
+          isPermanent: false
+        };
+        this.saveSession();
+        return { success: true, role: 'subscriber', session: this.session };
+      }
+
+      saveSession() {
+        if (this.session) {
+          localStorage.setItem('cfb_auth_session', JSON.stringify(this.session));
+        } else {
+          localStorage.removeItem('cfb_auth_session');
+        }
+      }
+
+      checkSession() {
+        try {
+          const data = localStorage.getItem('cfb_auth_session');
+          if (!data) return { valid: false };
+          const session = JSON.parse(data);
+
+          if (session.role === 'admin' && session.isPermanent) {
+            this.session = session;
+            return { valid: true, role: 'admin', session: session };
+          }
+
+          if (session.role === 'subscriber' && session.expiresAt) {
+            if (Date.now() > session.expiresAt) {
+              this.session = null;
+              this.saveSession();
+              return { valid: false, expired: true, message: 'Your subscription has expired!' };
+            }
+            this.session = session;
+            return { valid: true, role: 'subscriber', session: session };
+          }
+        } catch(e) {
+          return { valid: false };
+        }
+        return { valid: false };
+      }
+
+      isAuthenticated() {
+        return !!(this.session && (this.session.isPermanent || (this.session.expiresAt && Date.now() <= this.session.expiresAt)));
+      }
+
+      logout() {
+        this.session = null;
+        this.saveSession();
+        this.showLockModal(true);
+        this.updateDrawerStatus();
+      }
+
+      deleteLicense(userId) {
+        delete this.licenses[String(userId).toLowerCase()];
+        this.saveDatabase();
+      }
+
+      extendLicense(userId, days = 30) {
+        const l = this.licenses[String(userId).toLowerCase()];
+        if (!l) return false;
+        const base = Math.max(Date.now(), l.expiresAt);
+        l.expiresAt = base + (days * 24 * 60 * 60 * 1000);
+        l.signature = this.createSignature(l.userId, l.expiresAt);
+        this.saveDatabase();
+        return true;
+      }
+
+      formatTimeRemaining(expiresAt) {
+        if (!expiresAt) return 'Permanent';
+        const diff = expiresAt - Date.now();
+        if (diff <= 0) return 'Expired';
+        const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+        const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        const minutes = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
+        if (days > 0) return days + 'd ' + hours + 'h left';
+        if (hours > 0) return hours + 'h ' + minutes + 'm left';
+        return minutes + 'm left';
+      }
+
+      init() {
+        this.setupDOM();
+        const check = this.checkSession();
+        if (check.valid) {
+          this.showLockModal(false);
+          this.updateDrawerStatus();
+        } else {
+          this.showLockModal(true);
+          if (check.expired) {
+            this.showLoginAlert('⚠️ Your subscription has expired! Please renew with Master Admin.', 'error');
+          }
+        }
+
+        // Periodic Background Expiry Monitor (Checks every 15 seconds)
+        setInterval(() => {
+          if (this.session && this.session.role === 'subscriber') {
+            if (Date.now() > this.session.expiresAt) {
+              this.logout();
+              this.showLoginAlert('⚠️ Subscription duration ended! Arena is now locked.', 'error');
+            } else {
+              this.updateDrawerStatus();
+            }
+          }
+        }, 15000);
+      }
+
+      showLockModal(show = true) {
+        const modal = document.getElementById('cyber-lock-modal');
+        if (modal) {
+          modal.classList.toggle('show', show);
+        }
+      }
+
+      showLoginAlert(text, type = 'error') {
+        const el = document.getElementById('cyber-login-alert');
+        if (el) {
+          el.className = 'cyber-status-alert ' + type;
+          el.textContent = text;
+          el.style.display = 'flex';
+        }
+      }
+
+      updateDrawerStatus() {
+        const box = document.getElementById('drawer-auth-status');
+        const adminBtn = document.getElementById('drawer-btn-admin-panel');
+        if (!box) return;
+
+        if (this.session) {
+          if (this.session.role === 'admin') {
+            box.innerHTML = '<div class="drawer-auth-user">👑 ' + this.session.displayName + '</div>' +
+              '<div class="drawer-auth-plan" style="color: #fbbf24;">LIFETIME UNLIMITED ACCESS</div>';
+            if (adminBtn) adminBtn.style.display = 'flex';
+            const crownBtn = document.getElementById('hud-admin-crown-btn'); if (crownBtn) crownBtn.style.display = 'inline-flex';
+          } else {
+            const rem = this.formatTimeRemaining(this.session.expiresAt);
+            box.innerHTML = '<div class="drawer-auth-user">👤 ' + this.session.displayName + '</div>' +
+              '<div class="drawer-auth-plan">' + this.session.planTitle + ' • <span style="color:#00e5ff; font-weight:800;">' + rem + '</span></div>';
+            if (adminBtn) adminBtn.style.display = 'none';
+            const crownBtn = document.getElementById('hud-admin-crown-btn'); if (crownBtn) crownBtn.style.display = 'none';
+          }
+        } else {
+          box.innerHTML = '<div class="drawer-auth-user">🔒 Not Authenticated</div><div class="drawer-auth-plan">Access Locked</div>';
+          if (adminBtn) adminBtn.style.display = 'none';
+        }
+      }
+
+      setupDOM() {
+        // Tab switching in Lock modal
+        const tabLogin = document.getElementById('tab-btn-login');
+        const tabPricing = document.getElementById('tab-btn-pricing');
+        const panelLogin = document.getElementById('tab-panel-login');
+        const panelPricing = document.getElementById('tab-panel-pricing');
+        const btnSwitchLogin = document.getElementById('btn-switch-to-login');
+
+        if (tabLogin && tabPricing) {
+          tabLogin.addEventListener('click', () => {
+            tabLogin.classList.add('active');
+            tabPricing.classList.remove('active');
+            panelLogin.style.display = 'flex';
+            panelPricing.style.display = 'none';
+          });
+          tabPricing.addEventListener('click', () => {
+            tabPricing.classList.add('active');
+            tabLogin.classList.remove('active');
+            panelLogin.style.display = 'none';
+            panelPricing.style.display = 'flex';
+          });
+          if (btnSwitchLogin) {
+            btnSwitchLogin.addEventListener('click', () => {
+              tabLogin.click();
+            });
+          }
+        }
+
+        // Toggle password visibility
+        const togglePass = document.getElementById('toggle-pass-visibility');
+        const inputPass = document.getElementById('cyber-input-pass');
+        if (togglePass && inputPass) {
+          togglePass.addEventListener('click', () => {
+            const isText = inputPass.type === 'text';
+            inputPass.type = isText ? 'password' : 'text';
+            togglePass.textContent = isText ? '👁️' : '🔒';
+          });
+        }
+
+        // Login Submit
+        const btnLogin = document.getElementById('btn-cyber-login');
+        const inputUser = document.getElementById('cyber-input-user');
+
+        const handleLogin = () => {
+          const u = inputUser.value;
+          const p = inputPass.value;
+          const res = this.login(u, p);
+          if (res.success) {
+            this.showLockModal(false);
+            this.updateDrawerStatus();
+            inputPass.value = '';
+            if (this.app) {
+              if (this.app.isRoundOver) {
+                this.app.startNewRound();
+              }
+            }
+          } else {
+            this.showLoginAlert(res.message, 'error');
+          }
+        };
+
+        if (btnLogin) btnLogin.addEventListener('click', handleLogin);
+        if (inputPass) {
+          inputPass.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleLogin();
+          });
+        }
+
+        // Drawer Logout
+        const btnLogout = document.getElementById('drawer-btn-logout');
+        if (btnLogout) {
+          btnLogout.addEventListener('click', () => {
+            this.logout();
+          });
+        }
+
+        // Drawer Admin Panel Trigger
+        const btnAdminPanel = document.getElementById('drawer-btn-admin-panel');
+        const adminModal = document.getElementById('admin-license-modal');
+        const adminClose = document.getElementById('admin-modal-close-btn');
+
+        const hudCrownBtn = document.getElementById('hud-admin-crown-btn');
+        if (hudCrownBtn && adminModal) {
+          hudCrownBtn.addEventListener('click', () => {
+            adminModal.classList.add('show');
+            this.renderAdminSubscribers();
+          });
+        }
+        if (btnAdminPanel && adminModal) {
+          btnAdminPanel.addEventListener('click', () => {
+            adminModal.classList.add('show');
+            this.renderAdminSubscribers();
+          });
+        }
+        if (adminClose && adminModal) {
+          adminClose.addEventListener('click', () => {
+            adminModal.classList.remove('show');
+          });
+        }
+
+        // Admin Modal Tabs
+        const aTabCreate = document.getElementById('admin-tab-btn-create');
+        const aTabList = document.getElementById('admin-tab-btn-list');
+        const aTabBackup = document.getElementById('admin-tab-btn-backup');
+        const aSecCreate = document.getElementById('admin-sec-create');
+        const aSecList = document.getElementById('admin-sec-list');
+        const aSecBackup = document.getElementById('admin-sec-backup');
+
+        if (aTabCreate && aTabList && aTabBackup) {
+          aTabCreate.addEventListener('click', () => {
+            aTabCreate.classList.add('active');
+            aTabList.classList.remove('active');
+            aTabBackup.classList.remove('active');
+            aSecCreate.classList.add('active');
+            aSecList.classList.remove('active');
+            aSecBackup.classList.remove('active');
+          });
+          aTabList.addEventListener('click', () => {
+            aTabList.classList.add('active');
+            aTabCreate.classList.remove('active');
+            aTabBackup.classList.remove('active');
+            aSecList.classList.add('active');
+            aSecCreate.classList.remove('active');
+            aSecBackup.classList.remove('active');
+            this.renderAdminSubscribers();
+          });
+          aTabBackup.addEventListener('click', () => {
+            aTabBackup.classList.add('active');
+            aTabCreate.classList.remove('active');
+            aTabList.classList.remove('active');
+            aSecBackup.classList.add('active');
+            aSecCreate.classList.remove('active');
+            aSecList.classList.remove('active');
+          });
+        }
+
+        // Auto ID & Password generators
+        const btnGenUser = document.getElementById('btn-gen-userid');
+        const btnGenPass = document.getElementById('btn-gen-pass');
+        const newUserInput = document.getElementById('admin-new-user');
+        const newPassInput = document.getElementById('admin-new-pass');
+
+        if (btnGenUser && newUserInput) {
+          btnGenUser.addEventListener('click', () => {
+            newUserInput.value = 'streamer_' + Math.floor(100 + Math.random() * 900);
+          });
+        }
+        if (btnGenPass && newPassInput) {
+          btnGenPass.addEventListener('click', () => {
+            const chars = 'abcdefghjkmnpqrstuvwxyz23456789!@#';
+            let p = '';
+            for (let i = 0; i < 8; i++) p += chars[Math.floor(Math.random() * chars.length)];
+            newPassInput.value = p;
+          });
+        }
+
+        // Plan change custom days display
+        const selectPlan = document.getElementById('admin-new-plan');
+        const customWrap = document.getElementById('admin-custom-days-wrap');
+        if (selectPlan && customWrap) {
+          selectPlan.addEventListener('change', () => {
+            customWrap.style.display = selectPlan.value === 'custom' ? 'flex' : 'none';
+          });
+        }
+
+        // Generate License Button
+        const btnGenLicense = document.getElementById('btn-generate-license');
+        const cardResultWrap = document.getElementById('admin-card-result-wrap');
+        const cardResultText = document.getElementById('admin-card-result-text');
+        const btnCopyResult = document.getElementById('btn-copy-card-result');
+
+        if (btnGenLicense) {
+          btnGenLicense.addEventListener('click', () => {
+            const u = newUserInput.value;
+            const p = newPassInput.value;
+            const plan = selectPlan.value;
+            const customDays = document.getElementById('admin-custom-days').value;
+
+            const res = this.createLicense(u, p, plan, customDays);
+            if (res.success) {
+              cardResultText.textContent = res.formattedCard;
+              cardResultWrap.style.display = 'flex';
+              this.renderAdminSubscribers();
+            } else {
+              alert(res.message);
+            }
+          });
+        }
+
+        if (btnCopyResult && cardResultText) {
+          btnCopyResult.addEventListener('click', () => {
+            navigator.clipboard.writeText(cardResultText.textContent).then(() => {
+              btnCopyResult.textContent = '✅ COPIED TO CLIPBOARD!';
+              setTimeout(() => {
+                btnCopyResult.textContent = '📋 COPY FOR WHATSAPP / MESSENGER';
+              }, 2000);
+            }).catch(() => {
+              alert('Copied! (Please select text to copy if browser blocked clipboard)');
+            });
+          });
+        }
+
+        // Refresh Subscribers List
+        const btnRefreshSub = document.getElementById('btn-refresh-subscribers');
+        if (btnRefreshSub) {
+          btnRefreshSub.addEventListener('click', () => {
+            this.renderAdminSubscribers();
+          });
+        }
+
+        // Export Licenses
+        const btnExport = document.getElementById('btn-export-licenses');
+        if (btnExport) {
+          btnExport.addEventListener('click', () => {
+            const str = JSON.stringify(this.licenses, null, 2);
+            navigator.clipboard.writeText(str).then(() => {
+              alert('Licenses exported to clipboard as JSON!');
+            }).catch(() => {
+              prompt('Copy your Licenses Backup JSON:', str);
+            });
+          });
+        }
+
+        // Import Licenses
+        const btnImport = document.getElementById('btn-import-licenses');
+        const importText = document.getElementById('admin-import-json');
+        if (btnImport && importText) {
+          btnImport.addEventListener('click', () => {
+            try {
+              const obj = JSON.parse(importText.value);
+              this.licenses = Object.assign({}, this.licenses, obj);
+              this.saveDatabase();
+              this.renderAdminSubscribers();
+              alert('Successfully imported licenses!');
+              importText.value = '';
+            } catch(e) {
+              alert('Invalid JSON! Please paste valid licenses JSON.');
+            }
+          });
+        }
+      }
+
+      renderAdminSubscribers() {
+        const container = document.getElementById('admin-subscribers-list-container');
+        const countBadge = document.getElementById('admin-sub-count');
+        if (!container) return;
+
+        this.loadDatabase();
+        const entries = Object.entries(this.licenses);
+        if (countBadge) countBadge.textContent = entries.length;
+
+        if (entries.length === 0) {
+          container.innerHTML = '<div style="color: #94a3b8; font-size: 11px; text-align: center; padding: 16px;">No subscribers issued yet. Use "Create License" above.</div>';
+          return;
+        }
+
+        container.innerHTML = '';
+        entries.forEach(([key, sub]) => {
+          const isExpired = Date.now() > sub.expiresAt;
+          const statusText = isExpired ? '🔴 EXPIRED' : ('🟢 ' + this.formatTimeRemaining(sub.expiresAt));
+          const expDate = new Date(sub.expiresAt).toLocaleDateString();
+
+          const card = document.createElement('div');
+          card.className = 'admin-sub-item';
+          card.innerHTML = 
+            '<div class="admin-sub-header">' +
+              '<span class="admin-sub-user">👤 ' + sub.userId + '</span>' +
+              '<span class="admin-sub-status ' + (isExpired ? 'expired' : 'active') + '">' + statusText + '</span>' +
+            '</div>' +
+            '<div style="font-size: 10px; color: #94a3b8; display: flex; justify-content: space-between;">' +
+              '<span>💎 ' + sub.planTitle + '</span>' +
+              '<span>📅 Exp: ' + expDate + '</span>' +
+            '</div>' +
+            '<div style="font-size: 10px; color: #67e8f9; font-family: monospace;">' +
+              'Password: ' + (sub.plainPassHint || '••••••••') +
+            '</div>' +
+            '<div class="admin-sub-actions">' +
+              '<button class="admin-sub-btn copy-sub-btn" data-user="' + sub.userId + '">📋 Copy</button>' +
+              '<button class="admin-sub-btn extend-sub-btn" data-user="' + sub.userId + '">➕ +30 Days</button>' +
+              '<button class="admin-sub-btn delete delete-sub-btn" data-user="' + sub.userId + '">🗑️ Delete</button>' +
+            '</div>';
+
+          container.appendChild(card);
+        });
+
+        // Event delegation for subscriber actions
+        container.querySelectorAll('.copy-sub-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const u = e.currentTarget.getAttribute('data-user');
+            const sub = this.licenses[u.toLowerCase()];
+            if (sub) {
+              const text = 'User ID: ' + sub.userId + '\nPassword: ' + (sub.plainPassHint || '') + '\nExpires: ' + new Date(sub.expiresAt).toLocaleDateString();
+              navigator.clipboard.writeText(text);
+              alert('Copied credentials for ' + sub.userId + '!');
+            }
+          });
+        });
+
+        container.querySelectorAll('.extend-sub-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const u = e.currentTarget.getAttribute('data-user');
+            if (this.extendLicense(u, 30)) {
+              this.renderAdminSubscribers();
+              alert('Extended 30 days for ' + u + '!');
+            }
+          });
+        });
+
+        container.querySelectorAll('.delete-sub-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const u = e.currentTarget.getAttribute('data-user');
+            if (confirm('Are you sure you want to delete and revoke access for ' + u + '?')) {
+              this.deleteLicense(u);
+              this.renderAdminSubscribers();
+            }
+          });
+        });
+      }
+    }
+
     class BattleRoyaleApp {
       constructor() {
         this.V_WIDTH = 540;
@@ -2386,6 +3894,7 @@
         this.canvas = document.getElementById('battle-canvas');
         this.ctx = this.canvas.getContext('2d');
         this.viewport = document.getElementById('broadcast-viewport');
+        this.security = new SecurityEngine(this);
 
         this.flagEngine = new ProFlagTextureEngine();
         this.audio = new ProceduralAudioEngine();
@@ -2488,6 +3997,7 @@
         this.setupEventListeners();
         this.renderHorizontalLeaderboard();
         this.startEngagementTicker();
+        this.security.init();
 
         this.startNewRound();
         requestAnimationFrame((t) => this.gameLoop(t));
@@ -3169,6 +4679,10 @@
 
       // Game Loop: 100% Rock-Solid Stable Camera
       gameLoop(timestamp) {
+        if (!this.security.isAuthenticated()) {
+          requestAnimationFrame((t) => this.gameLoop(t));
+          return;
+        }
         if (!this.isRoundOver) {
           this.Engine.update(this.engine, 1000 / 60);
           this.updateCircularArena();
