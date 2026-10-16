@@ -328,10 +328,12 @@
     }
 
     body.clean-mode #streamer-drawer-toggle,
+    body.clean-mode #hud-quick-sound,
     body.clean-mode #streamer-drawer,
     body.clean-mode #seo-game-guide,
     body.clean-mode .hud-guide-pill,
-    body.clean-mode .floating-seo-pill {
+    body.clean-mode .floating-seo-pill,
+    body.clean-mode .hud-sub-bar {
       display: none !important;
     }
 
@@ -992,30 +994,75 @@
       }
     }
 
-    #streamer-drawer-toggle {
-      width: 28px;
-      height: 28px;
+    /* HUD Circular Quick Action Buttons (Sound & Settings) */
+    .hud-icon-btn {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.28);
-      color: #cbd5e1;
+      background: rgba(15, 23, 42, 0.94);
+      border: 1.5px solid rgba(0, 229, 255, 0.65);
+      color: #00e5ff;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
       pointer-events: auto;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+      flex-shrink: 0;
+    }
+
+    .hud-icon-btn:hover {
+      background: rgba(0, 229, 255, 0.25);
+      border-color: #00e5ff;
+      color: #ffffff;
+      transform: scale(1.12);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.8);
+    }
+
+    #streamer-drawer-toggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.94);
+      border: 1.5px solid rgba(0, 229, 255, 0.7);
+      color: #00e5ff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      pointer-events: auto;
+      backdrop-filter: blur(10px);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
       flex-shrink: 0;
     }
 
     #streamer-drawer-toggle:hover {
-      background: rgba(0, 229, 255, 0.25);
-      border-color: var(--accent-cyan);
+      background: rgba(0, 229, 255, 0.3);
+      border-color: #00e5ff;
       color: #ffffff;
-      transform: rotate(45deg);
+      transform: rotate(60deg) scale(1.14);
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.95);
+    }
+
+    /* Secondary HUD Utility Row (Free Trial Countdown & Guide Pill) */
+    .hud-sub-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      min-height: 24px;
+      gap: 6px;
+      pointer-events: auto;
+      padding: 0 2px;
+    }
+
+    .hud-sub-bar .hud-guide-pill {
+      margin-left: auto;
     }
 
     /* Horizontal Top Leaderboard Strip */
@@ -2999,21 +3046,25 @@
             <div class="badge-round">
               <span id="hud-round-label">ROUND #1</span>
             </div>
-
-            <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="10-Minute Free Trial Play Active">
-              <span class="dot-trial"></span>
-              <span>TRIAL: <strong id="hud-trial-timer">10:00</strong></span>
-            </div>
           </div>
 
           <div class="hud-top-right">
-            <a href="#seo-game-guide" class="hud-guide-pill" title="Read Complete Game Guide, Rules & Wiki">📖 RULES</a>
             <div class="badge-alive" id="hud-alive-badge">
               ALIVE: <span id="hud-alive-count">50</span>/<span id="hud-total-count">50</span>
             </div>
-            <button id="streamer-drawer-toggle" title="Settings (H)">⚙️</button>
+            <button id="hud-quick-sound" class="hud-icon-btn" title="Toggle Sound (M)">🔊</button>
+            <button id="streamer-drawer-toggle" class="hud-icon-btn" title="Settings & Streamer Controls (H)">⚙️</button>
           </div>
         </header>
+
+        <!-- Secondary Utility Row (Free Trial Badge & Rules Guide) -->
+        <div class="hud-sub-bar">
+          <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="10-Minute Free Trial Active - Click to Upgrade">
+            <span class="dot-trial"></span>
+            <span>TRIAL: <strong id="hud-trial-timer">10:00</strong></span>
+          </div>
+          <a href="#seo-game-guide" class="hud-guide-pill" title="Read Complete Game Guide, Rules & Wiki">📖 RULES & GUIDE</a>
+        </div>
 
         <!-- Top Survivors Leaderboard -->
         <aside class="hud-top-leaderboard-strip" id="hud-leaderboard-strip">
@@ -6787,7 +6838,7 @@
         };
         this.dom.audioOverlay.addEventListener('click', unlockAudio);
         window.addEventListener('keydown', (e) => {
-          if (e.key.toLowerCase() === 'h') {
+          if (e.key.toLowerCase() === 'h' || e.key.toLowerCase() === 's') {
             this.toggleDrawer();
           }
         });
@@ -6812,9 +6863,22 @@
           this.startNewRound();
         });
 
+        const quickSoundBtn = document.getElementById('hud-quick-sound');
+        const updateSoundButtons = (enabled) => {
+          if (quickSoundBtn) quickSoundBtn.textContent = enabled ? '🔊' : '🔇';
+          if (this.dom.btnSound) this.dom.btnSound.textContent = enabled ? '🔊 AUDIO: ENABLED' : '🔇 AUDIO: MUTED';
+        };
+
+        if (quickSoundBtn) {
+          quickSoundBtn.addEventListener('click', () => {
+            const enabled = this.audio.toggleMute();
+            updateSoundButtons(enabled);
+          });
+        }
+
         this.dom.btnSound.addEventListener('click', () => {
           const enabled = this.audio.toggleMute();
-          this.dom.btnSound.textContent = enabled ? '🔊 AUDIO: ENABLED' : '🔇 AUDIO: MUTED';
+          updateSoundButtons(enabled);
         });
 
         this.dom.btnBroadcast.addEventListener('click', () => {
