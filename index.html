@@ -2039,6 +2039,163 @@
     /* ==========================================================================
        CYBER SECURITY ACCESS GATE & SUBSCRIPTION LOCK MODAL
        ========================================================================== */
+    /* 10-Minute Free Trial Badge in HUD */
+    .badge-trial {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.5));
+      border: 1px solid rgba(239, 68, 68, 0.8);
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      animation: trialPulse 1.5s infinite alternate ease-in-out;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    .dot-trial {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f87171;
+      box-shadow: 0 0 8px #ef4444;
+      animation: dotBlink 1s infinite alternate;
+    }
+
+    @keyframes trialPulse {
+      0% { box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); transform: scale(1); }
+      100% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.9); transform: scale(1.03); }
+    }
+
+    /* Currency Switcher Toggle */
+    .currency-toggle-wrapper {
+      display: flex;
+      background: rgba(2, 6, 23, 0.85);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 4px;
+      margin: 0 auto 12px auto;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .currency-toggle-btn {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-body);
+      text-align: center;
+    }
+
+    .currency-toggle-btn.active {
+      background: linear-gradient(135deg, #00e5ff 0%, #0284c7 100%);
+      color: #020617;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.65);
+    }
+
+    /* $199 USD Copyright-Strike Immunity Guarantee Box */
+    .guarantee-immunity-box {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.14) 0%, rgba(16, 185, 129, 0.12) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
+      width: 100%;
+    }
+
+    .guarantee-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
+    }
+
+    .guarantee-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      text-align: left;
+    }
+
+    .guarantee-title {
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      font-weight: 900;
+      color: #fbbf24;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .guarantee-desc {
+      font-size: 9.5px;
+      color: #e2e8f0;
+      line-height: 1.4;
+    }
+
+    /* 10-Minute Trial Expired Banner */
+    .cyber-trial-banner {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.25) 0%, rgba(185, 28, 28, 0.4) 100%);
+      border: 1px solid #ef4444;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+      width: 100%;
+      animation: alertPulse 1.8s infinite alternate;
+    }
+
+    .cyber-trial-banner-badge {
+      display: inline-block;
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .cyber-trial-banner-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 800;
+      color: #fef08a;
+      margin-bottom: 4px;
+    }
+
+    .cyber-trial-banner-desc {
+      font-size: 10.5px;
+      color: #fca5a5;
+      line-height: 1.4;
+    }
+
+    .cyber-payment-methods-notice {
+      font-size: 10.5px;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 6px;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+    }
+
     #cyber-lock-modal {
       position: absolute;
       top: 0;
@@ -2842,6 +2999,11 @@
             <div class="badge-round">
               <span id="hud-round-label">ROUND #1</span>
             </div>
+
+            <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="10-Minute Free Trial Play Active">
+              <span class="dot-trial"></span>
+              <span>TRIAL: <strong id="hud-trial-timer">10:00</strong></span>
+            </div>
           </div>
 
           <div class="hud-top-right">
@@ -3032,8 +3194,24 @@
 <!-- ==========================================================================
          CYBER SECURITY ACCESS GATE MODAL
          ========================================================================== -->
-    <div id="cyber-lock-modal" class="show" role="dialog" aria-modal="true">
+    <div id="cyber-lock-modal" class="" role="dialog" aria-modal="true">
       <div class="cyber-lock-grid-bg"></div>
+
+      <!-- 10-Minute Free Trial Ended Banner (Shown after 10m) -->
+      <div id="cyber-trial-banner" class="cyber-trial-banner" style="display: none;">
+        <span class="cyber-trial-banner-badge">⏱️ 10-MINUTE FREE TRIAL FINISHED</span>
+        <div class="cyber-trial-banner-title">Love the battle? Unlock 24/7 Unlimited Access!</div>
+        <div class="cyber-trial-banner-desc">Your 10-minute free trial has ended for this device. Choose an affordable streamer pass below or login with your ID &amp; Password to unlock the arena 24/7!</div>
+      </div>
+
+      <!-- $199 USD Copyright-Strike Immunity Guarantee -->
+      <div class="guarantee-immunity-box">
+        <div class="guarantee-icon">🛡️</div>
+        <div class="guarantee-body">
+          <div class="guarantee-title">$199 USD COPYRIGHT-STRIKE IMMUNITY GUARANTEE</div>
+          <div class="guarantee-desc">100% Content-ID safe on YouTube Live &amp; TikTok. If our procedural Web Audio ever causes a valid copyright strike on your stream, Admin Tawhid will pay you $199 USD cash compensation. Guaranteed!</div>
+        </div>
+      </div>
 
       <header class="cyber-lock-header">
         <div class="cyber-shield-icon-wrap">🔒</div>
@@ -3078,88 +3256,26 @@
               <span>📲 WhatsApp: +8801711729858</span>
             </a>
           </div>
-          <div style="font-size: 10px; color: #94a3b8;">
-            <span>💳 bKash / Nagad accepted</span>
+          <div id="login-payment-hint" style="font-size: 10px; color: #94a3b8;">
+            <span>💳 PayPal, Card, Crypto / bKash, Nagad</span>
           </div>
         </div>
       </section>
 
-      <!-- Tab 2: Subscription Pricing Showcase -->
+      <!-- Tab 2: Subscription Pricing Showcase with Currency Switcher -->
       <section class="cyber-panel-box" id="tab-panel-pricing" style="display: none;">
-        <div style="font-size: 11px; font-weight: 800; color: #00e5ff; letter-spacing: 0.5px; text-transform: uppercase; text-align: center;">
-          ⚡ OFFICIAL SUBSCRIPTION PLANS
+        <!-- Currency Switcher Toggle -->
+        <div class="currency-toggle-wrapper">
+          <button class="currency-toggle-btn active" id="btn-currency-usd" type="button">🌐 Global (USD $)</button>
+          <button class="currency-toggle-btn" id="btn-currency-bdt" type="button">🇧🇩 Bangladesh (BDT ৳)</button>
         </div>
 
-        <div class="cyber-pricing-list">
-          <!-- 1 Month: 99 TK -->
-          <div class="cyber-plan-card" data-plan="1m" title="Click to Order via WhatsApp">
-            <div class="cyber-plan-info">
-              <div class="cyber-plan-title-row">
-                <span class="cyber-plan-name">1 MONTH</span>
-                <span class="cyber-plan-badge" style="background:#0284c7; color:#fff;">STARTER</span>
-              </div>
-              <span class="cyber-plan-duration">30 Days Unlimited Access</span>
-            </div>
-            <div class="cyber-plan-price-wrap">
-              <span class="cyber-plan-price">99</span><span class="cyber-plan-currency">TK</span>
-            </div>
-          </div>
+        <div class="cyber-pricing-list" id="cyber-pricing-list-container">
+          <!-- Dynamically populated based on selected currency -->
+        </div>
 
-          <!-- 2 Months: 149 TK -->
-          <div class="cyber-plan-card highlight" data-plan="2m" title="Click to Order via WhatsApp">
-            <div class="cyber-plan-info">
-              <div class="cyber-plan-title-row">
-                <span class="cyber-plan-name">2 MONTHS</span>
-                <span class="cyber-plan-badge popular">🔥 POPULAR</span>
-              </div>
-              <span class="cyber-plan-duration">60 Days Unlimited Access</span>
-            </div>
-            <div class="cyber-plan-price-wrap">
-              <span class="cyber-plan-price">149</span><span class="cyber-plan-currency">TK</span>
-            </div>
-          </div>
-
-          <!-- 4 Months: 239 TK -->
-          <div class="cyber-plan-card" data-plan="4m" title="Click to Order via WhatsApp">
-            <div class="cyber-plan-info">
-              <div class="cyber-plan-title-row">
-                <span class="cyber-plan-name">4 MONTHS</span>
-                <span class="cyber-plan-badge" style="background:#10b981; color:#020617;">VALUE</span>
-              </div>
-              <span class="cyber-plan-duration">120 Days Unlimited Access</span>
-            </div>
-            <div class="cyber-plan-price-wrap">
-              <span class="cyber-plan-price">239</span><span class="cyber-plan-currency">TK</span>
-            </div>
-          </div>
-
-          <!-- 8 Months: 399 TK -->
-          <div class="cyber-plan-card" data-plan="8m" title="Click to Order via WhatsApp">
-            <div class="cyber-plan-info">
-              <div class="cyber-plan-title-row">
-                <span class="cyber-plan-name">8 MONTHS</span>
-                <span class="cyber-plan-badge" style="background:#f59e0b; color:#020617;">PRO</span>
-              </div>
-              <span class="cyber-plan-duration">240 Days Unlimited Access</span>
-            </div>
-            <div class="cyber-plan-price-wrap">
-              <span class="cyber-plan-price">399</span><span class="cyber-plan-currency">TK</span>
-            </div>
-          </div>
-
-          <!-- 12 Months: 499 TK -->
-          <div class="cyber-plan-card vip" data-plan="12m" title="Click to Order via WhatsApp">
-            <div class="cyber-plan-info">
-              <div class="cyber-plan-title-row">
-                <span class="cyber-plan-name">12 MONTHS</span>
-                <span class="cyber-plan-badge vip">👑 BEST VALUE</span>
-              </div>
-              <span class="cyber-plan-duration">365 Days (1 Full Year Access)</span>
-            </div>
-            <div class="cyber-plan-price-wrap">
-              <span class="cyber-plan-price">499</span><span class="cyber-plan-currency">TK</span>
-            </div>
-          </div>
+        <div id="payment-methods-notice" class="cyber-payment-methods-notice">
+          💳 Payment: PayPal, Credit/Debit Card, Crypto (USDT), or WhatsApp.
         </div>
 
         <button class="cyber-btn-primary" id="btn-switch-to-login" style="margin-top: 6px;">
@@ -4502,13 +4618,27 @@
       }
     };
 
-    const SUBSCRIPTION_PLANS = [
-      { id: '1m', name: '1 Month', price: 99, currency: 'TK', days: 30, tag: 'Starter' },
-      { id: '2m', name: '2 Months', price: 149, currency: 'TK', days: 60, tag: 'Popular' },
-      { id: '4m', name: '4 Months', price: 239, currency: 'TK', days: 120, tag: 'Value' },
-      { id: '8m', name: '8 Months', price: 399, currency: 'TK', days: 240, tag: 'Pro' },
-      { id: '12m', name: '12 Months', price: 499, currency: 'TK', days: 365, tag: 'Best Value' }
-    ];
+    const SUBSCRIPTION_PLANS = {
+      bdt: [
+        { id: '1m', name: '1 Month', price: 99, currency: 'TK', symbol: '৳', days: 30, tag: 'Starter' },
+        { id: '2m', name: '2 Months', price: 149, currency: 'TK', symbol: '৳', days: 60, tag: 'Popular', highlight: true },
+        { id: '4m', name: '4 Months', price: 239, currency: 'TK', symbol: '৳', days: 120, tag: 'Value' },
+        { id: '8m', name: '8 Months', price: 399, currency: 'TK', symbol: '৳', days: 240, tag: 'Pro' },
+        { id: '12m', name: '12 Months', price: 499, currency: 'TK', symbol: '৳', days: 365, tag: 'Best Value', vip: true }
+      ],
+      usd: [
+        { id: '1m', name: '1 Month', price: 3.99, currency: 'USD', symbol: '$', days: 30, tag: 'Starter' },
+        { id: '2m', name: '2 Months', price: 5.99, currency: 'USD', symbol: '$', days: 60, tag: 'Popular', highlight: true },
+        { id: '4m', name: '4 Months', price: 9.99, currency: 'USD', symbol: '$', days: 120, tag: 'Value' },
+        { id: '8m', name: '8 Months', price: 15.99, currency: 'USD', symbol: '$', days: 240, tag: 'Pro' },
+        { id: '12m', name: '12 Months', price: 19.99, currency: 'USD', symbol: '$', days: 365, tag: 'Best Value', vip: true }
+      ]
+    };
+
+    function getPlanDef(planId, currency = 'bdt') {
+      const list = SUBSCRIPTION_PLANS[currency] || SUBSCRIPTION_PLANS.bdt;
+      return list.find(p => p.id === planId) || list[0];
+    }
 
     class SecurityEngine {
       constructor(app) {
@@ -4516,6 +4646,11 @@
         this.session = null;
         this.licenses = {};
         this.cloudSyncStatus = 'idle';
+        this.selectedCurrency = 'usd';
+        this.trialDurationSec = 600; // 10 Minutes Free Trial
+        this.trialRemainingSec = 600;
+        this.trialInterval = null;
+        this.currentOrderMsg = '';
         this.loadDatabase();
         // Background live cloud sync
         setTimeout(() => this.syncFromCloud(), 300);
@@ -4643,7 +4778,7 @@
           return { success: false, message: 'Password must be at least 3 characters!' };
         }
 
-        const plan = SUBSCRIPTION_PLANS.find(p => p.id === planId);
+        const plan = getPlanDef(planId, this.selectedCurrency);
         let days = plan ? plan.days : 30;
         let planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + plan.currency + ')') : (days + ' Days Pass');
 
@@ -4668,7 +4803,7 @@
           planId: planId || 'custom',
           planTitle: planTitle,
           price: plan ? plan.price : 'Custom',
-          currency: 'TK',
+          currency: plan ? plan.currency : 'TK',
           createdAt: now,
           expiresAt: expiresAt,
           signature: signature,
@@ -4728,7 +4863,7 @@
         }
 
         // Register license in this device's storage
-        const plan = SUBSCRIPTION_PLANS.find(p => p.id === planTag.toLowerCase());
+        const plan = getPlanDef(planTag.toLowerCase(), this.selectedCurrency);
         const planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + plan.currency + ')') : (planTag.toUpperCase() + ' Pass');
 
         const newLicense = {
@@ -4904,7 +5039,7 @@
       logout() {
         this.session = null;
         this.saveSession();
-        this.showLockModal(true);
+        this.handleTrialWorkflow();
         this.updateDrawerStatus();
       }
 
@@ -4937,8 +5072,306 @@
         return minutes + 'm left';
       }
 
+      // Device Fingerprint generator for trial anti-abuse
+      getDeviceFingerprint() {
+        try {
+          const raw = [
+            navigator.userAgent || '',
+            (screen.width || 0) + 'x' + (screen.height || 0),
+            screen.colorDepth || 24,
+            navigator.hardwareConcurrency || 2,
+            Intl.DateTimeFormat().resolvedOptions().timeZone || ''
+          ].join('|');
+          return Math.abs(this.hashCode(raw)).toString(36);
+        } catch(e) {
+          return 'dev_' + (screen.width || 360) + 'x' + (screen.height || 640);
+        }
+      }
+
+      hashCode(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          hash = ((hash << 5) - hash) + str.charCodeAt(i);
+          hash |= 0;
+        }
+        return hash;
+      }
+
+      // Detect if user is from Bangladesh or International
+      detectCountryAndCurrency() {
+        const saved = localStorage.getItem('cfb_user_currency');
+        if (saved === 'bdt' || saved === 'usd') {
+          this.selectedCurrency = saved;
+          return;
+        }
+        try {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+          const lang = (navigator.language || '').toLowerCase();
+          if (tz.includes('Dhaka') || lang.includes('bn') || lang.includes('bd')) {
+            this.selectedCurrency = 'bdt';
+          } else {
+            this.selectedCurrency = 'usd';
+          }
+        } catch(e) {
+          this.selectedCurrency = 'usd';
+        }
+      }
+
+      // Check multi-storage 10-minute trial status
+      getTrialStatus() {
+        const fp = this.getDeviceFingerprint();
+        let trialData = null;
+
+        try {
+          const raw = localStorage.getItem('cfb_trial_device_' + fp) || localStorage.getItem('cfb_trial_data');
+          if (raw) trialData = JSON.parse(raw);
+        } catch(e) {}
+
+        if (!trialData) {
+          try {
+            const raw = sessionStorage.getItem('cfb_trial_data');
+            if (raw) trialData = JSON.parse(raw);
+          } catch(e) {}
+        }
+
+        if (!trialData) {
+          try {
+            const cookies = document.cookie.split(';');
+            for (let c of cookies) {
+              c = c.trim();
+              if (c.startsWith('cfb_trial_exp=')) {
+                const val = c.substring('cfb_trial_exp='.length);
+                if (val === 'true') {
+                  trialData = { isExpired: true, remainingSec: 0, startedAt: Date.now() - 600000 };
+                }
+              }
+            }
+          } catch(e) {}
+        }
+
+        if (trialData) {
+          if (trialData.isExpired) {
+            return { isExpired: true, remainingSec: 0 };
+          }
+          const now = Date.now();
+          const elapsedSinceStart = Math.floor((now - (trialData.startedAt || now)) / 1000);
+          const totalElapsed = Math.max(trialData.elapsed || 0, elapsedSinceStart);
+          const remaining = Math.max(0, this.trialDurationSec - totalElapsed);
+          if (remaining <= 0) {
+            this.markTrialExpired();
+            return { isExpired: true, remainingSec: 0 };
+          }
+          return { isExpired: false, remainingSec: remaining };
+        }
+
+        // Brand new device: Start 10-Minute Free Trial!
+        const newTrial = {
+          startedAt: Date.now(),
+          elapsed: 0,
+          isExpired: false
+        };
+        this.saveTrialData(newTrial);
+        return { isExpired: false, remainingSec: this.trialDurationSec };
+      }
+
+      saveTrialProgress(currentRemainingSec) {
+        const elapsed = Math.max(0, this.trialDurationSec - currentRemainingSec);
+        const data = {
+          startedAt: Date.now() - (elapsed * 1000),
+          elapsed: elapsed,
+          isExpired: currentRemainingSec <= 0
+        };
+        this.saveTrialData(data);
+      }
+
+      saveTrialData(data) {
+        const fp = this.getDeviceFingerprint();
+        const str = JSON.stringify(data);
+        try { localStorage.setItem('cfb_trial_device_' + fp, str); } catch(e) {}
+        try { localStorage.setItem('cfb_trial_data', str); } catch(e) {}
+        try { sessionStorage.setItem('cfb_trial_data', str); } catch(e) {}
+        try {
+          document.cookie = 'cfb_trial_exp=' + (data.isExpired ? 'true' : 'active') + '; max-age=31536000; path=/; SameSite=Lax';
+        } catch(e) {}
+      }
+
+      markTrialExpired() {
+        const data = {
+          startedAt: Date.now() - 600000,
+          elapsed: 600,
+          isExpired: true
+        };
+        this.saveTrialData(data);
+      }
+
+      handleTrialWorkflow() {
+        const trial = this.getTrialStatus();
+        const banner = document.getElementById('cyber-trial-banner');
+        const hudTrial = document.getElementById('hud-trial-badge');
+        const timerText = document.getElementById('hud-trial-timer');
+
+        if (trial.isExpired) {
+          this.showLockModal(true);
+          if (banner) banner.style.display = 'block';
+          if (hudTrial) hudTrial.style.display = 'none';
+          this.showLoginAlert('⏱️ Your 10-Minute Free Trial has ended! Choose a pass below to unlock 24/7 access.', 'error');
+          const tabPricing = document.getElementById('tab-btn-pricing');
+          if (tabPricing) tabPricing.click();
+          return;
+        }
+
+        if (banner) banner.style.display = 'none';
+        this.showLockModal(false);
+        if (hudTrial) hudTrial.style.display = 'inline-flex';
+
+        const updateTimerDisplay = (sec) => {
+          const m = Math.floor(sec / 60);
+          const s = sec % 60;
+          if (timerText) timerText.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        };
+        updateTimerDisplay(trial.remainingSec);
+
+        if (this.trialInterval) clearInterval(this.trialInterval);
+
+        let currentSec = trial.remainingSec;
+        this.trialInterval = setInterval(() => {
+          if (this.isAuthenticated()) {
+            clearInterval(this.trialInterval);
+            if (hudTrial) hudTrial.style.display = 'none';
+            return;
+          }
+
+          currentSec--;
+          updateTimerDisplay(Math.max(0, currentSec));
+
+          if (currentSec % 5 === 0) {
+            this.saveTrialProgress(currentSec);
+          }
+
+          if (currentSec <= 0) {
+            clearInterval(this.trialInterval);
+            this.markTrialExpired();
+            if (hudTrial) hudTrial.style.display = 'none';
+            this.showLockModal(true);
+            if (banner) banner.style.display = 'block';
+            this.showLoginAlert('⏱️ Your 10-Minute Free Trial has ended! Subscribe to unlock 24/7 unlimited access.', 'error');
+            const tabPricing = document.getElementById('tab-btn-pricing');
+            if (tabPricing) tabPricing.click();
+            try {
+              if (this.app && this.app.audio) this.app.audio.playVictoryHorn();
+            } catch(e) {}
+          }
+        }, 1000);
+      }
+
+      renderPricingCards() {
+        const container = document.getElementById('cyber-pricing-list-container');
+        const notice = document.getElementById('payment-methods-notice');
+        const loginHint = document.getElementById('login-payment-hint');
+        const btnUsd = document.getElementById('btn-currency-usd');
+        const btnBdt = document.getElementById('btn-currency-bdt');
+
+        if (btnUsd && btnBdt) {
+          btnUsd.classList.toggle('active', this.selectedCurrency === 'usd');
+          btnBdt.classList.toggle('active', this.selectedCurrency === 'bdt');
+        }
+
+        if (notice) {
+          if (this.selectedCurrency === 'usd') {
+            notice.innerHTML = '💳 <strong>International Checkout:</strong> PayPal, Credit/Debit Card, Crypto (USDT), or WhatsApp (+8801711729858). Instant Delivery.';
+          } else {
+            notice.innerHTML = '💳 <strong>বাংলাদেশ পেমেন্ট:</strong> bKash (Personal/Send Money), Nagad, অথবা Rocket (+8801711729858). তাৎক্ষণিক এক্টিভেশন।';
+          }
+        }
+
+        if (loginHint) {
+          if (this.selectedCurrency === 'usd') {
+            loginHint.innerHTML = '<span>💳 PayPal, Card, Crypto / WhatsApp accepted</span>';
+          } else {
+            loginHint.innerHTML = '<span>💳 bKash / Nagad / Rocket accepted</span>';
+          }
+        }
+
+        if (!container) return;
+        container.innerHTML = '';
+
+        const plans = SUBSCRIPTION_PLANS[this.selectedCurrency] || SUBSCRIPTION_PLANS.usd;
+        plans.forEach(plan => {
+          const card = document.createElement('div');
+          card.className = 'cyber-plan-card' + (plan.highlight ? ' highlight' : '') + (plan.vip ? ' vip' : '');
+          card.setAttribute('data-plan', plan.id);
+          card.title = 'Click to Order via WhatsApp / Checkout';
+
+          const priceFormatted = plan.currency === 'USD' ? ('$' + plan.price.toFixed(2)) : (plan.price + ' TK');
+
+          card.innerHTML = `
+            <div class="cyber-plan-info">
+              <div class="cyber-plan-title-row">
+                <span class="cyber-plan-name">${plan.name.toUpperCase()}</span>
+                <span class="cyber-plan-badge" style="${plan.vip ? 'background:#c084fc; color:#020617;' : (plan.highlight ? 'background:#fbbf24; color:#020617;' : 'background:#0284c7; color:#fff;')}">${plan.tag}</span>
+              </div>
+              <span class="cyber-plan-duration">${plan.days} Days Unlimited Access</span>
+            </div>
+            <div class="cyber-plan-price-wrap">
+              <span class="cyber-plan-price" style="font-size: 16px; font-weight: 900; color: #fbbf24;">${priceFormatted}</span>
+            </div>
+          `;
+
+          card.addEventListener('click', () => {
+            this.openOrderModal(plan.id, this.selectedCurrency);
+          });
+
+          container.appendChild(card);
+        });
+      }
+
+      openOrderModal(planId, currency = this.selectedCurrency) {
+        const plans = SUBSCRIPTION_PLANS[currency] || SUBSCRIPTION_PLANS.usd;
+        const plan = plans.find(p => p.id === planId) || plans[0];
+        const orderModal = document.getElementById('cyber-order-modal');
+        const orderPlanName = document.getElementById('order-card-plan-name');
+        const orderPlanDuration = document.getElementById('order-card-plan-duration');
+        const orderPlanPrice = document.getElementById('order-card-plan-price');
+        const orderMsgPreview = document.getElementById('order-card-msg-preview');
+
+        let currentOrderMsg = '';
+        if (currency === 'usd') {
+          currentOrderMsg = '👋 Hello Tawhid Bhai!\n' +
+            '🎮 I want to purchase Country Flag Battle Royale (International Streamer Pass):\n' +
+            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+            '💎 Plan: ' + plan.name + ' ($' + plan.price.toFixed(2) + ' USD)\n' +
+            '⏳ Duration: ' + plan.days + ' Days 24/7 Unlimited Access\n' +
+            '💰 Price: $' + plan.price.toFixed(2) + ' USD\n' +
+            '💳 Payment: PayPal / Credit Card / Crypto / WhatsApp\n' +
+            '🛡️ Backed by: $199 USD Copyright-Strike Immunity Guarantee\n' +
+            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+            'Please send me the checkout link and my Login ID & Password!';
+        } else {
+          currentOrderMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
+            '🎮 I want to subscribe to Country Flag Battle Royale:\n' +
+            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+            '💎 Plan: ' + plan.name + ' (' + plan.price + ' TK)\n' +
+            '⏳ Duration: ' + plan.days + ' Days Access\n' +
+            '💰 Price: ' + plan.price + ' TK\n' +
+            '💳 Payment: bKash / Nagad / Rocket\n' +
+            '🛡️ Backed by: $199 USD Copyright-Strike Immunity Guarantee\n' +
+            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+            'Please send me your bKash/Nagad number and my Login ID & Password!';
+        }
+
+        this.currentOrderMsg = currentOrderMsg;
+        if (orderPlanName) orderPlanName.textContent = plan.name.toUpperCase();
+        if (orderPlanDuration) orderPlanDuration.textContent = plan.days + ' Days Unlimited Access';
+        if (orderPlanPrice) orderPlanPrice.textContent = currency === 'usd' ? ('$' + plan.price.toFixed(2) + ' USD') : (plan.price + ' TK');
+        if (orderMsgPreview) orderMsgPreview.textContent = currentOrderMsg;
+
+        if (orderModal) orderModal.classList.add('show');
+      }
+
       init() {
+        this.detectCountryAndCurrency();
         this.setupDOM();
+        this.renderPricingCards();
 
         // 1-Click Automatic URL Activation: ?key=CFB-...
         try {
@@ -4954,6 +5387,8 @@
                 }
                 this.showLockModal(false);
                 this.updateDrawerStatus();
+                const hudTrial = document.getElementById('hud-trial-badge');
+                if (hudTrial) hudTrial.style.display = 'none';
                 alert('🎉 SUBSCRIPTION ACTIVATED! Welcome ' + actRes.session.userId + ' (' + actRes.session.planTitle + ')');
                 return;
               } else {
@@ -4969,8 +5404,11 @@
         if (check.valid) {
           this.showLockModal(false);
           this.updateDrawerStatus();
+          const hudTrial = document.getElementById('hud-trial-badge');
+          if (hudTrial) hudTrial.style.display = 'none';
         } else {
-          this.showLockModal(true);
+          // Check 10-Minute Free Trial status for this device
+          this.handleTrialWorkflow();
           if (check.expired) {
             this.showLoginAlert('⚠️ Your subscription has expired! Please renew with Master Admin.', 'error');
           }
@@ -5082,6 +5520,9 @@
             if (res.success) {
               this.showLockModal(false);
               this.updateDrawerStatus();
+              const hudTrial = document.getElementById('hud-trial-badge');
+              if (hudTrial) hudTrial.style.display = 'none';
+              if (this.trialInterval) clearInterval(this.trialInterval);
               inputPass.value = '';
               if (this.app) {
                 if (this.app.isRoundOver) {
@@ -5292,45 +5733,34 @@
         // Order Modal Elements
         const orderModal = document.getElementById('cyber-order-modal');
         const btnCloseOrder = document.getElementById('btn-close-order-modal');
-        const orderPlanName = document.getElementById('order-card-plan-name');
-        const orderPlanDuration = document.getElementById('order-card-plan-duration');
-        const orderPlanPrice = document.getElementById('order-card-plan-price');
-        const orderMsgPreview = document.getElementById('order-card-msg-preview');
         const btnSendWA = document.getElementById('btn-send-whatsapp-order');
         const btnCopyOrder = document.getElementById('btn-copy-order-msg');
 
-        let currentOrderPlan = null;
-        let currentOrderMsg = '';
-
-        const openOrderModal = (planId) => {
-          const plan = SUBSCRIPTION_PLANS.find(p => p.id === planId) || SUBSCRIPTION_PLANS[0];
-          currentOrderPlan = plan;
-
-          currentOrderMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
-            '🎮 I want to subscribe to Country Flag Battle Royale:\n' +
-            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-            '💎 Plan: ' + plan.name + ' (' + plan.price + ' ' + plan.currency + ')\n' +
-            '⏳ Duration: ' + plan.days + ' Days Access\n' +
-            '💰 Price: ' + plan.price + ' TK\n' +
-            '💳 Payment: bKash / Nagad\n' +
-            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-            'Please send me your bKash/Nagad number and my Login ID & Password!';
-
-          if (orderPlanName) orderPlanName.textContent = plan.name.toUpperCase();
-          if (orderPlanDuration) orderPlanDuration.textContent = plan.days + ' Days Unlimited Access';
-          if (orderPlanPrice) orderPlanPrice.textContent = plan.price + ' ' + plan.currency;
-          if (orderMsgPreview) orderMsgPreview.textContent = currentOrderMsg;
-
-          if (orderModal) orderModal.classList.add('show');
-        };
-
-        // Attach click listeners to plan cards
-        document.querySelectorAll('.cyber-plan-card').forEach(card => {
-          card.addEventListener('click', () => {
-            const planId = card.getAttribute('data-plan') || '1m';
-            openOrderModal(planId);
+        // Currency Switcher Buttons
+        const btnUsd = document.getElementById('btn-currency-usd');
+        const btnBdt = document.getElementById('btn-currency-bdt');
+        if (btnUsd && btnBdt) {
+          btnUsd.addEventListener('click', () => {
+            this.selectedCurrency = 'usd';
+            try { localStorage.setItem('cfb_user_currency', 'usd'); } catch(e) {}
+            this.renderPricingCards();
           });
-        });
+          btnBdt.addEventListener('click', () => {
+            this.selectedCurrency = 'bdt';
+            try { localStorage.setItem('cfb_user_currency', 'bdt'); } catch(e) {}
+            this.renderPricingCards();
+          });
+        }
+
+        // HUD Trial Badge Click: opens subscription options
+        const hudTrialBadge = document.getElementById('hud-trial-badge');
+        if (hudTrialBadge) {
+          hudTrialBadge.addEventListener('click', () => {
+            this.showLockModal(true);
+            const tabPricing = document.getElementById('tab-btn-pricing');
+            if (tabPricing) tabPricing.click();
+          });
+        }
 
         if (btnCloseOrder && orderModal) {
           btnCloseOrder.addEventListener('click', () => {
@@ -5341,7 +5771,7 @@
         if (btnSendWA) {
           btnSendWA.addEventListener('click', () => {
             const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
-            const encoded = encodeURIComponent(currentOrderMsg);
+            const encoded = encodeURIComponent(this.currentOrderMsg);
             const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
             window.open(waUrl, '_blank');
           });
@@ -5349,7 +5779,7 @@
 
         if (btnCopyOrder) {
           btnCopyOrder.addEventListener('click', () => {
-            navigator.clipboard.writeText(currentOrderMsg).then(() => {
+            navigator.clipboard.writeText(this.currentOrderMsg).then(() => {
               btnCopyOrder.textContent = '✅ COPIED ORDER MESSAGE!';
               setTimeout(() => {
                 btnCopyOrder.textContent = '📋 COPY ORDER MESSAGE (FOR MESSENGER/SMS)';

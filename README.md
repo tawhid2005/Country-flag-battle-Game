@@ -90,17 +90,23 @@ Streamers have full real-time control over the arena physics and gameplay:
 
 ---
 
-## 💎 Subscription Plans & Pricing
+## 💎 Subscription Plans & Pricing (Global USD & Local BDT)
 
-To maintain continuous 24/7 cloud sync, server maintenance, and premium updates, Country Flag Battle Royale operates on transparent, affordable subscription plans:
+To maintain continuous 24/7 cloud sync, server maintenance, and premium updates, Country Flag Battle Royale operates on transparent, affordable subscription plans for both local and international creators:
 
-| Tier | Package | Duration | Price (BDT) | Features & Benefits |
-| :---: | :--- | :---: | :---: | :--- |
-| 🥉 | **Starter Pass** | **1 Month (30 Days)** | **99 TK** | Unlimited 24/7 streaming, full physics engine, all 190+ flags |
-| 🔥 | **Popular Pass** | **2 Months (60 Days)** | **149 TK** | **Most Popular!** Complete access + priority cloud sync |
-| 💎 | **Value Pass** | **4 Months (120 Days)** | **239 TK** | Best for growing channels & regular daily streamers |
-| 🚀 | **Pro Pass** | **8 Months (240 Days)** | **399 TK** | High-performance long-term streaming pass |
-| 👑 | **Ultimate VIP Pass**| **12 Months (365 Days)** | **499 TK** | **Best Value!** Full 1-Year unlimited license access |
+> 🛡️ **100% RISK-FREE $199 USD COPYRIGHT IMMUNITY GUARANTEE:**  
+> If our procedural algorithmic Web Audio ever causes a valid Copyright Strike or Content-ID claim on your YouTube or TikTok live stream, Admin Tawhid will pay you **$199 USD cash compensation** directly to your PayPal or bKash!
+
+> ⏱️ **10-MINUTE FREE TRIAL PER DEVICE:**  
+> Every new device gets 10 minutes of completely free gameplay and battle simulation to test the physics and arena before choosing a subscription plan!
+
+| Tier | Package | Duration | Global Price (USD) | Bangladesh (BDT) | Features & Benefits |
+| :---: | :--- | :---: | :---: | :---: | :--- |
+| 🥉 | **Starter Pass** | **1 Month (30 Days)** | **$3.99 USD** | **99 TK** | Unlimited 24/7 streaming, full physics engine, all 195 flags |
+| 🔥 | **Popular Pass** | **2 Months (60 Days)** | **$5.99 USD** | **149 TK** | **Most Popular!** Complete access + priority cloud sync |
+| 💎 | **Value Pass** | **4 Months (120 Days)** | **$9.99 USD** | **239 TK** | Best for growing channels & regular daily streamers |
+| 🚀 | **Pro Pass** | **8 Months (240 Days)** | **$15.99 USD** | **399 TK** | High-performance long-term streaming pass |
+| 👑 | **Ultimate VIP Pass**| **12 Months (365 Days)** | **$19.99 USD** | **499 TK** | **Best Value!** Full 1-Year unlimited license access |
 
 ---
 
