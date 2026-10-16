@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Googlebot & Search Engine Indexing
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://countryflagbattlegame.vercel.app/sitemap.xml

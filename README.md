@@ -3,15 +3,18 @@
 # 🎮 Country Flag Battle Royale 24/7
 ### The Ultimate Autonomous Esports Battle Royale Simulator for YouTube Live & TikTok (9:16 Vertical Stream)
 
-[![Live Demo](https://img.shields.io/badge/Platform-YouTube%20Live%20%7C%20TikTok%20Live-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://github.com/tawhid2005/Country-flag-battle-Game)
-[![Aspect Ratio](https://img.shields.io/badge/Aspect%20Ratio-9%3A16%20Vertical%20(1080x1920)-00e5ff?style=for-the-badge)](https://github.com/tawhid2005/Country-flag-battle-Game)
+[![Official Website](https://img.shields.io/badge/Official%20Website-countryflagbattlegame.vercel.app-00e5ff?style=for-the-badge&logo=vercel&logoColor=white)](https://countryflagbattlegame.vercel.app/)
+[![Platform](https://img.shields.io/badge/Platform-YouTube%20Live%20%7C%20TikTok%20Live-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://countryflagbattlegame.vercel.app/)
+[![Aspect Ratio](https://img.shields.io/badge/Aspect%20Ratio-9%3A16%20Vertical%20(1080x1920)-00e5ff?style=for-the-badge)](https://countryflagbattlegame.vercel.app/)
 [![Physics Engine](https://img.shields.io/badge/Engine-Matter.js%202D%20Physics-fbbf24?style=for-the-badge)](https://brm.io/matter-js/)
-[![Audio](https://img.shields.io/badge/Audio-100%25%20Content--ID%20Safe%20Synth-10b981?style=for-the-badge)](https://github.com/tawhid2005/Country-flag-battle-Game)
+[![Audio](https://img.shields.io/badge/Audio-100%25%20Content--ID%20Safe%20Synth-10b981?style=for-the-badge)](https://countryflagbattlegame.vercel.app/)
 [![License Status](https://img.shields.io/badge/Access-Licensed%20Cyber%20Security%20Gate-purple?style=for-the-badge)](https://wa.me/8801711729858)
 
 <br />
 
-**Country Flag Battle Royale 24/7** is a world-class, automated 24/7 live-streaming simulation game built specifically for content creators, gaming channels, and TikTok/YouTube Live streamers. Featuring real-time **Matter.js 2D rigid-body physics**, dual-tier high-definition vector flag rendering, copyright-safe procedural Web Audio synthesis, and dynamic spectator leaderboards — ready to broadcast straight out of the box in OBS Studio and Streamlabs.
+🌐 **Play Live Now Online**: **[https://countryflagbattlegame.vercel.app/](https://countryflagbattlegame.vercel.app/)**
+
+**Country Flag Battle Game (195 Country Flag Battle Royale)** is a world-class, automated 24/7 live-streaming simulation game built specifically for content creators, gaming channels, and TikTok/YouTube Live streamers. Featuring real-time **Matter.js 2D rigid-body physics**, dual-tier high-definition vector flag rendering, copyright-safe procedural Web Audio synthesis, and dynamic spectator leaderboards — ready to play free online or broadcast straight out of the box in OBS Studio and Streamlabs.
 
 </div>
 
@@ -141,22 +144,18 @@ graph LR
 
 > *This repository is fully optimized to rank at the top of Google search results for streaming automation and flag battle simulators.*
 
-### Primary Search Queries:
-* **Country Flag Battle Royale 24/7**
-* **YouTube Live Flag Battle Game 9:16**
-* **TikTok Live Flag Game Simulator**
-* **Autonomous Flag Battle Royale Stream Game**
-* **24/7 Flag Elimination Game for Streamers**
-* **Country Marble Battle Royale OBS Source**
-* **Matter.js Flag Battle Royale Game**
-* **Flag Wars Simulator for YouTube Shorts**
-* **Country Flag Elimination Live Stream**
-* **Automated Vertical 9:16 Live Stream Game**
+### Primary High-Rank Search Queries & Keywords:
+* **Core Game Search**: `country flag battle game`, `all country flag battle game`, `195 country flag battle game`, `country flag battle into the circle game`, `world cup country flag drop battle game`, `country flag ball game`, `battle flag game`, `flag battle game`.
+* **Free & Download Queries**: `country flag battle game online free`, `country flag battle game download`, `country flag battle game free`, `country flag battle game online`, `country flag battle game pc`, `flag battle game download`, `flag battle game free`, `flag battle game online free`, `country battle game free`.
+* **Battle Royale & Simulator Queries**: `all country battle royale`, `world country battle royale`, `europe country battle royale`, `european country battle royale`, `world country battle simulator`, `flag battle sim`, `flag battle simulator`, `flag battle royale`, `interactive flag battle game`, `world flag battle game`, `250 flag battle game`, `1v1 country game`.
+* **Live Streaming & OBS Queries**: `country flag battle live game`, `youtube live flag game`, `tiktok live flag game`, `obs studio flag game`, `9:16 vertical stream game`, `autonomous 24/7 flag stream`.
+* **Trivia & Country Flags Games**: `how to play flag game`, `flags of countries games`, `match country to flag game`, `match country flags`, `nation flag game`, `guess the country flag game online`, `guess the country flag game unblocked`, `country flag games quiz`, `country flags 2 multiplayer`.
 
-### Meta Information:
-* **Category**: Broadcast Gaming Software / Autonomous Livestream Simulator
-* **Compatibility**: OBS Studio, Streamlabs Desktop, vMix, Google Chrome, Microsoft Edge, Mozilla Firefox, Safari
-* **Target Audience**: YouTube Streamers, TikTok Gamers, Facebook Gaming Creators, Automation Channel Owners
+### Google Search Meta Information:
+* **Canonical URL**: [`https://countryflagbattlegame.vercel.app/`](https://countryflagbattlegame.vercel.app/)
+* **Category**: Autonomous Livestream Simulation / Physics Battle Royale Game
+* **Compatibility**: Windows PC, Mac, iOS, Android, OBS Studio, Streamlabs, vMix, Google Chrome, Microsoft Edge
+* **Target Audience**: YouTube Streamers, TikTok Gamers, Flag Trivia Enthusiasts, Gaming Channels
 
 ---
 
