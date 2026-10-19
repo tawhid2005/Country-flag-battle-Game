@@ -1447,31 +1447,22 @@
     }
 
     /* Secondary HUD Utility Row (Free Trial Countdown & Guide Pill) */
-    .hud-sub-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      min-height: 24px;
-      gap: 6px;
-      pointer-events: auto;
-      padding: 0 2px;
-    }
-
-    /* Horizontal Top Leaderboard Strip */
+    /* Horizontal Top Leaderboard Strip (Ultra-Slim Minimal) */
     .hud-top-leaderboard-strip {
       width: 100%;
-      background: linear-gradient(90deg, rgba(13, 22, 44, 0.95), rgba(20, 32, 64, 0.92));
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      backdrop-filter: blur(16px);
-      border-radius: 12px;
-      padding: 4px 8px;
+      height: 22px;
+      min-height: 22px;
+      background: rgba(10, 18, 38, 0.75);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+      padding: 1px 8px;
       display: flex;
       align-items: center;
       gap: 6px;
       overflow-x: auto;
       scrollbar-width: none;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), 0 0 12px rgba(251, 191, 36, 0.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
     .hud-top-leaderboard-strip::-webkit-scrollbar {
@@ -1562,24 +1553,29 @@
        ESPORTS 1V1 FINAL DUEL SHOWDOWN BANNER
        ========================================================================== */
     #final-duel-banner {
-      width: 100%;
-      position: relative;
+      position: absolute;
+      top: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 400px;
       background: linear-gradient(135deg, rgba(28, 12, 24, 0.96) 0%, rgba(12, 18, 36, 0.98) 50%, rgba(10, 26, 38, 0.96) 100%);
       border: 1px solid rgba(255, 255, 255, 0.22);
       border-top: 2px solid #f43f5e;
       border-bottom: 2px solid #00e5ff;
-      border-radius: 14px;
+      border-radius: 10px;
       backdrop-filter: blur(16px);
-      padding: 8px 14px;
-      margin-top: 4px;
-      box-shadow: 0 0 30px rgba(244, 63, 94, 0.45), 0 8px 25px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      margin: 0;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.85), 0 0 20px rgba(244, 63, 94, 0.4);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 5px;
+      gap: 3px;
       overflow: hidden;
-      animation: duelSlam 0.5s cubic-bezier(0.16, 1.2, 0.3, 1) forwards, duelPulseGlow 1.2s infinite alternate ease-in-out;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 55;
+      animation: duelSlam 0.4s cubic-bezier(0.16, 1.2, 0.3, 1) forwards;
+      pointer-events: none;
     }
 
     #final-duel-banner::before {
@@ -3491,6 +3487,7 @@
       justify-content: center;
       gap: 6px;
       transition: all 0.2s ease;
+    }
     /* ==========================================================================
        AI HUMAN STREAMER SIMULATION ENGINE (ANTI-BOT BROADCAST OVERLAYS)
        ========================================================================== */
@@ -3841,8 +3838,8 @@
     <!-- Cinematic Vignette -->
     <div id="climax-vignette"></div>
 
-    <!-- Reactive Streamer Facecam / Avatar Card -->
-    <div id="streamer-webcam-card" class="streamer-webcam-card" title="Streamer Live Facecam">
+    <!-- Reactive Streamer Facecam / Avatar Card (Hidden by Default for 100% Fresh Clean Game) -->
+    <div id="streamer-webcam-card" class="streamer-webcam-card hidden" title="Streamer Live Facecam">
       <div class="streamer-cam-header">
         <div class="streamer-cam-live-indicator">
           <span class="streamer-cam-live-dot"></span>
@@ -3904,8 +3901,8 @@
       </div>
     </div>
 
-    <!-- Virtual Human Cursor & Target HUD -->
-    <div id="human-cursor-container" class="human-cursor-container">
+    <!-- Virtual Human Cursor & Target HUD (Hidden by Default for 100% Fresh Clean Game) -->
+    <div id="human-cursor-container" class="human-cursor-container hidden">
       <div id="human-virtual-cursor" class="human-virtual-cursor">
         <svg class="cursor-pointer-svg" viewBox="0 0 24 24" fill="none">
           <path d="M4 2L20 9L12 12L9 20L4 2Z" fill="#00e5ff" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"/>
@@ -3922,7 +3919,7 @@
 
     <!-- Live Heads-Up Display (HUD) Layer -->
     <div class="hud-layer">
-      <!-- Upper Header Deck -->
+      <!-- Upper Header Deck (Ultra-Compact Single Row) -->
       <div class="hud-header-container">
         <header class="hud-top-bar">
           <div class="hud-top-left">
@@ -3935,6 +3932,11 @@
             <div class="badge-round">
               <span id="hud-round-label">ROUND #1</span>
             </div>
+
+            <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="10-Minute Free Trial Active">
+              <span class="dot-trial"></span>
+              <span><strong id="hud-trial-timer">10:00</strong></span>
+            </div>
           </div>
 
           <div class="hud-top-right">
@@ -3946,57 +3948,35 @@
           </div>
         </header>
 
-        <!-- Secondary Utility Row (Free Trial Badge & Rules Guide) -->
-        <div class="hud-sub-bar">
-          <!-- Streamer Live Heart Rate Monitor (BPM Pulse) -->
-          <div class="hud-streamer-bpm-badge" id="hud-streamer-bpm" title="Streamer Live Heart Rate Monitor (BPM)">
-            <span class="bpm-heart-icon">❤️</span>
-            <span class="bpm-val" id="hud-bpm-val">78</span>
-            <span class="bpm-unit">BPM</span>
-            <svg class="bpm-ekg-svg" viewBox="0 0 46 16">
-              <path class="bpm-ekg-line" d="M0,8 L10,8 L13,2 L17,14 L20,6 L24,10 L28,8 L46,8" />
-            </svg>
-          </div>
-
-          <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="10-Minute Free Trial Active - Click to Upgrade">
-            <span class="dot-trial"></span>
-            <span>TRIAL: <strong id="hud-trial-timer">10:00</strong></span>
-          </div>
-          <div class="hud-sub-right-tools">
-            <button id="hud-btn-install" class="hud-install-pill" title="Install Flag Battle App on Phone or PC">📲 INSTALL APP</button>
-            <a href="#seo-game-guide" class="hud-guide-pill" title="Read Complete Game Guide, Rules & Wiki">📖 RULES & GUIDE</a>
-          </div>
-        </div>
-
-        <!-- Top Survivors Leaderboard -->
+        <!-- Top Survivors Leaderboard (Ultra-Slim Minimal Ticker) -->
         <aside class="hud-top-leaderboard-strip" id="hud-leaderboard-strip">
-          <div class="leaderboard-strip-label">👑 TOP SURVIVORS:</div>
+          <div class="leaderboard-strip-label">👑 TOP WINS:</div>
           <div class="leaderboard-strip-items" id="leaderboard-strip-items">
             <!-- Dynamically populated -->
           </div>
         </aside>
+      </div>
 
-        <!-- 1v1 Final Duel Banner (Showdown Card) -->
-        <div id="final-duel-banner" class="hidden">
-          <div class="duel-title">⚡ 1V1 FINAL DUEL • SHOWDOWN ⚡</div>
-          <div class="duel-versus-row">
-            <div class="duel-combatant left">
-              <canvas id="duel-flag-1" width="28" height="28"></canvas>
-              <span class="duel-country-name" id="duel-name-1">USA</span>
-            </div>
-            <div class="duel-vs-badge">VS</div>
-            <div class="duel-combatant right">
-              <span class="duel-country-name" id="duel-name-2">BRA</span>
-              <canvas id="duel-flag-2" width="28" height="28"></canvas>
-            </div>
+      <!-- 1v1 Final Duel Banner (Esports Floating Stinger Toast - High Above Arena) -->
+      <div id="final-duel-banner" class="hidden">
+        <div class="duel-title">⚡ 1V1 FINAL DUEL • SHOWDOWN ⚡</div>
+        <div class="duel-versus-row">
+          <div class="duel-combatant left">
+            <canvas id="duel-flag-1" width="24" height="24"></canvas>
+            <span class="duel-country-name" id="duel-name-1">USA</span>
+          </div>
+          <div class="duel-vs-badge">VS</div>
+          <div class="duel-combatant right">
+            <span class="duel-country-name" id="duel-name-2">BRA</span>
+            <canvas id="duel-flag-2" width="24" height="24"></canvas>
           </div>
         </div>
       </div>
 
       <!-- Lower Broadcast Deck (Killfeed, Hype Bar, Ticker) -->
       <div class="hud-bottom-deck">
-        <!-- Streamer Keypress HUD Overlay (A, D, SPACE: TILT, CLICK: FLICK) -->
-        <div id="streamer-key-overlay" class="streamer-key-overlay">
+        <!-- Streamer Keypress HUD Overlay (Hidden by Default for 100% Fresh Clean Game) -->
+        <div id="streamer-key-overlay" class="streamer-key-overlay hidden">
           <div class="streamer-key-pill" id="key-hud-a" title="Steer Counter-Clockwise (A)">◀ A</div>
           <div class="streamer-key-pill" id="key-hud-d" title="Steer Clockwise (D)">D ▶</div>
           <div class="streamer-key-pill tilt-key" id="key-hud-space" title="Manual Stadium Shake (SPACE)">SPACE: TILT</div>
@@ -4146,16 +4126,16 @@
       <!-- AI Human Streamer Simulation Controls -->
       <div style="margin: 12px 0 6px; padding-top: 10px; border-top: 1px solid rgba(0, 229, 255, 0.25); font-family: var(--font-display); font-size: 11px; font-weight: 900; color: #00e5ff; display: flex; align-items: center; justify-content: space-between;">
         <span>🎮 HUMAN STREAMER MODE</span>
-        <span id="badge-human-status" style="font-size: 9px; color: #10b981; font-weight: 800;">ACTIVE</span>
+        <span id="badge-human-status" style="font-size: 9px; color: #94a3b8; font-weight: 800;">OFF</span>
       </div>
-      <button class="drawer-btn" id="btn-toggle-human-mode" style="background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(16, 185, 129, 0.25)); border: 1.5px solid #00e5ff; color: #00e5ff; font-weight: 800;">
-        🧑‍💻 HUMAN MODE: ENABLED
+      <button class="drawer-btn" id="btn-toggle-human-mode" style="background: rgba(255, 255, 255, 0.05); border: 1.5px solid #64748b; color: #94a3b8; font-weight: 800;">
+        🧑‍💻 HUMAN MODE: OFF (CLICK TO ENABLE)
       </button>
-      <button class="drawer-btn" id="btn-toggle-webcam">👤 WEBCAM AVATAR: ON</button>
-      <button class="drawer-btn" id="btn-toggle-cursor">🖱️ VIRTUAL CURSOR: ON</button>
-      <button class="drawer-btn" id="btn-toggle-keys">⌨️ KEYPRESS HUD: ON</button>
-      <button class="drawer-btn" id="btn-toggle-bpm">💓 EKG HEART RATE: ON</button>
-      <button class="drawer-btn" id="btn-toggle-clicksfx">🎧 MECHANICAL CLICKS: ON</button>
+      <button class="drawer-btn" id="btn-toggle-webcam">👤 WEBCAM AVATAR: OFF</button>
+      <button class="drawer-btn" id="btn-toggle-cursor">🖱️ VIRTUAL CURSOR: OFF</button>
+      <button class="drawer-btn" id="btn-toggle-keys">⌨️ KEYPRESS HUD: OFF</button>
+      <button class="drawer-btn" id="btn-toggle-bpm">💓 EKG HEART RATE: OFF</button>
+      <button class="drawer-btn" id="btn-toggle-clicksfx">🎧 MECHANICAL CLICKS: OFF</button>
       <button class="drawer-btn" id="btn-trigger-tilt" style="border-color: #fbbf24; color: #fbbf24; font-weight: 800;">
         ⚡ MANUAL TILT SHAKE (SPACE)
       </button>
@@ -4165,6 +4145,9 @@
       <button class="drawer-btn" id="drawer-btn-pwa-install" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.45)); border: 1.5px solid #10b981; color: #6ee7b7; font-weight: 800; box-shadow: 0 0 14px rgba(16, 185, 129, 0.3);">
         📲 INSTALL APP (IPHONE / ANDROID / PC)
       </button>
+      <a href="#seo-game-guide" class="drawer-btn" style="text-decoration:none; text-align:center; display:block; border-color:rgba(0,229,255,0.4); color:#00e5ff; font-weight:800;">
+        📖 GAME RULES &amp; COMPLETE GUIDE
+      </a>
     
       <!-- Security & License Status -->
       <div class="drawer-auth-badge" id="drawer-auth-status" style="cursor: pointer;" title="Account & Admin Status">
@@ -7265,12 +7248,13 @@
     class HumanStreamerEngine {
       constructor(app) {
         this.app = app;
-        this.enabled = true;
-        this.showWebcam = true;
-        this.showCursor = true;
-        this.showKeyOverlay = true;
-        this.showBpm = true;
-        this.enableMechanicalSfx = true;
+        // Disabled by default so arena loads 100% fresh, clean, and uncluttered!
+        this.enabled = false;
+        this.showWebcam = false;
+        this.showCursor = false;
+        this.showKeyOverlay = false;
+        this.showBpm = false;
+        this.enableMechanicalSfx = false;
 
         this.cursorX = 270;
         this.cursorY = 475;
@@ -7408,6 +7392,11 @@
         if (this.dom.btnHumanMode) {
           this.dom.btnHumanMode.addEventListener('click', () => {
             this.enabled = !this.enabled;
+            this.showWebcam = this.enabled;
+            this.showCursor = this.enabled;
+            this.showKeyOverlay = this.enabled;
+            this.showBpm = this.enabled;
+            this.enableMechanicalSfx = this.enabled;
             this.updateDrawerButtons();
           });
         }
