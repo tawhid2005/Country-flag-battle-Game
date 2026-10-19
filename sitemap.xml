@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://countryflagbattlegame.vercel.app/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://countryflagbattlegame.vercel.app/og-preview.png</image:loc>
+      <image:title>Country Flag Battle Game — 195 Country Flag Battle Royale &amp; Marble Race Simulator</image:title>
+      <image:caption>Play 195 Country Flag Battle Game into the circle online free. 24/7 autonomous esports physics battle royale simulator for PC, mobile, YouTube Live and TikTok.</image:caption>
+    </image:image>
   </url>
 </urlset>

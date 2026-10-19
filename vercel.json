@@ -3,11 +3,11 @@
   "cleanUrls": false,
   "rewrites": [
     {
-      "source": "/(sitemap\\.xml|robots\\.txt|googlee59d340a4eeb0771\\.html|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|apple-touch-icon\\.png|favicon\\.png|favicon\\.ico)",
+      "source": "/(sitemap\\.xml|robots\\.txt|googlee59d340a4eeb0771\\.html|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|apple-touch-icon\\.png|favicon\\.png|favicon\\.ico|og-preview\\.png|og-preview\\.jpg)",
       "destination": "/$1"
     },
     {
-      "source": "/((?!googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*).*)",
+      "source": "/((?!googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*).*)",
       "destination": "/index.html"
     }
   ],
@@ -60,7 +60,7 @@
       ]
     },
     {
-      "source": "/(icon-.*\\.png|apple-touch-icon\\.png|favicon\\..*)",
+      "source": "/(icon-.*\\.png|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*)",
       "headers": [
         {
           "key": "Cache-Control",

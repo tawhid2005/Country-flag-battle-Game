@@ -1,9 +1,10 @@
 // Country Flag Battle Royale - PWA Service Worker
-const CACHE_NAME = 'cfb-cache-v1';
+const CACHE_NAME = 'cfb-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/og-preview.png',
   '/icon-192.png',
   '/icon-512.png',
   '/apple-touch-icon.png',

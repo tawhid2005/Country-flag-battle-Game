@@ -22,19 +22,21 @@
 
 ## 📌 Table of Contents
 1. [🌟 Highlights & Features](#-highlights--features)
-2. [🚀 How to Use & Broadcast (OBS Setup Guide)](#-how-to-use--broadcast-obs-setup-guide)
-3. [⚙️ Streamer Drawer & Controls](#️-streamer-drawer--controls)
-4. [💎 Subscription Plans & Pricing](#-subscription-plans--pricing)
-5. [🛒 How to Purchase & Activate Your License](#-how-to-purchase--activate-your-license)
-6. [🔒 Cyber Security Gate & Anti-Piracy Protection](#-cyber-security-gate--anti-piracy-protection)
-7. [🔍 Google Search Keywords & SEO Optimization](#-google-search-keywords--seo-optimization)
-8. [❓ Frequently Asked Questions (FAQ)](#-frequently-asked-questions-faq)
-9. [📞 Official Support & Contact](#-official-support--contact)
+2. [🧑‍💻 AI Human Streamer Simulation Engine (Anti-Bot System)](#-ai-human-streamer-simulation-engine-anti-bot-system)
+3. [🚀 How to Use & Broadcast (OBS Setup Guide)](#-how-to-use--broadcast-obs-setup-guide)
+4. [⚙️ Streamer Drawer & Controls](#️-streamer-drawer--controls)
+5. [💎 Subscription Plans & Pricing](#-subscription-plans--pricing)
+6. [🛒 How to Purchase & Activate Your License](#-how-to-purchase--activate-your-license)
+7. [🔒 Cyber Security Gate & Anti-Piracy Protection](#-cyber-security-gate--anti-piracy-protection)
+8. [🔍 Google Search Keywords & SEO Optimization](#-google-search-keywords--seo-optimization)
+9. [❓ Frequently Asked Questions (FAQ)](#-frequently-asked-questions-faq)
+10. [📞 Official Support & Contact](#-official-support--contact)
 
 ---
 
 ## 🌟 Highlights & Features
 
+* 🧑‍💻 **Autonomous Human Gameplay Simulation System**: Organic Bezier virtual mouse cursor with country inspect badges, real-time keypress HUD (`[A]`, `[D]`, `[SPACE: TILT]`, `[🖱️ FLICK]`), dynamic EKG heart-rate monitor (78-150 BPM), reactive cyberpunk streamer webcam avatar with animated microphone VU meters, and synthetic mechanical keyboard audio.
 * 🎪 **High-Octane Rotating Battle Arena**: Circular battle colosseum powered by Matter.js rigid-body physics with motor-driven kinetic flippers, bouncy neon pinball bumpers, and dynamic hazard gates.
 * 🏳️ **Dual-Tier Pro Flag Engine**: Procedural vector flag generator combined with official FlagCDN high-res textures for over 190+ nations worldwide.
 * 🔮 **3D Glossy Championship Marbles**: Specular light glints, metallic championship rims, and country name labels for crystal-clear spectator visibility on mobile screens.
@@ -42,6 +44,62 @@
 * 🏆 **Royal Victory Podium Celebration**: Golden sunburst particle bursts, laurel wreath crest, 3D animated golden crown, and an automated 7-second circular intermission countdown.
 * 🎵 **100% Copyright-Free Web Audio Synthesizer**: Zero risk of YouTube Content-ID strikes or stream mutes! Real-time Web Audio API synthesis produces bumper pops, kinetic bounces, heartbeat tension pulses, and victory fanfares.
 * 📱 **Native 9:16 Vertical Esports HUD**: Designed from the ground up for YouTube Shorts, YouTube Vertical Live, TikTok Live, and Facebook Reels.
+
+---
+
+## 🧑‍💻 AI Human Streamer Simulation Engine (Anti-Bot System)
+
+> ### 🛡️ The Secret to 24/7 Channel Growth & Monetization Safety
+> Modern live streaming platforms (YouTube Live, TikTok Live, Twitch) strictly demote unattended robotic loops, pre-recorded videos, and static bot games under their **"Repetitive, Automated, or Low-Effort Content"** policies.
+> 
+> **Country Flag Battle Royale 24/7** solves this completely by integrating an advanced **AI Human Streamer Simulation Engine**. Even when you are sleeping or away from your computer, the broadcast autonomously acts, moves, and reacts exactly like a live human content creator actively playing at their desk!
+
+```mermaid
+graph TD
+    A[Autonomous Battle Arena Running] --> B{AI Streamer Engine}
+    B --> C[Organic Virtual Mouse Movement]
+    C -->|Hovers Marbles| D[Tactical Country Inspect Tooltip]
+    C -->|Flicks & Clicks| E[Click Ripples & Kinetic Impulse]
+    B --> F[Mechanical Streamer Keypress HUD]
+    F -->|Steering A / D| G[Arena Speed Tuning & Key Lights]
+    F -->|SPACE Pressed| H[Physical Stadium Tilt Shake]
+    B --> I[Procedural Cherry MX Audio Clacks]
+    B --> J[Dynamic EKG Heart-Rate Monitor]
+    J -->|Climax / 1v1| K[145+ BPM Red Alert Pulse]
+    B --> L[Reactive Streamer Webcam Avatar]
+    L -->|Collisions / Hype| M[Morphing Emotions & Mic VU Equalizer Bars]
+    B --> N[Audience Live Chat Cheer Popups]
+    N -->|Cheered Nation| O[Cursor Swoops to Boost Cheered Ball]
+```
+
+### 🧩 6 Core Human Streamer Components:
+
+1. **🖱️ Virtual Human Mouse Cursor & Target HUD**:
+   * Uses organic Bezier curves and micro-jitters to mimic human wrist movements instead of robotic straight lines.
+   * Periodically hovers over prominent marbles to display tactical country info badges (e.g. `🎯 TARGET: BANGLADESH [14 WINS]`).
+   * Executes periodic clicks with expanding neon ripples and imparts subtle flick impulses to nearby marbles.
+
+2. **⌨️ Streamer Keypress HUD & Manual Control Overlay**:
+   * Broadcast-grade glassmorphic controller overlay displaying `[◀ A]`, `[D ▶]`, `[SPACE: TILT]`, and `[🖱️ FLICK]`.
+   * The keys illuminate in real time when the streamer steers the arena or triggers stadium shakes.
+   * **Full Manual Play Support**: You can also physically press `A`, `D`, `SPACE`, or click on the canvas with your real mouse anytime to play along with your audience!
+
+3. **💓 Real-Time EKG Heart-Rate Monitor**:
+   * Displays an animated electrocardiogram line wave with live numeric BPM.
+   * Smoothly transitions from peaceful baseline (76-84 BPM) during regular rounds to an intense, pulsating red alert (136-152 BPM) during 1v1 Final Showdowns!
+
+4. **👤 Reactive Streamer Facecam Avatar & Microphone VU**:
+   * Cyberpunk gamer webcam frame in the top-right corner with a `🔴 LIVE CAM` indicator.
+   * Features natural eye blinking, morphing emotional facial expressions (Calm, Focused, Shocked upon eliminations, and Cheering upon victory).
+   * 8-band animated microphone VU equalizer bars bounce in sync with audio collisions, giving the impression that the streamer is talking into a condenser microphone!
+
+5. **🎧 Procedural Mechanical Switch Audio (100% Synthetic)**:
+   * Real-time algorithmic Web Audio synthesis generates authentic tactile mechanical keyboard clicks (Cherry MX Blue/Brown clacks) and mouse clicks timed perfectly with visual keypresses.
+   * Completely Content-ID strike-free with zero external audio assets.
+
+6. **💬 Audience Live Chat Cheer Interaction**:
+   * Floating comment bubbles from simulated viewers slide up from the bottom-left deck (e.g. `💬 Alex: VAMOS ARGENTINA! 🇦🇷`, `💬 Fahim: BD WIN CHAI! 🇧🇩`).
+   * The virtual cursor responds by swooping over to the cheered country's marble to inspect or boost it!
 
 ---
 
@@ -75,16 +133,26 @@ Getting your 24/7 Country Flag Battle Royale stream running in OBS Studio takes 
 
 ## ⚙️ Streamer Drawer & Controls
 
-Streamers have full real-time control over the arena physics and gameplay:
+Streamers have full real-time control over the arena physics, gameplay, and human streamer overlays:
 
 | Action / Shortcut | Description |
 | :--- | :--- |
-| **`H` Key** | Toggle Streamer Settings Drawer (Hidden from stream HUD) |
+| **`H` Key / `S` Key** | Toggle Streamer Settings Drawer (Hidden from stream HUD) |
 | **⚙️ Gear Icon** | Click to open Streamer Controls Drawer |
+| **`A` / `◀` Key** | Manually steer arena counter-clockwise (Accelerates spin) |
+| **`D` / `▶` Key** | Manually steer arena clockwise (Decelerates spin) |
+| **`SPACE` Key** | Trigger manual **Tilt Shake** impulse (Shakes stadium & bounces clustered balls) |
+| **Left Click** | Flick and boost nearest country marble |
+| **`M` Key** | Quick mute / unmute audio |
+| **🧑‍💻 Human Mode Toggle** | Turn the AI Human Streamer Simulator ON or OFF with 1 click |
+| **👤 Webcam Avatar Toggle** | Show or hide the reactive cyberpunk webcam facecam |
+| **🖱️ Virtual Cursor Toggle** | Show or hide the virtual mouse pointer & target tooltip |
+| **⌨️ Keypress HUD Toggle** | Show or hide the onscreen `[A]`, `[D]`, `[SPACE]` key visualizer |
+| **💓 EKG Heart Rate Toggle** | Show or hide the live BPM heart-rate monitor |
+| **🎧 Mechanical SFX Toggle** | Enable or disable tactile keyboard switch click sounds |
 | **Gravity Control** | Adjust gravitational pull from floaty moon physics to hyper-fast drops |
 | **Arena Rotation Speed** | Speed up or slow down the central circular stadium rotation |
-| **Flipper Force** | Fine-tune the kickback power of kinetic flippers |
-| **Batch Size (16 / 32 / 64)** | Select how many nations battle in each round |
+| **Batch Size (25 / 50 / 80 / 120)** | Select how many nations battle in each round |
 | **SFX Volume Slider** | Adjust game sound effects level (100% Content-ID strike safe) |
 | **Subscription Status** | Displays active account details and remaining duration |
 
@@ -151,6 +219,7 @@ graph LR
 > *This repository is fully optimized to rank at the top of Google search results for streaming automation and flag battle simulators.*
 
 ### Primary High-Rank Search Queries & Keywords:
+* **Human Streamer & Anti-Bot Queries**: `human streamer simulator flag battle`, `realistic streamer gameplay`, `anti bot live stream game`, `autonomous marble streamer`, `virtual streamer flag game`, `streamer keypress hud overlay`, `marble race human gameplay`, `interactive live flag stream`.
 * **Core Game Search**: `country flag battle game`, `all country flag battle game`, `195 country flag battle game`, `country flag battle into the circle game`, `world cup country flag drop battle game`, `country flag ball game`, `battle flag game`, `flag battle game`.
 * **Free & Download Queries**: `country flag battle game online free`, `country flag battle game download`, `country flag battle game free`, `country flag battle game online`, `country flag battle game pc`, `flag battle game download`, `flag battle game free`, `flag battle game online free`, `country battle game free`.
 * **Battle Royale & Simulator Queries**: `all country battle royale`, `world country battle royale`, `europe country battle royale`, `european country battle royale`, `world country battle simulator`, `flag battle sim`, `flag battle simulator`, `flag battle royale`, `interactive flag battle game`, `world flag battle game`, `250 flag battle game`, `1v1 country game`.
@@ -173,10 +242,13 @@ graph LR
 #### Q2: Will my YouTube or TikTok stream get copyrighted or muted?
 **Never.** The game utilizes a custom procedural Web Audio API synthesizer that generates audio waves algorithmically in real-time. No pre-recorded MP3 tracks are used, guaranteeing 100% immunity from Content-ID claims.
 
-#### Q3: Can I test this on multiple computers or mobile phones?
+#### Q3: How does the AI Human Streamer mode prevent YouTube from flagging this as an automated bot stream?
+**It simulates full human interaction!** YouTube and TikTok prioritize content with active human engagement. The game includes an organic Bezier virtual mouse cursor, real-time keypress HUD activations (`[A]`, `[D]`, `[SPACE: TILT]`), synthetic mechanical keyboard click sounds, an animated reactive cyberpunk facecam avatar with dynamic microphone VU meters, and a live EKG heart-rate monitor that spikes during 1v1 showdowns. Algorithms and human viewers perceive it as genuine, live esports gameplay, maximizing channel watch time, viewer retention, and monetization safety.
+
+#### Q4: Can I test this on multiple computers or mobile phones?
 **Yes.** Your User ID and Password are synced via a global cloud database, allowing you to log in from any computer or mobile device.
 
-#### Q4: How do I renew my license when my subscription expires?
+#### Q5: How do I renew my license when my subscription expires?
 Simply contact the Admin on WhatsApp at **`+8801711729858`** before or after expiration. Once payment is confirmed, your account will be instantly extended without needing to change your credentials.
 
 ---
