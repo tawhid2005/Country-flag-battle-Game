@@ -357,6 +357,7 @@
       border-left: 1px solid rgba(255, 255, 255, 0.12);
       border-right: 1px solid rgba(255, 255, 255, 0.12);
       z-index: 1;
+      touch-action: none;
     }
 
     @media (max-aspect-ratio: 9/16) {
@@ -1033,6 +1034,9 @@
       height: 100%;
       z-index: 2;
       display: block;
+      touch-action: none;
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     /* Soft Anamorphic Lens Vignette */
@@ -3811,6 +3815,38 @@
       100% { transform: translate(0, 0); }
     }
 
+    /* High-Performance Mobile & Touch Optimizations (Prevents GPU Compositor Lag) */
+    @media (max-width: 640px), (pointer: coarse) {
+      .badge-live-stream,
+      .badge-round,
+      .badge-alive,
+      .badge-trial,
+      .hud-icon-btn,
+      .hud-sub-bar,
+      .hud-killfeed-bar,
+      .engagement-ticker-wrap,
+      .horizontal-leaderboard-strip,
+      #final-duel-banner,
+      .cyber-gate-card,
+      .streamer-drawer-panel {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(10, 16, 32, 0.94) !important;
+      }
+
+      #battle-canvas,
+      #broadcast-viewport {
+        touch-action: none !important;
+      }
+
+      .badge-live-stream,
+      .badge-round,
+      .badge-alive,
+      .badge-trial {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
+      }
+    }
+
     /* Mobile Narrow Screen HUD Fine-Tuning (320px - 480px) */
     @media (max-width: 480px) {
       .hud-layer {
@@ -5642,37 +5678,43 @@
     class ParticleEngine {
       constructor() {
         this.particles = [];
+        this.isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 640);
+        this.maxParticles = this.isMobile ? 55 : 200;
       }
 
       spawnElimination(x, y, color) {
-        for (let i = 0; i < 15; i++) {
+        const count = this.isMobile ? 8 : 15;
+        for (let i = 0; i < count; i++) {
+          if (this.particles.length >= this.maxParticles) break;
           const angle = Math.random() * Math.PI * 2;
           const speed = 1.5 + Math.random() * 4.5;
           this.particles.push({
             x, y,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            radius: 2 + Math.random() * 3,
+            radius: 2 + Math.random() * 2.5,
             color: color || '#f43f5e',
             alpha: 1,
-            decay: 0.025 + Math.random() * 0.02,
+            decay: 0.03 + Math.random() * 0.02,
             gravity: 0.12
           });
         }
       }
 
       spawnBumperHit(x, y, color) {
-        for (let i = 0; i < 10; i++) {
+        const count = this.isMobile ? 5 : 10;
+        for (let i = 0; i < count; i++) {
+          if (this.particles.length >= this.maxParticles) break;
           const angle = Math.random() * Math.PI * 2;
           const speed = 2 + Math.random() * 3.5;
           this.particles.push({
             x, y,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            radius: 2.5 + Math.random() * 2,
+            radius: 2 + Math.random() * 2,
             color: color || '#00e5ff',
             alpha: 1,
-            decay: 0.04,
+            decay: 0.045,
             gravity: 0
           });
         }
@@ -5680,34 +5722,38 @@
 
       spawnExplosionShockwave(x, y) {
         const colors = ['#f97316', '#f43f5e', '#fbbf24', '#ffffff'];
-        for (let i = 0; i < 35; i++) {
+        const count = this.isMobile ? 18 : 35;
+        for (let i = 0; i < count; i++) {
+          if (this.particles.length >= this.maxParticles) break;
           const angle = Math.random() * Math.PI * 2;
           const speed = 3 + Math.random() * 6.5;
           this.particles.push({
             x, y,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            radius: 3 + Math.random() * 4,
+            radius: 2.5 + Math.random() * 3,
             color: colors[Math.floor(Math.random() * colors.length)],
             alpha: 1,
-            decay: 0.03,
+            decay: 0.035,
             gravity: 0.05
           });
         }
       }
 
       spawnShieldShatter(x, y) {
-        for (let i = 0; i < 20; i++) {
+        const count = this.isMobile ? 10 : 20;
+        for (let i = 0; i < count; i++) {
+          if (this.particles.length >= this.maxParticles) break;
           const angle = Math.random() * Math.PI * 2;
           const speed = 2 + Math.random() * 5;
           this.particles.push({
             x, y,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            radius: 2.5 + Math.random() * 2.5,
+            radius: 2 + Math.random() * 2,
             color: '#00e5ff',
             alpha: 1,
-            decay: 0.035,
+            decay: 0.04,
             gravity: 0.08
           });
         }
@@ -5715,16 +5761,18 @@
 
       spawnVictoryConfetti(width, height) {
         const colors = ['#fbbf24', '#00e5ff', '#a855f7', '#10b981', '#ffffff', '#f43f5e'];
-        for (let i = 0; i < 85; i++) {
+        const count = this.isMobile ? 35 : 85;
+        for (let i = 0; i < count; i++) {
+          if (this.particles.length >= this.maxParticles) break;
           this.particles.push({
             x: Math.random() * width,
             y: Math.random() * (height * 0.45),
-            vx: (Math.random() - 0.5) * 7,
-            vy: 2 + Math.random() * 5.5,
-            radius: 3.5 + Math.random() * 4,
+            vx: (Math.random() - 0.5) * 6,
+            vy: 2 + Math.random() * 5,
+            radius: 3 + Math.random() * 3,
             color: colors[Math.floor(Math.random() * colors.length)],
             alpha: 1,
-            decay: 0.007 + Math.random() * 0.01,
+            decay: 0.009 + Math.random() * 0.012,
             gravity: 0.06,
             isConfetti: true,
             rot: Math.random() * Math.PI,
@@ -5733,14 +5781,14 @@
         }
       }
 
-      update() {
+      update(dtFactor = 1) {
         for (let i = this.particles.length - 1; i >= 0; i--) {
           const p = this.particles[i];
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += p.gravity;
-          p.alpha -= p.decay;
-          if (p.isConfetti) p.rot += p.vRot;
+          p.x += p.vx * dtFactor;
+          p.y += p.vy * dtFactor;
+          p.vy += p.gravity * dtFactor;
+          p.alpha -= p.decay * dtFactor;
+          if (p.isConfetti) p.rot += p.vRot * dtFactor;
 
           if (p.alpha <= 0) {
             this.particles.splice(i, 1);
@@ -7890,8 +7938,10 @@
 
         this.isDuelMode = false;
 
+        this.isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 640);
+
         this.roundNumber = 1;
-        this.selectedBatchSize = 50;
+        this.selectedBatchSize = this.isMobileDevice ? 25 : 50;
         this.baseRotationSpeed = 0.022;
         this.currentRotationSpeed = 0.022;
         this.gravityY = 0.42;
@@ -7899,6 +7949,12 @@
         this.isRoundOver = false;
         this.roundWinner = null;
         this.themeIndex = 0;
+
+        this._glintCache = new Map();
+        this._stadiumGrad = null;
+        this._stadiumGradTheme = '';
+        this._physicsAccumulator = 0;
+        this._lastTimestamp = 0;
 
         this.antiClumpTimer = 0;
         this.leaderboard = this.loadLeaderboard();
@@ -7969,11 +8025,20 @@
       }
 
       setupCanvasDPI() {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const isMobile = this.isMobileDevice;
+        const maxDpr = isMobile ? Math.min(window.devicePixelRatio || 1, 1.25) : Math.min(window.devicePixelRatio || 1, 2);
         const rect = this.viewport.getBoundingClientRect();
 
-        this.canvas.width = rect.width * dpr;
-        this.canvas.height = rect.height * dpr;
+        const newW = Math.round(rect.width * maxDpr);
+        const newH = Math.round(rect.height * maxDpr);
+
+        // Prevent redundant canvas clear and buffer reallocation during slight mobile address bar movements
+        if (Math.abs(this.canvas.width - newW) < 4 && Math.abs(this.canvas.height - newH) < 4) {
+          return;
+        }
+
+        this.canvas.width = newW;
+        this.canvas.height = newH;
 
         this.scaleX = this.canvas.width / this.V_WIDTH;
         this.scaleY = this.canvas.height / this.V_HEIGHT;
@@ -8118,8 +8183,8 @@
         this.World.add(this.world, this.centerBumper);
       }
 
-      updateCircularArena() {
-        this.arenaAngle += this.currentRotationSpeed;
+      updateCircularArena(stepFactor = 1) {
+        this.arenaAngle += this.currentRotationSpeed * stepFactor;
 
         for (const seg of this.arenaSegments) {
           const currentAng = seg.baseAngle + this.arenaAngle;
@@ -8306,11 +8371,11 @@
         }
       }
 
-      checkBallPhysicsAndEliminations() {
+      checkBallPhysicsAndEliminations(dtSec = 1 / 60) {
         if (this.isRoundOver) return;
 
         // Anti-clumping impulse
-        this.antiClumpTimer += 1 / 60;
+        this.antiClumpTimer += dtSec;
         if (this.antiClumpTimer > 0.75) {
           this.antiClumpTimer = 0;
           for (const b of this.balls) {
@@ -8428,18 +8493,22 @@
         ctx.save();
         const theme = this.currentTheme || ARENA_THEMES[0];
 
-        // Stadium Floor Ambient Depth Gradient
-        const radGrad = ctx.createRadialGradient(
-          this.arenaCenter.x, this.arenaCenter.y, 10,
-          this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius
-        );
-        radGrad.addColorStop(0, 'rgba(255, 255, 255, 0.04)');
-        radGrad.addColorStop(0.7, theme.inner);
-        radGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
+        // Stadium Floor Ambient Depth Gradient (Cached per theme - 0 GC overhead)
+        if (!this._stadiumGrad || this._stadiumGradTheme !== theme.name) {
+          const radGrad = ctx.createRadialGradient(
+            this.arenaCenter.x, this.arenaCenter.y, 10,
+            this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius
+          );
+          radGrad.addColorStop(0, 'rgba(255, 255, 255, 0.04)');
+          radGrad.addColorStop(0.7, theme.inner);
+          radGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
+          this._stadiumGrad = radGrad;
+          this._stadiumGradTheme = theme.name;
+        }
 
         ctx.beginPath();
         ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius, 0, Math.PI * 2);
-        ctx.fillStyle = radGrad;
+        ctx.fillStyle = this._stadiumGrad;
         ctx.fill();
 
         // Stadium Floor Laser Markings
@@ -8449,9 +8518,6 @@
 
         ctx.beginPath();
         ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.38, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.beginPath();
         ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.72, 0, Math.PI * 2);
         ctx.stroke();
 
@@ -8468,48 +8534,105 @@
         }
         ctx.stroke();
 
-        // Outer Boundary Segments with Refined Neon Glow
-        ctx.shadowColor = theme.glow;
-        ctx.shadowBlur = 14;
-        ctx.strokeStyle = theme.border;
-        ctx.lineWidth = 8;
-        ctx.lineCap = 'round';
+        const isMobile = this.isMobileDevice;
 
-        for (const seg of this.arenaSegments) {
-          const v = seg.vertices;
+        // Outer Boundary Segments with Refined Neon Glow
+        if (isMobile) {
+          // Pass 1: Hardware-accelerated vibrant neon glow pass (0ms blur CPU overhead!)
+          ctx.strokeStyle = theme.glow;
+          ctx.lineWidth = 14;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
           ctx.beginPath();
-          ctx.moveTo(v[0].x, v[0].y);
-          for (let k = 1; k < v.length; k++) {
-            ctx.lineTo(v[k].x, v[k].y);
+          for (const seg of this.arenaSegments) {
+            const v = seg.vertices;
+            ctx.moveTo(v[0].x, v[0].y);
+            for (let k = 1; k < v.length; k++) {
+              ctx.lineTo(v[k].x, v[k].y);
+            }
+            ctx.closePath();
           }
-          ctx.closePath();
+          ctx.stroke();
+
+          // Pass 2: Crisp solid core
+          ctx.strokeStyle = theme.border;
           ctx.fillStyle = theme.border;
+          ctx.lineWidth = 8;
+          ctx.stroke();
+          ctx.fill();
+        } else {
+          // Desktop with dedicated GPU
+          ctx.shadowColor = theme.glow;
+          ctx.shadowBlur = 14;
+          ctx.strokeStyle = theme.border;
+          ctx.fillStyle = theme.border;
+          ctx.lineWidth = 8;
+          ctx.lineCap = 'round';
+
+          ctx.beginPath();
+          for (const seg of this.arenaSegments) {
+            const v = seg.vertices;
+            ctx.moveTo(v[0].x, v[0].y);
+            for (let k = 1; k < v.length; k++) {
+              ctx.lineTo(v[k].x, v[k].y);
+            }
+            ctx.closePath();
+          }
           ctx.fill();
           ctx.stroke();
+          ctx.shadowBlur = 0;
         }
 
         // Translucent Holographic Kinetic Flippers
-        ctx.shadowColor = theme.border;
-        ctx.shadowBlur = 12;
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-        for (const fin of this.arenaFins) {
-          const v = fin.vertices;
+        if (isMobile) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
           ctx.beginPath();
-          ctx.moveTo(v[0].x, v[0].y);
-          for (let k = 1; k < v.length; k++) {
-            ctx.lineTo(v[k].x, v[k].y);
+          for (const fin of this.arenaFins) {
+            const v = fin.vertices;
+            ctx.moveTo(v[0].x, v[0].y);
+            for (let k = 1; k < v.length; k++) {
+              ctx.lineTo(v[k].x, v[k].y);
+            }
+            ctx.closePath();
           }
-          ctx.closePath();
           ctx.fill();
+        } else {
+          ctx.shadowColor = theme.border;
+          ctx.shadowBlur = 12;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.beginPath();
+          for (const fin of this.arenaFins) {
+            const v = fin.vertices;
+            ctx.moveTo(v[0].x, v[0].y);
+            for (let k = 1; k < v.length; k++) {
+              ctx.lineTo(v[k].x, v[k].y);
+            }
+            ctx.closePath();
+          }
+          ctx.fill();
+          ctx.shadowBlur = 0;
         }
 
         // Central Super-Bouncy Neon Pinball Bumper
-        ctx.shadowColor = theme.bumper;
-        ctx.shadowBlur = 20;
-        ctx.fillStyle = theme.bumper;
-        ctx.beginPath();
-        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
-        ctx.fill();
+        if (isMobile) {
+          ctx.fillStyle = theme.glow;
+          ctx.beginPath();
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 29, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = theme.bumper;
+          ctx.beginPath();
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.shadowColor = theme.bumper;
+          ctx.shadowBlur = 20;
+          ctx.fillStyle = theme.bumper;
+          ctx.beginPath();
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
 
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
@@ -8521,12 +8644,20 @@
         const exitX = this.arenaCenter.x + Math.cos(exitAngle) * (this.arenaRadius + 14);
         const exitY = this.arenaCenter.y + Math.sin(exitAngle) * (this.arenaRadius + 14);
 
-        ctx.shadowColor = '#f43f5e';
-        ctx.shadowBlur = 16;
+        if (isMobile) {
+          ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
+          ctx.beginPath();
+          ctx.arc(exitX, exitY, 11, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.shadowColor = '#f43f5e';
+          ctx.shadowBlur = 16;
+        }
         ctx.fillStyle = '#f43f5e';
         ctx.beginPath();
         ctx.arc(exitX, exitY, 6, 0, Math.PI * 2);
         ctx.fill();
+        ctx.shadowBlur = 0;
 
         ctx.restore();
       }
@@ -8540,9 +8671,7 @@
           const y = p.y + bobY;
 
           if (p.type === 'shield') {
-            ctx.shadowColor = '#00e5ff';
-            ctx.shadowBlur = 14;
-            ctx.fillStyle = 'rgba(0, 229, 255, 0.24)';
+            ctx.fillStyle = 'rgba(0, 229, 255, 0.28)';
             ctx.beginPath();
             ctx.arc(x, y, 16, 0, Math.PI * 2);
             ctx.fill();
@@ -8555,9 +8684,7 @@
             ctx.textBaseline = 'middle';
             ctx.fillText('🛡️', x, y + 1);
           } else if (p.type === 'bomb') {
-            ctx.shadowColor = '#ea580c';
-            ctx.shadowBlur = 14;
-            ctx.fillStyle = 'rgba(234, 88, 12, 0.24)';
+            ctx.fillStyle = 'rgba(234, 88, 12, 0.28)';
             ctx.beginPath();
             ctx.arc(x, y, 16, 0, Math.PI * 2);
             ctx.fill();
@@ -8584,9 +8711,6 @@
 
         // Shield Aura
         if (ball.hasShield) {
-          ctx.save();
-          ctx.shadowColor = '#00e5ff';
-          ctx.shadowBlur = 16;
           ctx.strokeStyle = '#00e5ff';
           ctx.lineWidth = 2.5;
           ctx.beginPath();
@@ -8594,7 +8718,6 @@
           ctx.stroke();
           ctx.fillStyle = 'rgba(0, 229, 255, 0.18)';
           ctx.fill();
-          ctx.restore();
         }
 
         // High-Performance Hardware-Accelerated 3D Shadow (Zero software blur CPU overhead)
@@ -8619,14 +8742,10 @@
         ctx.strokeStyle = 'rgba(10, 16, 30, 0.5)';
         ctx.stroke();
 
-        // 3D Spherical Glass Highlight (Curved light reflection on top-left)
-        const glint = ctx.createRadialGradient(-r * 0.35, -r * 0.35, 1, -r * 0.35, -r * 0.35, r * 0.7);
-        glint.addColorStop(0, 'rgba(255, 255, 255, 0.65)');
-        glint.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
-        glint.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        // 3D Spherical Glass Highlight (Cached gradient - zero GC allocations per frame!)
         ctx.beginPath();
         ctx.arc(0, 0, r - 0.5, 0, Math.PI * 2);
-        ctx.fillStyle = glint;
+        ctx.fillStyle = this.getGlintGradient(ctx, r);
         ctx.fill();
 
         // High-contrast clean 3-letter code inside bottom half of marble when <= 25 alive or in duel
@@ -8644,12 +8763,34 @@
         ctx.restore();
       }
 
-      // Game Loop: 100% Rock-Solid Stable Camera
+      getGlintGradient(ctx, r) {
+        if (!this._glintCache) this._glintCache = new Map();
+        let grad = this._glintCache.get(r);
+        if (!grad) {
+          grad = ctx.createRadialGradient(-r * 0.35, -r * 0.35, 1, -r * 0.35, -r * 0.35, r * 0.7);
+          grad.addColorStop(0, 'rgba(255, 255, 255, 0.65)');
+          grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
+          grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          this._glintCache.set(r, grad);
+        }
+        return grad;
+      }
+
+      // Game Loop: 100% Rock-Solid Stable Camera with Fixed-Timestep Physics Accumulator
       gameLoop(timestamp) {
         if (!this.security.isAccessAllowed()) {
+          this._lastTimestamp = timestamp;
           requestAnimationFrame((t) => this.gameLoop(t));
           return;
         }
+
+        if (!this._lastTimestamp) this._lastTimestamp = timestamp;
+        let deltaMs = timestamp - this._lastTimestamp;
+        this._lastTimestamp = timestamp;
+
+        // Safety clamp deltaMs (prevent physics explosion / spiral of death)
+        if (deltaMs > 100) deltaMs = 100;
+        if (deltaMs < 0) deltaMs = 16.666;
 
         // Background Tab / Minimized Battery & CPU Saver
         if (document.hidden) {
@@ -8657,25 +8798,38 @@
             this._lastBgTick = timestamp;
             if (!this.isRoundOver) {
               this.Engine.update(this.engine, 80);
-              this.updateCircularArena();
-              this.checkBallPhysicsAndEliminations();
+              this.updateCircularArena(80 / 16.666);
+              this.checkBallPhysicsAndEliminations(0.08);
             }
           }
           requestAnimationFrame((t) => this.gameLoop(t));
           return;
         }
 
-        if (!this.isRoundOver) {
-          this.Engine.update(this.engine, 1000 / 60);
-          this.updateCircularArena();
-          this.checkBallPhysicsAndEliminations();
+        // Fixed-Timestep Physics Accumulator (Ensures constant 1.0x real-time speed on 30Hz, 60Hz, 90Hz, 120Hz)
+        const fixedStepMs = 1000 / 60; // 16.666ms
+        this._physicsAccumulator = (this._physicsAccumulator || 0) + deltaMs;
+
+        let steps = 0;
+        while (this._physicsAccumulator >= fixedStepMs && steps < 4) {
+          if (!this.isRoundOver) {
+            this.Engine.update(this.engine, fixedStepMs);
+            this.updateCircularArena(1);
+            this.checkBallPhysicsAndEliminations(fixedStepMs / 1000);
+          }
+          this._physicsAccumulator -= fixedStepMs;
+          steps++;
+        }
+        if (steps >= 4) {
+          this._physicsAccumulator = 0; // Drop stale accumulation if device was heavily bogged down
         }
 
+        const dtSec = deltaMs / 1000;
         if (this.humanStreamer) {
-          this.humanStreamer.update(1 / 60);
+          this.humanStreamer.update(dtSec);
         }
 
-        this.particles.update();
+        this.particles.update(deltaMs / 16.666);
 
         // Smooth Camera Zoom
         this.currentZoom += (this.targetZoom - this.currentZoom) * 0.04;
@@ -8714,18 +8868,16 @@
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.03)';
         ctx.lineWidth = 1;
         const gridSize = 40;
+        ctx.beginPath();
         for (let x = 0; x < this.V_WIDTH; x += gridSize) {
-          ctx.beginPath();
           ctx.moveTo(x, 0);
           ctx.lineTo(x, this.V_HEIGHT);
-          ctx.stroke();
         }
         for (let y = 0; y < this.V_HEIGHT; y += gridSize) {
-          ctx.beginPath();
           ctx.moveTo(0, y);
           ctx.lineTo(this.V_WIDTH, y);
-          ctx.stroke();
         }
+        ctx.stroke();
         ctx.restore();
       }
 
@@ -8765,6 +8917,9 @@
           this.selectedBatchSize = parseInt(e.target.value, 10);
           this.startNewRound();
         });
+        if (this.dom.selectCount) {
+          this.dom.selectCount.value = String(this.selectedBatchSize);
+        }
 
         const quickSoundBtn = document.getElementById('hud-quick-sound');
         const updateSoundButtons = (enabled) => {
