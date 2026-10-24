@@ -1,14 +1,14 @@
 {
-  "name": "Country Flag Battle Royale 3D",
+  "name": "Country Flag Battle Game — 195 Country Flag Battle Into The Circle",
   "short_name": "Flag Battle",
   "start_url": "/?source=pwa",
-  "id": "/",
+  "id": "countryflagbattlegame",
   "display": "standalone",
   "background_color": "#020617",
   "theme_color": "#020617",
   "orientation": "portrait-primary",
-  "description": "24/7 Autonomous Physics Country Flag Battle Royale & Streamer Arena.",
-  "categories": ["games", "entertainment", "sports"],
+  "description": "Play 195 Country Flag Battle Game free online! 24/7 autonomous physics battle royale simulator and marble race with AI Human Streamer mode.",
+  "categories": ["games", "entertainment", "sports", "simulation"],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -27,6 +27,15 @@
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-preview.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Country Flag Battle Game 24/7 Autonomous Colosseum Arena"
     }
   ]
 }
