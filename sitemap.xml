@@ -6,8 +6,8 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://countryflagbattlegame.vercel.app/</loc>
-    <lastmod>2026-10-25</lastmod>
-    <changefreq>daily</changefreq>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://countryflagbattlegame.vercel.app/og-preview.png</image:loc>
@@ -21,3 +21,4 @@
     </image:image>
   </url>
 </urlset>
+
