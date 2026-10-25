@@ -3,11 +3,13 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd
+        http://www.google.com/schemas/sitemap-image/1.1
+        http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd">
   <url>
     <loc>https://countryflagbattlegame.vercel.app/</loc>
     <lastmod>2026-10-26</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://countryflagbattlegame.vercel.app/og-preview.png</image:loc>
@@ -16,9 +18,8 @@
     </image:image>
     <image:image>
       <image:loc>https://countryflagbattlegame.vercel.app/icon-512.png</image:loc>
-      <image:title>Country Flag Battle Game Icon</image:title>
+      <image:title>Country Flag Battle Game Official App Icon</image:title>
       <image:caption>Country Flag Battle Royale App Icon - 195 Sovereign Nations Marble Race Arena</image:caption>
     </image:image>
   </url>
 </urlset>
-
