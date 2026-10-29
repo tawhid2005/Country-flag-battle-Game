@@ -1345,6 +1345,26 @@
       transition: all 0.3s ease;
     }
 
+    .badge-timer {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.35), rgba(15, 23, 42, 0.94));
+      border: 1px solid rgba(14, 165, 233, 0.7);
+      backdrop-filter: blur(14px);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: #38bdf8;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .badge-alive.danger {
       background: linear-gradient(135deg, rgba(244, 63, 94, 0.4), rgba(15, 23, 42, 0.96));
       border-color: #f43f5e;
@@ -2550,7 +2570,48 @@
       font-weight: 800;
     }
 
+    .drawer-stepper-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .drawer-step-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      color: #00e5ff;
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      line-height: 1;
+    }
+
+    .drawer-step-btn:hover {
+      background: rgba(0, 229, 255, 0.3);
+      border-color: #00e5ff;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+      transform: scale(1.08);
+    }
+
+    .drawer-step-btn:active {
+      transform: scale(0.92);
+      background: rgba(0, 229, 255, 0.45);
+    }
+
     .drawer-slider {
+      flex: 1;
       width: 100%;
       height: 6px;
       border-radius: 3px;
@@ -2558,17 +2619,79 @@
       outline: none;
       -webkit-appearance: none;
       appearance: none;
+      touch-action: none !important;
+      cursor: pointer;
     }
 
     .drawer-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: #00e5ff;
       cursor: pointer;
       box-shadow: 0 0 10px #00e5ff;
+      border: 2px solid #ffffff;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .drawer-slider::-webkit-slider-thumb:hover,
+    .drawer-slider::-webkit-slider-thumb:active {
+      transform: scale(1.18);
+      box-shadow: 0 0 16px #00e5ff;
+    }
+
+    .drawer-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #00e5ff;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00e5ff;
+      border: 2px solid #ffffff;
+    }
+
+    .speed-preset-pills {
+      display: flex;
+      gap: 5px;
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    .preset-pill {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .preset-pill:hover {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: rgba(0, 229, 255, 0.4);
+      color: #e2e8f0;
+    }
+
+    .preset-pill.active {
+      background: rgba(0, 229, 255, 0.25);
+      border-color: #00e5ff;
+      color: #00e5ff;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+    }
+
+    .drawer-hint {
+      font-size: 10px;
+      color: #94a3b8;
+      line-height: 1.35;
+      padding: 2px 0 0 2px;
     }
 
     .drawer-select {
@@ -3934,6 +4057,7 @@
     @media (max-width: 640px), (pointer: coarse) {
       .badge-live-stream,
       .badge-round,
+      .badge-timer,
       .badge-alive,
       .badge-trial,
       .hud-icon-btn,
@@ -3956,6 +4080,7 @@
 
       .badge-live-stream,
       .badge-round,
+      .badge-timer,
       .badge-alive,
       .badge-trial {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
@@ -3973,7 +4098,7 @@
       .hud-top-left, .hud-top-right {
         gap: 3px;
       }
-      .badge-live-stream, .badge-round, .badge-alive {
+      .badge-live-stream, .badge-round, .badge-timer, .badge-alive {
         padding: 3px 6px;
         font-size: 9px;
         letter-spacing: 0.4px;
@@ -4128,6 +4253,10 @@
 
             <div class="badge-round">
               <span id="hud-round-label">ROUND #1</span>
+            </div>
+
+            <div class="badge-timer" id="hud-match-timer-badge" title="Battle Match Timer">
+              <span>⏱️ <strong id="hud-match-timer">00:00</strong></span>
             </div>
 
             <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="10-Minute Free Trial Active">
@@ -4291,20 +4420,84 @@
         <button class="drawer-close" id="drawer-close-btn">&times;</button>
       </div>
 
+      <!-- Battle Duration & Pace Mode Selector -->
+      <div class="drawer-control-group">
+        <label class="drawer-label">
+          <span>⏱️ BATTLE DURATION (PACE)</span>
+          <span class="val" id="val-duration-mode">8-10 MIN</span>
+        </label>
+        <select class="drawer-select" id="select-battle-duration">
+          <option value="blitz">⚡ Blitz Royale (1 - 2 Min)</option>
+          <option value="standard">⏱️ Standard Match (3 - 5 Min)</option>
+          <option value="extended" selected>🏆 Extended Stream (8 - 10 Min)</option>
+          <option value="marathon">👑 Marathon Royale (12 - 15 Min)</option>
+          <option value="custom">⚙️ Custom Manual Mode</option>
+        </select>
+        <div class="drawer-hint" id="hint-battle-duration">
+          ✨ Calibrated for 8-10 minute long streams (single-ball exit rate).
+        </div>
+      </div>
+
+      <!-- Battle Simulation Speed (Game Speed) -->
+      <div class="drawer-control-group">
+        <label class="drawer-label">
+          <span>⚡ BATTLE SIMULATION SPEED</span>
+          <span class="val" id="val-game-speed">1.00x</span>
+        </label>
+        <div class="drawer-stepper-row">
+          <button type="button" class="drawer-step-btn" id="btn-speed-minus" title="Decrease Game Speed" aria-label="Decrease Game Speed">−</button>
+          <input type="range" class="drawer-slider" id="slider-game-speed" min="0.20" max="2.00" step="0.05" value="1.00">
+          <button type="button" class="drawer-step-btn" id="btn-speed-plus" title="Increase Game Speed" aria-label="Increase Game Speed">+</button>
+        </div>
+        <div class="speed-preset-pills">
+          <button type="button" class="preset-pill" data-speed="0.25">0.25x</button>
+          <button type="button" class="preset-pill" data-speed="0.50">0.5x</button>
+          <button type="button" class="preset-pill" data-speed="0.75">0.75x</button>
+          <button type="button" class="preset-pill active" data-speed="1.00">1.0x</button>
+          <button type="button" class="preset-pill" data-speed="1.50">1.5x</button>
+        </div>
+      </div>
+
+      <!-- Arena Rotation Speed -->
+      <div class="drawer-control-group">
+        <label class="drawer-label">
+          <span>🌀 ARENA ROTATION SPEED</span>
+          <span class="val" id="val-speed">0.022</span>
+        </label>
+        <div class="drawer-stepper-row">
+          <button type="button" class="drawer-step-btn" id="btn-rot-minus" title="Decrease Rotation Speed" aria-label="Decrease Rotation Speed">−</button>
+          <input type="range" class="drawer-slider" id="slider-speed" min="0.002" max="0.060" step="0.002" value="0.022">
+          <button type="button" class="drawer-step-btn" id="btn-rot-plus" title="Increase Rotation Speed" aria-label="Increase Rotation Speed">+</button>
+        </div>
+      </div>
+
+      <!-- Arena Exit Hazard Gap Size (Elimination Throttle) -->
+      <div class="drawer-control-group">
+        <label class="drawer-label">
+          <span>🚪 ARENA EXIT GAP (ESCAPE RATE)</span>
+          <span class="val" id="val-gap-size">1 SEG (SLOW)</span>
+        </label>
+        <div class="drawer-stepper-row">
+          <button type="button" class="drawer-step-btn" id="btn-gap-minus" title="Narrow Gap" aria-label="Narrow Gap">−</button>
+          <input type="range" class="drawer-slider" id="slider-gap-size" min="1" max="5" step="1" value="1">
+          <button type="button" class="drawer-step-btn" id="btn-gap-plus" title="Widen Gap" aria-label="Widen Gap">+</button>
+        </div>
+        <div class="drawer-hint" id="hint-gap-size">
+          1 = Single-ball exit (8-15 min) | 2 = Medium (4-6 min) | 4 = Fast (1-2 min)
+        </div>
+      </div>
+
+      <!-- Gravity (Y) -->
       <div class="drawer-control-group">
         <label class="drawer-label">
           <span>GRAVITY (Y)</span>
           <span class="val" id="val-gravity">0.42</span>
         </label>
-        <input type="range" class="drawer-slider" id="slider-gravity" min="0.1" max="1.5" step="0.05" value="0.42">
-      </div>
-
-      <div class="drawer-control-group">
-        <label class="drawer-label">
-          <span>ARENA SPEED</span>
-          <span class="val" id="val-speed">0.022</span>
-        </label>
-        <input type="range" class="drawer-slider" id="slider-speed" min="0.005" max="0.05" step="0.002" value="0.022">
+        <div class="drawer-stepper-row">
+          <button type="button" class="drawer-step-btn" id="btn-grav-minus" title="Decrease Gravity" aria-label="Decrease Gravity">−</button>
+          <input type="range" class="drawer-slider" id="slider-gravity" min="0.10" max="1.50" step="0.05" value="0.42">
+          <button type="button" class="drawer-step-btn" id="btn-grav-plus" title="Increase Gravity" aria-label="Increase Gravity">+</button>
+        </div>
       </div>
 
       <div class="drawer-control-group">
@@ -4313,7 +4506,7 @@
           <option value="25">25 Countries (Huge Balls)</option>
           <option value="50" selected>50 Countries (Standard Live)</option>
           <option value="80">80 Countries (Extended Royale)</option>
-          <option value="120">120 Countries (Grand Royale)</option>
+          <option value="120">120 Countries (Grand Royale - 8-15 Min)</option>
         </select>
       </div>
 
@@ -5355,7 +5548,94 @@
       { id: 'HU', iso: 'hu', code: 'HUN', name: 'Hungary', color: '#477050', type: 'h-stripes', colors: ['#CE2939', '#ffffff', '#477050'] },
       { id: 'HR', iso: 'hr', code: 'CRO', name: 'Croatia', color: '#FF0000', type: 'h-stripes', colors: ['#FF0000', '#ffffff', '#0000FF'] },
       { id: 'RS', iso: 'rs', code: 'SRB', name: 'Serbia', color: '#0C4076', type: 'h-stripes', colors: ['#C6363C', '#0C4076', '#ffffff'] },
-      { id: 'BG', iso: 'bg', code: 'BUL', name: 'Bulgaria', color: '#00966E', type: 'h-stripes', colors: ['#ffffff', '#00966E', '#D62612'] }
+      { id: 'BG', iso: 'bg', code: 'BUL', name: 'Bulgaria', color: '#00966E', type: 'h-stripes', colors: ['#ffffff', '#00966E', '#D62612'] },
+      { id: 'CN', iso: 'cn', code: 'CHN', name: 'China', color: '#EE1C25', type: 'star-center', bg: '#EE1C25', fg: '#FFFF00' },
+      { id: 'MA', iso: 'ma', code: 'MAR', name: 'Morocco', color: '#C1272D', type: 'star-center', bg: '#C1272D', fg: '#006233' },
+      { id: 'DZ', iso: 'dz', code: 'ALG', name: 'Algeria', color: '#006633', type: 'crescent', bg: '#006633', fg: '#D21034' },
+      { id: 'TN', iso: 'tn', code: 'TUN', name: 'Tunisia', color: '#E70013', type: 'crescent', bg: '#E70013', fg: '#ffffff' },
+      { id: 'GH', iso: 'gh', code: 'GHA', name: 'Ghana', color: '#006B3F', type: 'h-stripes', colors: ['#EF3340', '#FFD100', '#006B3F'] },
+      { id: 'SN', iso: 'sn', code: 'SEN', name: 'Senegal', color: '#00853F', type: 'v-stripes', colors: ['#00853F', '#FDEF42', '#E31B23'] },
+      { id: 'CM', iso: 'cm', code: 'CMR', name: 'Cameroon', color: '#007A5E', type: 'v-stripes', colors: ['#007A5E', '#CE1126', '#FCD116'] },
+      { id: 'CI', iso: 'ci', code: 'CIV', name: 'Ivory Coast', color: '#F77F00', type: 'v-stripes', colors: ['#F77F00', '#ffffff', '#009E60'] },
+      { id: 'KE', iso: 'ke', code: 'KEN', name: 'Kenya', color: '#922529', type: 'h-stripes', colors: ['#000000', '#922529', '#006600'] },
+      { id: 'ET', iso: 'et', code: 'ETH', name: 'Ethiopia', color: '#078930', type: 'h-stripes', colors: ['#078930', '#FCDD09', '#DA121A'] },
+      { id: 'UY', iso: 'uy', code: 'URU', name: 'Uruguay', color: '#0038A8', type: 'argentina' },
+      { id: 'PY', iso: 'py', code: 'PAR', name: 'Paraguay', color: '#D52B1E', type: 'h-stripes', colors: ['#D52B1E', '#ffffff', '#0038A8'] },
+      { id: 'EC', iso: 'ec', code: 'ECU', name: 'Ecuador', color: '#FFDD00', type: 'h-stripes', colors: ['#FFDD00', '#034EA2', '#ED1C24'] },
+      { id: 'BO', iso: 'bo', code: 'BOL', name: 'Bolivia', color: '#D52B1E', type: 'h-stripes', colors: ['#D52B1E', '#F9E300', '#007934'] },
+      { id: 'CR', iso: 'cr', code: 'CRC', name: 'Costa Rica', color: '#002B7F', type: 'h-stripes', colors: ['#002B7F', '#ffffff', '#CE1126', '#ffffff', '#002B7F'] },
+      { id: 'PA', iso: 'pa', code: 'PAN', name: 'Panama', color: '#005293', type: 'h-stripes', colors: ['#ffffff', '#CE1126', '#005293'] },
+      { id: 'JM', iso: 'jm', code: 'JAM', name: 'Jamaica', color: '#FED100', type: 'cross', bg: '#009B3A', fg: '#FED100' },
+      { id: 'CU', iso: 'cu', code: 'CUB', name: 'Cuba', color: '#002A8F', type: 'czech' },
+      { id: 'IS', iso: 'is', code: 'ISL', name: 'Iceland', color: '#02529C', type: 'cross-border', bg: '#02529C', border: '#ffffff', fg: '#DC1E35' },
+      { id: 'QA', iso: 'qa', code: 'QAT', name: 'Qatar', color: '#8D1B3D', type: 'v-stripes', colors: ['#ffffff', '#8D1B3D'] },
+      { id: 'AE', iso: 'ae', code: 'UAE', name: 'United Arab Emirates', color: '#00732F', type: 'h-stripes', colors: ['#00732F', '#ffffff', '#000000'] },
+      { id: 'KW', iso: 'kw', code: 'KUW', name: 'Kuwait', color: '#007A3D', type: 'h-stripes', colors: ['#007A3D', '#ffffff', '#CE1126'] },
+      { id: 'IQ', iso: 'iq', code: 'IRQ', name: 'Iraq', color: '#CE1126', type: 'h-stripes', colors: ['#CE1126', '#ffffff', '#000000'] },
+      { id: 'IR', iso: 'ir', code: 'IRN', name: 'Iran', color: '#239F40', type: 'h-stripes', colors: ['#239F40', '#ffffff', '#DA0000'] },
+      { id: 'IL', iso: 'il', code: 'ISR', name: 'Israel', color: '#0038B8', type: 'h-stripes', colors: ['#0038B8', '#ffffff', '#0038B8'] },
+      { id: 'JO', iso: 'jo', code: 'JOR', name: 'Jordan', color: '#000000', type: 'h-stripes', colors: ['#000000', '#ffffff', '#007A3D'] },
+      { id: 'LB', iso: 'lb', code: 'LBN', name: 'Lebanon', color: '#ED1C24', type: 'h-stripes', colors: ['#ED1C24', '#ffffff', '#ED1C24'] },
+      { id: 'OM', iso: 'om', code: 'OMA', name: 'Oman', color: '#DB161B', type: 'h-stripes', colors: ['#ffffff', '#DB161B', '#008000'] },
+      { id: 'BH', iso: 'bh', code: 'BHR', name: 'Bahrain', color: '#CE1126', type: 'v-stripes', colors: ['#ffffff', '#CE1126'] },
+      { id: 'LK', iso: 'lk', code: 'SRI', name: 'Sri Lanka', color: '#8D153A', type: 'v-stripes', colors: ['#FF7900', '#00534E', '#8D153A'] },
+      { id: 'NP', iso: 'np', code: 'NEP', name: 'Nepal', color: '#DC143C', type: 'crescent', bg: '#DC143C', fg: '#ffffff' },
+      { id: 'BT', iso: 'bt', code: 'BHU', name: 'Bhutan', color: '#FF5F00', type: 'v-stripes', colors: ['#FFD520', '#FF5F00'] },
+      { id: 'MV', iso: 'mv', code: 'MDV', name: 'Maldives', color: '#D21034', type: 'crescent', bg: '#007E3A', fg: '#ffffff' },
+      { id: 'MM', iso: 'mm', code: 'MYA', name: 'Myanmar', color: '#FECB00', type: 'h-stripes', colors: ['#FECB00', '#34B233', '#EA2839'] },
+      { id: 'KH', iso: 'kh', code: 'CAM', name: 'Cambodia', color: '#032EA1', type: 'h-stripes', colors: ['#032EA1', '#ED1B24', '#032EA1'] },
+      { id: 'LA', iso: 'la', code: 'LAO', name: 'Laos', color: '#CE1126', type: 'circle', bg: '#002868', fg: '#ffffff' },
+      { id: 'MN', iso: 'mn', code: 'MNG', name: 'Mongolia', color: '#E4002B', type: 'v-stripes', colors: ['#E4002B', '#0033A0', '#E4002B'] },
+      { id: 'KZ', iso: 'kz', code: 'KAZ', name: 'Kazakhstan', color: '#00AFCA', type: 'circle', bg: '#00AFCA', fg: '#FEC50C' },
+      { id: 'UZ', iso: 'uz', code: 'UZB', name: 'Uzbekistan', color: '#0099B5', type: 'h-stripes', colors: ['#0099B5', '#ffffff', '#1EB53A'] },
+      { id: 'AZ', iso: 'az', code: 'AZE', name: 'Azerbaijan', color: '#00B5E2', type: 'h-stripes', colors: ['#00B5E2', '#EF3340', '#509E2F'] },
+      { id: 'GE', iso: 'ge', code: 'GEO', name: 'Georgia', color: '#FF0000', type: 'cross', bg: '#ffffff', fg: '#FF0000' },
+      { id: 'AM', iso: 'am', code: 'ARM', name: 'Armenia', color: '#D90012', type: 'h-stripes', colors: ['#D90012', '#0033A0', '#F2A800'] },
+      { id: 'EE', iso: 'ee', code: 'EST', name: 'Estonia', color: '#0072CE', type: 'h-stripes', colors: ['#0072CE', '#000000', '#ffffff'] },
+      { id: 'LV', iso: 'lv', code: 'LAT', name: 'Latvia', color: '#9E3039', type: 'h-stripes', colors: ['#9E3039', '#ffffff', '#9E3039'] },
+      { id: 'LT', iso: 'lt', code: 'LTU', name: 'Lithuania', color: '#FDB913', type: 'h-stripes', colors: ['#FDB913', '#006A44', '#C1272D'] },
+      { id: 'SK', iso: 'sk', code: 'SVK', name: 'Slovakia', color: '#0B4EA2', type: 'h-stripes', colors: ['#ffffff', '#0B4EA2', '#EE1C25'] },
+      { id: 'SI', iso: 'si', code: 'SVN', name: 'Slovenia', color: '#005CE6', type: 'h-stripes', colors: ['#ffffff', '#005CE6', '#ED1C24'] },
+      { id: 'BA', iso: 'ba', code: 'BIH', name: 'Bosnia & Herz.', color: '#002F6C', type: 'circle', bg: '#002F6C', fg: '#FECB00' },
+      { id: 'AL', iso: 'al', code: 'ALB', name: 'Albania', color: '#E41E20', type: 'circle', bg: '#E41E20', fg: '#000000' },
+      { id: 'MK', iso: 'mk', code: 'MKD', name: 'North Macedonia', color: '#D20000', type: 'circle', bg: '#D20000', fg: '#FFE600' },
+      { id: 'ME', iso: 'me', code: 'MNE', name: 'Montenegro', color: '#C40308', type: 'circle', bg: '#C40308', fg: '#D4AF37' },
+      { id: 'CY', iso: 'cy', code: 'CYP', name: 'Cyprus', color: '#D47600', type: 'circle', bg: '#ffffff', fg: '#D47600' },
+      { id: 'MT', iso: 'mt', code: 'MLT', name: 'Malta', color: '#C8102E', type: 'v-stripes', colors: ['#ffffff', '#C8102E'] },
+      { id: 'LU', iso: 'lu', code: 'LUX', name: 'Luxembourg', color: '#00A1DE', type: 'h-stripes', colors: ['#EA141D', '#ffffff', '#00A1DE'] },
+      { id: 'BY', iso: 'by', code: 'BLR', name: 'Belarus', color: '#C8313E', type: 'h-stripes', colors: ['#C8313E', '#438C5B'] },
+      { id: 'MD', iso: 'md', code: 'MDA', name: 'Moldova', color: '#003DA5', type: 'v-stripes', colors: ['#003DA5', '#FFD100', '#CC092F'] },
+      { id: 'TZ', iso: 'tz', code: 'TAN', name: 'Tanzania', color: '#1EB53A', type: 'v-stripes', colors: ['#1EB53A', '#000000', '#00A3DD'] },
+      { id: 'UG', iso: 'ug', code: 'UGA', name: 'Uganda', color: '#000000', type: 'h-stripes', colors: ['#000000', '#FCDC04', '#D90000'] },
+      { id: 'RW', iso: 'rw', code: 'RWA', name: 'Rwanda', color: '#00A1DE', type: 'h-stripes', colors: ['#00A1DE', '#FAD201', '#20603D'] },
+      { id: 'ZM', iso: 'zm', code: 'ZAM', name: 'Zambia', color: '#198A00', type: 'circle', bg: '#198A00', fg: '#EF7D00' },
+      { id: 'ZW', iso: 'zw', code: 'ZIM', name: 'Zimbabwe', color: '#006400', type: 'h-stripes', colors: ['#006400', '#FFD200', '#D40000', '#000000'] },
+      { id: 'AO', iso: 'ao', code: 'ANG', name: 'Angola', color: '#CC092F', type: 'h-stripes', colors: ['#CC092F', '#000000'] },
+      { id: 'MZ', iso: 'mz', code: 'MOZ', name: 'Mozambique', color: '#009639', type: 'h-stripes', colors: ['#009639', '#000000', '#FFD100'] },
+      { id: 'MG', iso: 'mg', code: 'MAD', name: 'Madagascar', color: '#FC3D32', type: 'v-stripes', colors: ['#ffffff', '#FC3D32', '#007E3A'] },
+      { id: 'SD', iso: 'sd', code: 'SUD', name: 'Sudan', color: '#D21034', type: 'h-stripes', colors: ['#D21034', '#ffffff', '#000000'] },
+      { id: 'ML', iso: 'ml', code: 'MLI', name: 'Mali', color: '#14B53A', type: 'v-stripes', colors: ['#14B53A', '#FCD116', '#CE1126'] },
+      { id: 'GN', iso: 'gn', code: 'GUI', name: 'Guinea', color: '#CE1126', type: 'v-stripes', colors: ['#CE1126', '#FCD116', '#009460'] },
+      { id: 'BJ', iso: 'bj', code: 'BEN', name: 'Benin', color: '#008751', type: 'v-stripes', colors: ['#008751', '#FCD116', '#E8112D'] },
+      { id: 'TG', iso: 'tg', code: 'TOG', name: 'Togo', color: '#006A4E', type: 'h-stripes', colors: ['#006A4E', '#FFCE00'] },
+      { id: 'GA', iso: 'ga', code: 'GAB', name: 'Gabon', color: '#009E60', type: 'h-stripes', colors: ['#009E60', '#FCD116', '#3A75C4'] },
+      { id: 'CD', iso: 'cd', code: 'COD', name: 'DR Congo', color: '#007FFF', type: 'circle', bg: '#007FFF', fg: '#F7D618' },
+      { id: 'SO', iso: 'so', code: 'SOM', name: 'Somalia', color: '#4189DD', type: 'star-center', bg: '#4189DD', fg: '#ffffff' },
+      { id: 'LY', iso: 'ly', code: 'LBA', name: 'Libya', color: '#000000', type: 'h-stripes', colors: ['#E70013', '#000000', '#239E46'] },
+      { id: 'FJ', iso: 'fj', code: 'FIJ', name: 'Fiji', color: '#68BFE5', type: 'australia' },
+      { id: 'PG', iso: 'pg', code: 'PNG', name: 'Papua New Guinea', color: '#CE1126', type: 'v-stripes', colors: ['#000000', '#CE1126'] },
+      { id: 'WS', iso: 'ws', code: 'SAM', name: 'Samoa', color: '#CE1126', type: 'chile' },
+      { id: 'TT', iso: 'tt', code: 'TTO', name: 'Trinidad & Tobago', color: '#CE1126', type: 'circle', bg: '#CE1126', fg: '#000000' },
+      { id: 'DO', iso: 'do', code: 'DOM', name: 'Dominican Rep.', color: '#002F6C', type: 'cross', bg: '#002F6C', fg: '#ffffff' },
+      { id: 'GT', iso: 'gt', code: 'GUA', name: 'Guatemala', color: '#4997D0', type: 'v-stripes', colors: ['#4997D0', '#ffffff', '#4997D0'] },
+      { id: 'HN', iso: 'hn', code: 'HON', name: 'Honduras', color: '#0073CF', type: 'h-stripes', colors: ['#0073CF', '#ffffff', '#0073CF'] },
+      { id: 'SV', iso: 'sv', code: 'ESA', name: 'El Salvador', color: '#0F47AF', type: 'h-stripes', colors: ['#0F47AF', '#ffffff', '#0F47AF'] },
+      { id: 'NI', iso: 'ni', code: 'NCA', name: 'Nicaragua', color: '#0067C6', type: 'h-stripes', colors: ['#0067C6', '#ffffff', '#0067C6'] },
+      { id: 'HT', iso: 'ht', code: 'HAI', name: 'Haiti', color: '#00209F', type: 'h-stripes', colors: ['#00209F', '#D21034'] },
+      { id: 'BS', iso: 'bs', code: 'BAH', name: 'Bahamas', color: '#00778B', type: 'h-stripes', colors: ['#00778B', '#FFC72C', '#00778B'] },
+      { id: 'BB', iso: 'bb', code: 'BAR', name: 'Barbados', color: '#00267F', type: 'v-stripes', colors: ['#00267F', '#FFC72C', '#00267F'] },
+      { id: 'SCO', iso: 'gb-sct', code: 'SCO', name: 'Scotland', color: '#005EB8', type: 'cross', bg: '#005EB8', fg: '#ffffff' },
+      { id: 'WAL', iso: 'gb-wls', code: 'WAL', name: 'Wales', color: '#00AB39', type: 'h-stripes', colors: ['#ffffff', '#00AB39'] }
     ];
 
     // Master Broadcast Arena Themes
@@ -8191,7 +8471,11 @@
         this.arenaRadius = 195;
         this.arenaAngle = 0;
         this.totalSegments = 32;
-        this.gapSegmentCount = 4;
+        this.gapSegmentCount = 1; // Default 1 segment gap: calibrated single-ball exit for 8-15 min battles!
+        this.gameSpeed = 1.0;
+        this.durationMode = 'extended'; // 'blitz', 'standard', 'extended', 'marathon', 'custom'
+        this.roundStartTime = Date.now();
+        this.matchElapsedSec = 0;
 
         this.powerups = [];
 
@@ -8204,7 +8488,7 @@
         this.isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 640);
 
         this.roundNumber = 1;
-        this.selectedBatchSize = this.isMobileDevice ? 25 : 50;
+        this.selectedBatchSize = this.isMobileDevice ? 50 : 120;
         this.baseRotationSpeed = 0.022;
         this.currentRotationSpeed = 0.022;
         this.gravityY = 0.42;
@@ -8221,6 +8505,7 @@
 
         this.antiClumpTimer = 0;
         this.leaderboard = this.loadLeaderboard();
+        this.loadStreamerConfig();
 
         this.tickerIndex = 0;
         this.tickerMessages = [
@@ -8233,6 +8518,7 @@
 
         this.dom = {
           roundLabel: document.getElementById('hud-round-label'),
+          matchTimer: document.getElementById('hud-match-timer'),
           aliveBadge: document.getElementById('hud-alive-badge'),
           aliveCount: document.getElementById('hud-alive-count'),
           totalCount: document.getElementById('hud-total-count'),
@@ -8258,10 +8544,26 @@
           drawerToggle: document.getElementById('streamer-drawer-toggle'),
           drawer: document.getElementById('streamer-drawer'),
           drawerClose: document.getElementById('drawer-close-btn'),
-          sliderGravity: document.getElementById('slider-gravity'),
+          // Streamer controls
+          selectDuration: document.getElementById('select-battle-duration'),
+          valDurationMode: document.getElementById('val-duration-mode'),
+          sliderGameSpeed: document.getElementById('slider-game-speed'),
+          valGameSpeed: document.getElementById('val-game-speed'),
+          btnSpeedMinus: document.getElementById('btn-speed-minus'),
+          btnSpeedPlus: document.getElementById('btn-speed-plus'),
+          speedPills: Array.from(document.querySelectorAll('.speed-preset-pills .preset-pill')),
           sliderSpeed: document.getElementById('slider-speed'),
-          valGravity: document.getElementById('val-gravity'),
           valSpeed: document.getElementById('val-speed'),
+          btnRotMinus: document.getElementById('btn-rot-minus'),
+          btnRotPlus: document.getElementById('btn-rot-plus'),
+          sliderGapSize: document.getElementById('slider-gap-size'),
+          valGapSize: document.getElementById('val-gap-size'),
+          btnGapMinus: document.getElementById('btn-gap-minus'),
+          btnGapPlus: document.getElementById('btn-gap-plus'),
+          sliderGravity: document.getElementById('slider-gravity'),
+          valGravity: document.getElementById('val-gravity'),
+          btnGravMinus: document.getElementById('btn-grav-minus'),
+          btnGravPlus: document.getElementById('btn-grav-plus'),
           selectCount: document.getElementById('select-country-count'),
           btnSound: document.getElementById('btn-toggle-sound'),
           btnBroadcast: document.getElementById('btn-toggle-broadcast'),
@@ -8475,6 +8777,9 @@
         this.targetZoom = 1.0;
         this.currentZoom = 1.0;
         this.audio.stopHeartbeatLoop();
+        this.roundStartTime = Date.now();
+        this.matchElapsedSec = 0;
+        if (this.dom.matchTimer) this.dom.matchTimer.textContent = '00:00';
 
         this.dom.victoryModal.classList.remove('show');
         this.dom.duelBanner.classList.add('hidden');
@@ -8513,8 +8818,9 @@
         else if (count >= 80) marbleRadius = 11;
 
         // Spawn marbles in central cluster with initial outward velocity
+        const maxSpawnRadius = count >= 80 ? (this.arenaRadius * 0.58) : (this.arenaRadius * 0.42);
         shuffled.forEach((country, idx) => {
-          const spawnRadius = (idx / count) * (this.arenaRadius * 0.42);
+          const spawnRadius = Math.sqrt((idx + 0.5) / count) * maxSpawnRadius;
           const angle = idx * 2.399; // Golden angle spiral
           const x = this.arenaCenter.x + Math.cos(angle) * spawnRadius;
           const y = this.arenaCenter.y + Math.sin(angle) * spawnRadius - 10;
@@ -8721,7 +9027,8 @@
         mCtx.drawImage(bigFlag, 0, 0, modalCanvas.width, modalCanvas.height);
 
         this.dom.modalName.textContent = this.roundWinner.name;
-        document.getElementById('modal-winner-stat').textContent = `OUTLASTED ALL NATIONS • ROUND #${this.roundNumber} CHAMPION`;
+        const timeStr = this.dom.matchTimer ? this.dom.matchTimer.textContent : '';
+        document.getElementById('modal-winner-stat').textContent = timeStr ? `OUTLASTED ALL NATIONS IN ${timeStr} • ROUND #${this.roundNumber} CHAMPION` : `OUTLASTED ALL NATIONS • ROUND #${this.roundNumber} CHAMPION`;
         this.dom.modalSubText.textContent = `SUBSCRIBE TO SUPPORT ${this.roundWinner.name.toUpperCase()}!`;
         this.dom.modalStatWins.textContent = `${this.getCountryWins(this.roundWinner.code)} WINS`;
 
@@ -9069,12 +9376,13 @@
           return;
         }
 
-        // Fixed-Timestep Physics Accumulator (Ensures constant 1.0x real-time speed on 30Hz, 60Hz, 90Hz, 120Hz)
+        // Fixed-Timestep Physics Accumulator (Scaled with this.gameSpeed for custom battle pacing)
         const fixedStepMs = 1000 / 60; // 16.666ms
-        this._physicsAccumulator = (this._physicsAccumulator || 0) + deltaMs;
+        const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
+        this._physicsAccumulator = (this._physicsAccumulator || 0) + (deltaMs * simSpeed);
 
         let steps = 0;
-        while (this._physicsAccumulator >= fixedStepMs && steps < 4) {
+        while (this._physicsAccumulator >= fixedStepMs && steps < 6) {
           if (!this.isRoundOver) {
             this.Engine.update(this.engine, fixedStepMs);
             this.updateCircularArena(1);
@@ -9083,8 +9391,19 @@
           this._physicsAccumulator -= fixedStepMs;
           steps++;
         }
-        if (steps >= 4) {
+        if (steps >= 6) {
           this._physicsAccumulator = 0; // Drop stale accumulation if device was heavily bogged down
+        }
+
+        // Live Match Duration Timer update
+        if (!this.isRoundOver && this.roundStartTime) {
+          const currentElapsedSec = Math.floor((Date.now() - this.roundStartTime) / 1000);
+          if (currentElapsedSec !== this.matchElapsedSec) {
+            this.matchElapsedSec = currentElapsedSec;
+            const m = String(Math.floor(currentElapsedSec / 60)).padStart(2, '0');
+            const s = String(currentElapsedSec % 60).padStart(2, '0');
+            if (this.dom.matchTimer) this.dom.matchTimer.textContent = `${m}:${s}`;
+          }
         }
 
         const dtSec = deltaMs / 1000;
@@ -9164,20 +9483,119 @@
         }
         this.dom.drawerClose.addEventListener('click', () => this.toggleDrawer(false));
 
-        this.dom.sliderGravity.addEventListener('input', (e) => {
-          this.gravityY = parseFloat(e.target.value);
-          this.dom.valGravity.textContent = this.gravityY.toFixed(2);
-          if (this.world) this.world.gravity.y = this.gravityY;
-        });
+        // Duration & Pace Preset Dropdown
+        if (this.dom.selectDuration) {
+          this.dom.selectDuration.addEventListener('change', (e) => {
+            this.applyDurationPreset(e.target.value);
+          });
+        }
 
-        this.dom.sliderSpeed.addEventListener('input', (e) => {
-          this.baseRotationSpeed = parseFloat(e.target.value);
-          this.currentRotationSpeed = this.baseRotationSpeed;
-          this.dom.valSpeed.textContent = this.baseRotationSpeed.toFixed(3);
-        });
+        // Battle Simulation Speed (Game Speed)
+        if (this.dom.sliderGameSpeed) {
+          const onGameSpeedChange = (val) => {
+            this.durationMode = 'custom';
+            this.setGameSpeed(parseFloat(val));
+          };
+          this.dom.sliderGameSpeed.addEventListener('input', (e) => onGameSpeedChange(e.target.value));
+          this.dom.sliderGameSpeed.addEventListener('change', (e) => onGameSpeedChange(e.target.value));
+        }
 
+        if (this.dom.btnSpeedMinus) {
+          this.dom.btnSpeedMinus.addEventListener('click', () => {
+            this.durationMode = 'custom';
+            this.setGameSpeed(this.gameSpeed - 0.05);
+          });
+        }
+        if (this.dom.btnSpeedPlus) {
+          this.dom.btnSpeedPlus.addEventListener('click', () => {
+            this.durationMode = 'custom';
+            this.setGameSpeed(this.gameSpeed + 0.05);
+          });
+        }
+
+        // Speed Preset Pills
+        if (this.dom.speedPills) {
+          this.dom.speedPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+              const speed = parseFloat(pill.dataset.speed);
+              if (!isNaN(speed)) {
+                this.durationMode = 'custom';
+                this.setGameSpeed(speed);
+              }
+            });
+          });
+        }
+
+        // Arena Rotation Speed
+        if (this.dom.sliderSpeed) {
+          const onRotSpeedChange = (val) => {
+            this.durationMode = 'custom';
+            this.setRotationSpeed(parseFloat(val));
+          };
+          this.dom.sliderSpeed.addEventListener('input', (e) => onRotSpeedChange(e.target.value));
+          this.dom.sliderSpeed.addEventListener('change', (e) => onRotSpeedChange(e.target.value));
+        }
+
+        if (this.dom.btnRotMinus) {
+          this.dom.btnRotMinus.addEventListener('click', () => {
+            this.durationMode = 'custom';
+            this.setRotationSpeed(this.baseRotationSpeed - 0.002);
+          });
+        }
+        if (this.dom.btnRotPlus) {
+          this.dom.btnRotPlus.addEventListener('click', () => {
+            this.durationMode = 'custom';
+            this.setRotationSpeed(this.baseRotationSpeed + 0.002);
+          });
+        }
+
+        // Arena Exit Hazard Gap Size
+        if (this.dom.sliderGapSize) {
+          const onGapChange = (val) => {
+            this.durationMode = 'custom';
+            this.setGapSize(parseInt(val, 10));
+          };
+          this.dom.sliderGapSize.addEventListener('input', (e) => onGapChange(e.target.value));
+          this.dom.sliderGapSize.addEventListener('change', (e) => onGapChange(e.target.value));
+        }
+
+        if (this.dom.btnGapMinus) {
+          this.dom.btnGapMinus.addEventListener('click', () => {
+            this.durationMode = 'custom';
+            this.setGapSize(this.gapSegmentCount - 1);
+          });
+        }
+        if (this.dom.btnGapPlus) {
+          this.dom.btnGapPlus.addEventListener('click', () => {
+            this.durationMode = 'custom';
+            this.setGapSize(this.gapSegmentCount + 1);
+          });
+        }
+
+        // Gravity (Y)
+        if (this.dom.sliderGravity) {
+          const onGravChange = (val) => {
+            this.setGravity(parseFloat(val));
+          };
+          this.dom.sliderGravity.addEventListener('input', (e) => onGravChange(e.target.value));
+          this.dom.sliderGravity.addEventListener('change', (e) => onGravChange(e.target.value));
+        }
+
+        if (this.dom.btnGravMinus) {
+          this.dom.btnGravMinus.addEventListener('click', () => {
+            this.setGravity(this.gravityY - 0.05);
+          });
+        }
+        if (this.dom.btnGravPlus) {
+          this.dom.btnGravPlus.addEventListener('click', () => {
+            this.setGravity(this.gravityY + 0.05);
+          });
+        }
+
+        // Country Count Selection
         this.dom.selectCount.addEventListener('change', (e) => {
           this.selectedBatchSize = parseInt(e.target.value, 10);
+          this.saveStreamerConfig();
           this.startNewRound();
         });
         if (this.dom.selectCount) {
@@ -9217,13 +9635,182 @@
           this.leaderboard = {};
           this.renderHorizontalLeaderboard();
         });
+
+        // Initial sync of drawer UI elements
+        this.syncDrawerUI();
+      }
+
+      loadStreamerConfig() {
+        try {
+          const raw = localStorage.getItem('flag_royale_streamer_config');
+          if (raw) {
+            const cfg = JSON.parse(raw);
+            if (typeof cfg.gameSpeed === 'number') this.gameSpeed = Math.max(0.2, Math.min(2.0, cfg.gameSpeed));
+            if (typeof cfg.baseRotationSpeed === 'number') {
+              this.baseRotationSpeed = Math.max(0.002, Math.min(0.060, cfg.baseRotationSpeed));
+              this.currentRotationSpeed = this.baseRotationSpeed;
+            }
+            if (typeof cfg.gapSegmentCount === 'number') this.gapSegmentCount = Math.max(1, Math.min(5, cfg.gapSegmentCount));
+            if (typeof cfg.gravityY === 'number') this.gravityY = Math.max(0.1, Math.min(1.5, cfg.gravityY));
+            if (typeof cfg.selectedBatchSize === 'number') this.selectedBatchSize = cfg.selectedBatchSize;
+            if (typeof cfg.durationMode === 'string') this.durationMode = cfg.durationMode;
+          } else {
+            // Default preset is extended (8-10 min) for grand experience
+            this.applyDurationPreset('extended');
+          }
+        } catch (e) {
+          console.warn('Failed to load streamer config', e);
+        }
+      }
+
+      saveStreamerConfig() {
+        try {
+          const cfg = {
+            gameSpeed: this.gameSpeed,
+            baseRotationSpeed: this.baseRotationSpeed,
+            gapSegmentCount: this.gapSegmentCount,
+            gravityY: this.gravityY,
+            selectedBatchSize: this.selectedBatchSize,
+            durationMode: this.durationMode
+          };
+          localStorage.setItem('flag_royale_streamer_config', JSON.stringify(cfg));
+        } catch (e) {
+          console.warn('Failed to save streamer config', e);
+        }
+      }
+
+      applyDurationPreset(mode) {
+        this.durationMode = mode;
+        if (mode === 'blitz') {
+          this.gapSegmentCount = 4;
+          this.gameSpeed = 1.00;
+          this.baseRotationSpeed = 0.024;
+          this.currentRotationSpeed = 0.024;
+        } else if (mode === 'standard') {
+          this.gapSegmentCount = 2;
+          this.gameSpeed = 1.00;
+          this.baseRotationSpeed = 0.022;
+          this.currentRotationSpeed = 0.022;
+        } else if (mode === 'extended') {
+          // 8 - 10 Minutes (Calibrated single-ball escape rate)
+          this.gapSegmentCount = 1;
+          this.gameSpeed = 0.85;
+          this.baseRotationSpeed = 0.018;
+          this.currentRotationSpeed = 0.018;
+        } else if (mode === 'marathon') {
+          // 12 - 15 Minutes (Endurance stream pace)
+          this.gapSegmentCount = 1;
+          this.gameSpeed = 0.65;
+          this.baseRotationSpeed = 0.014;
+          this.currentRotationSpeed = 0.014;
+        }
+        if (this.world) {
+          this.createCircularArena();
+        }
+        this.syncDrawerUI();
+        this.saveStreamerConfig();
+      }
+
+      setGameSpeed(speed) {
+        this.gameSpeed = Math.round(Math.max(0.20, Math.min(2.00, speed)) * 100) / 100;
+        this.syncDrawerUI();
+        this.saveStreamerConfig();
+      }
+
+      setRotationSpeed(speed) {
+        this.baseRotationSpeed = Math.round(Math.max(0.002, Math.min(0.060, speed)) * 1000) / 1000;
+        this.currentRotationSpeed = this.baseRotationSpeed;
+        this.syncDrawerUI();
+        this.saveStreamerConfig();
+      }
+
+      setGapSize(gap) {
+        this.gapSegmentCount = Math.max(1, Math.min(5, parseInt(gap, 10) || 1));
+        if (this.world) {
+          this.createCircularArena();
+        }
+        this.syncDrawerUI();
+        this.saveStreamerConfig();
+      }
+
+      setGravity(grav) {
+        this.gravityY = Math.round(Math.max(0.10, Math.min(1.50, grav)) * 100) / 100;
+        if (this.world) this.world.gravity.y = this.gravityY;
+        this.syncDrawerUI();
+        this.saveStreamerConfig();
+      }
+
+      syncDrawerUI() {
+        if (!this.dom.sliderGameSpeed) return;
+
+        // Battle Speed
+        this.dom.sliderGameSpeed.value = this.gameSpeed.toFixed(2);
+        this.dom.valGameSpeed.textContent = `${this.gameSpeed.toFixed(2)}x`;
+
+        // Preset Pills
+        if (this.dom.speedPills) {
+          this.dom.speedPills.forEach(pill => {
+            const pSpeed = parseFloat(pill.dataset.speed);
+            if (Math.abs(pSpeed - this.gameSpeed) < 0.04) {
+              pill.classList.add('active');
+            } else {
+              pill.classList.remove('active');
+            }
+          });
+        }
+
+        // Arena Rotation Speed
+        this.dom.sliderSpeed.value = this.baseRotationSpeed.toFixed(3);
+        this.dom.valSpeed.textContent = this.baseRotationSpeed.toFixed(3);
+
+        // Gap Size
+        this.dom.sliderGapSize.value = this.gapSegmentCount;
+        let gapLabel = `${this.gapSegmentCount} SEG`;
+        if (this.gapSegmentCount === 1) gapLabel += ' (SLOW • 8-15M)';
+        else if (this.gapSegmentCount === 2) gapLabel += ' (MED • 4-6M)';
+        else if (this.gapSegmentCount >= 4) gapLabel += ' (FAST • 1-2M)';
+        this.dom.valGapSize.textContent = gapLabel;
+
+        // Gravity
+        this.dom.sliderGravity.value = this.gravityY.toFixed(2);
+        this.dom.valGravity.textContent = this.gravityY.toFixed(2);
+
+        // Duration Mode
+        if (this.dom.selectDuration) {
+          this.dom.selectDuration.value = this.durationMode;
+        }
+        if (this.dom.valDurationMode) {
+          const modeLabels = {
+            blitz: '1-2 MIN',
+            standard: '3-5 MIN',
+            extended: '8-10 MIN',
+            marathon: '12-15 MIN',
+            custom: 'CUSTOM'
+          };
+          this.dom.valDurationMode.textContent = modeLabels[this.durationMode] || 'CUSTOM';
+        }
+
+        const hintEl = document.getElementById('hint-battle-duration');
+        if (hintEl) {
+          if (this.durationMode === 'extended') {
+            hintEl.textContent = '✨ Calibrated for 8-10 minute long streams (single-ball exit rate).';
+          } else if (this.durationMode === 'marathon') {
+            hintEl.textContent = '👑 Grand endurance mode (12-15 minute epic battle royale).';
+          } else if (this.durationMode === 'standard') {
+            hintEl.textContent = '⏱️ Balanced 3-5 minute match for standard live stream rounds.';
+          } else if (this.durationMode === 'blitz') {
+            hintEl.textContent = '⚡ Rapid eliminations (1-2 minute high action round).';
+          } else {
+            hintEl.textContent = '⚙️ Custom configuration: simulation speed & gap tuned manually.';
+          }
+        }
       }
 
       toggleDrawer(force) {
-        if (typeof force === 'boolean') {
-          this.dom.drawer.classList.toggle('open', force);
-        } else {
-          this.dom.drawer.classList.toggle('open');
+        const isOpen = typeof force === 'boolean' ? force : !this.dom.drawer.classList.contains('open');
+        this.dom.drawer.classList.toggle('open', isOpen);
+        if (isOpen) {
+          this.syncDrawerUI();
         }
       }
 
