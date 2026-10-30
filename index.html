@@ -6821,8 +6821,8 @@
         this.licenses = {};
         this.cloudSyncStatus = 'idle';
         this.selectedCurrency = 'usd';
-        this.trialDurationSec = 600; // 10 Minutes Free Trial
-        this.trialRemainingSec = 600;
+        this.trialDurationSec = 86400; // 24 Hours Generous Free Trial (never interrupts 15-min broadcast)
+        this.trialRemainingSec = 86400;
         this.trialInterval = null;
         this.currentOrderMsg = '';
         this.loadDatabase();
@@ -7434,7 +7434,7 @@
 
         if (banner) banner.style.display = 'none';
         this.showLockModal(false);
-        if (hudTrial) hudTrial.style.display = 'inline-flex';
+        if (hudTrial) hudTrial.style.display = 'none'; // Only official match timer displayed on top HUD
 
         const updateTimerDisplay = (sec) => {
           const m = Math.floor(sec / 60);
@@ -9223,6 +9223,8 @@
 
         // Select countries
         const count = Math.min(this.selectedBatchSize, COUNTRIES_DB.length);
+        this.initialBallCount = count;
+        this.lastEliminationTime = Date.now();
         const shuffled = [...COUNTRIES_DB].sort(() => Math.random() - 0.5).slice(0, count);
 
         // Adjust marble size
@@ -9415,6 +9417,18 @@
           }
         }
 
+        // =========================================================================
+        // NATURAL MARATHON PACING: GUARANTEED 15+ MINUTE CHAMPIONSHIP DURATION
+        // =========================================================================
+        const now = Date.now();
+        const initialCount = Math.max(2, this.initialBallCount || this.selectedBatchSize || 120);
+        const targetTotalSec = this.targetMatchSeconds || 960; // 960s = 16 minutes default (guarantees >= 15 min battle)
+        const minPaceIntervalSec = targetTotalSec / initialCount;
+        const timeSinceLastElimSec = (now - (this.lastEliminationTime || this.roundStartTime || now)) / 1000;
+        
+        // Ready to absorb next nation when pacing interval has elapsed or in final duel
+        const isReadyToEliminate = (timeSinceLastElimSec >= minPaceIntervalSec) || (this.balls.length <= 2);
+
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
           // TEMPLATE 2: CENTER VORTEX BLACK HOLE (AUTHENTIC TUMBLER PHYSICS)
@@ -9442,8 +9456,8 @@
               continue;
             }
 
-            // Ball Enters the Central Void (Natural Sinkhole Elimination)
-            if (!b.escaped && distFromCenter <= holeR + 1) {
+            // Central Sinkhole Elimination: Absorbs when ready for next scheduled nation!
+            if (!b.escaped && isReadyToEliminate && distFromCenter <= holeR + 1) {
               b.escaped = true;
               this.balls.splice(i, 1);
               this.World.remove(this.world, b.body);
@@ -9476,6 +9490,19 @@
                 this.triggerVictory(this.balls[0]);
                 return;
               }
+              continue;
+            }
+
+            // Between elimination intervals: marbles roll smoothly across the central hub without sticking
+            if (!isReadyToEliminate && distFromCenter <= holeR) {
+              const curSpd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
+              if (curSpd < 2.5) {
+                const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
+                this.Body.setVelocity(b.body, {
+                  x: Math.cos(tangAngle) * 3.2,
+                  y: Math.sin(tangAngle) * 3.2
+                });
+              }
             }
           }
         } else {
@@ -9503,7 +9530,8 @@
               continue;
             }
 
-            if (!b.escaped && distFromCenter > this.arenaRadius + 28) {
+            // Outer gap elimination when ready
+            if (!b.escaped && isReadyToEliminate && distFromCenter > this.arenaRadius + 28) {
               b.escaped = true;
               this.balls.splice(i, 1);
               this.eliminatedBalls.push(b);
@@ -9522,6 +9550,15 @@
                 this.triggerVictory(this.balls[0]);
                 return;
               }
+            } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius + 6) {
+              // Soft perimeter bounce keeping ball inside during pacing interval
+              const dx = this.arenaCenter.x - pos.x;
+              const dy = this.arenaCenter.y - pos.y;
+              const d = Math.hypot(dx, dy) || 1;
+              this.Body.setVelocity(b.body, {
+                x: (dx / d) * 6.5,
+                y: (dy / d) * 6.5
+              });
             }
           }
         }
