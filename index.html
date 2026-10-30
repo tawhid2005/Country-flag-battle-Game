@@ -1846,8 +1846,71 @@
     .hud-bottom-deck {
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 6px;
       width: 100%;
+    }
+
+    /* Eliminated Flags Tray (ALL ELIMINATED - from Streamer Screenshot) */
+    .eliminated-tray-section {
+      width: 100%;
+      background: rgba(10, 16, 32, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 5px 8px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    }
+
+    .eliminated-tray-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+    }
+
+    .eliminated-tray-header .elim-title {
+      color: #f43f5e;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+    }
+
+    .eliminated-tray-header .elim-count {
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .eliminated-flags-scroll {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      max-height: 48px;
+      overflow-y: auto;
+      align-content: flex-start;
+      padding-right: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(244, 63, 94, 0.4) transparent;
+    }
+
+    .elim-mini-flag {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.2px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      animation: elimBadgePop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      flex-shrink: 0;
+    }
+
+    @keyframes elimBadgePop {
+      0% { transform: scale(0.3); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     /* Live Elimination Killfeed Bar */
@@ -2702,6 +2765,45 @@
       padding: 8px;
       font-size: 12px;
       outline: none;
+    }
+
+    .template-selector-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .template-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 9px 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .template-pill:hover {
+      background: rgba(168, 85, 247, 0.18);
+      border-color: rgba(168, 85, 247, 0.5);
+      color: #f1f5f9;
+    }
+
+    .template-pill.active {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(236, 72, 153, 0.3));
+      border-color: #ec4899;
+      color: #fdf2f8;
+      box-shadow: 0 0 14px rgba(236, 72, 153, 0.45);
     }
 
     .drawer-btn {
@@ -4309,6 +4411,17 @@
           <div class="streamer-key-pill click-key" id="key-hud-click" title="Mouse Flick Impulse">🖱️ FLICK</div>
         </div>
 
+        <!-- Eliminated Country Flag Tray (from Screenshot: ALL ELIMINATED) -->
+        <div class="eliminated-tray-section" id="eliminated-tray-section">
+          <div class="eliminated-tray-header">
+            <span class="elim-title">💀 ALL ELIMINATED</span>
+            <span class="elim-count" id="elim-tray-count">0 / 50</span>
+          </div>
+          <div class="eliminated-flags-scroll" id="eliminated-flags-tray">
+            <!-- Populated dynamically as nations fall into the hole -->
+          </div>
+        </div>
+
         <!-- Live Elimination Killfeed Bar -->
         <div class="hud-killfeed-container" id="hud-killfeed-bar">
           <!-- Populated dynamically on eliminations -->
@@ -4420,6 +4533,27 @@
         <button class="drawer-close" id="drawer-close-btn">&times;</button>
       </div>
 
+      <!-- Arena Template Selector (Hole vs Outer Ring) -->
+      <div class="drawer-control-group">
+        <label class="drawer-label">
+          <span>🏟️ ARENA TEMPLATE</span>
+          <span class="val" id="val-arena-template">🌀 CENTER VORTEX HOLE</span>
+        </label>
+        <div class="template-selector-grid">
+          <button type="button" class="template-pill active" id="btn-tmpl-hole" data-tmpl="hole">
+            <span style="font-size: 15px;">🌀</span>
+            <span>Center Vortex Hole</span>
+          </button>
+          <button type="button" class="template-pill" id="btn-tmpl-ring" data-tmpl="ring">
+            <span style="font-size: 15px;">⭕</span>
+            <span>Outer Ring Escape</span>
+          </button>
+        </div>
+        <div class="drawer-hint" id="hint-arena-template">
+          🌀 Hole Mode: Closed perimeter with 6 rotating spokes. Marbles get pulled into central black hole!
+        </div>
+      </div>
+
       <!-- Battle Duration & Pace Mode Selector -->
       <div class="drawer-control-group">
         <label class="drawer-label">
@@ -4510,6 +4644,7 @@
         </select>
       </div>
 
+      <button class="drawer-btn" id="btn-toggle-voice">🎙️ AI VOICE COMMENTATOR: ON</button>
       <button class="drawer-btn" id="btn-toggle-sound">🔊 AUDIO: ENABLED</button>
       <button class="drawer-btn" id="btn-toggle-broadcast">🎥 CLEAN BROADCAST MODE</button>
 
@@ -5915,13 +6050,37 @@
       }
     }
 
-    // --- 3. PROCEDURAL SYNTH AUDIO ---
+    // --- 3. PROCEDURAL SYNTH AUDIO & AI VOICE COMMENTARY ---
     class ProceduralAudioEngine {
       constructor() {
         this.ctx = null;
         this.muted = false;
+        this.aiVoiceEnabled = true;
         this.lastBounceTime = 0;
         this.heartbeatTimer = null;
+        this.preferredVoice = null;
+        this.pendingVoiceCount = 0;
+        this.lastElimVoiceTime = 0;
+        this.initVoiceEngine();
+      }
+
+      initVoiceEngine() {
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+          const load = () => {
+            try {
+              const voices = window.speechSynthesis.getVoices();
+              if (voices && voices.length) {
+                // Priority to standard English voices
+                const match = voices.find(v => v.lang && (v.lang.startsWith('en-US') || v.lang.startsWith('en_US')) && !v.name.includes('Bad News')) ||
+                              voices.find(v => v.lang && v.lang.startsWith('en')) ||
+                              voices[0];
+                if (match) this.preferredVoice = match;
+              }
+            } catch (e) {}
+          };
+          window.speechSynthesis.onvoiceschanged = load;
+          load();
+        }
       }
 
       init() {
@@ -5932,11 +6091,56 @@
         if (this.ctx.state === 'suspended') {
           this.ctx.resume();
         }
+        // Prime speech synthesis so browsers unlock speech audio without silent drops
+        if (window.speechSynthesis) {
+          try {
+            const prime = new SpeechSynthesisUtterance(' ');
+            prime.volume = 0.01;
+            window.speechSynthesis.speak(prime);
+            this.initVoiceEngine();
+          } catch (e) {}
+        }
       }
 
       toggleMute() {
         this.muted = !this.muted;
         return !this.muted;
+      }
+
+      toggleVoice() {
+        this.aiVoiceEnabled = !this.aiVoiceEnabled;
+        if (!this.aiVoiceEnabled && window.speechSynthesis) {
+          try { window.speechSynthesis.cancel(); } catch (e) {}
+        }
+        return this.aiVoiceEnabled;
+      }
+
+      speakElimination(countryName) {
+        if (this.muted || !this.aiVoiceEnabled || !window.speechSynthesis) return;
+        const now = Date.now();
+        // Prevent speech backlog during fast clustered eliminations
+        if (now - this.lastElimVoiceTime < 650 && this.pendingVoiceCount > 0) {
+          return;
+        }
+        this.lastElimVoiceTime = now;
+        try {
+          if (window.speechSynthesis.speaking && this.pendingVoiceCount > 0) {
+            window.speechSynthesis.cancel();
+            this.pendingVoiceCount = 0;
+          }
+          const text = `${countryName} eliminated!`;
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.15; // Snappy commentator pace
+          utterance.pitch = 1.05;
+          utterance.volume = 1.0;
+          if (this.preferredVoice) utterance.voice = this.preferredVoice;
+          this.pendingVoiceCount++;
+          utterance.onend = () => { this.pendingVoiceCount = Math.max(0, this.pendingVoiceCount - 1); };
+          utterance.onerror = () => { this.pendingVoiceCount = Math.max(0, this.pendingVoiceCount - 1); };
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.warn("SpeechSynthesis error:", e);
+        }
       }
 
       playBounce(velocity = 5) {
@@ -6112,24 +6316,49 @@
         }
       }
 
+      // Enhanced High-Impact Procedural Elimination Sound Effect
       playEliminate() {
         if (this.muted || !this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
+        try {
+          const now = this.ctx.currentTime;
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(440, now);
-        osc.frequency.exponentialRampToValueAtTime(70, now + 0.22);
+          // 1. Heavy 808 Sub-Bass Impact (Drop from 160Hz -> 36Hz)
+          const subOsc = this.ctx.createOscillator();
+          const subGain = this.ctx.createGain();
+          subOsc.type = 'sine';
+          subOsc.frequency.setValueAtTime(160, now);
+          subOsc.frequency.exponentialRampToValueAtTime(36, now + 0.35);
 
-        gain.gain.setValueAtTime(0.22, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          subGain.gain.setValueAtTime(0.42, now);
+          subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          subOsc.connect(subGain);
+          subGain.connect(this.ctx.destination);
+          subOsc.start(now);
+          subOsc.stop(now + 0.36);
 
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
+          // 2. Sci-Fi Resonant Warp Sweep (Disintegration zap)
+          const warpOsc = this.ctx.createOscillator();
+          const warpGain = this.ctx.createGain();
+          const warpFilter = this.ctx.createBiquadFilter();
 
-        osc.start(now);
-        osc.stop(now + 0.23);
+          warpOsc.type = 'sawtooth';
+          warpOsc.frequency.setValueAtTime(680, now);
+          warpOsc.frequency.exponentialRampToValueAtTime(80, now + 0.28);
+
+          warpFilter.type = 'lowpass';
+          warpFilter.frequency.setValueAtTime(1400, now);
+          warpFilter.frequency.exponentialRampToValueAtTime(200, now + 0.28);
+          warpFilter.Q.value = 6;
+
+          warpGain.gain.setValueAtTime(0.28, now);
+          warpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+          warpOsc.connect(warpFilter);
+          warpFilter.connect(warpGain);
+          warpGain.connect(this.ctx.destination);
+          warpOsc.start(now);
+          warpOsc.stop(now + 0.30);
+        } catch (e) {}
       }
 
       playVictory() {
@@ -6167,19 +6396,22 @@
       }
 
       announceWinner(countryName) {
-        if (this.muted || !window.speechSynthesis) return;
+        if (this.muted || !this.aiVoiceEnabled || !window.speechSynthesis) return;
         try {
           window.speechSynthesis.cancel();
-          const text = `${countryName} is the Champion! Comment your country and subscribe for the next battle!`;
+          this.pendingVoiceCount = 0;
+          const text = `${countryName} is the Champion! Winner! Comment your country and subscribe for the next battle!`;
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.rate = 1.05;
           utterance.pitch = 1.1;
-          utterance.volume = 0.95;
+          utterance.volume = 1.0;
+          if (this.preferredVoice) utterance.voice = this.preferredVoice;
           window.speechSynthesis.speak(utterance);
         } catch (e) {
           console.warn("SpeechSynthesis error:", e);
         }
       }
+
       playMechanicalKeyClick() {
         if (this.muted || !this.ctx) return;
         try {
@@ -6240,6 +6472,30 @@
             alpha: 1,
             decay: 0.03 + Math.random() * 0.02,
             gravity: 0.12
+          });
+        }
+      }
+
+      spawnHoleSuction(cx, cy, color) {
+        const count = this.isMobile ? 12 : 24;
+        for (let i = 0; i < count; i++) {
+          if (this.particles.length >= this.maxParticles) break;
+          const spawnDist = 38 + Math.random() * 28;
+          const angle = Math.random() * Math.PI * 2;
+          const x = cx + Math.cos(angle) * spawnDist;
+          const y = cy + Math.sin(angle) * spawnDist;
+          const inwardSpeed = 2.2 + Math.random() * 3.5;
+          const tanSpeed = 1.8;
+          const vx = -Math.cos(angle) * inwardSpeed - Math.sin(angle) * tanSpeed;
+          const vy = -Math.sin(angle) * inwardSpeed + Math.cos(angle) * tanSpeed;
+          this.particles.push({
+            x, y,
+            vx, vy,
+            radius: 2 + Math.random() * 2.5,
+            color: color || '#ec4899',
+            alpha: 1,
+            decay: 0.045,
+            gravity: 0
           });
         }
       }
@@ -8472,6 +8728,8 @@
         this.arenaAngle = 0;
         this.totalSegments = 32;
         this.gapSegmentCount = 1; // Default 1 segment gap: calibrated single-ball exit for 8-15 min battles!
+        this.arenaTemplate = 'hole'; // 'hole' = Central Vortex Black Hole (Screenshot mode), 'ring' = Outer Ring Escape
+        this.centerHoleRadius = 34;
         this.gameSpeed = 1.0;
         this.durationMode = 'extended'; // 'blitz', 'standard', 'extended', 'marathon', 'custom'
         this.roundStartTime = Date.now();
@@ -8509,10 +8767,11 @@
 
         this.tickerIndex = 0;
         this.tickerMessages = [
+          "👍 LIKE IF YOU SEE YOUR COUNTRY FLAG",
+          "🔥 CYCLE LIVE • WHERE ARE YOU FROM?",
           "💬 TYPE YOUR COUNTRY TO BOOST THEIR POWER!",
           "🔔 SUBSCRIBE TO SEE YOUR NATION TRIUMPH!",
-          "🔥 24/7 AUTONOMOUS COUNTRY BATTLE ROYALE",
-          "🏆 DROP A LIKE FOR YOUR NATION'S GLORY!",
+          "🏆 24/7 AUTONOMOUS COUNTRY BATTLE ROYALE",
           "⚡ WHO WILL BE THE LAST NATION STANDING?"
         ];
 
@@ -8705,52 +8964,98 @@
 
         this.arenaSegments = [];
         this.arenaFins = [];
+        this.centerBumper = null;
 
         const segAngle = (Math.PI * 2) / this.totalSegments;
         const segLen = (2 * Math.PI * this.arenaRadius) / this.totalSegments + 4;
         const segThick = 18;
 
-        for (let i = 0; i < this.totalSegments - this.gapSegmentCount; i++) {
-          const seg = this.Bodies.rectangle(0, 0, segLen, segThick, {
-            isStatic: true,
-            restitution: this.ballRestitution,
-            friction: 0.005,
-            render: { visible: false },
-            label: 'arenaWall'
-          });
-          seg.baseAngle = i * segAngle;
-          this.arenaSegments.push(seg);
-          this.World.add(this.world, seg);
-        }
+        if (this.arenaTemplate === 'hole') {
+          // --- TEMPLATE 2: CENTER VORTEX HOLE (BLACK HOLE ARENA FROM SCREENSHOT) ---
+          // 1. Closed Outer Wall (All 32 segments solid, 0 gap - marbles cannot escape outside)
+          for (let i = 0; i < this.totalSegments; i++) {
+            const seg = this.Bodies.rectangle(0, 0, segLen, segThick, {
+              isStatic: true,
+              restitution: this.ballRestitution,
+              friction: 0.005,
+              render: { visible: false },
+              label: 'arenaWall'
+            });
+            seg.baseAngle = i * segAngle;
+            this.arenaSegments.push(seg);
+            this.World.add(this.world, seg);
+          }
 
-        // 4 Kinetic Paddles / Fins to keep balls energetically bouncing
-        for (let f = 0; f < 4; f++) {
-          const fin = this.Bodies.rectangle(0, 0, 42, 12, {
-            isStatic: true,
-            restitution: 1.05,
-            friction: 0.005,
-            render: { visible: false },
-            label: 'arenaFin'
-          });
-          fin.finBaseAngle = f * (Math.PI / 2);
-          fin.finDist = this.arenaRadius * 0.58;
-          this.arenaFins.push(fin);
-          this.World.add(this.world, fin);
-        }
+          // 2. 6 Rotating Radial Kinetic Spokes (Lavender/Purple blades from screenshot)
+          // Extending from r=46px outwards to r=138px (length 92px, width 12px)
+          const spokeCount = 6;
+          const spokeLen = 92;
+          const spokeWidth = 12;
+          const spokeDist = 92; // Distance of spoke center from arenaCenter
+          for (let s = 0; s < spokeCount; s++) {
+            const spoke = this.Bodies.rectangle(0, 0, spokeLen, spokeWidth, {
+              isStatic: true,
+              restitution: 1.08,
+              friction: 0.005,
+              render: { visible: false },
+              label: 'arenaFin'
+            });
+            spoke.finBaseAngle = s * (Math.PI / 3);
+            spoke.finDist = spokeDist;
+            spoke.spokeLen = spokeLen;
+            spoke.spokeWidth = spokeWidth;
+            this.arenaFins.push(spoke);
+            this.World.add(this.world, spoke);
+          }
 
-        // Central Super-Bouncy Neon Pinball Bumper
-        this.centerBumper = this.Bodies.circle(this.arenaCenter.x, this.arenaCenter.y, 24, {
-          isStatic: true,
-          restitution: 1.25,
-          friction: 0.001,
-          label: 'centerBumper'
-        });
-        this.World.add(this.world, this.centerBumper);
+          // Center sinkhole radius for event horizon elimination
+          this.centerHoleRadius = 34;
+
+        } else {
+          // --- TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP) ---
+          for (let i = 0; i < this.totalSegments - this.gapSegmentCount; i++) {
+            const seg = this.Bodies.rectangle(0, 0, segLen, segThick, {
+              isStatic: true,
+              restitution: this.ballRestitution,
+              friction: 0.005,
+              render: { visible: false },
+              label: 'arenaWall'
+            });
+            seg.baseAngle = i * segAngle;
+            this.arenaSegments.push(seg);
+            this.World.add(this.world, seg);
+          }
+
+          // 4 Kinetic Paddles / Fins
+          for (let f = 0; f < 4; f++) {
+            const fin = this.Bodies.rectangle(0, 0, 42, 12, {
+              isStatic: true,
+              restitution: 1.05,
+              friction: 0.005,
+              render: { visible: false },
+              label: 'arenaFin'
+            });
+            fin.finBaseAngle = f * (Math.PI / 2);
+            fin.finDist = this.arenaRadius * 0.58;
+            this.arenaFins.push(fin);
+            this.World.add(this.world, fin);
+          }
+
+          // Central Super-Bouncy Neon Pinball Bumper
+          this.centerBumper = this.Bodies.circle(this.arenaCenter.x, this.arenaCenter.y, 24, {
+            isStatic: true,
+            restitution: 1.25,
+            friction: 0.001,
+            label: 'centerBumper'
+          });
+          this.World.add(this.world, this.centerBumper);
+        }
       }
 
       updateCircularArena(stepFactor = 1) {
         this.arenaAngle += this.currentRotationSpeed * stepFactor;
 
+        // Outer wall segments
         for (const seg of this.arenaSegments) {
           const currentAng = seg.baseAngle + this.arenaAngle;
           const x = this.arenaCenter.x + Math.cos(currentAng) * this.arenaRadius;
@@ -8759,13 +9064,24 @@
           this.Body.setAngle(seg, currentAng + Math.PI / 2);
         }
 
-        // Rotate kinetic paddles
-        for (const fin of this.arenaFins) {
-          const fAng = fin.finBaseAngle + (this.arenaAngle * 1.6);
-          const fx = this.arenaCenter.x + Math.cos(fAng) * fin.finDist;
-          const fy = this.arenaCenter.y + Math.sin(fAng) * fin.finDist;
-          this.Body.setPosition(fin, { x: fx, y: fy });
-          this.Body.setAngle(fin, fAng + Math.PI / 3);
+        if (this.arenaTemplate === 'hole') {
+          // Rotate 6 radial spokes synchronously around the central sinkhole
+          for (const spoke of this.arenaFins) {
+            const sAng = spoke.finBaseAngle + this.arenaAngle;
+            const sx = this.arenaCenter.x + Math.cos(sAng) * spoke.finDist;
+            const sy = this.arenaCenter.y + Math.sin(sAng) * spoke.finDist;
+            this.Body.setPosition(spoke, { x: sx, y: sy });
+            this.Body.setAngle(spoke, sAng);
+          }
+        } else {
+          // Rotate 4 kinetic paddles
+          for (const fin of this.arenaFins) {
+            const fAng = fin.finBaseAngle + (this.arenaAngle * 1.6);
+            const fx = this.arenaCenter.x + Math.cos(fAng) * fin.finDist;
+            const fy = this.arenaCenter.y + Math.sin(fAng) * fin.finDist;
+            this.Body.setPosition(fin, { x: fx, y: fy });
+            this.Body.setAngle(fin, fAng + Math.PI / 3);
+          }
         }
       }
 
@@ -8805,6 +9121,11 @@
         this.eliminatedBalls = [];
         this.powerups = [];
         this.particles.clear();
+
+        const tray = document.getElementById('eliminated-flags-tray');
+        if (tray) tray.innerHTML = '';
+        const countEl = document.getElementById('elim-tray-count');
+        if (countEl) countEl.textContent = `0 / ${this.selectedBatchSize}`;
 
         this.createCircularArena();
 
@@ -8943,7 +9264,7 @@
       checkBallPhysicsAndEliminations(dtSec = 1 / 60) {
         if (this.isRoundOver) return;
 
-        // Anti-clumping impulse
+        // Anti-clumping impulse (keeps marbles active and moving)
         this.antiClumpTimer += dtSec;
         if (this.antiClumpTimer > 0.75) {
           this.antiClumpTimer = 0;
@@ -8959,41 +9280,108 @@
           }
         }
 
-        for (let i = this.balls.length - 1; i >= 0; i--) {
-          const b = this.balls[i];
-          const pos = b.body.position;
-          const distFromCenter = Math.hypot(pos.x - this.arenaCenter.x, pos.y - this.arenaCenter.y);
+        if (this.arenaTemplate === 'hole') {
+          // =========================================================================
+          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (FROM USER SCREENSHOT)
+          // =========================================================================
+          const holeR = this.centerHoleRadius || 34;
 
-          // Shield Rescue
-          if (b.hasShield && distFromCenter > this.arenaRadius + 5) {
-            b.hasShield = false;
-            this.audio.playShieldBreak();
-            this.particles.spawnShieldShatter(pos.x, pos.y);
-            this.pushKillfeed(b.country, '🛡️ SHIELD SAVED!');
+          for (let i = this.balls.length - 1; i >= 0; i--) {
+            const b = this.balls[i];
+            const pos = b.body.position;
             const dx = this.arenaCenter.x - pos.x;
             const dy = this.arenaCenter.y - pos.y;
-            const d = Math.hypot(dx, dy) || 1;
-            this.Body.setVelocity(b.body, {
-              x: (dx / d) * 8.5,
-              y: (dy / d) * 8.5 - 3
-            });
-            continue;
+            const distFromCenter = Math.hypot(dx, dy);
+
+            // Gravitational Vortex Inward Suction Force (active within r < 130px)
+            if (distFromCenter < 130) {
+              const pullFactor = (130 - distFromCenter) / 130;
+              const pull = 0.00015 * pullFactor * b.body.mass;
+              const d = distFromCenter || 1;
+              // Inward radial pull + swirling tangential force
+              this.Body.applyForce(b.body, pos, {
+                x: (dx / d) * pull - (dy / d) * (pull * 0.38),
+                y: (dy / d) * pull + (dx / d) * (pull * 0.38)
+              });
+            }
+
+            // Shield Rescue
+            if (b.hasShield && distFromCenter <= holeR + 8) {
+              b.hasShield = false;
+              this.audio.playShieldBreak();
+              this.particles.spawnShieldShatter(pos.x, pos.y);
+              this.pushKillfeed(b.country, '🛡️ SHIELD SAVED!');
+              const d = distFromCenter || 1;
+              this.Body.setVelocity(b.body, {
+                x: -(dx / d) * 9.5,
+                y: -(dy / d) * 9.5
+              });
+              continue;
+            }
+
+            // Ball Enters the Central Hole (Elimination Event Horizon!)
+            if (!b.escaped && distFromCenter <= holeR) {
+              b.escaped = true;
+              this.balls.splice(i, 1);
+              this.eliminatedBalls.push(b);
+              this.World.remove(this.world, b.body);
+
+              this.audio.playEliminate();
+              this.audio.speakElimination(b.country.name);
+              this.particles.spawnHoleSuction(this.arenaCenter.x, this.arenaCenter.y, b.country.color);
+              this.pushKillfeed(b.country);
+              this.addEliminatedTrayFlag(b.country);
+              if (this.humanStreamer) this.humanStreamer.onElimination(b.country);
+              this.updateAliveHUD();
+
+              if (this.balls.length === 1) {
+                this.triggerVictory(this.balls[0]);
+                return;
+              }
+            }
           }
+        } else {
+          // =========================================================================
+          // TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP)
+          // =========================================================================
+          for (let i = this.balls.length - 1; i >= 0; i--) {
+            const b = this.balls[i];
+            const pos = b.body.position;
+            const distFromCenter = Math.hypot(pos.x - this.arenaCenter.x, pos.y - this.arenaCenter.y);
 
-          if (!b.escaped && distFromCenter > this.arenaRadius + 28) {
-            b.escaped = true;
-            this.balls.splice(i, 1);
-            this.eliminatedBalls.push(b);
+            // Shield Rescue
+            if (b.hasShield && distFromCenter > this.arenaRadius + 5) {
+              b.hasShield = false;
+              this.audio.playShieldBreak();
+              this.particles.spawnShieldShatter(pos.x, pos.y);
+              this.pushKillfeed(b.country, '🛡️ SHIELD SAVED!');
+              const dx = this.arenaCenter.x - pos.x;
+              const dy = this.arenaCenter.y - pos.y;
+              const d = Math.hypot(dx, dy) || 1;
+              this.Body.setVelocity(b.body, {
+                x: (dx / d) * 8.5,
+                y: (dy / d) * 8.5 - 3
+              });
+              continue;
+            }
 
-            this.audio.playEliminate();
-            this.particles.spawnElimination(pos.x, pos.y, b.country.color);
-            this.pushKillfeed(b.country);
-            if (this.humanStreamer) this.humanStreamer.onElimination(b.country);
-            this.updateAliveHUD();
+            if (!b.escaped && distFromCenter > this.arenaRadius + 28) {
+              b.escaped = true;
+              this.balls.splice(i, 1);
+              this.eliminatedBalls.push(b);
 
-            if (this.balls.length === 1) {
-              this.triggerVictory(this.balls[0]);
-              return;
+              this.audio.playEliminate();
+              this.audio.speakElimination(b.country.name);
+              this.particles.spawnElimination(pos.x, pos.y, b.country.color);
+              this.pushKillfeed(b.country);
+              this.addEliminatedTrayFlag(b.country);
+              if (this.humanStreamer) this.humanStreamer.onElimination(b.country);
+              this.updateAliveHUD();
+
+              if (this.balls.length === 1) {
+                this.triggerVictory(this.balls[0]);
+                return;
+              }
             }
           }
         }
@@ -9058,10 +9446,40 @@
         }, 1000);
       }
 
+      addEliminatedTrayFlag(country) {
+        const tray = document.getElementById('eliminated-flags-tray');
+        const countEl = document.getElementById('elim-tray-count');
+        if (!tray) return;
+
+        const flagCanvas = document.createElement('canvas');
+        flagCanvas.width = 18;
+        flagCanvas.height = 18;
+        flagCanvas.className = 'elim-mini-flag';
+        flagCanvas.title = `${country.name} (${country.code})`;
+
+        const fCtx = flagCanvas.getContext('2d');
+        const miniImg = this.flagEngine.getFlagCanvas(country, 24);
+        fCtx.save();
+        fCtx.beginPath();
+        fCtx.arc(9, 9, 8.5, 0, Math.PI * 2);
+        fCtx.clip();
+        fCtx.drawImage(miniImg, 0, 0, 18, 18);
+        fCtx.restore();
+
+        tray.appendChild(flagCanvas);
+        tray.scrollTop = tray.scrollHeight;
+
+        if (countEl) {
+          const elimCount = this.selectedBatchSize - this.balls.length;
+          countEl.textContent = `${elimCount} / ${this.selectedBatchSize}`;
+        }
+      }
+
       // --- 8. HIGH-DPI CANVAS RENDERING (MASTER ESPORTS STADIUM) ---
       drawArena(ctx) {
         ctx.save();
         const theme = this.currentTheme || ARENA_THEMES[0];
+        const isMobile = this.isMobileDevice;
 
         // Stadium Floor Ambient Depth Gradient (Cached per theme - 0 GC overhead)
         if (!this._stadiumGrad || this._stadiumGradTheme !== theme.name) {
@@ -9104,130 +9522,250 @@
         }
         ctx.stroke();
 
-        const isMobile = this.isMobileDevice;
+        if (this.arenaTemplate === 'hole') {
+          // =========================================================================
+          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (SCREENSHOT DESIGN)
+          // =========================================================================
 
-        // Outer Boundary Segments with Refined Neon Glow
-        if (isMobile) {
-          // Pass 1: Hardware-accelerated vibrant neon glow pass (0ms blur CPU overhead!)
-          ctx.strokeStyle = theme.glow;
-          ctx.lineWidth = 14;
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-          ctx.beginPath();
-          for (const seg of this.arenaSegments) {
-            const v = seg.vertices;
-            ctx.moveTo(v[0].x, v[0].y);
-            for (let k = 1; k < v.length; k++) {
-              ctx.lineTo(v[k].x, v[k].y);
+          // 1. Closed Outer Neon Cyan Ring (All 32 segments solid)
+          ctx.save();
+          if (isMobile) {
+            ctx.strokeStyle = '#06b6d4';
+            ctx.lineWidth = 13;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            for (const seg of this.arenaSegments) {
+              const v = seg.vertices;
+              ctx.moveTo(v[0].x, v[0].y);
+              for (let k = 1; k < v.length; k++) ctx.lineTo(v[k].x, v[k].y);
+              ctx.closePath();
             }
-            ctx.closePath();
+            ctx.stroke();
+
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 7;
+            ctx.stroke();
+          } else {
+            ctx.shadowColor = '#06b6d4';
+            ctx.shadowBlur = 16;
+            ctx.strokeStyle = '#38bdf8';
+            ctx.fillStyle = '#0284c7';
+            ctx.lineWidth = 7.5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            for (const seg of this.arenaSegments) {
+              const v = seg.vertices;
+              ctx.moveTo(v[0].x, v[0].y);
+              for (let k = 1; k < v.length; k++) ctx.lineTo(v[k].x, v[k].y);
+              ctx.closePath();
+            }
+            ctx.fill();
+            ctx.stroke();
+            ctx.shadowBlur = 0;
           }
+          ctx.restore();
+
+          // 2. 6 Rotating Radial Kinetic Spokes (Lavender/Purple blades from screenshot)
+          ctx.save();
+          for (const spoke of this.arenaFins) {
+            const v = spoke.vertices;
+            ctx.beginPath();
+            ctx.moveTo(v[0].x, v[0].y);
+            for (let k = 1; k < v.length; k++) ctx.lineTo(v[k].x, v[k].y);
+            ctx.closePath();
+
+            if (!isMobile) {
+              ctx.shadowColor = '#c084fc';
+              ctx.shadowBlur = 14;
+            }
+            ctx.fillStyle = '#a855f7';
+            ctx.fill();
+
+            // Inner core lavender edge
+            ctx.strokeStyle = '#e9d5ff';
+            ctx.lineWidth = 2.4;
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          // 3. Central Glowing Black Hole (Vortex Sinkhole from Screenshot)
+          ctx.save();
+          const cx = this.arenaCenter.x;
+          const cy = this.arenaCenter.y;
+          const holeR = this.centerHoleRadius || 34;
+
+          // A. Outer Gravitational Accretion Disk / Purple Halo
+          ctx.fillStyle = 'rgba(168, 85, 247, 0.22)';
+          ctx.beginPath();
+          ctx.arc(cx, cy, holeR + 18, 0, Math.PI * 2);
+          ctx.fill();
+
+          // B. Glowing Neon Pink/Magenta Event Horizon Ring
+          if (!isMobile) {
+            ctx.shadowColor = '#ec4899';
+            ctx.shadowBlur = 22;
+          }
+          ctx.strokeStyle = '#ec4899';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(cx, cy, holeR, 0, Math.PI * 2);
           ctx.stroke();
 
-          // Pass 2: Crisp solid core
-          ctx.strokeStyle = theme.border;
-          ctx.fillStyle = theme.border;
-          ctx.lineWidth = 8;
-          ctx.stroke();
-          ctx.fill();
-        } else {
-          // Desktop with dedicated GPU
-          ctx.shadowColor = theme.glow;
-          ctx.shadowBlur = 14;
-          ctx.strokeStyle = theme.border;
-          ctx.fillStyle = theme.border;
-          ctx.lineWidth = 8;
-          ctx.lineCap = 'round';
-
+          // C. Pitch-Black Void Core (Event Horizon)
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#020617';
           ctx.beginPath();
-          for (const seg of this.arenaSegments) {
-            const v = seg.vertices;
-            ctx.moveTo(v[0].x, v[0].y);
-            for (let k = 1; k < v.length; k++) {
-              ctx.lineTo(v[k].x, v[k].y);
-            }
-            ctx.closePath();
-          }
+          ctx.arc(cx, cy, holeR - 2, 0, Math.PI * 2);
           ctx.fill();
-          ctx.stroke();
+
+          // D. Inner Depth Radial Gradient
+          const holeGrad = ctx.createRadialGradient(cx, cy, 2, cx, cy, holeR - 2);
+          holeGrad.addColorStop(0, '#000000');
+          holeGrad.addColorStop(0.75, '#05030a');
+          holeGrad.addColorStop(1, 'rgba(236, 72, 153, 0.4)');
+          ctx.fillStyle = holeGrad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, holeR - 2, 0, Math.PI * 2);
+          ctx.fill();
+
+          // E. Swirling Stardust Spiral Lines into the Center
+          const spin = this.arenaAngle * 2.8;
+          ctx.strokeStyle = 'rgba(244, 114, 182, 0.55)';
+          ctx.lineWidth = 1.6;
+          for (let a = 0; a < 3; a++) {
+            const ang = spin + a * (Math.PI * 2 / 3);
+            ctx.beginPath();
+            ctx.arc(cx, cy, 14 + a * 5, ang, ang + 1.25);
+            ctx.stroke();
+          }
+          ctx.restore();
+
+        } else {
+          // =========================================================================
+          // TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP)
+          // =========================================================================
+
+          // Outer Boundary Segments with Refined Neon Glow
+          if (isMobile) {
+            ctx.strokeStyle = theme.glow;
+            ctx.lineWidth = 14;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            for (const seg of this.arenaSegments) {
+              const v = seg.vertices;
+              ctx.moveTo(v[0].x, v[0].y);
+              for (let k = 1; k < v.length; k++) {
+                ctx.lineTo(v[k].x, v[k].y);
+              }
+              ctx.closePath();
+            }
+            ctx.stroke();
+
+            ctx.strokeStyle = theme.border;
+            ctx.fillStyle = theme.border;
+            ctx.lineWidth = 8;
+            ctx.stroke();
+            ctx.fill();
+          } else {
+            ctx.shadowColor = theme.glow;
+            ctx.shadowBlur = 14;
+            ctx.strokeStyle = theme.border;
+            ctx.fillStyle = theme.border;
+            ctx.lineWidth = 8;
+            ctx.lineCap = 'round';
+
+            ctx.beginPath();
+            for (const seg of this.arenaSegments) {
+              const v = seg.vertices;
+              ctx.moveTo(v[0].x, v[0].y);
+              for (let k = 1; k < v.length; k++) {
+                ctx.lineTo(v[k].x, v[k].y);
+              }
+              ctx.closePath();
+            }
+            ctx.fill();
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+          }
+
+          // Translucent Holographic Kinetic Flippers
+          if (isMobile) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            for (const fin of this.arenaFins) {
+              const v = fin.vertices;
+              ctx.moveTo(v[0].x, v[0].y);
+              for (let k = 1; k < v.length; k++) {
+                ctx.lineTo(v[k].x, v[k].y);
+              }
+              ctx.closePath();
+            }
+            ctx.fill();
+          } else {
+            ctx.shadowColor = theme.border;
+            ctx.shadowBlur = 12;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            for (const fin of this.arenaFins) {
+              const v = fin.vertices;
+              ctx.moveTo(v[0].x, v[0].y);
+              for (let k = 1; k < v.length; k++) {
+                ctx.lineTo(v[k].x, v[k].y);
+              }
+              ctx.closePath();
+            }
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+
+          // Central Super-Bouncy Neon Pinball Bumper
+          if (isMobile) {
+            ctx.fillStyle = theme.glow;
+            ctx.beginPath();
+            ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 29, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = theme.bumper;
+            ctx.beginPath();
+            ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.shadowColor = theme.bumper;
+            ctx.shadowBlur = 20;
+            ctx.fillStyle = theme.bumper;
+            ctx.beginPath();
+            ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 14, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Exit Hazard Gate
+          const exitAngle = this.arenaAngle + ((this.totalSegments - this.gapSegmentCount / 2) * (Math.PI * 2 / this.totalSegments));
+          const exitX = this.arenaCenter.x + Math.cos(exitAngle) * (this.arenaRadius + 14);
+          const exitY = this.arenaCenter.y + Math.sin(exitAngle) * (this.arenaRadius + 14);
+
+          if (isMobile) {
+            ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
+            ctx.beginPath();
+            ctx.arc(exitX, exitY, 11, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.shadowColor = '#f43f5e';
+            ctx.shadowBlur = 16;
+          }
+          ctx.fillStyle = '#f43f5e';
+          ctx.beginPath();
+          ctx.arc(exitX, exitY, 6, 0, Math.PI * 2);
+          ctx.fill();
           ctx.shadowBlur = 0;
         }
-
-        // Translucent Holographic Kinetic Flippers
-        if (isMobile) {
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-          ctx.beginPath();
-          for (const fin of this.arenaFins) {
-            const v = fin.vertices;
-            ctx.moveTo(v[0].x, v[0].y);
-            for (let k = 1; k < v.length; k++) {
-              ctx.lineTo(v[k].x, v[k].y);
-            }
-            ctx.closePath();
-          }
-          ctx.fill();
-        } else {
-          ctx.shadowColor = theme.border;
-          ctx.shadowBlur = 12;
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-          ctx.beginPath();
-          for (const fin of this.arenaFins) {
-            const v = fin.vertices;
-            ctx.moveTo(v[0].x, v[0].y);
-            for (let k = 1; k < v.length; k++) {
-              ctx.lineTo(v[k].x, v[k].y);
-            }
-            ctx.closePath();
-          }
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-
-        // Central Super-Bouncy Neon Pinball Bumper
-        if (isMobile) {
-          ctx.fillStyle = theme.glow;
-          ctx.beginPath();
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 29, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = theme.bumper;
-          ctx.beginPath();
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          ctx.shadowColor = theme.bumper;
-          ctx.shadowBlur = 20;
-          ctx.fillStyle = theme.bumper;
-          ctx.beginPath();
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 14, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Exit Hazard Gate
-        const exitAngle = this.arenaAngle + ((this.totalSegments - this.gapSegmentCount / 2) * (Math.PI * 2 / this.totalSegments));
-        const exitX = this.arenaCenter.x + Math.cos(exitAngle) * (this.arenaRadius + 14);
-        const exitY = this.arenaCenter.y + Math.sin(exitAngle) * (this.arenaRadius + 14);
-
-        if (isMobile) {
-          ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
-          ctx.beginPath();
-          ctx.arc(exitX, exitY, 11, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          ctx.shadowColor = '#f43f5e';
-          ctx.shadowBlur = 16;
-        }
-        ctx.fillStyle = '#f43f5e';
-        ctx.beginPath();
-        ctx.arc(exitX, exitY, 6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
 
         ctx.restore();
       }
@@ -9636,8 +10174,41 @@
           this.renderHorizontalLeaderboard();
         });
 
+        // Arena Template Selector Buttons
+        const btnTmplHole = document.getElementById('btn-tmpl-hole');
+        const btnTmplRing = document.getElementById('btn-tmpl-ring');
+        if (btnTmplHole) {
+          btnTmplHole.addEventListener('click', () => {
+            this.setArenaTemplate('hole');
+          });
+        }
+        if (btnTmplRing) {
+          btnTmplRing.addEventListener('click', () => {
+            this.setArenaTemplate('ring');
+          });
+        }
+
+        // AI Voice Commentator Toggle Button
+        const btnVoice = document.getElementById('btn-toggle-voice');
+        if (btnVoice) {
+          btnVoice.addEventListener('click', () => {
+            const enabled = this.audio.toggleVoice();
+            btnVoice.textContent = enabled ? '🎙️ AI VOICE COMMENTATOR: ON' : '🔇 AI VOICE COMMENTATOR: MUTED';
+            this.saveStreamerConfig();
+          });
+        }
+
         // Initial sync of drawer UI elements
         this.syncDrawerUI();
+      }
+
+      setArenaTemplate(tmpl) {
+        this.arenaTemplate = tmpl;
+        if (this.world) {
+          this.createCircularArena();
+        }
+        this.syncDrawerUI();
+        this.saveStreamerConfig();
       }
 
       loadStreamerConfig() {
@@ -9645,6 +10216,10 @@
           const raw = localStorage.getItem('flag_royale_streamer_config');
           if (raw) {
             const cfg = JSON.parse(raw);
+            if (typeof cfg.arenaTemplate === 'string') this.arenaTemplate = cfg.arenaTemplate;
+            if (typeof cfg.aiVoiceEnabled === 'boolean' && this.audio) {
+              this.audio.aiVoiceEnabled = cfg.aiVoiceEnabled;
+            }
             if (typeof cfg.gameSpeed === 'number') this.gameSpeed = Math.max(0.2, Math.min(2.0, cfg.gameSpeed));
             if (typeof cfg.baseRotationSpeed === 'number') {
               this.baseRotationSpeed = Math.max(0.002, Math.min(0.060, cfg.baseRotationSpeed));
@@ -9666,6 +10241,8 @@
       saveStreamerConfig() {
         try {
           const cfg = {
+            arenaTemplate: this.arenaTemplate,
+            aiVoiceEnabled: this.audio ? this.audio.aiVoiceEnabled : true,
             gameSpeed: this.gameSpeed,
             baseRotationSpeed: this.baseRotationSpeed,
             gapSegmentCount: this.gapSegmentCount,
@@ -9742,6 +10319,29 @@
 
       syncDrawerUI() {
         if (!this.dom.sliderGameSpeed) return;
+
+        // Arena Template UI Sync
+        const valTemplate = document.getElementById('val-arena-template');
+        const btnTmplHole = document.getElementById('btn-tmpl-hole');
+        const btnTmplRing = document.getElementById('btn-tmpl-ring');
+        const hintTemplate = document.getElementById('hint-arena-template');
+        if (valTemplate) {
+          valTemplate.textContent = this.arenaTemplate === 'hole' ? '🌀 CENTER VORTEX HOLE' : '⭕ OUTER RING ESCAPE';
+        }
+        if (btnTmplHole) btnTmplHole.classList.toggle('active', this.arenaTemplate === 'hole');
+        if (btnTmplRing) btnTmplRing.classList.toggle('active', this.arenaTemplate === 'ring');
+        if (hintTemplate) {
+          hintTemplate.textContent = this.arenaTemplate === 'hole'
+            ? '🌀 Hole Mode: Closed perimeter with 6 rotating spokes. Marbles get pulled into central black hole!'
+            : '⭕ Ring Mode: Open gap on outer perimeter with 4 kinetic paddles and central pinball bumper.';
+        }
+
+        // AI Voice Button Sync
+        const btnVoice = document.getElementById('btn-toggle-voice');
+        if (btnVoice) {
+          const vOn = this.audio ? this.audio.aiVoiceEnabled : true;
+          btnVoice.textContent = vOn ? '🎙️ AI VOICE COMMENTATOR: ON' : '🔇 AI VOICE COMMENTATOR: MUTED';
+        }
 
         // Battle Speed
         this.dom.sliderGameSpeed.value = this.gameSpeed.toFixed(2);
