@@ -2411,23 +2411,72 @@
       }
     }
 
-    /* High-Tech Circular SVG Countdown Timer */
-    .countdown-circle-widget {
+    /* High-Tech Streamer Launch Action Button & Widget */
+    .next-match-action-wrapper {
       position: relative;
       z-index: 2;
       display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn-streamer-launch {
+      position: relative;
+      display: inline-flex;
       align-items: center;
       gap: 12px;
-      background: rgba(10, 18, 38, 0.94);
-      border: 1px solid rgba(0, 229, 255, 0.4);
-      border-radius: 16px;
-      padding: 8px 18px;
+      background: linear-gradient(135deg, rgba(14, 25, 54, 0.95), rgba(8, 14, 30, 0.98));
+      border: 1.8px solid #00e5ff;
+      border-radius: 20px;
+      padding: 10px 22px;
       font-family: var(--font-display);
-      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 229, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none;
+    }
+
+    .btn-streamer-launch:hover,
+    .btn-streamer-launch.streamer-hover {
+      background: linear-gradient(135deg, rgba(20, 36, 75, 0.98), rgba(12, 22, 45, 0.98));
+      border-color: #38bdf8;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.65);
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .btn-streamer-launch:active,
+    .btn-streamer-launch.streamer-click {
+      transform: translateY(1px) scale(0.97);
+      border-color: #fbbf24;
+      box-shadow: 0 2px 15px rgba(251, 191, 36, 0.8), inset 0 0 15px rgba(251, 191, 36, 0.4);
+    }
+
+    .btn-launch-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      gap: 2px;
+    }
+
+    .btn-launch-content .launch-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+    }
+
+    .btn-launch-content .launch-status {
+      font-size: 9.5px;
       font-weight: 800;
-      color: #e2e8f0;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 229, 255, 0.2);
+      color: #38bdf8;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      transition: color 0.2s;
     }
 
     .timer-svg-box {
@@ -2458,17 +2507,38 @@
       stroke-linecap: round;
       stroke-dasharray: 94;
       stroke-dashoffset: 0;
-      transition: stroke-dashoffset 1s linear;
+      transition: stroke-dashoffset 0.1s linear;
       filter: drop-shadow(0 0 6px #00e5ff);
     }
 
-    .timer-num-text {
+    .timer-icon-badge {
       position: absolute;
-      font-family: var(--font-display);
-      font-size: 16px;
-      font-weight: 900;
-      color: #00e5ff;
-      text-shadow: 0 0 10px #00e5ff;
+      font-size: 14px;
+      filter: drop-shadow(0 0 6px #00e5ff);
+      animation: pulseLaunchIcon 1.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseLaunchIcon {
+      0% { transform: scale(0.9); }
+      100% { transform: scale(1.15); }
+    }
+
+    /* Virtual Streamer Cursor inside Victory Modal */
+    .modal-streamer-cursor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 28px;
+      height: 28px;
+      pointer-events: none;
+      z-index: 60;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+    }
+
+    .modal-streamer-cursor.visible {
+      opacity: 1;
     }
 
     /* ==========================================================================
@@ -4506,16 +4576,30 @@
         <span id="modal-sub-text">SUBSCRIBE TO SUPPORT YOUR NATION!</span>
       </div>
 
-      <!-- High-Tech Circular SVG Countdown Timer -->
-      <div class="countdown-circle-widget">
-        <div class="timer-svg-box">
-          <svg viewBox="0 0 36 36">
-            <circle class="bg" cx="18" cy="18" r="15" />
-            <circle class="progress" id="timer-svg-progress" cx="18" cy="18" r="15" />
-          </svg>
-          <span class="timer-num-text" id="modal-countdown-num">7</span>
-        </div>
-        <span>NEXT BATTLE BEGINS</span>
+      <!-- Streamer Launch Action Control (Organic 7s-15s with Simulated Human Click) -->
+      <div class="next-match-action-wrapper" id="next-match-action-wrapper">
+        <button id="btn-next-match-launch" class="btn-streamer-launch" type="button" title="Start Next Battle Royale (Human Streamer Click)">
+          <div class="timer-svg-box">
+            <svg viewBox="0 0 36 36">
+              <circle class="bg" cx="18" cy="18" r="15" />
+              <circle class="progress" id="timer-svg-progress" cx="18" cy="18" r="15" />
+            </svg>
+            <span class="timer-icon-badge" id="modal-timer-icon">⚔️</span>
+            <!-- Numeric countdown text hidden per user request to simulate real human streamer operation -->
+            <span class="timer-num-text" id="modal-countdown-num" style="display: none;"></span>
+          </div>
+          <div class="btn-launch-content">
+            <span class="launch-title">▶ START NEXT BATTLE</span>
+            <span class="launch-status" id="modal-streamer-status">STREAMER REVIEWING RESULTS...</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Virtual Streamer Cursor for Realistic Victory Screen Interaction -->
+      <div class="modal-streamer-cursor" id="modal-streamer-cursor">
+        <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
+          <path d="M4 2L20 9L12 12L9 20L4 2Z" fill="#00e5ff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
       </div>
     </section>
 
@@ -6116,31 +6200,9 @@
       }
 
       speakElimination(countryName) {
-        if (this.muted || !this.aiVoiceEnabled || !window.speechSynthesis) return;
-        const now = Date.now();
-        // Prevent speech backlog during fast clustered eliminations
-        if (now - this.lastElimVoiceTime < 650 && this.pendingVoiceCount > 0) {
-          return;
-        }
-        this.lastElimVoiceTime = now;
-        try {
-          if (window.speechSynthesis.speaking && this.pendingVoiceCount > 0) {
-            window.speechSynthesis.cancel();
-            this.pendingVoiceCount = 0;
-          }
-          const text = `${countryName} eliminated!`;
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.rate = 1.15; // Snappy commentator pace
-          utterance.pitch = 1.05;
-          utterance.volume = 1.0;
-          if (this.preferredVoice) utterance.voice = this.preferredVoice;
-          this.pendingVoiceCount++;
-          utterance.onend = () => { this.pendingVoiceCount = Math.max(0, this.pendingVoiceCount - 1); };
-          utterance.onerror = () => { this.pendingVoiceCount = Math.max(0, this.pendingVoiceCount - 1); };
-          window.speechSynthesis.speak(utterance);
-        } catch (e) {
-          console.warn("SpeechSynthesis error:", e);
-        }
+        // AI voice for eliminations removed per user request:
+        // Punchy elimination SFX only. AI voice is strictly for which country passed/won!
+        return;
       }
 
       playBounce(velocity = 5) {
@@ -8723,13 +8785,13 @@
         this.arenaSegments = [];
         this.arenaFins = [];
         this.centerBumper = null;
-        this.arenaCenter = { x: 270, y: 475 };
-        this.arenaRadius = 195;
+        this.arenaCenter = { x: 270, y: 405 }; // Lifted up to give ample clearance above ALL ELIMINATED box!
+        this.arenaRadius = 180;
         this.arenaAngle = 0;
         this.totalSegments = 32;
         this.gapSegmentCount = 1; // Default 1 segment gap: calibrated single-ball exit for 8-15 min battles!
         this.arenaTemplate = 'hole'; // 'hole' = Central Vortex Black Hole (Screenshot mode), 'ring' = Outer Ring Escape
-        this.centerHoleRadius = 34;
+        this.centerHoleRadius = 36;
         this.gameSpeed = 1.0;
         this.durationMode = 'extended'; // 'blitz', 'standard', 'extended', 'marathon', 'custom'
         this.roundStartTime = Date.now();
@@ -8799,6 +8861,9 @@
           modalStatWins: document.getElementById('modal-stat-wins'),
           modalCountdown: document.getElementById('modal-countdown-num'),
           timerSvgProgress: document.getElementById('timer-svg-progress'),
+          modalBtnLaunch: document.getElementById('btn-next-match-launch'),
+          modalStreamerStatus: document.getElementById('modal-streamer-status'),
+          modalStreamerCursor: document.getElementById('modal-streamer-cursor'),
           audioOverlay: document.getElementById('audio-overlay'),
           drawerToggle: document.getElementById('streamer-drawer-toggle'),
           drawer: document.getElementById('streamer-drawer'),
@@ -8987,11 +9052,12 @@
           }
 
           // 2. 6 Rotating Radial Kinetic Spokes (Lavender/Purple blades from screenshot)
-          // Extending from r=46px outwards to r=138px (length 92px, width 12px)
+          // Extending from r=58px outwards to r=150px (length 92px, width 10px)
+          // Leaves a generous 22px open orbital moat around the center hole (radius 36)
           const spokeCount = 6;
           const spokeLen = 92;
-          const spokeWidth = 12;
-          const spokeDist = 92; // Distance of spoke center from arenaCenter
+          const spokeWidth = 10;
+          const spokeDist = 104; // Distance of spoke center from arenaCenter
           for (let s = 0; s < spokeCount; s++) {
             const spoke = this.Bodies.rectangle(0, 0, spokeLen, spokeWidth, {
               isStatic: true,
@@ -9009,7 +9075,7 @@
           }
 
           // Center sinkhole radius for event horizon elimination
-          this.centerHoleRadius = 34;
+          this.centerHoleRadius = 36;
 
         } else {
           // --- TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP) ---
@@ -9097,6 +9163,14 @@
         this.matchElapsedSec = 0;
         if (this.dom.matchTimer) this.dom.matchTimer.textContent = '00:00';
 
+        if (this._victoryTimer) {
+          clearInterval(this._victoryTimer);
+          this._victoryTimer = null;
+        }
+        if (this.dom.modalStreamerCursor) {
+          this.dom.modalStreamerCursor.classList.remove('visible');
+        }
+
         this.dom.victoryModal.classList.remove('show');
         this.dom.duelBanner.classList.add('hidden');
         if (this.dom.leaderboardStrip) this.dom.leaderboardStrip.style.display = '';
@@ -9138,43 +9212,83 @@
         if (count <= 25) marbleRadius = 18;
         else if (count >= 80) marbleRadius = 11;
 
-        // Spawn marbles in central cluster with initial outward velocity
-        const maxSpawnRadius = count >= 80 ? (this.arenaRadius * 0.58) : (this.arenaRadius * 0.42);
-        shuffled.forEach((country, idx) => {
-          const spawnRadius = Math.sqrt((idx + 0.5) / count) * maxSpawnRadius;
-          const angle = idx * 2.399; // Golden angle spiral
-          const x = this.arenaCenter.x + Math.cos(angle) * spawnRadius;
-          const y = this.arenaCenter.y + Math.sin(angle) * spawnRadius - 10;
+        if (this.arenaTemplate === 'hole') {
+          // Annular donut distribution: Marbles spawn freely between spokes and outer rim
+          // NEVER directly in the center hole (r < 58px), preventing clumping completely!
+          const minSpawnR = 64;
+          const maxSpawnR = Math.max(minSpawnR + 20, this.arenaRadius - 26);
+          shuffled.forEach((country, idx) => {
+            const spawnRadius = minSpawnR + Math.sqrt((idx + 0.5) / count) * (maxSpawnR - minSpawnR);
+            const angle = idx * 2.399; // Golden angle spiral
+            const x = this.arenaCenter.x + Math.cos(angle) * spawnRadius;
+            const y = this.arenaCenter.y + Math.sin(angle) * spawnRadius;
 
-          const body = this.Bodies.circle(x, y, marbleRadius, {
-            restitution: this.ballRestitution,
-            friction: 0.005,
-            frictionAir: 0.002,
-            density: 0.0025,
-            label: 'ball'
+            const body = this.Bodies.circle(x, y, marbleRadius, {
+              restitution: this.ballRestitution,
+              friction: 0.005,
+              frictionAir: 0.002,
+              density: 0.0025,
+              label: 'ball'
+            });
+
+            // Smooth tangential orbital velocity (circulates freely between spokes)
+            const tangAngle = angle + (idx % 2 === 0 ? Math.PI / 2 : -Math.PI / 2);
+            const orbSpeed = 2.0 + Math.random() * 2.8;
+            this.Body.setVelocity(body, {
+              x: Math.cos(tangAngle) * orbSpeed,
+              y: Math.sin(tangAngle) * orbSpeed
+            });
+
+            this.World.add(this.world, body);
+
+            const flagCanvas = this.flagEngine.getFlagCanvas(country, marbleRadius * 4);
+            this.balls.push({
+              body,
+              country,
+              radius: marbleRadius,
+              flagCanvas,
+              escaped: false,
+              hasShield: false
+            });
           });
+        } else {
+          // Classic Ring Template: Central cluster with outward dispersion
+          const maxSpawnRadius = count >= 80 ? (this.arenaRadius * 0.58) : (this.arenaRadius * 0.42);
+          shuffled.forEach((country, idx) => {
+            const spawnRadius = Math.sqrt((idx + 0.5) / count) * maxSpawnRadius;
+            const angle = idx * 2.399; // Golden angle spiral
+            const x = this.arenaCenter.x + Math.cos(angle) * spawnRadius;
+            const y = this.arenaCenter.y + Math.sin(angle) * spawnRadius - 10;
 
-          // Outward dispersion impulse
-          const dispAngle = Math.random() * Math.PI * 2;
-          const dispSpeed = 2.0 + Math.random() * 3.5;
-          this.Body.setVelocity(body, {
-            x: Math.cos(dispAngle) * dispSpeed,
-            y: Math.sin(dispAngle) * dispSpeed - 1.5
+            const body = this.Bodies.circle(x, y, marbleRadius, {
+              restitution: this.ballRestitution,
+              friction: 0.005,
+              frictionAir: 0.002,
+              density: 0.0025,
+              label: 'ball'
+            });
+
+            // Outward dispersion impulse
+            const dispAngle = Math.random() * Math.PI * 2;
+            const dispSpeed = 2.0 + Math.random() * 3.5;
+            this.Body.setVelocity(body, {
+              x: Math.cos(dispAngle) * dispSpeed,
+              y: Math.sin(dispAngle) * dispSpeed - 1.5
+            });
+
+            this.World.add(this.world, body);
+
+            const flagCanvas = this.flagEngine.getFlagCanvas(country, marbleRadius * 4);
+            this.balls.push({
+              body,
+              country,
+              radius: marbleRadius,
+              flagCanvas,
+              escaped: false,
+              hasShield: false
+            });
           });
-
-          this.World.add(this.world, body);
-
-          const flagCanvas = this.flagEngine.getFlagCanvas(country, marbleRadius * 4);
-
-          this.balls.push({
-            body,
-            country,
-            radius: marbleRadius,
-            flagCanvas,
-            escaped: false,
-            hasShield: false
-          });
-        });
+        }
 
         // Spawn 2 mystery power-ups in arena
         this.spawnPowerup('shield', this.arenaCenter.x - 70, this.arenaCenter.y + 40);
@@ -9293,15 +9407,17 @@
             const dy = this.arenaCenter.y - pos.y;
             const distFromCenter = Math.hypot(dx, dy);
 
-            // Gravitational Vortex Inward Suction Force (active within r < 130px)
-            if (distFromCenter < 130) {
-              const pullFactor = (130 - distFromCenter) / 130;
-              const pull = 0.00015 * pullFactor * b.body.mass;
+            // Gravitational Vortex Inward Suction Force (active within r < 140px)
+            if (distFromCenter < 140) {
+              const pullFactor = (140 - distFromCenter) / 140;
+              // Increase pull dynamically near the hole moat (r < 60) to prevent marble clusters
+              const extraMoatPull = distFromCenter < 60 ? 1.8 : 1.0;
+              const pull = 0.00018 * pullFactor * extraMoatPull * b.body.mass;
               const d = distFromCenter || 1;
-              // Inward radial pull + swirling tangential force
+              // Inward radial pull + swirling tangential orbital force
               this.Body.applyForce(b.body, pos, {
-                x: (dx / d) * pull - (dy / d) * (pull * 0.38),
-                y: (dy / d) * pull + (dx / d) * (pull * 0.38)
+                x: (dx / d) * pull - (dy / d) * (pull * 0.45),
+                y: (dy / d) * pull + (dx / d) * (pull * 0.45)
               });
             }
 
@@ -9320,14 +9436,14 @@
             }
 
             // Ball Enters the Central Hole (Elimination Event Horizon!)
-            if (!b.escaped && distFromCenter <= holeR) {
+            if (!b.escaped && distFromCenter <= holeR + 4) {
               b.escaped = true;
               this.balls.splice(i, 1);
               this.eliminatedBalls.push(b);
               this.World.remove(this.world, b.body);
 
+              // Procedural elimination SFX only (no AI voice during eliminations)
               this.audio.playEliminate();
-              this.audio.speakElimination(b.country.name);
               this.particles.spawnHoleSuction(this.arenaCenter.x, this.arenaCenter.y, b.country.color);
               this.pushKillfeed(b.country);
               this.addEliminatedTrayFlag(b.country);
@@ -9370,8 +9486,8 @@
               this.balls.splice(i, 1);
               this.eliminatedBalls.push(b);
 
+              // Procedural elimination SFX only (no AI voice during eliminations)
               this.audio.playEliminate();
-              this.audio.speakElimination(b.country.name);
               this.particles.spawnElimination(pos.x, pos.y, b.country.color);
               this.pushKillfeed(b.country);
               this.addEliminatedTrayFlag(b.country);
@@ -9420,8 +9536,20 @@
         this.dom.modalSubText.textContent = `SUBSCRIBE TO SUPPORT ${this.roundWinner.name.toUpperCase()}!`;
         this.dom.modalStatWins.textContent = `${this.getCountryWins(this.roundWinner.code)} WINS`;
 
-        this.dom.modalCountdown.textContent = '7';
-        this.dom.timerSvgProgress.style.strokeDashoffset = '0';
+        // Reset Launch Button & Status (numeric countdown hidden per user instructions)
+        if (this.dom.modalBtnLaunch) {
+          this.dom.modalBtnLaunch.classList.remove('streamer-hover', 'streamer-click');
+        }
+        if (this.dom.modalStreamerStatus) {
+          this.dom.modalStreamerStatus.textContent = 'STREAMER REVIEWING RESULTS...';
+          this.dom.modalStreamerStatus.style.color = '#38bdf8';
+        }
+        if (this.dom.modalCountdown) {
+          this.dom.modalCountdown.textContent = '';
+        }
+        if (this.dom.timerSvgProgress) {
+          this.dom.timerSvgProgress.style.strokeDashoffset = '0';
+        }
 
         this.dom.victoryModal.classList.add('show');
         this.dom.duelBanner.classList.add('hidden');
@@ -9429,21 +9557,102 @@
 
         this.particles.spawnVictoryConfetti(this.V_WIDTH, this.V_HEIGHT);
 
-        let countdown = 7;
-        const totalDuration = 7;
-        const interval = setInterval(() => {
-          countdown--;
-          if (countdown > 0) {
-            this.dom.modalCountdown.textContent = countdown;
-            const progress = (totalDuration - countdown) / totalDuration;
-            this.dom.timerSvgProgress.style.strokeDashoffset = `${progress * 94}`;
-            this.particles.spawnVictoryConfetti(this.V_WIDTH, this.V_HEIGHT);
-          } else {
-            clearInterval(interval);
+        // Organic Human Streamer Delay: Random between 7.0s and 15.0s (e.g. 7.6s, 10.2s, 14.5s)
+        const totalDurationSec = +(7.0 + Math.random() * 8.0).toFixed(1);
+        const startTime = Date.now();
+        const totalDurationMs = totalDurationSec * 1000;
+
+        const cursorEl = this.dom.modalStreamerCursor || document.getElementById('modal-streamer-cursor');
+        if (cursorEl) {
+          cursorEl.classList.add('visible');
+          cursorEl.style.transform = `translate(270px, 320px)`;
+        }
+
+        let launched = false;
+        const doHumanLaunch = () => {
+          if (launched) return;
+          launched = true;
+          if (this._victoryTimer) {
+            clearInterval(this._victoryTimer);
+            this._victoryTimer = null;
+          }
+          if (cursorEl) cursorEl.classList.remove('visible');
+          if (this.dom.modalBtnLaunch) {
+            this.dom.modalBtnLaunch.classList.add('streamer-click');
+          }
+          this.audio.playMouseClick();
+          setTimeout(() => {
+            if (this.dom.modalBtnLaunch) {
+              this.dom.modalBtnLaunch.classList.remove('streamer-click');
+            }
             this.roundNumber++;
             this.startNewRound();
+          }, 240);
+        };
+
+        // Manual override: Instant human launch on button or modal click
+        if (this.dom.modalBtnLaunch) {
+          this.dom.modalBtnLaunch.onclick = (e) => {
+            e.stopPropagation();
+            doHumanLaunch();
+          };
+        }
+
+        if (this._victoryTimer) clearInterval(this._victoryTimer);
+        this._victoryTimer = setInterval(() => {
+          const elapsed = Date.now() - startTime;
+          const remainingSec = Math.max(0, (totalDurationMs - elapsed) / 1000);
+          const progress = Math.min(1.0, elapsed / totalDurationMs);
+          if (this.dom.timerSvgProgress) {
+            this.dom.timerSvgProgress.style.strokeDashoffset = `${progress * 94}`;
           }
-        }, 1000);
+
+          if (elapsed < totalDurationMs * 0.45) {
+            // Stage 1: Streamer reviewing winner stats
+            if (this.dom.modalStreamerStatus) {
+              this.dom.modalStreamerStatus.textContent = 'STREAMER REVIEWING RESULTS...';
+              this.dom.modalStreamerStatus.style.color = '#38bdf8';
+            }
+            if (cursorEl) {
+              const ox = Math.sin(elapsed / 320) * 45;
+              const oy = Math.cos(elapsed / 420) * 18;
+              cursorEl.style.transform = `translate(${270 + ox}px, ${310 + oy}px)`;
+            }
+          } else if (remainingSec > 1.6) {
+            // Stage 2: Streamer moving cursor to prepare next match
+            if (this.dom.modalStreamerStatus) {
+              this.dom.modalStreamerStatus.textContent = 'PREPARING NEXT ROUND...';
+              this.dom.modalStreamerStatus.style.color = '#c084fc';
+            }
+            if (cursorEl && this.dom.modalBtnLaunch) {
+              const rect = this.dom.modalBtnLaunch.getBoundingClientRect();
+              const modalRect = this.dom.victoryModal.getBoundingClientRect();
+              const targetX = rect.left - modalRect.left + rect.width / 2;
+              const targetY = rect.top - modalRect.top + rect.height / 2;
+              const p = Math.min(1.0, (elapsed - totalDurationMs * 0.45) / (totalDurationMs * 0.55 - 1600));
+              const curX = 270 * (1 - p) + targetX * p;
+              const curY = 310 * (1 - p) + targetY * p;
+              cursorEl.style.transform = `translate(${curX}px, ${curY}px)`;
+            }
+          } else if (remainingSec > 0.28) {
+            // Stage 3: Hovering directly over start button
+            if (this.dom.modalStreamerStatus) {
+              this.dom.modalStreamerStatus.textContent = 'CLICKING START ▶';
+              this.dom.modalStreamerStatus.style.color = '#34d399';
+            }
+            if (this.dom.modalBtnLaunch) {
+              this.dom.modalBtnLaunch.classList.add('streamer-hover');
+            }
+            if (cursorEl && this.dom.modalBtnLaunch) {
+              const rect = this.dom.modalBtnLaunch.getBoundingClientRect();
+              const modalRect = this.dom.victoryModal.getBoundingClientRect();
+              cursorEl.style.transform = `translate(${rect.left - modalRect.left + rect.width / 2}px, ${rect.top - modalRect.top + rect.height / 2}px)`;
+            }
+          } else {
+            // Stage 4: Realistic mechanical mouse click & match start
+            doHumanLaunch();
+          }
+        }, 50);
       }
 
       addEliminatedTrayFlag(country) {
@@ -9524,8 +9733,31 @@
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
-          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (SCREENSHOT DESIGN)
+          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (FROM USER REFERENCE SCREENSHOTS)
           // =========================================================================
+
+          // Floor Radar Guide Rings & Concentric Crosshairs (from Screenshot 2)
+          ctx.save();
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = 'rgba(192, 132, 252, 0.28)';
+          ctx.setLineDash([4, 6]);
+          ctx.beginPath();
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 58, 0, Math.PI * 2);
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 104, 0, Math.PI * 2);
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 150, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Radial guide lines between spokes
+          ctx.setLineDash([2, 8]);
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+          for (let g = 0; g < 12; g++) {
+            const ga = this.arenaAngle + g * (Math.PI / 6);
+            ctx.beginPath();
+            ctx.moveTo(this.arenaCenter.x + Math.cos(ga) * 58, this.arenaCenter.y + Math.sin(ga) * 58);
+            ctx.lineTo(this.arenaCenter.x + Math.cos(ga) * 170, this.arenaCenter.y + Math.sin(ga) * 170);
+            ctx.stroke();
+          }
+          ctx.restore();
 
           // 1. Closed Outer Neon Cyan Ring (All 32 segments solid)
           ctx.save();
@@ -9548,10 +9780,10 @@
             ctx.stroke();
           } else {
             ctx.shadowColor = '#06b6d4';
-            ctx.shadowBlur = 16;
+            ctx.shadowBlur = 18;
             ctx.strokeStyle = '#38bdf8';
             ctx.fillStyle = '#0284c7';
-            ctx.lineWidth = 7.5;
+            ctx.lineWidth = 8;
             ctx.lineCap = 'round';
             ctx.beginPath();
             for (const seg of this.arenaSegments) {
@@ -9577,68 +9809,76 @@
 
             if (!isMobile) {
               ctx.shadowColor = '#c084fc';
-              ctx.shadowBlur = 14;
+              ctx.shadowBlur = 18;
             }
-            ctx.fillStyle = '#a855f7';
+            ctx.fillStyle = '#9333ea';
             ctx.fill();
 
             // Inner core lavender edge
-            ctx.strokeStyle = '#e9d5ff';
+            ctx.strokeStyle = '#f5d0fe';
             ctx.lineWidth = 2.4;
             ctx.stroke();
           }
           ctx.restore();
 
-          // 3. Central Glowing Black Hole (Vortex Sinkhole from Screenshot)
+          // 3. Central Glowing Black Hole (Deep Cosmic Vortex Sinkhole from Reference Screenshot)
           ctx.save();
           const cx = this.arenaCenter.x;
           const cy = this.arenaCenter.y;
-          const holeR = this.centerHoleRadius || 34;
+          const holeR = this.centerHoleRadius || 36;
 
-          // A. Outer Gravitational Accretion Disk / Purple Halo
-          ctx.fillStyle = 'rgba(168, 85, 247, 0.22)';
+          // A. Outer Gravitational Accretion Disk / Purple Atmospheric Halo
+          const haloGrad = ctx.createRadialGradient(cx, cy, holeR, cx, cy, holeR + 24);
+          haloGrad.addColorStop(0, 'rgba(168, 85, 247, 0.45)');
+          haloGrad.addColorStop(0.5, 'rgba(236, 72, 153, 0.18)');
+          haloGrad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+          ctx.fillStyle = haloGrad;
           ctx.beginPath();
-          ctx.arc(cx, cy, holeR + 18, 0, Math.PI * 2);
+          ctx.arc(cx, cy, holeR + 24, 0, Math.PI * 2);
           ctx.fill();
 
           // B. Glowing Neon Pink/Magenta Event Horizon Ring
           if (!isMobile) {
-            ctx.shadowColor = '#ec4899';
-            ctx.shadowBlur = 22;
+            ctx.shadowColor = '#f43f5e';
+            ctx.shadowBlur = 24;
           }
           ctx.strokeStyle = '#ec4899';
-          ctx.lineWidth = 4;
+          ctx.lineWidth = 3.8;
           ctx.beginPath();
           ctx.arc(cx, cy, holeR, 0, Math.PI * 2);
           ctx.stroke();
 
-          // C. Pitch-Black Void Core (Event Horizon)
+          // C. Inner Depth Radial Gradient (Deep Singularity Void)
           ctx.shadowBlur = 0;
-          ctx.fillStyle = '#020617';
-          ctx.beginPath();
-          ctx.arc(cx, cy, holeR - 2, 0, Math.PI * 2);
-          ctx.fill();
-
-          // D. Inner Depth Radial Gradient
-          const holeGrad = ctx.createRadialGradient(cx, cy, 2, cx, cy, holeR - 2);
+          const holeGrad = ctx.createRadialGradient(cx, cy, 2, cx, cy, holeR - 1);
           holeGrad.addColorStop(0, '#000000');
-          holeGrad.addColorStop(0.75, '#05030a');
-          holeGrad.addColorStop(1, 'rgba(236, 72, 153, 0.4)');
+          holeGrad.addColorStop(0.65, '#05020c');
+          holeGrad.addColorStop(0.9, '#180a2b');
+          holeGrad.addColorStop(1, 'rgba(236, 72, 153, 0.6)');
           ctx.fillStyle = holeGrad;
           ctx.beginPath();
-          ctx.arc(cx, cy, holeR - 2, 0, Math.PI * 2);
+          ctx.arc(cx, cy, holeR - 1, 0, Math.PI * 2);
           ctx.fill();
 
-          // E. Swirling Stardust Spiral Lines into the Center
-          const spin = this.arenaAngle * 2.8;
-          ctx.strokeStyle = 'rgba(244, 114, 182, 0.55)';
-          ctx.lineWidth = 1.6;
-          for (let a = 0; a < 3; a++) {
-            const ang = spin + a * (Math.PI * 2 / 3);
+          // D. Swirling Stardust Spiral Gravity Arms into the Singularity (4 arms)
+          const spin = this.arenaAngle * 3.2;
+          ctx.lineWidth = 1.8;
+          for (let a = 0; a < 4; a++) {
+            const ang = spin + a * (Math.PI / 2);
+            ctx.strokeStyle = a % 2 === 0 ? 'rgba(244, 114, 182, 0.65)' : 'rgba(192, 132, 252, 0.65)';
             ctx.beginPath();
-            ctx.arc(cx, cy, 14 + a * 5, ang, ang + 1.25);
+            ctx.arc(cx, cy, 12 + a * 5, ang, ang + 1.45);
             ctx.stroke();
           }
+
+          // E. Center Event Horizon Moat Boundary (r=58)
+          ctx.strokeStyle = 'rgba(236, 72, 153, 0.35)';
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([3, 5]);
+          ctx.beginPath();
+          ctx.arc(cx, cy, 58, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.setLineDash([]);
           ctx.restore();
 
         } else {
