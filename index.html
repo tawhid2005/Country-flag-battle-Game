@@ -4642,17 +4642,17 @@
       <div class="drawer-control-group">
         <label class="drawer-label">
           <span>⏱️ BATTLE DURATION (PACE)</span>
-          <span class="val" id="val-duration-mode">8-10 MIN</span>
+          <span class="val" id="val-duration-mode">15-18 MIN</span>
         </label>
         <select class="drawer-select" id="select-battle-duration">
-          <option value="blitz">⚡ Blitz Royale (1 - 2 Min)</option>
-          <option value="standard">⏱️ Standard Match (3 - 5 Min)</option>
-          <option value="extended" selected>🏆 Extended Stream (8 - 10 Min)</option>
-          <option value="marathon">👑 Marathon Royale (12 - 15 Min)</option>
+          <option value="marathon" selected>👑 Streamer Marathon (15 - 18 Min) [Default]</option>
+          <option value="extended">🏆 Extended Stream (10 - 12 Min)</option>
+          <option value="standard">⏱️ Standard Match (5 - 7 Min)</option>
+          <option value="blitz">⚡ Quick Blitz (2 - 3 Min)</option>
           <option value="custom">⚙️ Custom Manual Mode</option>
         </select>
         <div class="drawer-hint" id="hint-battle-duration">
-          ✨ Calibrated for 8-10 minute long streams (single-ball exit rate).
+          ✨ Guaranteed 15+ minutes battle with intelligent Black Hole pacing governor.
         </div>
       </div>
 
@@ -6200,9 +6200,24 @@
       }
 
       speakElimination(countryName) {
-        // AI voice for eliminations removed per user request:
-        // Punchy elimination SFX only. AI voice is strictly for which country passed/won!
-        return;
+        if (this.muted || !this.aiVoiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
+        try {
+          if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+          }
+          if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+          }
+          const text = `${countryName} eliminated!`;
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.15; // Snappy commentator pace
+          utterance.pitch = 1.05;
+          utterance.volume = 1.0;
+          if (this.preferredVoice) utterance.voice = this.preferredVoice;
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.warn("SpeechSynthesis speakElimination error:", e);
+        }
       }
 
       playBounce(velocity = 5) {
@@ -8792,9 +8807,16 @@
         this.gapSegmentCount = 1; // Default 1 segment gap: calibrated single-ball exit for 8-15 min battles!
         this.arenaTemplate = 'hole'; // 'hole' = Central Vortex Black Hole (Screenshot mode), 'ring' = Outer Ring Escape
         this.centerHoleRadius = 36;
-        this.gameSpeed = 1.0;
-        this.durationMode = 'extended'; // 'blitz', 'standard', 'extended', 'marathon', 'custom'
+        this.gameSpeed = 0.85;
+        this.baseRotationSpeed = 0.016;
+        this.currentRotationSpeed = 0.016;
+        this.gravityY = 0.40;
+        this.durationMode = 'marathon'; // Guaranteed 15+ Min default!
+        this.targetMatchSeconds = 960; // 16 minutes target (at least 15 min endurance battle)
         this.roundStartTime = Date.now();
+        this.lastEliminationTime = Date.now();
+        this.isVortexShieldActive = true;
+        this.initialBallCount = 120;
         this.matchElapsedSec = 0;
 
         this.powerups = [];
@@ -9294,6 +9316,9 @@
         this.spawnPowerup('shield', this.arenaCenter.x - 70, this.arenaCenter.y + 40);
         this.spawnPowerup('bomb', this.arenaCenter.x + 70, this.arenaCenter.y + 40);
 
+        this.initialBallCount = this.balls.length || this.selectedBatchSize || 120;
+        this.lastEliminationTime = Date.now();
+        this.isVortexShieldActive = true;
         this.dom.roundLabel.textContent = `ROUND #${this.roundNumber}`;
         this.updateAliveHUD();
         this.renderHorizontalLeaderboard();
@@ -9394,11 +9419,30 @@
           }
         }
 
+        // --- PRECISION 15+ MINUTE MATCH DURATION & ELIMINATION PACING GOVERNOR ---
+        const elapsedSec = (Date.now() - this.roundStartTime) / 1000;
+        const targetSec = this.targetMatchSeconds || 960; // 960s = 16 minutes default (guarantees >= 15 min battle)
+        const timeSinceLastElimSec = (Date.now() - this.lastEliminationTime) / 1000;
+
+        // Smooth marathon decay curve ensuring the match naturally spans 15+ minutes
+        const initialCount = Math.max(2, this.initialBallCount || this.selectedBatchSize || 120);
+        const targetRemainingRatio = Math.max(0, 1.0 - (elapsedSec / targetSec));
+        const idealRemaining = Math.max(2, Math.round(initialCount * targetRemainingRatio));
+
+        // Calculated minimum spacing between eliminations (e.g. 7.5s for 120 balls, 18s for 50 balls in 16m)
+        const minSpacingSec = Math.max(4.0, (targetSec / initialCount) * 0.82);
+
+        // Can eliminate ONLY when pacing allows (shield drops for 1 ball to be eliminated)
+        const canEliminate = (this.balls.length > idealRemaining || elapsedSec >= targetSec * 0.95) &&
+                             (timeSinceLastElimSec >= minSpacingSec);
+        this.isVortexShieldActive = !canEliminate;
+
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
           // TEMPLATE 2: CENTER VORTEX BLACK HOLE (FROM USER SCREENSHOT)
           // =========================================================================
-          const holeR = this.centerHoleRadius || 34;
+          const holeR = this.centerHoleRadius || 36;
+          const shieldR = holeR + 12;
 
           for (let i = this.balls.length - 1; i >= 0; i--) {
             const b = this.balls[i];
@@ -9407,21 +9451,21 @@
             const dy = this.arenaCenter.y - pos.y;
             const distFromCenter = Math.hypot(dx, dy);
 
-            // Gravitational Vortex Inward Suction Force (active within r < 140px)
+            // Gravitational Vortex Inward Suction Force
             if (distFromCenter < 140) {
               const pullFactor = (140 - distFromCenter) / 140;
-              // Increase pull dynamically near the hole moat (r < 60) to prevent marble clusters
-              const extraMoatPull = distFromCenter < 60 ? 1.8 : 1.0;
-              const pull = 0.00018 * pullFactor * extraMoatPull * b.body.mass;
+              // When shielded: gentle orbital drift (0.000035) so balls circulate without crashing in
+              // When open: stronger spiral pull (0.00015) to swallow the nearest daring nation
+              const pullStrength = this.isVortexShieldActive ? 0.000035 : 0.00015;
+              const pull = pullStrength * pullFactor * b.body.mass;
               const d = distFromCenter || 1;
-              // Inward radial pull + swirling tangential orbital force
               this.Body.applyForce(b.body, pos, {
-                x: (dx / d) * pull - (dy / d) * (pull * 0.45),
-                y: (dy / d) * pull + (dx / d) * (pull * 0.45)
+                x: (dx / d) * pull - (dy / d) * (pull * 0.55),
+                y: (dy / d) * pull + (dx / d) * (pull * 0.55)
               });
             }
 
-            // Shield Rescue
+            // Shield Rescue Powerup
             if (b.hasShield && distFromCenter <= holeR + 8) {
               b.hasShield = false;
               this.audio.playShieldBreak();
@@ -9435,20 +9479,50 @@
               continue;
             }
 
-            // Ball Enters the Central Hole (Elimination Event Horizon!)
-            if (!b.escaped && distFromCenter <= holeR + 4) {
+            // Orbital Magnetic Repulsor Barrier: Bounces marbles back out when pacing shield is active
+            if (this.isVortexShieldActive && distFromCenter <= shieldR) {
+              const d = distFromCenter || 1;
+              const bounceSpd = 5.5 + Math.random() * 2.5;
+              this.Body.setVelocity(b.body, {
+                x: -(dx / d) * bounceSpd,
+                y: -(dy / d) * bounceSpd
+              });
+              this.particles.spawnShieldShatter(pos.x, pos.y);
+              this.audio.playBounce(6);
+              continue;
+            }
+
+            // Ball Enters the Central Hole (Elimination Event Horizon when shield is DOWN!)
+            if (!b.escaped && !this.isVortexShieldActive && distFromCenter <= holeR + 4) {
               b.escaped = true;
               this.balls.splice(i, 1);
               this.eliminatedBalls.push(b);
               this.World.remove(this.world, b.body);
 
-              // Procedural elimination SFX only (no AI voice during eliminations)
+              // Sound & AI Voice Commentary
               this.audio.playEliminate();
+              this.audio.speakElimination(b.country.name); // AI voice speaks "[Country] eliminated!"
               this.particles.spawnHoleSuction(this.arenaCenter.x, this.arenaCenter.y, b.country.color);
               this.pushKillfeed(b.country);
               this.addEliminatedTrayFlag(b.country);
               if (this.humanStreamer) this.humanStreamer.onElimination(b.country);
               this.updateAliveHUD();
+
+              this.lastEliminationTime = Date.now();
+              this.isVortexShieldActive = true; // Shield re-engages for next pacing interval!
+
+              // Kinetic Shockwave repels neighboring balls outward into the blades
+              for (const other of this.balls) {
+                const odx = other.body.position.x - this.arenaCenter.x;
+                const ody = other.body.position.y - this.arenaCenter.y;
+                const odist = Math.hypot(odx, ody) || 1;
+                if (odist < 140) {
+                  this.Body.applyForce(other.body, other.body.position, {
+                    x: (odx / odist) * 0.0025 * other.body.mass,
+                    y: (ody / odist) * 0.0025 * other.body.mass
+                  });
+                }
+              }
 
               if (this.balls.length === 1) {
                 this.triggerVictory(this.balls[0]);
@@ -9481,18 +9555,35 @@
               continue;
             }
 
+            // Pacing Deflector: if shield active, deflect balls trying to escape too early!
+            if (this.isVortexShieldActive && distFromCenter > this.arenaRadius + 6) {
+              const dx = this.arenaCenter.x - pos.x;
+              const dy = this.arenaCenter.y - pos.y;
+              const d = Math.hypot(dx, dy) || 1;
+              this.Body.setVelocity(b.body, {
+                x: (dx / d) * 7.0,
+                y: (dy / d) * 7.0
+              });
+              this.particles.spawnShieldShatter(pos.x, pos.y);
+              this.audio.playBounce(5);
+              continue;
+            }
+
             if (!b.escaped && distFromCenter > this.arenaRadius + 28) {
               b.escaped = true;
               this.balls.splice(i, 1);
               this.eliminatedBalls.push(b);
 
-              // Procedural elimination SFX only (no AI voice during eliminations)
               this.audio.playEliminate();
+              this.audio.speakElimination(b.country.name); // AI voice speaks "[Country] eliminated!"
               this.particles.spawnElimination(pos.x, pos.y, b.country.color);
               this.pushKillfeed(b.country);
               this.addEliminatedTrayFlag(b.country);
               if (this.humanStreamer) this.humanStreamer.onElimination(b.country);
               this.updateAliveHUD();
+
+              this.lastEliminationTime = Date.now();
+              this.isVortexShieldActive = true;
 
               if (this.balls.length === 1) {
                 this.triggerVictory(this.balls[0]);
@@ -9879,6 +9970,47 @@
           ctx.arc(cx, cy, 58, 0, Math.PI * 2);
           ctx.stroke();
           ctx.setLineDash([]);
+
+          // F. Orbital Magnetic Repulsor Barrier (Visual indicator when pacing shield is active)
+          if (this.isVortexShieldActive) {
+            ctx.save();
+            ctx.strokeStyle = '#00e5ff';
+            if (!isMobile) {
+              ctx.shadowColor = '#00e5ff';
+              ctx.shadowBlur = 14;
+            }
+            ctx.lineWidth = 2.4;
+            ctx.setLineDash([6, 6]);
+            ctx.beginPath();
+            ctx.arc(cx, cy, holeR + 12, this.arenaAngle * 2.5, this.arenaAngle * 2.5 + Math.PI * 2);
+            ctx.stroke();
+
+            // Hexagonal Shield Nodes
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#38bdf8';
+            for (let n = 0; n < 6; n++) {
+              const na = this.arenaAngle * 2.5 + n * (Math.PI / 3);
+              const nx = cx + Math.cos(na) * (holeR + 12);
+              const ny = cy + Math.sin(na) * (holeR + 12);
+              ctx.beginPath();
+              ctx.arc(nx, ny, 2.5, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.restore();
+          } else {
+            // Singularity Open Breach Aura (Pulsing Red warning)
+            ctx.save();
+            ctx.strokeStyle = 'rgba(244, 63, 94, 0.85)';
+            if (!isMobile) {
+              ctx.shadowColor = '#f43f5e';
+              ctx.shadowBlur = 20;
+            }
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(cx, cy, holeR + 8, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
           ctx.restore();
 
         } else {
@@ -10245,9 +10377,11 @@
       setupEventListeners() {
         const unlockAudio = () => {
           this.audio.init();
-          this.dom.audioOverlay.classList.add('hidden');
+          if (this.dom.audioOverlay) this.dom.audioOverlay.classList.add('hidden');
         };
         this.dom.audioOverlay.addEventListener('click', unlockAudio);
+        document.addEventListener('pointerdown', unlockAudio, { once: false });
+        window.addEventListener('keydown', unlockAudio, { once: false });
         window.addEventListener('keydown', (e) => {
           if (e.key.toLowerCase() === 'h' || e.key.toLowerCase() === 's') {
             this.toggleDrawer();
@@ -10468,10 +10602,15 @@
             if (typeof cfg.gapSegmentCount === 'number') this.gapSegmentCount = Math.max(1, Math.min(5, cfg.gapSegmentCount));
             if (typeof cfg.gravityY === 'number') this.gravityY = Math.max(0.1, Math.min(1.5, cfg.gravityY));
             if (typeof cfg.selectedBatchSize === 'number') this.selectedBatchSize = cfg.selectedBatchSize;
-            if (typeof cfg.durationMode === 'string') this.durationMode = cfg.durationMode;
+            if (typeof cfg.durationMode === 'string') {
+              this.durationMode = cfg.durationMode;
+              this.applyDurationPreset(this.durationMode);
+            } else {
+              this.applyDurationPreset('marathon');
+            }
           } else {
-            // Default preset is extended (8-10 min) for grand experience
-            this.applyDurationPreset('extended');
+            // Default preset is marathon (15-18 min) for grand endurance experience
+            this.applyDurationPreset('marathon');
           }
         } catch (e) {
           console.warn('Failed to load streamer config', e);
@@ -10498,30 +10637,41 @@
 
       applyDurationPreset(mode) {
         this.durationMode = mode;
-        if (mode === 'blitz') {
-          this.gapSegmentCount = 4;
-          this.gameSpeed = 1.00;
-          this.baseRotationSpeed = 0.024;
-          this.currentRotationSpeed = 0.024;
+        if (mode === 'marathon') {
+          // 15 - 18 Minutes (Guaranteed 15+ Min endurance stream pace)
+          this.targetMatchSeconds = 960;
+          this.gapSegmentCount = 1;
+          this.gameSpeed = 0.85;
+          this.baseRotationSpeed = 0.016;
+          this.currentRotationSpeed = 0.016;
+          this.gravityY = 0.40;
+        } else if (mode === 'extended') {
+          // 10 - 12 Minutes
+          this.targetMatchSeconds = 660;
+          this.gapSegmentCount = 1;
+          this.gameSpeed = 0.90;
+          this.baseRotationSpeed = 0.018;
+          this.currentRotationSpeed = 0.018;
+          this.gravityY = 0.45;
         } else if (mode === 'standard') {
+          // 5 - 7 Minutes
+          this.targetMatchSeconds = 360;
           this.gapSegmentCount = 2;
           this.gameSpeed = 1.00;
           this.baseRotationSpeed = 0.022;
           this.currentRotationSpeed = 0.022;
-        } else if (mode === 'extended') {
-          // 8 - 10 Minutes (Calibrated single-ball escape rate)
-          this.gapSegmentCount = 1;
-          this.gameSpeed = 0.85;
-          this.baseRotationSpeed = 0.018;
-          this.currentRotationSpeed = 0.018;
-        } else if (mode === 'marathon') {
-          // 12 - 15 Minutes (Endurance stream pace)
-          this.gapSegmentCount = 1;
-          this.gameSpeed = 0.65;
-          this.baseRotationSpeed = 0.014;
-          this.currentRotationSpeed = 0.014;
+          this.gravityY = 0.50;
+        } else if (mode === 'blitz') {
+          // 2 - 3 Minutes
+          this.targetMatchSeconds = 150;
+          this.gapSegmentCount = 3;
+          this.gameSpeed = 1.15;
+          this.baseRotationSpeed = 0.025;
+          this.currentRotationSpeed = 0.025;
+          this.gravityY = 0.55;
         }
         if (this.world) {
+          this.world.gravity.y = this.gravityY;
           this.createCircularArena();
         }
         this.syncDrawerUI();
@@ -10621,10 +10771,10 @@
         }
         if (this.dom.valDurationMode) {
           const modeLabels = {
-            blitz: '1-2 MIN',
-            standard: '3-5 MIN',
-            extended: '8-10 MIN',
-            marathon: '12-15 MIN',
+            marathon: '15-18 MIN',
+            extended: '10-12 MIN',
+            standard: '5-7 MIN',
+            blitz: '2-3 MIN',
             custom: 'CUSTOM'
           };
           this.dom.valDurationMode.textContent = modeLabels[this.durationMode] || 'CUSTOM';
@@ -10632,14 +10782,14 @@
 
         const hintEl = document.getElementById('hint-battle-duration');
         if (hintEl) {
-          if (this.durationMode === 'extended') {
-            hintEl.textContent = '✨ Calibrated for 8-10 minute long streams (single-ball exit rate).';
-          } else if (this.durationMode === 'marathon') {
-            hintEl.textContent = '👑 Grand endurance mode (12-15 minute epic battle royale).';
+          if (this.durationMode === 'marathon') {
+            hintEl.textContent = '👑 Grand Streamer Endurance: Guaranteed 15-18 minutes battle with intelligent Black Hole pacing governor.';
+          } else if (this.durationMode === 'extended') {
+            hintEl.textContent = '✨ Extended Stream: 10-12 minutes battle royale.';
           } else if (this.durationMode === 'standard') {
-            hintEl.textContent = '⏱️ Balanced 3-5 minute match for standard live stream rounds.';
+            hintEl.textContent = '⏱️ Balanced Match: 5-7 minutes live stream rounds.';
           } else if (this.durationMode === 'blitz') {
-            hintEl.textContent = '⚡ Rapid eliminations (1-2 minute high action round).';
+            hintEl.textContent = '⚡ Quick Blitz: 2-3 minutes fast action round.';
           } else {
             hintEl.textContent = '⚙️ Custom configuration: simulation speed & gap tuned manually.';
           }
