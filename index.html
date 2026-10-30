@@ -6205,13 +6205,10 @@
           if (window.speechSynthesis.paused) {
             window.speechSynthesis.resume();
           }
-          if (window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-          }
           const text = `${countryName} eliminated!`;
           const utterance = new SpeechSynthesisUtterance(text);
-          utterance.rate = 1.15; // Snappy commentator pace
-          utterance.pitch = 1.05;
+          utterance.rate = 1.1; // Snappy commentator pace
+          utterance.pitch = 1.0;
           utterance.volume = 1.0;
           if (this.preferredVoice) utterance.voice = this.preferredVoice;
           window.speechSynthesis.speak(utterance);
@@ -8806,16 +8803,15 @@
         this.totalSegments = 32;
         this.gapSegmentCount = 1; // Default 1 segment gap: calibrated single-ball exit for 8-15 min battles!
         this.arenaTemplate = 'hole'; // 'hole' = Central Vortex Black Hole (Screenshot mode), 'ring' = Outer Ring Escape
-        this.centerHoleRadius = 36;
+        this.centerHoleRadius = 26;
         this.gameSpeed = 0.85;
         this.baseRotationSpeed = 0.016;
         this.currentRotationSpeed = 0.016;
-        this.gravityY = 0.40;
+        this.gravityY = 0.38;
         this.durationMode = 'marathon'; // Guaranteed 15+ Min default!
         this.targetMatchSeconds = 960; // 16 minutes target (at least 15 min endurance battle)
         this.roundStartTime = Date.now();
         this.lastEliminationTime = Date.now();
-        this.isVortexShieldActive = true;
         this.initialBallCount = 120;
         this.matchElapsedSec = 0;
 
@@ -9074,12 +9070,12 @@
           }
 
           // 2. 6 Rotating Radial Kinetic Spokes (Lavender/Purple blades from screenshot)
-          // Extending from r=58px outwards to r=150px (length 92px, width 10px)
-          // Leaves a generous 22px open orbital moat around the center hole (radius 36)
+          // Extending from r=60px outwards to r=162px (length 102px, width 11px)
+          // Leaves an open orbital moat (r=26px to 60px) around the center sinkhole
           const spokeCount = 6;
-          const spokeLen = 92;
-          const spokeWidth = 10;
-          const spokeDist = 104; // Distance of spoke center from arenaCenter
+          const spokeLen = 102;
+          const spokeWidth = 11;
+          const spokeDist = 111;
           for (let s = 0; s < spokeCount; s++) {
             const spoke = this.Bodies.rectangle(0, 0, spokeLen, spokeWidth, {
               isStatic: true,
@@ -9096,8 +9092,8 @@
             this.World.add(this.world, spoke);
           }
 
-          // Center sinkhole radius for event horizon elimination
-          this.centerHoleRadius = 36;
+          // Center sinkhole radius for event horizon elimination (from reference screenshot)
+          this.centerHoleRadius = 26;
 
         } else {
           // --- TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP) ---
@@ -9419,30 +9415,11 @@
           }
         }
 
-        // --- PRECISION 15+ MINUTE MATCH DURATION & ELIMINATION PACING GOVERNOR ---
-        const elapsedSec = (Date.now() - this.roundStartTime) / 1000;
-        const targetSec = this.targetMatchSeconds || 960; // 960s = 16 minutes default (guarantees >= 15 min battle)
-        const timeSinceLastElimSec = (Date.now() - this.lastEliminationTime) / 1000;
-
-        // Smooth marathon decay curve ensuring the match naturally spans 15+ minutes
-        const initialCount = Math.max(2, this.initialBallCount || this.selectedBatchSize || 120);
-        const targetRemainingRatio = Math.max(0, 1.0 - (elapsedSec / targetSec));
-        const idealRemaining = Math.max(2, Math.round(initialCount * targetRemainingRatio));
-
-        // Calculated minimum spacing between eliminations (e.g. 7.5s for 120 balls, 18s for 50 balls in 16m)
-        const minSpacingSec = Math.max(4.0, (targetSec / initialCount) * 0.82);
-
-        // Can eliminate ONLY when pacing allows (shield drops for 1 ball to be eliminated)
-        const canEliminate = (this.balls.length > idealRemaining || elapsedSec >= targetSec * 0.95) &&
-                             (timeSinceLastElimSec >= minSpacingSec);
-        this.isVortexShieldActive = !canEliminate;
-
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
-          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (FROM USER SCREENSHOT)
+          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (AUTHENTIC TUMBLER PHYSICS)
           // =========================================================================
-          const holeR = this.centerHoleRadius || 36;
-          const shieldR = holeR + 12;
+          const holeR = this.centerHoleRadius || 26;
 
           for (let i = this.balls.length - 1; i >= 0; i--) {
             const b = this.balls[i];
@@ -9450,20 +9427,6 @@
             const dx = this.arenaCenter.x - pos.x;
             const dy = this.arenaCenter.y - pos.y;
             const distFromCenter = Math.hypot(dx, dy);
-
-            // Gravitational Vortex Inward Suction Force
-            if (distFromCenter < 140) {
-              const pullFactor = (140 - distFromCenter) / 140;
-              // When shielded: gentle orbital drift (0.000035) so balls circulate without crashing in
-              // When open: stronger spiral pull (0.00015) to swallow the nearest daring nation
-              const pullStrength = this.isVortexShieldActive ? 0.000035 : 0.00015;
-              const pull = pullStrength * pullFactor * b.body.mass;
-              const d = distFromCenter || 1;
-              this.Body.applyForce(b.body, pos, {
-                x: (dx / d) * pull - (dy / d) * (pull * 0.55),
-                y: (dy / d) * pull + (dx / d) * (pull * 0.55)
-              });
-            }
 
             // Shield Rescue Powerup
             if (b.hasShield && distFromCenter <= holeR + 8) {
@@ -9473,30 +9436,16 @@
               this.pushKillfeed(b.country, '🛡️ SHIELD SAVED!');
               const d = distFromCenter || 1;
               this.Body.setVelocity(b.body, {
-                x: -(dx / d) * 9.5,
-                y: -(dy / d) * 9.5
+                x: -(dx / d) * 8.5,
+                y: -(dy / d) * 8.5
               });
               continue;
             }
 
-            // Orbital Magnetic Repulsor Barrier: Bounces marbles back out when pacing shield is active
-            if (this.isVortexShieldActive && distFromCenter <= shieldR) {
-              const d = distFromCenter || 1;
-              const bounceSpd = 5.5 + Math.random() * 2.5;
-              this.Body.setVelocity(b.body, {
-                x: -(dx / d) * bounceSpd,
-                y: -(dy / d) * bounceSpd
-              });
-              this.particles.spawnShieldShatter(pos.x, pos.y);
-              this.audio.playBounce(6);
-              continue;
-            }
-
-            // Ball Enters the Central Hole (Elimination Event Horizon when shield is DOWN!)
-            if (!b.escaped && !this.isVortexShieldActive && distFromCenter <= holeR + 4) {
+            // Ball Enters the Central Void (Natural Sinkhole Elimination)
+            if (!b.escaped && distFromCenter <= holeR + 1) {
               b.escaped = true;
               this.balls.splice(i, 1);
-              this.eliminatedBalls.push(b);
               this.World.remove(this.world, b.body);
 
               // Sound & AI Voice Commentary
@@ -9509,17 +9458,16 @@
               this.updateAliveHUD();
 
               this.lastEliminationTime = Date.now();
-              this.isVortexShieldActive = true; // Shield re-engages for next pacing interval!
 
-              // Kinetic Shockwave repels neighboring balls outward into the blades
+              // Gentle physical air displacement puff prevents trailing balls from bunching into the hole
               for (const other of this.balls) {
                 const odx = other.body.position.x - this.arenaCenter.x;
                 const ody = other.body.position.y - this.arenaCenter.y;
                 const odist = Math.hypot(odx, ody) || 1;
-                if (odist < 140) {
+                if (odist < 50) {
                   this.Body.applyForce(other.body, other.body.position, {
-                    x: (odx / odist) * 0.0025 * other.body.mass,
-                    y: (ody / odist) * 0.0025 * other.body.mass
+                    x: (odx / odist) * 0.0012 * other.body.mass,
+                    y: (ody / odist) * 0.0012 * other.body.mass
                   });
                 }
               }
@@ -9555,20 +9503,6 @@
               continue;
             }
 
-            // Pacing Deflector: if shield active, deflect balls trying to escape too early!
-            if (this.isVortexShieldActive && distFromCenter > this.arenaRadius + 6) {
-              const dx = this.arenaCenter.x - pos.x;
-              const dy = this.arenaCenter.y - pos.y;
-              const d = Math.hypot(dx, dy) || 1;
-              this.Body.setVelocity(b.body, {
-                x: (dx / d) * 7.0,
-                y: (dy / d) * 7.0
-              });
-              this.particles.spawnShieldShatter(pos.x, pos.y);
-              this.audio.playBounce(5);
-              continue;
-            }
-
             if (!b.escaped && distFromCenter > this.arenaRadius + 28) {
               b.escaped = true;
               this.balls.splice(i, 1);
@@ -9583,7 +9517,6 @@
               this.updateAliveHUD();
 
               this.lastEliminationTime = Date.now();
-              this.isVortexShieldActive = true;
 
               if (this.balls.length === 1) {
                 this.triggerVictory(this.balls[0]);
@@ -9799,58 +9732,37 @@
         ctx.fillStyle = this._stadiumGrad;
         ctx.fill();
 
-        // Stadium Floor Laser Markings
-        ctx.lineWidth = 1.2;
-        ctx.strokeStyle = theme.floorLine;
-        ctx.setLineDash([4, 6]);
+        // Stadium Floor Laser Markings (Ring mode only)
+        if (this.arenaTemplate === 'ring') {
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = theme.floorLine;
+          ctx.setLineDash([4, 6]);
 
-        ctx.beginPath();
-        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.38, 0, Math.PI * 2);
-        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.72, 0, Math.PI * 2);
-        ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.38, 0, Math.PI * 2);
+          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.72, 0, Math.PI * 2);
+          ctx.stroke();
 
-        ctx.setLineDash([]);
-        const notchLen = 14;
-        const r72 = this.arenaRadius * 0.72;
-        const notches = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
-        ctx.beginPath();
-        for (const ang of notches) {
-          const nx = this.arenaCenter.x + Math.cos(ang) * r72;
-          const ny = this.arenaCenter.y + Math.sin(ang) * r72;
-          ctx.moveTo(nx - Math.cos(ang) * notchLen, ny - Math.sin(ang) * notchLen);
-          ctx.lineTo(nx + Math.cos(ang) * notchLen, ny + Math.sin(ang) * notchLen);
+          ctx.setLineDash([]);
+          const notchLen = 14;
+          const r72 = this.arenaRadius * 0.72;
+          const notches = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
+          ctx.beginPath();
+          for (const ang of notches) {
+            const nx = this.arenaCenter.x + Math.cos(ang) * r72;
+            const ny = this.arenaCenter.y + Math.sin(ang) * r72;
+            ctx.moveTo(nx - Math.cos(ang) * notchLen, ny - Math.sin(ang) * notchLen);
+            ctx.lineTo(nx + Math.cos(ang) * notchLen, ny + Math.sin(ang) * notchLen);
+          }
+          ctx.stroke();
         }
-        ctx.stroke();
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
-          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (FROM USER REFERENCE SCREENSHOTS)
+          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (FROM USER REFERENCE SCREENSHOT)
           // =========================================================================
 
-          // Floor Radar Guide Rings & Concentric Crosshairs (from Screenshot 2)
-          ctx.save();
-          ctx.lineWidth = 1.2;
-          ctx.strokeStyle = 'rgba(192, 132, 252, 0.28)';
-          ctx.setLineDash([4, 6]);
-          ctx.beginPath();
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 58, 0, Math.PI * 2);
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 104, 0, Math.PI * 2);
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 150, 0, Math.PI * 2);
-          ctx.stroke();
-
-          // Radial guide lines between spokes
-          ctx.setLineDash([2, 8]);
-          ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
-          for (let g = 0; g < 12; g++) {
-            const ga = this.arenaAngle + g * (Math.PI / 6);
-            ctx.beginPath();
-            ctx.moveTo(this.arenaCenter.x + Math.cos(ga) * 58, this.arenaCenter.y + Math.sin(ga) * 58);
-            ctx.lineTo(this.arenaCenter.x + Math.cos(ga) * 170, this.arenaCenter.y + Math.sin(ga) * 170);
-            ctx.stroke();
-          }
-          ctx.restore();
-
-          // 1. Closed Outer Neon Cyan Ring (All 32 segments solid)
+          // 1. Closed Outer Neon Cyan Ring (All 32 segments solid with high-gloss glow)
           ctx.save();
           if (isMobile) {
             ctx.strokeStyle = '#06b6d4';
@@ -9912,105 +9824,70 @@
           }
           ctx.restore();
 
-          // 3. Central Glowing Black Hole (Deep Cosmic Vortex Sinkhole from Reference Screenshot)
+          // 3. Central Glowing Black Hole (Deep Cosmic Void from Reference Screenshot)
           ctx.save();
           const cx = this.arenaCenter.x;
           const cy = this.arenaCenter.y;
-          const holeR = this.centerHoleRadius || 36;
+          const holeR = this.centerHoleRadius || 26;
 
           // A. Outer Gravitational Accretion Disk / Purple Atmospheric Halo
-          const haloGrad = ctx.createRadialGradient(cx, cy, holeR, cx, cy, holeR + 24);
-          haloGrad.addColorStop(0, 'rgba(168, 85, 247, 0.45)');
-          haloGrad.addColorStop(0.5, 'rgba(236, 72, 153, 0.18)');
+          const haloGrad = ctx.createRadialGradient(cx, cy, holeR, cx, cy, holeR + 18);
+          haloGrad.addColorStop(0, 'rgba(236, 72, 153, 0.35)');
+          haloGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.14)');
           haloGrad.addColorStop(1, 'rgba(168, 85, 247, 0)');
           ctx.fillStyle = haloGrad;
           ctx.beginPath();
-          ctx.arc(cx, cy, holeR + 24, 0, Math.PI * 2);
+          ctx.arc(cx, cy, holeR + 18, 0, Math.PI * 2);
           ctx.fill();
 
-          // B. Glowing Neon Pink/Magenta Event Horizon Ring
-          if (!isMobile) {
-            ctx.shadowColor = '#f43f5e';
-            ctx.shadowBlur = 24;
-          }
-          ctx.strokeStyle = '#ec4899';
-          ctx.lineWidth = 3.8;
+          // B. Deep Pitch-Black Circular Sinkhole
+          ctx.fillStyle = '#010103';
           ctx.beginPath();
           ctx.arc(cx, cy, holeR, 0, Math.PI * 2);
-          ctx.stroke();
+          ctx.fill();
 
-          // C. Inner Depth Radial Gradient (Deep Singularity Void)
-          ctx.shadowBlur = 0;
-          const holeGrad = ctx.createRadialGradient(cx, cy, 2, cx, cy, holeR - 1);
+          // C. Inner Depth Radial Singularity Gradient
+          const holeGrad = ctx.createRadialGradient(cx, cy, 1, cx, cy, holeR - 1);
           holeGrad.addColorStop(0, '#000000');
           holeGrad.addColorStop(0.65, '#05020c');
-          holeGrad.addColorStop(0.9, '#180a2b');
-          holeGrad.addColorStop(1, 'rgba(236, 72, 153, 0.6)');
+          holeGrad.addColorStop(0.92, '#180a2b');
+          holeGrad.addColorStop(1, 'rgba(236, 72, 153, 0.55)');
           ctx.fillStyle = holeGrad;
           ctx.beginPath();
           ctx.arc(cx, cy, holeR - 1, 0, Math.PI * 2);
           ctx.fill();
 
-          // D. Swirling Stardust Spiral Gravity Arms into the Singularity (4 arms)
-          const spin = this.arenaAngle * 3.2;
-          ctx.lineWidth = 1.8;
-          for (let a = 0; a < 4; a++) {
-            const ang = spin + a * (Math.PI / 2);
-            ctx.strokeStyle = a % 2 === 0 ? 'rgba(244, 114, 182, 0.65)' : 'rgba(192, 132, 252, 0.65)';
+          // D. Swirling Galaxy Core Spiral Arms
+          const spin = this.arenaAngle * 3.0;
+          ctx.lineWidth = 1.4;
+          for (let a = 0; a < 3; a++) {
+            const ang = spin + a * (Math.PI * 2 / 3);
+            ctx.strokeStyle = 'rgba(244, 114, 182, 0.45)';
             ctx.beginPath();
-            ctx.arc(cx, cy, 12 + a * 5, ang, ang + 1.45);
+            ctx.arc(cx, cy, 6 + a * 5, ang, ang + 1.25);
             ctx.stroke();
           }
 
-          // E. Center Event Horizon Moat Boundary (r=58)
-          ctx.strokeStyle = 'rgba(236, 72, 153, 0.35)';
-          ctx.lineWidth = 1.2;
-          ctx.setLineDash([3, 5]);
+          // E. Intense Glowing Neon Pink/Magenta Event Horizon Ring (Exactly like user screenshot)
+          ctx.save();
+          if (!isMobile) {
+            ctx.shadowColor = '#ff007f';
+            ctx.shadowBlur = 22;
+          }
+          ctx.strokeStyle = '#f43f5e';
+          ctx.lineWidth = 3.6;
           ctx.beginPath();
-          ctx.arc(cx, cy, 58, 0, Math.PI * 2);
+          ctx.arc(cx, cy, holeR, 0, Math.PI * 2);
           ctx.stroke();
-          ctx.setLineDash([]);
 
-          // F. Orbital Magnetic Repulsor Barrier (Visual indicator when pacing shield is active)
-          if (this.isVortexShieldActive) {
-            ctx.save();
-            ctx.strokeStyle = '#00e5ff';
-            if (!isMobile) {
-              ctx.shadowColor = '#00e5ff';
-              ctx.shadowBlur = 14;
-            }
-            ctx.lineWidth = 2.4;
-            ctx.setLineDash([6, 6]);
-            ctx.beginPath();
-            ctx.arc(cx, cy, holeR + 12, this.arenaAngle * 2.5, this.arenaAngle * 2.5 + Math.PI * 2);
-            ctx.stroke();
+          // Crisp electric magenta inner highlight
+          ctx.strokeStyle = '#f472b6';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(cx, cy, holeR - 0.5, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
 
-            // Hexagonal Shield Nodes
-            ctx.setLineDash([]);
-            ctx.fillStyle = '#38bdf8';
-            for (let n = 0; n < 6; n++) {
-              const na = this.arenaAngle * 2.5 + n * (Math.PI / 3);
-              const nx = cx + Math.cos(na) * (holeR + 12);
-              const ny = cy + Math.sin(na) * (holeR + 12);
-              ctx.beginPath();
-              ctx.arc(nx, ny, 2.5, 0, Math.PI * 2);
-              ctx.fill();
-            }
-            ctx.restore();
-          } else {
-            // Singularity Open Breach Aura (Pulsing Red warning)
-            ctx.save();
-            ctx.strokeStyle = 'rgba(244, 63, 94, 0.85)';
-            if (!isMobile) {
-              ctx.shadowColor = '#f43f5e';
-              ctx.shadowBlur = 20;
-            }
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.arc(cx, cy, holeR + 8, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.restore();
-          }
           ctx.restore();
 
         } else {
