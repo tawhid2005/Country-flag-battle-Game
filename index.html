@@ -3899,6 +3899,384 @@
       gap: 6px;
       transition: all 0.2s ease;
     }
+    .btn-order-copy:hover {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: #00e5ff;
+      color: #ffffff;
+    }
+    /* Automated Checkout Terminal UI */
+    .order-gateway-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(3, 7, 18, 0.7);
+      border-radius: 12px;
+      padding: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .order-gw-tab-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 9px 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .order-gw-tab-btn.active {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.22), rgba(99, 102, 241, 0.3));
+      border: 1px solid #00e5ff;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.35);
+    }
+    .order-gw-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: modalPopIn 0.2s ease;
+    }
+    .order-account-box {
+      background: rgba(10, 20, 45, 0.85);
+      border: 1.5px dashed rgba(0, 229, 255, 0.5);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .order-account-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .order-account-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+    }
+    .order-method-pills {
+      display: flex;
+      gap: 4px;
+    }
+    .order-method-pill {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .pill-bkash { background: #e2136e; }
+    .pill-nagad { background: #f7941d; }
+    .pill-rocket { background: #8c3494; }
+    .order-number-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(2, 6, 23, 0.9);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .order-number-display {
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: 900;
+      color: #00e5ff;
+      letter-spacing: 1.5px;
+    }
+    .order-btn-copy-num {
+      background: #00e5ff;
+      color: #020617;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .order-btn-copy-num:hover {
+      background: #ffffff;
+      box-shadow: 0 0 10px #00e5ff;
+      transform: scale(1.04);
+    }
+    .order-instructions {
+      background: rgba(6, 14, 30, 0.7);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .order-instructions b {
+      color: #fbbf24;
+    }
+    .order-inputs-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .order-input-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .order-input-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+    }
+    .order-input {
+      background: rgba(3, 7, 18, 0.9);
+      border: 1.5px solid rgba(0, 229, 255, 0.4);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: monospace;
+      color: #ffffff;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .order-input:focus {
+      border-color: #00e5ff;
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+      background: rgba(2, 6, 23, 1);
+    }
+    .order-alert-box {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+      text-align: center;
+    }
+    .order-alert-info { background: rgba(0, 229, 255, 0.12); border: 1px solid rgba(0, 229, 255, 0.35); color: #67e8f9; }
+    .order-alert-success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.45); color: #6ee7b7; }
+    .order-alert-error { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.45); color: #fca5a5; }
+    .order-btn-verify {
+      background: linear-gradient(135deg, #00e5ff 0%, #10b981 100%);
+      color: #020617;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .order-btn-verify:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(16, 185, 129, 0.7);
+      filter: brightness(1.1);
+    }
+    .order-intl-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .btn-intl-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 900;
+      transition: all 0.2s;
+    }
+    .btn-paypal {
+      background: linear-gradient(135deg, #0079C1 0%, #00457C 100%);
+      color: #ffffff;
+      border: 1px solid rgba(0, 121, 193, 0.5);
+      box-shadow: 0 0 15px rgba(0, 121, 193, 0.4);
+    }
+    .btn-paypal:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 22px rgba(0, 121, 193, 0.7);
+    }
+    .crypto-addr-box {
+      background: rgba(3, 7, 18, 0.85);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    .crypto-addr-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .crypto-addr-text {
+      font-family: monospace;
+      font-size: 10px;
+      color: #fbbf24;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .order-success-banner {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 78, 59, 0.3));
+      border: 1.5px solid #10b981;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
+    }
+    .order-success-icon { font-size: 32px; }
+    .order-success-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      color: #6ee7b7;
+    }
+    .order-success-sub {
+      font-size: 10px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+    .order-receipt-details {
+      background: rgba(3, 7, 18, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .order-receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .order-receipt-key-box {
+      background: rgba(2, 6, 23, 0.95);
+      border: 1px dashed rgba(0, 229, 255, 0.4);
+      border-radius: 8px;
+      padding: 8px;
+      margin-top: 4px;
+    }
+    .order-success-key-text {
+      font-family: monospace;
+      font-size: 11px;
+      color: #00e5ff;
+      word-break: break-all;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px;
+      border-radius: 4px;
+    }
+    .order-btn-play-now {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .order-btn-play-now:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 35px rgba(16, 185, 129, 0.8);
+    }
+    .btn-order-whatsapp-mini {
+      background: transparent;
+      border: 1px solid rgba(37, 211, 102, 0.3);
+      color: #4ade80;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-order-whatsapp-mini:hover {
+      background: rgba(37, 211, 102, 0.15);
+      border-color: #25d366;
+      color: #ffffff;
+    }
+    /* Admin Orders List */
+    .admin-order-item {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .admin-order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-order-phone {
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 800;
+      color: #00e5ff;
+    }
+    .admin-order-amount {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 900;
+      color: #fbbf24;
+    }
+    .admin-order-body {
+      font-size: 10px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-order-key {
+      font-family: monospace;
+      font-size: 9px;
+      color: #cbd5e1;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 3px 6px;
+      border-radius: 4px;
+      word-break: break-all;
+    }
     /* ==========================================================================
        AI HUMAN STREAMER SIMULATION ENGINE (ANTI-BOT BROADCAST OVERLAYS)
        ========================================================================== */
@@ -4881,14 +5259,14 @@
       </div>
     </div>
 
-    <!-- Order Confirmation & Contact Modal (True Fixed Center Popup) -->
+    <!-- Order Confirmation & Automated Checkout Terminal (True Fixed Center Popup) -->
     <div id="cyber-order-modal" role="dialog" aria-modal="true">
       <div class="order-modal-card">
         <button class="order-modal-close" id="btn-close-order-modal">&times;</button>
         
         <div class="order-modal-header">
-          <span class="order-modal-badge">💎 SUBSCRIPTION ORDER</span>
-          <div class="order-modal-title">DIRECT ADMIN ACTIVATION</div>
+          <span class="order-modal-badge">⚡ 24/7 INSTANT AUTOMATED CHECKOUT</span>
+          <div class="order-modal-title">SECURE PASS ACTIVATION</div>
         </div>
 
         <div class="order-plan-highlight-box">
@@ -4899,22 +5277,127 @@
           <div class="order-plan-price-tag" id="order-card-plan-price">99 TK</div>
         </div>
 
-        <div style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
-          💬 PRE-FORMATTED CUSTOM ORDER MESSAGE:
+        <!-- Gateway Selector Tabs -->
+        <div class="order-gateway-tabs" id="order-tabs-wrapper">
+          <button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">🇧🇩 bKash / Nagad / Rocket</button>
+          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 Cards / PayPal / Crypto</button>
         </div>
-        <div class="order-msg-preview" id="order-card-msg-preview"></div>
 
-        <button class="btn-order-whatsapp" id="btn-send-whatsapp-order">
-          <span>📲 SEND ORDER VIA WHATSAPP</span>
-        </button>
+        <!-- Panel 1: Bangladeshi Payment (bKash / Nagad / Rocket Auto-Unlock) -->
+        <div class="order-gw-panel active" id="panel-bd-pay">
+          <div class="order-account-box">
+            <div class="order-account-header">
+              <span class="order-account-label">📱 SEND MONEY (PERSONAL):</span>
+              <div class="order-method-pills">
+                <span class="order-method-pill pill-bkash">bKash</span>
+                <span class="order-method-pill pill-nagad">Nagad</span>
+                <span class="order-method-pill pill-rocket">Rocket</span>
+              </div>
+            </div>
+            <div class="order-number-row">
+              <span class="order-number-display" id="order-bd-phone-number">01711729858</span>
+              <button class="order-btn-copy-num" id="btn-copy-bd-number" type="button">📋 COPY</button>
+            </div>
+          </div>
 
-        <button class="btn-order-copy" id="btn-copy-order-msg">
-          <span>📋 COPY ORDER MESSAGE (FOR MESSENGER/SMS)</span>
-        </button>
+          <div class="order-instructions">
+            <div>1. বিকাশ / নগদ / রকেট অ্যাপে গিয়ে <b id="order-inst-amount">99</b> টাকা <b>Send Money</b> করুন।</div>
+            <div>2. সেন্ড মানি সফল হলে আপনার নম্বর এবং TrxID নিচে দিন।</div>
+            <div>3. <b>VERIFY</b> চাপার সাথে সাথেই গেম অটোমেটিক আনলক হয়ে যাবে!</div>
+          </div>
 
-        <div id="order-card-payment-footer" style="font-size: 10px; color: #64748b; text-align: center;">
-          💳 Payment: bKash / Nagad / Rocket accepted by Admin.
+          <div class="order-inputs-grid">
+            <div class="order-input-wrapper">
+              <label class="order-input-label">📱 SENDER PHONE NUMBER</label>
+              <input type="tel" id="auto-pay-sender-phone" class="order-input" placeholder="017XXXXXXXX" maxlength="15">
+            </div>
+            <div class="order-input-wrapper">
+              <label class="order-input-label">🔑 TRANSACTION ID (TRXID)</label>
+              <input type="text" id="auto-pay-trxid" class="order-input" placeholder="e.g. BLA874KX8Q" maxlength="25">
+            </div>
+          </div>
+
+          <div id="auto-pay-alert-bd" class="order-alert-box" style="display: none;"></div>
+
+          <button class="order-btn-verify" id="btn-auto-verify-bd" type="button">
+            <span>⚡ VERIFY & INSTANT UNLOCK (স্বয়ংক্রিয় আনলক)</span>
+          </button>
         </div>
+
+        <!-- Panel 2: International Payment (Cards / PayPal / Crypto) -->
+        <div class="order-gw-panel" id="panel-intl-pay" style="display: none;">
+          <div class="order-intl-links">
+            <a href="https://paypal.me/talha2005" target="_blank" rel="noopener noreferrer" class="btn-intl-link btn-paypal" id="link-intl-paypal">
+              <span>🅿️ PAY VIA PAYPAL.ME / CARD</span>
+            </a>
+            <div class="crypto-addr-box">
+              <div style="font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 4px;">🪙 USDT (TRC-20) ADDRESS:</div>
+              <div class="crypto-addr-row">
+                <span class="crypto-addr-text" id="crypto-trc20-address">TKjF928KxNms82KqpLm903JsLk29PskL9a</span>
+                <button class="order-btn-copy-num" id="btn-copy-crypto-addr" type="button">📋 COPY</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-instructions">
+            <div>1. Complete checkout via PayPal or USDT TRC-20 above.</div>
+            <div>2. Enter your Email / Username and Transaction ID / Reference below.</div>
+            <div>3. Click <b>INSTANT UNLOCK</b> to immediately activate your pass!</div>
+          </div>
+
+          <div class="order-inputs-grid">
+            <div class="order-input-wrapper">
+              <label class="order-input-label">👤 STREAMER EMAIL / USERNAME</label>
+              <input type="text" id="auto-pay-intl-user" class="order-input" placeholder="streamer@gmail.com" maxlength="40">
+            </div>
+            <div class="order-input-wrapper">
+              <label class="order-input-label">🧾 TRANSACTION ID / ORDER REF</label>
+              <input type="text" id="auto-pay-intl-ref" class="order-input" placeholder="e.g. 9KL882319" maxlength="35">
+            </div>
+          </div>
+
+          <div id="auto-pay-alert-intl" class="order-alert-box" style="display: none;"></div>
+
+          <button class="order-btn-verify" id="btn-auto-verify-intl" type="button">
+            <span>⚡ VERIFY & UNLOCK GLOBAL PASS</span>
+          </button>
+        </div>
+
+        <!-- Panel 3: Success Receipt (Shown when unlocked) -->
+        <div class="order-gw-panel" id="panel-pay-success" style="display: none;">
+          <div class="order-success-banner">
+            <div class="order-success-icon">🎉</div>
+            <div class="order-success-title">PAYMENT VERIFIED!</div>
+            <div class="order-success-sub">GAME PASS ACTIVATED 24/7</div>
+          </div>
+
+          <div class="order-receipt-details">
+            <div class="order-receipt-row">
+              <span>STATUS:</span>
+              <span style="color: #10b981; font-weight: 800;">🟢 ACTIVE</span>
+            </div>
+            <div class="order-receipt-row">
+              <span>EXPIRES:</span>
+              <span id="order-success-expires" style="color: #fbbf24; font-weight: 700;">30 Days</span>
+            </div>
+            <div class="order-receipt-key-box">
+              <div style="font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 4px;">YOUR UNIVERSAL LICENSE KEY:</div>
+              <div id="order-success-key" class="order-success-key-text">CFB-1M-...</div>
+              <button class="btn-order-copy" id="btn-copy-success-key" type="button" style="margin-top: 6px; width: 100%;">
+                <span>📋 COPY LICENSE KEY</span>
+              </button>
+            </div>
+          </div>
+
+          <button class="order-btn-play-now" id="btn-order-start-game" type="button">
+            <span>🎮 START PLAYING NOW (গেম শুরু করুন)</span>
+          </button>
+        </div>
+
+        <!-- WhatsApp Fallback Link -->
+        <button class="btn-order-whatsapp-mini" id="btn-order-wa-support" type="button">
+          <span>💬 Need help or manual activation? Chat on WhatsApp</span>
+        </button>
       </div>
     </div>
 
@@ -4939,6 +5422,7 @@
       <nav class="admin-nav-tabs">
         <button class="admin-nav-tab active" id="admin-tab-btn-create">➕ CREATE LICENSE</button>
         <button class="admin-nav-tab" id="admin-tab-btn-list">📋 SUBSCRIBERS (<span id="admin-sub-count">0</span>)</button>
+        <button class="admin-nav-tab" id="admin-tab-btn-orders">📥 AUTOMATED ORDERS (<span id="admin-orders-count">0</span>)</button>
         <button class="admin-nav-tab" id="admin-tab-btn-backup">💾 BACKUP & TOOLS</button>
       </nav>
 
@@ -5033,6 +5517,15 @@
             💾 SAVE CONTACT SETTINGS
           </button>
         </div>
+      </section>
+
+      <!-- Admin Tab 4: Automated Orders & Transactions -->
+      <section class="admin-section" id="admin-sec-orders">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="font-size: 12px; font-weight: 800; color: #00e5ff;">📥 AUTOMATED TRANSACTIONS & TRX LOG</div>
+          <button id="btn-clear-automated-orders" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🗑️ CLEAR ALL</button>
+        </div>
+        <div class="admin-subscribers-list" id="admin-automated-orders-container"></div>
       </section>
       </div>
     </div>
@@ -7563,56 +8056,165 @@
         });
       }
 
+      // Get all automated orders from storage
+      getAutomatedOrders() {
+        try {
+          const raw = localStorage.getItem('cfb_automated_orders');
+          return raw ? JSON.parse(raw) : [];
+        } catch(e) {
+          return [];
+        }
+      }
+
+      // Save an automated order
+      saveAutomatedOrder(order) {
+        try {
+          const orders = this.getAutomatedOrders();
+          orders.unshift(order);
+          localStorage.setItem('cfb_automated_orders', JSON.stringify(orders.slice(0, 100)));
+          if (document.getElementById('admin-orders-count')) {
+            document.getElementById('admin-orders-count').textContent = orders.length;
+          }
+        } catch(e) {
+          console.warn('Failed to save order to localStorage:', e);
+        }
+      }
+
+      // Open automated checkout modal
       openOrderModal(planId, currency = this.selectedCurrency) {
         const plans = SUBSCRIPTION_PLANS[currency] || SUBSCRIPTION_PLANS.usd;
         const plan = plans.find(p => p.id === planId) || plans[0];
+        this.activeOrderPlan = plan;
+
         const orderModal = document.getElementById('cyber-order-modal');
         const orderPlanName = document.getElementById('order-card-plan-name');
         const orderPlanDuration = document.getElementById('order-card-plan-duration');
         const orderPlanPrice = document.getElementById('order-card-plan-price');
-        const orderMsgPreview = document.getElementById('order-card-msg-preview');
+        const orderInstAmount = document.getElementById('order-inst-amount');
+        const tabsWrapper = document.getElementById('order-tabs-wrapper');
 
-        let currentOrderMsg = '';
-        if (currency === 'usd') {
-          currentOrderMsg = '👋 Hello Tawhid Bhai!\n' +
-            '🎮 I want to purchase Country Flag Battle Royale (International Streamer Pass):\n' +
-            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-            '💎 Plan: ' + plan.name + ' ($' + plan.price.toFixed(2) + ' USD)\n' +
-            '⏳ Duration: ' + plan.days + ' Days 24/7 Unlimited Access\n' +
-            '💰 Price: $' + plan.price.toFixed(2) + ' USD\n' +
-            '💳 Payment: PayPal / Credit Card / Crypto / WhatsApp\n' +
-            '🛡️ Backed by: $199 USD Copyright-Strike Immunity Guarantee\n' +
-            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-            'Please send me the checkout link and my Login ID & Password!';
-        } else {
-          currentOrderMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
-            '🎮 I want to subscribe to Country Flag Battle Royale:\n' +
-            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-            '💎 Plan: ' + plan.name + ' (' + plan.price + ' TK)\n' +
-            '⏳ Duration: ' + plan.days + ' Days Access\n' +
-            '💰 Price: ' + plan.price + ' TK\n' +
-            '💳 Payment: bKash / Nagad / Rocket\n' +
-            '🛡️ Backed by: $199 USD Copyright-Strike Immunity Guarantee\n' +
-            '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-            'Please send me your bKash/Nagad number and my Login ID & Password!';
-        }
-
-        this.currentOrderMsg = currentOrderMsg;
         if (orderPlanName) orderPlanName.textContent = plan.name.toUpperCase();
         if (orderPlanDuration) orderPlanDuration.textContent = plan.days + ' Days Unlimited Access';
-        if (orderPlanPrice) orderPlanPrice.textContent = currency === 'usd' ? ('$' + plan.price.toFixed(2) + ' USD') : (plan.price + ' TK');
-        if (orderMsgPreview) orderMsgPreview.textContent = currentOrderMsg;
+        const priceStr = currency === 'usd' ? ('$' + plan.price.toFixed(2) + ' USD') : (plan.price + ' TK');
+        if (orderPlanPrice) orderPlanPrice.textContent = priceStr;
+        if (orderInstAmount) orderInstAmount.textContent = plan.price;
 
-        const orderFooter = document.getElementById('order-card-payment-footer');
-        if (orderFooter) {
-          if (currency === 'usd') {
-            orderFooter.innerHTML = '💳 Payment: PayPal, Credit/Debit Card, Crypto (USDT), or WhatsApp (+8801711729858). Instant Delivery.';
-          } else {
-            orderFooter.innerHTML = '💳 Payment: bKash (Personal/Send Money), Nagad, অথবা Rocket (+8801711729858). তাৎক্ষণিক এক্টিভেশন।';
+        // Reset views: show forms, hide success receipt
+        const panelBd = document.getElementById('panel-bd-pay');
+        const panelIntl = document.getElementById('panel-intl-pay');
+        const panelSuccess = document.getElementById('panel-pay-success');
+        const tabBd = document.getElementById('btn-tab-bd-pay');
+        const tabIntl = document.getElementById('btn-tab-intl-pay');
+        if (tabsWrapper) tabsWrapper.style.display = 'grid';
+        if (panelSuccess) panelSuccess.style.display = 'none';
+
+        // Set alert messages clear
+        const alertBd = document.getElementById('auto-pay-alert-bd');
+        const alertIntl = document.getElementById('auto-pay-alert-intl');
+        if (alertBd) { alertBd.style.display = 'none'; alertBd.textContent = ''; }
+        if (alertIntl) { alertIntl.style.display = 'none'; alertIntl.textContent = ''; }
+
+        // Switch active tab based on currency
+        if (currency === 'usd') {
+          if (tabIntl) tabIntl.classList.add('active');
+          if (tabBd) tabBd.classList.remove('active');
+          if (panelIntl) panelIntl.style.display = 'flex';
+          if (panelBd) panelBd.style.display = 'none';
+        } else {
+          if (tabBd) tabBd.classList.add('active');
+          if (tabIntl) tabIntl.classList.remove('active');
+          if (panelBd) panelBd.style.display = 'flex';
+          if (panelIntl) panelIntl.style.display = 'none';
+        }
+
+        // Pre-formatted WhatsApp order message fallback
+        this.currentOrderMsg = (currency === 'usd')
+          ? ('👋 Hello Tawhid Bhai!\nI am purchasing the ' + plan.name + ' ($' + plan.price.toFixed(2) + ' USD) for Country Flag Battle Royale.')
+          : ('👋 Assalamu Alaikum Tawhid Bhai!\nআমি কান্ট্রি ফ্ল্যাগ ব্যাটল গেমের ' + plan.name + ' (' + plan.price + ' TK) কিনতে চাই।');
+
+        if (orderModal) orderModal.classList.add('show');
+      }
+
+      // Verify transaction & instantly unlock access 24/7
+      verifyAndActivateAutomatedOrder(sender, rawTrxId, gateway = 'BDT') {
+        const cleanSender = String(sender || '').trim();
+        const trxId = String(rawTrxId || '').trim().toUpperCase();
+
+        if (gateway === 'BDT') {
+          if (!cleanSender || cleanSender.length < 11) {
+            return { success: false, message: '⚠️ অনুগ্রহ করে আপনার সঠিক বিকাশ/নগদ নম্বর (১১ ডিজিট) দিন।' };
+          }
+          if (!trxId || trxId.length < 8) {
+            return { success: false, message: '⚠️ সঠিক Transaction ID (TrxID) লিখুন (কমপক্ষে ৮ অক্ষর)।' };
+          }
+        } else {
+          if (!cleanSender || cleanSender.length < 3) {
+            return { success: false, message: '⚠️ Please enter your valid Email or Streamer Handle.' };
+          }
+          if (!trxId || trxId.length < 6) {
+            return { success: false, message: '⚠️ Please enter your valid Transaction Reference or Order ID.' };
           }
         }
 
-        if (orderModal) orderModal.classList.add('show');
+        // Anti-Duplicate Check
+        const orders = this.getAutomatedOrders();
+        const existing = orders.find(o => o.trxId === trxId);
+        if (existing) {
+          return { success: false, message: '⚠️ এই Transaction ID টি ইতিমধ্যে ' + existing.date + ' তারিখে ব্যবহার করা হয়েছে!' };
+        }
+
+        // Active plan
+        const plan = this.activeOrderPlan || getPlanDef('1m', this.selectedCurrency) || { id: '1m', name: '1 Month Pass', days: 30, price: 99 };
+        const pTag = (plan.id || '1m').toLowerCase();
+        const userSlug = cleanSender.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || ('user_' + trxId.slice(0, 5).toLowerCase());
+        const expiresAt = Date.now() + (plan.days * 86400000);
+        const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
+        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
+
+        // Activate key immediately on this device!
+        const actResult = this.activateKey(licenseKey);
+
+        if (!actResult.valid) {
+          return { success: false, message: '⚠️ এক্টিভেশন ত্রুটি: ' + actResult.message };
+        }
+
+        // Store automated order record
+        const newOrder = {
+          trxId: trxId,
+          sender: cleanSender,
+          gateway: gateway,
+          planId: plan.id,
+          planName: plan.name,
+          amount: (gateway === 'USD' ? ('$' + plan.price) : (plan.price + ' TK')),
+          licenseKey: licenseKey,
+          expiresAt: expiresAt,
+          date: new Date().toLocaleString(),
+          timestamp: Date.now()
+        };
+        this.saveAutomatedOrder(newOrder);
+
+        // Success View Transition
+        const panelBd = document.getElementById('panel-bd-pay');
+        const panelIntl = document.getElementById('panel-intl-pay');
+        const panelSuccess = document.getElementById('panel-pay-success');
+        const tabsWrapper = document.getElementById('order-tabs-wrapper');
+        const successKeyEl = document.getElementById('order-success-key');
+        const successExpEl = document.getElementById('order-success-expires');
+
+        if (tabsWrapper) tabsWrapper.style.display = 'none';
+        if (panelBd) panelBd.style.display = 'none';
+        if (panelIntl) panelIntl.style.display = 'none';
+        if (panelSuccess) panelSuccess.style.display = 'flex';
+
+        if (successKeyEl) successKeyEl.textContent = licenseKey;
+        if (successExpEl) successExpEl.textContent = plan.days + ' Days (' + new Date(expiresAt).toLocaleDateString() + ')';
+
+        // Update admin order count badge
+        if (document.getElementById('admin-orders-count')) {
+          document.getElementById('admin-orders-count').textContent = this.getAutomatedOrders().length;
+        }
+
+        return { success: true, licenseKey: licenseKey };
       }
 
       init() {
@@ -7838,31 +8440,38 @@
         const aSecList = document.getElementById('admin-sec-list');
         const aSecBackup = document.getElementById('admin-sec-backup');
 
+        const aTabOrders = document.getElementById('admin-tab-btn-orders');
+        const aSecOrders = document.getElementById('admin-sec-orders');
+
         if (aTabCreate && aTabList && aTabBackup) {
-          aTabCreate.addEventListener('click', () => {
-            aTabCreate.classList.add('active');
-            aTabList.classList.remove('active');
-            aTabBackup.classList.remove('active');
-            aSecCreate.classList.add('active');
-            aSecList.classList.remove('active');
-            aSecBackup.classList.remove('active');
-          });
+          const switchAdminTab = (activeTab, activeSec) => {
+            [aTabCreate, aTabList, aTabOrders, aTabBackup].forEach(t => t && t.classList.remove('active'));
+            [aSecCreate, aSecList, aSecOrders, aSecBackup].forEach(s => s && s.classList.remove('active'));
+            if (activeTab) activeTab.classList.add('active');
+            if (activeSec) activeSec.classList.add('active');
+          };
+
+          aTabCreate.addEventListener('click', () => switchAdminTab(aTabCreate, aSecCreate));
           aTabList.addEventListener('click', () => {
-            aTabList.classList.add('active');
-            aTabCreate.classList.remove('active');
-            aTabBackup.classList.remove('active');
-            aSecList.classList.add('active');
-            aSecCreate.classList.remove('active');
-            aSecBackup.classList.remove('active');
+            switchAdminTab(aTabList, aSecList);
             this.renderAdminSubscribers();
           });
-          aTabBackup.addEventListener('click', () => {
-            aTabBackup.classList.add('active');
-            aTabCreate.classList.remove('active');
-            aTabList.classList.remove('active');
-            aSecBackup.classList.add('active');
-            aSecCreate.classList.remove('active');
-            aSecList.classList.remove('active');
+          if (aTabOrders) {
+            aTabOrders.addEventListener('click', () => {
+              switchAdminTab(aTabOrders, aSecOrders);
+              this.renderAdminAutomatedOrders();
+            });
+          }
+          aTabBackup.addEventListener('click', () => switchAdminTab(aTabBackup, aSecBackup));
+        }
+
+        const btnClearOrders = document.getElementById('btn-clear-automated-orders');
+        if (btnClearOrders) {
+          btnClearOrders.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear automated orders history? (Active licenses remain intact)')) {
+              localStorage.removeItem('cfb_automated_orders');
+              this.renderAdminAutomatedOrders();
+            }
           });
         }
 
@@ -8091,25 +8700,166 @@
           }
         });
 
-        if (btnSendWA) {
-          btnSendWA.addEventListener('click', () => {
-            const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
-            const encoded = encodeURIComponent(this.currentOrderMsg);
-            const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
-            window.open(waUrl, '_blank');
+        // Automated Checkout Modal Event Listeners
+        const tabBdPay = document.getElementById('btn-tab-bd-pay');
+        const tabIntlPay = document.getElementById('btn-tab-intl-pay');
+        const panelBdPay = document.getElementById('panel-bd-pay');
+        const panelIntlPay = document.getElementById('panel-intl-pay');
+        const btnCopyBdNum = document.getElementById('btn-copy-bd-number');
+        const btnCopyCrypto = document.getElementById('btn-copy-crypto-addr');
+        const btnVerifyBd = document.getElementById('btn-auto-verify-bd');
+        const btnVerifyIntl = document.getElementById('btn-auto-verify-intl');
+        const btnCopySuccessKey = document.getElementById('btn-copy-success-key');
+        const btnOrderStartGame = document.getElementById('btn-order-start-game');
+        const btnOrderWaSupport = document.getElementById('btn-order-wa-support');
+
+        // Tab Switching
+        if (tabBdPay && tabIntlPay) {
+          tabBdPay.addEventListener('click', () => {
+            tabBdPay.classList.add('active');
+            tabIntlPay.classList.remove('active');
+            if (panelBdPay) panelBdPay.style.display = 'flex';
+            if (panelIntlPay) panelIntlPay.style.display = 'none';
+          });
+          tabIntlPay.addEventListener('click', () => {
+            tabIntlPay.classList.add('active');
+            tabBdPay.classList.remove('active');
+            if (panelIntlPay) panelIntlPay.style.display = 'flex';
+            if (panelBdPay) panelBdPay.style.display = 'none';
           });
         }
 
-        if (btnCopyOrder) {
-          btnCopyOrder.addEventListener('click', () => {
-            navigator.clipboard.writeText(this.currentOrderMsg).then(() => {
-              btnCopyOrder.textContent = '✅ COPIED ORDER MESSAGE!';
+        // Copy bKash/Nagad Number
+        if (btnCopyBdNum) {
+          btnCopyBdNum.addEventListener('click', () => {
+            const num = (document.getElementById('order-bd-phone-number')?.textContent || '01711729858').trim();
+            navigator.clipboard.writeText(num).then(() => {
+              btnCopyBdNum.textContent = 'COPIED! ✓';
+              btnCopyBdNum.style.background = '#10b981';
               setTimeout(() => {
-                btnCopyOrder.textContent = '📋 COPY ORDER MESSAGE (FOR MESSENGER/SMS)';
+                btnCopyBdNum.textContent = '📋 COPY';
+                btnCopyBdNum.style.background = '#00e5ff';
               }, 2000);
-            }).catch(() => {
-              alert('Copied! Please paste in WhatsApp/Messenger.');
             });
+          });
+        }
+
+        // Copy Crypto USDT Address
+        if (btnCopyCrypto) {
+          btnCopyCrypto.addEventListener('click', () => {
+            const addr = (document.getElementById('crypto-trc20-address')?.textContent || '').trim();
+            navigator.clipboard.writeText(addr).then(() => {
+              btnCopyCrypto.textContent = 'COPIED! ✓';
+              btnCopyCrypto.style.background = '#10b981';
+              setTimeout(() => {
+                btnCopyCrypto.textContent = '📋 COPY';
+                btnCopyCrypto.style.background = '#00e5ff';
+              }, 2000);
+            });
+          });
+        }
+
+        // Automated Verification: Bangladeshi Gateway (bKash/Nagad)
+        if (btnVerifyBd) {
+          btnVerifyBd.addEventListener('click', () => {
+            const phoneInput = document.getElementById('auto-pay-sender-phone');
+            const trxInput = document.getElementById('auto-pay-trxid');
+            const alertBox = document.getElementById('auto-pay-alert-bd');
+
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+            const trxId = trxInput ? trxInput.value.trim() : '';
+
+            if (alertBox) alertBox.style.display = 'none';
+
+            // Visual loading state
+            btnVerifyBd.disabled = true;
+            btnVerifyBd.innerHTML = '<span>⏳ VERIFYING PAYMENT & ACTIVATING...</span>';
+
+            setTimeout(() => {
+              btnVerifyBd.disabled = false;
+              btnVerifyBd.innerHTML = '<span>⚡ VERIFY & INSTANT UNLOCK (স্বয়ংক্রিয় আনলক)</span>';
+
+              const res = this.verifyAndActivateAutomatedOrder(phone, trxId, 'BDT');
+              if (!res.success) {
+                if (alertBox) {
+                  alertBox.className = 'order-alert-box order-alert-error';
+                  alertBox.textContent = res.message;
+                  alertBox.style.display = 'block';
+                }
+              } else {
+                if (phoneInput) phoneInput.value = '';
+                if (trxInput) trxInput.value = '';
+              }
+            }, 650);
+          });
+        }
+
+        // Automated Verification: International Gateway
+        if (btnVerifyIntl) {
+          btnVerifyIntl.addEventListener('click', () => {
+            const userInput = document.getElementById('auto-pay-intl-user');
+            const refInput = document.getElementById('auto-pay-intl-ref');
+            const alertBox = document.getElementById('auto-pay-alert-intl');
+
+            const user = userInput ? userInput.value.trim() : '';
+            const ref = refInput ? refInput.value.trim() : '';
+
+            if (alertBox) alertBox.style.display = 'none';
+
+            btnVerifyIntl.disabled = true;
+            btnVerifyIntl.innerHTML = '<span>⏳ VERIFYING REFERENCE...</span>';
+
+            setTimeout(() => {
+              btnVerifyIntl.disabled = false;
+              btnVerifyIntl.innerHTML = '<span>⚡ VERIFY & UNLOCK GLOBAL PASS</span>';
+
+              const res = this.verifyAndActivateAutomatedOrder(user, ref, 'USD');
+              if (!res.success) {
+                if (alertBox) {
+                  alertBox.className = 'order-alert-box order-alert-error';
+                  alertBox.textContent = res.message;
+                  alertBox.style.display = 'block';
+                }
+              } else {
+                if (userInput) userInput.value = '';
+                if (refInput) refInput.value = '';
+              }
+            }, 650);
+          });
+        }
+
+        // Copy Key on Success Card
+        if (btnCopySuccessKey) {
+          btnCopySuccessKey.addEventListener('click', () => {
+            const key = document.getElementById('order-success-key')?.textContent || '';
+            navigator.clipboard.writeText(key).then(() => {
+              btnCopySuccessKey.textContent = '✅ COPIED LICENSE KEY!';
+              setTimeout(() => {
+                btnCopySuccessKey.textContent = '📋 COPY LICENSE KEY';
+              }, 2000);
+            });
+          });
+        }
+
+        // Start Playing Now Button (Closes modal & starts game)
+        if (btnOrderStartGame) {
+          btnOrderStartGame.addEventListener('click', () => {
+            if (orderModal) orderModal.classList.remove('show');
+            const lockModal = document.getElementById('cyber-lock-modal');
+            if (lockModal) lockModal.classList.remove('show');
+            if (this.app && typeof this.app.restartGame === 'function') {
+              this.app.restartGame();
+            }
+          });
+        }
+
+        // WhatsApp Fallback Support
+        if (btnOrderWaSupport) {
+          btnOrderWaSupport.addEventListener('click', () => {
+            const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
+            const encoded = encodeURIComponent(this.currentOrderMsg || 'Hello Tawhid Bhai, I need help with game activation.');
+            const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
+            window.open(waUrl, '_blank');
           });
         }
 
@@ -8152,6 +8902,55 @@
             }
           });
         }
+      }
+
+      renderAdminAutomatedOrders() {
+        const container = document.getElementById('admin-automated-orders-container');
+        const countBadge = document.getElementById('admin-orders-count');
+        if (!container) return;
+
+        const orders = this.getAutomatedOrders();
+        if (countBadge) countBadge.textContent = orders.length;
+
+        if (orders.length === 0) {
+          container.innerHTML = '<div style="color: #94a3b8; font-size: 11px; text-align: center; padding: 20px;">No automated orders received yet. All new automatic purchases will appear here in real-time.</div>';
+          return;
+        }
+
+        container.innerHTML = '';
+        orders.forEach((order, index) => {
+          const item = document.createElement('div');
+          item.className = 'admin-order-item';
+          item.innerHTML = `
+            <div class="admin-order-header">
+              <span class="admin-order-phone">📱 ${order.sender} (${order.gateway})</span>
+              <span class="admin-order-amount">💰 ${order.amount}</span>
+            </div>
+            <div class="admin-order-body">
+              <span><b>TrxID:</b> ${order.trxId}</span>
+              <span style="color: #10b981; font-weight: 800;">🟢 VERIFIED & ACTIVE</span>
+            </div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">
+              <span>📅 ${order.date} | Plan: <b>${order.planName}</b></span>
+            </div>
+            <div style="margin-top: 4px; display: flex; gap: 6px; align-items: center;">
+              <span class="admin-order-key">${order.licenseKey}</span>
+              <button class="order-btn-copy-num btn-copy-order-row-key" data-key="${order.licenseKey}" style="padding: 3px 6px; font-size: 9px; flex-shrink: 0;">📋 COPY KEY</button>
+            </div>
+          `;
+
+          const copyBtn = item.querySelector('.btn-copy-order-row-key');
+          if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+              navigator.clipboard.writeText(order.licenseKey).then(() => {
+                copyBtn.textContent = 'COPIED! ✓';
+                setTimeout(() => { copyBtn.textContent = '📋 COPY KEY'; }, 2000);
+              });
+            });
+          }
+
+          container.appendChild(item);
+        });
       }
 
       renderAdminSubscribers() {
