@@ -4642,17 +4642,17 @@
       <div class="drawer-control-group">
         <label class="drawer-label">
           <span>⏱️ BATTLE DURATION (PACE)</span>
-          <span class="val" id="val-duration-mode">15-18 MIN</span>
+          <span class="val" id="val-duration-mode">4-6 MIN</span>
         </label>
         <select class="drawer-select" id="select-battle-duration">
-          <option value="marathon" selected>👑 Streamer Marathon (15 - 18 Min) [Default]</option>
-          <option value="extended">🏆 Extended Stream (10 - 12 Min)</option>
-          <option value="standard">⏱️ Standard Match (5 - 7 Min)</option>
+          <option value="standard" selected>⏱️ Standard Match (4 - 6 Min) [Default]</option>
           <option value="blitz">⚡ Quick Blitz (2 - 3 Min)</option>
+          <option value="extended">🏆 Extended Stream (8 - 10 Min)</option>
+          <option value="marathon">👑 Streamer Marathon (12 - 15 Min)</option>
           <option value="custom">⚙️ Custom Manual Mode</option>
         </select>
         <div class="drawer-hint" id="hint-battle-duration">
-          ✨ Guaranteed 15+ minutes battle with intelligent Black Hole pacing governor.
+          ✨ Continuous organic action with Cosmic Vortex gravitational suction & Anti-Stall governor.
         </div>
       </div>
 
@@ -6202,25 +6202,27 @@
       speakElimination(countryName) {
         if (this.muted || !this.aiVoiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
         try {
-          if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
-            window.speechSynthesis.cancel();
-          }
           if (this._speakTimeout) {
             clearTimeout(this._speakTimeout);
             this._speakTimeout = null;
           }
-          // Debounce 25ms ensures Chrome/Edge cleanly resets the audio synthesis thread
+          // Clean debounce ensures speech synthesis does not overlap or corrupt
           this._speakTimeout = setTimeout(() => {
             try {
               if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-              const utterance = new SpeechSynthesisUtterance(`${countryName} eliminated!`);
-              utterance.rate = 1.18; // Crisp, fast commentator pace
-              utterance.pitch = 1.0;
-              utterance.volume = 1.0;
-              if (this.preferredVoice) utterance.voice = this.preferredVoice;
-              window.speechSynthesis.speak(utterance);
+              try { window.speechSynthesis.cancel(); } catch(e) {}
+              setTimeout(() => {
+                try {
+                  const utterance = new SpeechSynthesisUtterance(`${countryName} eliminated!`);
+                  utterance.rate = 1.15; // Crisp, fast commentator pace
+                  utterance.pitch = 1.0;
+                  utterance.volume = 1.0;
+                  if (this.preferredVoice) utterance.voice = this.preferredVoice;
+                  window.speechSynthesis.speak(utterance);
+                } catch (err) {}
+              }, 20);
             } catch (err) {}
-          }, 25);
+          }, 35);
         } catch (e) {
           console.warn("SpeechSynthesis speakElimination error:", e);
         }
@@ -6485,12 +6487,12 @@
             clearTimeout(this._speakTimeout);
             this._speakTimeout = null;
           }
-          window.speechSynthesis.cancel();
+          try { window.speechSynthesis.cancel(); } catch(e) {}
           this.pendingVoiceCount = 0;
           setTimeout(() => {
             try {
               if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-              const text = `${countryName} is the Champion! Winner! Comment your country and subscribe for the next battle!`;
+              const text = `${countryName} is the Champion! Winner! Outlasted all nations!`;
               const utterance = new SpeechSynthesisUtterance(text);
               utterance.rate = 1.05;
               utterance.pitch = 1.08;
@@ -6498,7 +6500,7 @@
               if (this.preferredVoice) utterance.voice = this.preferredVoice;
               window.speechSynthesis.speak(utterance);
             } catch (err) {}
-          }, 60);
+          }, 120);
         } catch (e) {
           console.warn("SpeechSynthesis announceWinner error:", e);
         }
@@ -8819,15 +8821,15 @@
         this.arenaRadius = 180;
         this.arenaAngle = 0;
         this.totalSegments = 32;
-        this.gapSegmentCount = 1; // Default 1 segment gap: calibrated single-ball exit for 8-15 min battles!
+        this.gapSegmentCount = 2; // Default 2 segment gap (~68px): allows smooth, unjammed ball exit for all marble sizes
         this.arenaTemplate = 'hole'; // 'hole' = Central Vortex Black Hole (Screenshot mode), 'ring' = Outer Ring Escape
-        this.centerHoleRadius = 26;
-        this.gameSpeed = 0.85;
-        this.baseRotationSpeed = 0.016;
-        this.currentRotationSpeed = 0.016;
-        this.gravityY = 0.38;
-        this.durationMode = 'marathon'; // Guaranteed 15+ Min default!
-        this.targetMatchSeconds = 960; // 16 minutes target (at least 15 min endurance battle)
+        this.centerHoleRadius = 30;
+        this.gameSpeed = 1.00;
+        this.baseRotationSpeed = 0.022;
+        this.currentRotationSpeed = 0.022;
+        this.gravityY = 0.46;
+        this.durationMode = 'standard'; // Smooth, continuous stream pacing by default!
+        this.targetMatchSeconds = 300;
         this.roundStartTime = Date.now();
         this.lastEliminationTime = Date.now();
         this.initialBallCount = 120;
@@ -8952,8 +8954,22 @@
         requestAnimationFrame((t) => this.gameLoop(t));
       }
 
-      // Background Web Worker Ticker: guarantees 100% continuous execution on PC even when minimized!
+      // Multi-Layer Background Engine: guarantees 100% continuous execution on PC even when tab is minimized!
       initBackgroundWorker() {
+        this._lastBgTickTime = Date.now();
+
+        const onTick = () => {
+          if (document.hidden) {
+            const now = Date.now();
+            const elapsed = Math.min(100, Math.max(16, now - (this._lastBgTickTime || now)));
+            this._lastBgTickTime = now;
+            this.runBackgroundPhysicsStep(elapsed);
+          } else {
+            this._lastBgTickTime = Date.now();
+          }
+        };
+
+        // Layer 1: Web Worker Ticker (immune to tab throttling on standard origins)
         try {
           const workerCode = `
             let timer = null;
@@ -8977,27 +8993,73 @@
           this.bgWorker = new Worker(workerUrl);
 
           this.bgWorker.onmessage = (e) => {
-            if (e.data === 'tick' && document.hidden) {
-              this.runBackgroundPhysicsStep();
-            }
+            if (e.data === 'tick') onTick();
           };
 
           this.bgWorker.postMessage('start');
-
-          document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-              this._lastTimestamp = performance.now();
-              this._physicsAccumulator = 0;
-            }
-          });
         } catch (e) {
           console.warn("Background worker setup note:", e);
         }
+
+        // Layer 2: Web Audio Hardware Clock (immune to Chrome sleep when minimized!)
+        try {
+          this.setupAudioBackgroundClock(onTick);
+        } catch (e) {}
+
+        // Layer 3: High-frequency Fallback Interval
+        if (this._bgFallbackInterval) clearInterval(this._bgFallbackInterval);
+        this._bgFallbackInterval = setInterval(onTick, 40);
+
+        // Layer 4: Visibility change & Window focus recovery
+        const onTabResume = () => {
+          this._lastTimestamp = performance.now();
+          this._physicsAccumulator = 0;
+          this._lastBgTickTime = Date.now();
+        };
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) onTabResume();
+        });
+        window.addEventListener('focus', onTabResume);
       }
 
-      runBackgroundPhysicsStep() {
+      setupAudioBackgroundClock(onTick) {
+        const setupClock = () => {
+          try {
+            if (!this.audio || !this.audio.ctx || this._audioClockNode) return;
+            // ScriptProcessorNode runs on the OS audio rendering thread even when minimized
+            const bufferSize = 2048;
+            const node = this.audio.ctx.createScriptProcessor(bufferSize, 1, 1);
+            let lastAudioTick = 0;
+            node.onaudioprocess = () => {
+              const now = performance.now();
+              if (now - lastAudioTick >= 30) {
+                lastAudioTick = now;
+                onTick();
+              }
+            };
+            const silentGain = this.audio.ctx.createGain();
+            silentGain.gain.setValueAtTime(0, this.audio.ctx.currentTime);
+            node.connect(silentGain);
+            silentGain.connect(this.audio.ctx.destination);
+            this._audioClockNode = node;
+          } catch (e) {}
+        };
+
+        if (this.audio && this.audio.ctx) {
+          setupClock();
+        } else if (this.audio) {
+          const origInit = this.audio.init.bind(this.audio);
+          this.audio.init = () => {
+            origInit();
+            setupClock();
+          };
+        }
+      }
+
+      runBackgroundPhysicsStep(elapsedMs = 33.333) {
         if (this.isRoundOver) return;
-        const stepMs = 33.333; // ~30 fps background simulation step
+        const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
+        const stepMs = Math.min(Math.max(16.666, (elapsedMs || 33.333) * simSpeed), 66.666);
         this.Engine.update(this.engine, stepMs);
         this.updateCircularArena(stepMs / 16.666);
         this.checkBallPhysicsAndEliminations(stepMs / 1000);
@@ -9174,8 +9236,8 @@
             this.World.add(this.world, spoke);
           }
 
-          // Center sinkhole radius for event horizon elimination (from reference screenshot)
-          this.centerHoleRadius = 26;
+          // Center sinkhole radius for event horizon elimination (calibrated for 28-36px marbles)
+          this.centerHoleRadius = 30;
 
         } else {
           // --- TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP) ---
@@ -9502,53 +9564,87 @@
           }
         }
 
-        // Safety check: if 1 ball remains, trigger victory immediately
-        if (this.balls.length === 1) {
-          const winner = this.balls[0];
-          this.Body.setVelocity(winner.body, { x: 0, y: -0.5 });
-          this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 30 });
-          this.triggerVictory(winner);
-          return;
-        }
-        if (this.balls.length === 0) {
-          if (this.lastEliminatedCountry) {
+        // Safety check: if 1 ball remains, trigger victory immediately on that ball
+        if (this.balls.length <= 1) {
+          if (this.balls.length === 1) {
+            const winner = this.balls[0];
+            this.Body.setVelocity(winner.body, { x: 0, y: -0.2 });
+            this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 25 });
+            this.triggerVictory(winner);
+          } else if (this.lastEliminatedCountry) {
             this.triggerVictory({ country: this.lastEliminatedCountry });
           }
           return;
         }
 
         // =========================================================================
-        // NATURAL MARATHON PACING: GUARANTEED 15+ MINUTE CHAMPIONSHIP DURATION
+        // DYNAMIC PACING & CONTINUOUS EXIT ENGINE (ZERO STALLING GUARANTEED)
         // =========================================================================
         const now = Date.now();
-        const initialCount = Math.max(2, this.initialBallCount || this.selectedBatchSize || 120);
-        const targetTotalSec = this.targetMatchSeconds || 960; // 960s = 16 minutes default (guarantees >= 15 min battle)
-        const minPaceIntervalSec = targetTotalSec / initialCount;
         const timeSinceLastElimSec = (now - (this.lastEliminationTime || this.roundStartTime || now)) / 1000;
-        
-        // Final 1v1 Duel Control: Enforce AT LEAST 15 seconds of intense duel fighting between the 2 balls!
+
+        // Dynamic pace intervals calibrated to duration presets
+        let paceFactor = 1.0;
+        if (this.durationMode === 'blitz') paceFactor = 0.50;
+        else if (this.durationMode === 'standard') paceFactor = 0.90;
+        else if (this.durationMode === 'extended') paceFactor = 1.50;
+        else if (this.durationMode === 'marathon') paceFactor = 2.10;
+
+        let baseIntervalSec = 3.5 * paceFactor;
+        if (this.balls.length > 50) baseIntervalSec = 2.0 * paceFactor;
+        else if (this.balls.length <= 5) baseIntervalSec = 4.8 * paceFactor;
+
+        // Final 1v1 Duel: Enforce 12-14 seconds of intense duel fighting between the 2 balls!
         let isDuelReadyToEliminate = false;
         if (this.balls.length === 2) {
           if (!this.duelStartTime) {
             this.duelStartTime = now;
           }
           const duelElapsedSec = (now - this.duelStartTime) / 1000;
-          if (duelElapsedSec >= 15) {
+          if (duelElapsedSec >= 13) {
             isDuelReadyToEliminate = true;
           }
         }
 
-        // Ready to absorb next nation when pacing interval has elapsed or after 15s final duel
+        // Ready to absorb next nation when pacing interval has elapsed or after duel
         const isReadyToEliminate = (this.balls.length === 2)
           ? isDuelReadyToEliminate
-          : (timeSinceLastElimSec >= minPaceIntervalSec);
+          : (timeSinceLastElimSec >= baseIntervalSec);
+
+        // Anti-Stall Auto-Agitator: If no ball has exited for 14s, provide kinetic impulse so balls never get stuck
+        if (!this.isDuelMode && timeSinceLastElimSec > 14 && (now - (this._lastAgitateTime || 0)) > 3000) {
+          this._lastAgitateTime = now;
+          for (const b of this.balls) {
+            const adx = (Math.random() - 0.5) * 5.0;
+            const ady = -(3.2 + Math.random() * 4.2);
+            this.Body.setVelocity(b.body, { x: b.body.velocity.x * 0.7 + adx, y: ady });
+          }
+        }
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
-          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (AUTHENTIC TUMBLER PHYSICS)
+          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (NATURAL COSMIC GRAVITATIONAL PULL)
           // =========================================================================
-          const holeR = this.centerHoleRadius || 26;
+          const holeR = this.centerHoleRadius || 30;
 
+          // 1. Apply Natural Cosmic Vortex Gravitational Attraction (swirls balls toward center hole)
+          for (const b of this.balls) {
+            const pos = b.body.position;
+            const dx = this.arenaCenter.x - pos.x;
+            const dy = this.arenaCenter.y - pos.y;
+            const dist = Math.hypot(dx, dy) || 1;
+
+            if (dist > holeR + 4) {
+              const pullMag = 0.00040 * b.body.mass;
+              const swirlMag = 0.00022 * b.body.mass;
+              this.Body.applyForce(b.body, pos, {
+                x: (dx / dist) * pullMag - (dy / dist) * swirlMag,
+                y: (dy / dist) * pullMag + (dx / dist) * swirlMag
+              });
+            }
+          }
+
+          // 2. Check Eliminations & Dynamic Event Horizon
           for (let i = this.balls.length - 1; i >= 0; i--) {
             const b = this.balls[i];
             const pos = b.body.position;
@@ -9557,7 +9653,7 @@
             const distFromCenter = Math.hypot(dx, dy);
 
             // Shield Rescue Powerup
-            if (b.hasShield && distFromCenter <= holeR + 8) {
+            if (b.hasShield && distFromCenter <= holeR + 10) {
               b.hasShield = false;
               this.audio.playShieldBreak();
               this.particles.spawnShieldShatter(pos.x, pos.y);
@@ -9570,8 +9666,8 @@
               continue;
             }
 
-            // Central Sinkhole Elimination: Absorbs when ready for next scheduled nation!
-            if (!b.escaped && isReadyToEliminate && distFromCenter <= holeR + 1) {
+            // Central Sinkhole Elimination: Absorbs when ready
+            if (!b.escaped && isReadyToEliminate && distFromCenter <= holeR + 6) {
               b.escaped = true;
               this.balls.splice(i, 1);
               this.World.remove(this.world, b.body);
@@ -9579,7 +9675,7 @@
 
               // Sound & AI Voice Commentary
               this.audio.playEliminate();
-              this.audio.speakElimination(b.country.name); // AI voice speaks "[Country] eliminated!"
+              this.audio.speakElimination(b.country.name);
               this.particles.spawnHoleSuction(this.arenaCenter.x, this.arenaCenter.y, b.country.color);
               this.pushKillfeed(b.country);
               this.addEliminatedTrayFlag(b.country);
@@ -9588,23 +9684,11 @@
 
               this.lastEliminationTime = Date.now();
 
-              // Gentle physical air displacement puff prevents trailing balls from bunching into the hole
-              for (const other of this.balls) {
-                const odx = other.body.position.x - this.arenaCenter.x;
-                const ody = other.body.position.y - this.arenaCenter.y;
-                const odist = Math.hypot(odx, ody) || 1;
-                if (odist < 50) {
-                  this.Body.applyForce(other.body, other.body.position, {
-                    x: (odx / odist) * 0.0012 * other.body.mass,
-                    y: (ody / odist) * 0.0012 * other.body.mass
-                  });
-                }
-              }
-
+              // If exactly 1 ball remains, THAT BALL IS THE CHAMPION!
               if (this.balls.length === 1) {
                 const winner = this.balls[0];
-                this.Body.setVelocity(winner.body, { x: 0, y: -0.5 });
-                this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 30 });
+                this.Body.setVelocity(winner.body, { x: 0, y: -0.2 });
+                this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 25 });
                 this.triggerVictory(winner);
                 return;
               }
@@ -9612,15 +9696,29 @@
                 this.triggerVictory({ country: this.lastEliminatedCountry || COUNTRIES_DB[0] });
                 return;
               }
-              continue;
+
+              // Gentle physical air displacement puff prevents trailing balls from clumping
+              for (const other of this.balls) {
+                const odx = other.body.position.x - this.arenaCenter.x;
+                const ody = other.body.position.y - this.arenaCenter.y;
+                const odist = Math.hypot(odx, ody) || 1;
+                if (odist < 55) {
+                  this.Body.applyForce(other.body, other.body.position, {
+                    x: (odx / odist) * 0.0014 * other.body.mass,
+                    y: (ody / odist) * 0.0014 * other.body.mass
+                  });
+                }
+              }
+
+              // STRICT CHAMPIONSHIP RULE: AT MOST ONE elimination per interval!
+              break;
             }
 
-            // Between elimination intervals / during 15s duel: marbles roll and deflect away dynamically
+            // During pacing interval or 14s duel: marbles deflect dynamically off event horizon
             if (!isReadyToEliminate && distFromCenter <= holeR + 4) {
-              const curSpd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
               const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
-              const repelAngle = Math.atan2(-dy, -dx);
-              const repelPwr = this.balls.length === 2 ? 6.5 : 3.5;
+              const repelAngle = distFromCenter > 0.1 ? Math.atan2(-dy, -dx) : Math.random() * Math.PI * 2;
+              const repelPwr = this.balls.length === 2 ? 7.5 : 3.8;
               this.Body.setVelocity(b.body, {
                 x: Math.cos(repelAngle) * repelPwr + Math.cos(tangAngle) * 3.0,
                 y: Math.sin(repelAngle) * repelPwr + Math.sin(tangAngle) * 3.0
@@ -9633,7 +9731,7 @@
           }
         } else {
           // =========================================================================
-          // TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP)
+          // TEMPLATE 1: OUTER RING ESCAPE (NATURAL GRAVITATIONAL OPENING EXIT)
           // =========================================================================
           for (let i = this.balls.length - 1; i >= 0; i--) {
             const b = this.balls[i];
@@ -9656,15 +9754,16 @@
               continue;
             }
 
-            // Outer gap elimination when ready
-            if (!b.escaped && isReadyToEliminate && distFromCenter > this.arenaRadius + 28) {
+            // Outer gap elimination when ready:
+            // Ball's center has cleanly cleared the perimeter opening
+            if (!b.escaped && isReadyToEliminate && distFromCenter > this.arenaRadius + 10) {
               b.escaped = true;
               this.balls.splice(i, 1);
               this.eliminatedBalls.push(b);
               this.lastEliminatedCountry = b.country;
 
               this.audio.playEliminate();
-              this.audio.speakElimination(b.country.name); // AI voice speaks "[Country] eliminated!"
+              this.audio.speakElimination(b.country.name);
               this.particles.spawnElimination(pos.x, pos.y, b.country.color);
               this.pushKillfeed(b.country);
               this.addEliminatedTrayFlag(b.country);
@@ -9675,8 +9774,8 @@
 
               if (this.balls.length === 1) {
                 const winner = this.balls[0];
-                this.Body.setVelocity(winner.body, { x: 0, y: -0.5 });
-                this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 30 });
+                this.Body.setVelocity(winner.body, { x: 0, y: -0.2 });
+                this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 25 });
                 this.triggerVictory(winner);
                 return;
               }
@@ -9684,12 +9783,15 @@
                 this.triggerVictory({ country: this.lastEliminatedCountry || COUNTRIES_DB[0] });
                 return;
               }
-            } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius + 6) {
-              // Soft perimeter bounce keeping ball inside during pacing interval and 15s duel
+
+              // STRICT CHAMPIONSHIP RULE: AT MOST ONE elimination per interval!
+              break;
+            } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius + 8) {
+              // During 14s duel or rapid consecutive exit: gentle boundary deflection
               const dx = this.arenaCenter.x - pos.x;
               const dy = this.arenaCenter.y - pos.y;
               const d = Math.hypot(dx, dy) || 1;
-              const bouncePwr = this.balls.length === 2 ? 8.0 : 6.5;
+              const bouncePwr = this.balls.length === 2 ? 8.5 : 5.5;
               this.Body.setVelocity(b.body, {
                 x: (dx / d) * bouncePwr,
                 y: (dy / d) * bouncePwr
@@ -9728,10 +9830,27 @@
         }
         this.roundWinner = winnerBall.country;
 
-        // Keep the winner ball safely floating inside the arena so the circle is NEVER empty!
+        // Guaranteed: Keep the winner ball safely floating inside the arena so the circle is NEVER empty!
         if (this.balls && this.balls.length > 0 && this.balls[0] && this.balls[0].body) {
           this.Body.setVelocity(this.balls[0].body, { x: 0, y: -0.2 });
           this.Body.setPosition(this.balls[0].body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 25 });
+        } else {
+          // Absolute fallback safeguard so circle can NEVER be empty
+          const marbleRadius = 16;
+          const body = this.Bodies.circle(this.arenaCenter.x, this.arenaCenter.y - 25, marbleRadius, {
+            isStatic: true,
+            label: 'ball'
+          });
+          this.World.add(this.world, body);
+          const flagCanvas = this.flagEngine.getFlagCanvas(this.roundWinner, marbleRadius * 4);
+          this.balls = [{
+            body,
+            country: this.roundWinner,
+            radius: marbleRadius,
+            flagCanvas,
+            escaped: false,
+            hasShield: false
+          }];
         }
 
         this.recordWin(this.roundWinner.code);
@@ -10020,7 +10139,7 @@
           ctx.save();
           const cx = this.arenaCenter.x;
           const cy = this.arenaCenter.y;
-          const holeR = this.centerHoleRadius || 26;
+          const holeR = this.centerHoleRadius || 30;
 
           // A. Outer Gravitational Accretion Disk / Purple Atmospheric Halo
           const haloGrad = ctx.createRadialGradient(cx, cy, holeR, cx, cy, holeR + 18);
@@ -10307,6 +10426,19 @@
           ctx.strokeText(ball.country.code, 0, r * 0.45);
           ctx.fillStyle = '#ffffff';
           ctx.fillText(ball.country.code, 0, r * 0.45);
+        }
+
+        // Celebratory Winner Crown & Radiant Laurel Aura (Circle is never empty, winner marble proudly celebrated!)
+        if (this.isRoundOver && this.roundWinner && ball.country && ball.country.code === this.roundWinner.code) {
+          ctx.strokeStyle = '#fbbf24';
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.arc(0, 0, r + 4, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.font = `${Math.max(16, r * 1.1)}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText('👑', 0, -r - 4);
         }
 
         ctx.restore();
@@ -10669,11 +10801,11 @@
               this.durationMode = cfg.durationMode;
               this.applyDurationPreset(this.durationMode);
             } else {
-              this.applyDurationPreset('marathon');
+              this.applyDurationPreset('standard');
             }
           } else {
-            // Default preset is marathon (15-18 min) for grand endurance experience
-            this.applyDurationPreset('marathon');
+            // Default preset is standard (4-6 min) for smooth continuous stream action
+            this.applyDurationPreset('standard');
           }
         } catch (e) {
           console.warn('Failed to load streamer config', e);
@@ -10701,37 +10833,37 @@
       applyDurationPreset(mode) {
         this.durationMode = mode;
         if (mode === 'marathon') {
-          // 15 - 18 Minutes (Guaranteed 15+ Min endurance stream pace)
-          this.targetMatchSeconds = 960;
-          this.gapSegmentCount = 1;
-          this.gameSpeed = 0.85;
-          this.baseRotationSpeed = 0.016;
-          this.currentRotationSpeed = 0.016;
-          this.gravityY = 0.40;
-        } else if (mode === 'extended') {
-          // 10 - 12 Minutes
-          this.targetMatchSeconds = 660;
-          this.gapSegmentCount = 1;
+          // 12 - 15 Minutes (Epic Streamer Marathon)
+          this.targetMatchSeconds = 780;
+          this.gapSegmentCount = 2;
           this.gameSpeed = 0.90;
           this.baseRotationSpeed = 0.018;
           this.currentRotationSpeed = 0.018;
-          this.gravityY = 0.45;
+          this.gravityY = 0.42;
+        } else if (mode === 'extended') {
+          // 8 - 10 Minutes
+          this.targetMatchSeconds = 540;
+          this.gapSegmentCount = 2;
+          this.gameSpeed = 0.95;
+          this.baseRotationSpeed = 0.020;
+          this.currentRotationSpeed = 0.020;
+          this.gravityY = 0.44;
         } else if (mode === 'standard') {
-          // 5 - 7 Minutes
-          this.targetMatchSeconds = 360;
+          // 4 - 6 Minutes (Balanced stream pace)
+          this.targetMatchSeconds = 300;
           this.gapSegmentCount = 2;
           this.gameSpeed = 1.00;
           this.baseRotationSpeed = 0.022;
           this.currentRotationSpeed = 0.022;
-          this.gravityY = 0.50;
+          this.gravityY = 0.46;
         } else if (mode === 'blitz') {
-          // 2 - 3 Minutes
-          this.targetMatchSeconds = 150;
+          // 2 - 3 Minutes (Quick Blitz Action)
+          this.targetMatchSeconds = 140;
           this.gapSegmentCount = 3;
           this.gameSpeed = 1.15;
           this.baseRotationSpeed = 0.025;
           this.currentRotationSpeed = 0.025;
-          this.gravityY = 0.55;
+          this.gravityY = 0.50;
         }
         if (this.world) {
           this.world.gravity.y = this.gravityY;
