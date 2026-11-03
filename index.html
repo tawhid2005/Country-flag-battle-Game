@@ -9068,12 +9068,19 @@
         this.checkBallPhysicsAndEliminations(stepMs / 1000);
 
         if (this.roundStartTime) {
+          const totalDuration = this.targetMatchSeconds || 300;
           const currentElapsedSec = Math.floor((Date.now() - this.roundStartTime) / 1000);
-          if (currentElapsedSec !== this.matchElapsedSec) {
+          const remainingSec = Math.max(0, totalDuration - currentElapsedSec);
+          if (remainingSec !== this.matchCountdownSec) {
+            this.matchCountdownSec = remainingSec;
             this.matchElapsedSec = currentElapsedSec;
-            const m = String(Math.floor(currentElapsedSec / 60)).padStart(2, '0');
-            const s = String(currentElapsedSec % 60).padStart(2, '0');
+            const m = String(Math.floor(remainingSec / 60)).padStart(2, '0');
+            const s = String(remainingSec % 60).padStart(2, '0');
             if (this.dom.matchTimer) this.dom.matchTimer.textContent = `${m}:${s}`;
+            if (this.dom.matchTimerBadge) {
+              if (remainingSec <= 15) this.dom.matchTimerBadge.classList.add('danger');
+              else this.dom.matchTimerBadge.classList.remove('danger');
+            }
           }
         }
       }
@@ -9367,7 +9374,13 @@
         this.audio.stopHeartbeatLoop();
         this.roundStartTime = Date.now();
         this.matchElapsedSec = 0;
-        if (this.dom.matchTimer) this.dom.matchTimer.textContent = '00:00';
+        this.matchCountdownSec = this.targetMatchSeconds || 300;
+        if (this.dom.matchTimer) {
+          const m = String(Math.floor(this.matchCountdownSec / 60)).padStart(2, '0');
+          const s = String(this.matchCountdownSec % 60).padStart(2, '0');
+          this.dom.matchTimer.textContent = `${m}:${s}`;
+        }
+        if (this.dom.matchTimerBadge) this.dom.matchTimerBadge.classList.remove('danger');
 
         if (this._victoryTimer) {
           clearInterval(this._victoryTimer);
@@ -9691,52 +9704,52 @@
         }
 
         // =========================================================================
-        // DYNAMIC PACING & CONTINUOUS EXIT ENGINE (ZERO STALLING GUARANTEED)
+        // PRECISION ADAPTIVE PACING DIRECTOR (GUARANTEED FINISH ON TARGET DURATION)
         // =========================================================================
         const now = Date.now();
+        const totalDuration = this.targetMatchSeconds || 300;
+        const elapsedSec = (now - this.roundStartTime) / 1000;
+        const remainingSec = Math.max(0, totalDuration - elapsedSec);
+        const aliveCount = this.balls.length;
         const timeSinceLastElimSec = (now - (this.lastEliminationTime || this.roundStartTime || now)) / 1000;
 
-        let paceFactor = 1.0;
-        if (this.durationMode === 'blitz') paceFactor = 0.50;
-        else if (this.durationMode === 'standard') paceFactor = 0.85;
-        else if (this.durationMode === 'extended') paceFactor = 1.45;
-        else if (this.durationMode === 'marathon') paceFactor = 2.00;
-
-        let baseIntervalSec = 3.2 * paceFactor;
-        if (this.balls.length > 50) baseIntervalSec = 1.8 * paceFactor;
-        else if (this.balls.length <= 5) baseIntervalSec = 4.5 * paceFactor;
-
-        // Final 1v1 Duel: Enforce 12-14 seconds of intense duel fighting between the 2 balls!
+        // 1. FINAL 1V1 DUEL SHOWDOWN (EXACTLY 2 NATIONS LEFT)
         let isDuelReadyToEliminate = false;
-        if (this.balls.length === 2) {
+        if (aliveCount === 2) {
           if (!this.duelStartTime) {
             this.duelStartTime = now;
           }
           const duelElapsedSec = (now - this.duelStartTime) / 1000;
-          if (duelElapsedSec >= 13) {
+
+          // Duel concludes when countdown hits 00:01 OR after 13-14s of fierce fighting!
+          if (remainingSec <= 1 || duelElapsedSec >= 13.5) {
             isDuelReadyToEliminate = true;
           }
         }
 
-        // Ready to absorb next nation when pacing interval has elapsed or after duel
-        const isReadyToEliminate = (this.balls.length === 2)
-          ? isDuelReadyToEliminate
-          : (timeSinceLastElimSec >= baseIntervalSec);
+        // 2. MAIN BATTLE PACING (> 2 NATIONS LEFT)
+        // Dynamically adapts intervals so the round concludes smoothly on the target duration!
+        const duelReserveSec = 14;
+        const targetTimeBeforeDuel = Math.max(2, (totalDuration - duelReserveSec) - elapsedSec);
+        const eliminationsNeeded = Math.max(1, aliveCount - 2);
+        const idealPaceSec = targetTimeBeforeDuel / eliminationsNeeded;
 
-        // Sync Gate Sensor in Ring Mode (Dynamic Physical Forcefield Barrier)
+        // Adaptive interval: speeds up if behind schedule, relaxes if ahead of schedule
+        let currentIntervalSec = Math.max(0.60, Math.min(6.5, idealPaceSec));
+        if (aliveCount > 60) currentIntervalSec = Math.min(currentIntervalSec, 2.2);
+
+        const isReadyToEliminate = (aliveCount === 2)
+          ? isDuelReadyToEliminate
+          : (timeSinceLastElimSec >= currentIntervalSec);
+
+        // Sync Dynamic Gate in Ring Mode
         if (this.arenaGate) {
           this.arenaGate.isSensor = isReadyToEliminate;
         }
 
-        // Anti-Stall Auto-Agitator: If no ball has exited for 11s, provide kinetic impulse so balls never freeze
-        if (!this.isDuelMode && timeSinceLastElimSec > 11 && (now - (this._lastAgitateTime || 0)) > 2600) {
-          this._lastAgitateTime = now;
-          for (const b of this.balls) {
-            const adx = (Math.random() - 0.5) * 5.5;
-            const ady = -(3.5 + Math.random() * 4.2);
-            this.Body.setVelocity(b.body, { x: b.body.velocity.x * 0.75 + adx, y: ady });
-          }
-        }
+        // Active Kinetic Guidance: if an elimination is scheduled and overdue,
+        // guide the nearest ball smoothly into the hazard exit so the schedule never stalls!
+        const isOverdue = !this.isDuelMode && isReadyToEliminate && (timeSinceLastElimSec >= currentIntervalSec + 0.35);
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
@@ -9744,7 +9757,7 @@
           // =========================================================================
           const holeR = this.centerHoleRadius || 30;
 
-          // 1. Powerful Cosmic Vortex Gravitational Whirlpool (pulls and swirls all marbles toward center)
+          // Continuous Gravitational Whirlpool towards Center Singularity
           for (const b of this.balls) {
             const pos = b.body.position;
             const dx = this.arenaCenter.x - pos.x;
@@ -9762,7 +9775,29 @@
             }
           }
 
-          // 2. Check Eliminations & Event Horizon Absorption
+          // Active Overdue Guidance: pull nearest ball towards singularity
+          if (isOverdue && this.balls.length > 2) {
+            let closestBall = null;
+            let closestDist = Infinity;
+            for (const b of this.balls) {
+              const d = Math.hypot(this.arenaCenter.x - b.body.position.x, this.arenaCenter.y - b.body.position.y);
+              if (d < closestDist && !b.hasShield) {
+                closestDist = d;
+                closestBall = b;
+              }
+            }
+            if (closestBall) {
+              const cdx = this.arenaCenter.x - closestBall.body.position.x;
+              const cdy = this.arenaCenter.y - closestBall.body.position.y;
+              const cd = Math.hypot(cdx, cdy) || 1;
+              this.Body.setVelocity(closestBall.body, {
+                x: (cdx / cd) * 6.5,
+                y: (cdy / cd) * 6.5
+              });
+            }
+          }
+
+          // Check Eliminations & Event Horizon Absorption
           for (let i = this.balls.length - 1; i >= 0; i--) {
             const b = this.balls[i];
             const pos = b.body.position;
@@ -9789,10 +9824,9 @@
             if (!b.escaped && isReadyToEliminate && distFromCenter <= absorbRadius) {
               b.escaped = true;
               this.balls.splice(i, 1);
-              this.World.remove(this.world, b.body); // Immediately remove from Matter world!
+              this.World.remove(this.world, b.body); // Immediately remove from physics!
               this.lastEliminatedCountry = b.country;
 
-              // Cinematic Drop Animation
               if (!this.eliminatedAnims) this.eliminatedAnims = [];
               this.eliminatedAnims.push({
                 x: pos.x,
@@ -9807,7 +9841,6 @@
                 trail: []
               });
 
-              // Sound & AI Voice Commentary
               this.audio.playEliminate();
               this.audio.speakElimination(b.country.name);
               this.particles.spawnHoleSuction(this.arenaCenter.x, this.arenaCenter.y, b.country.color);
@@ -9830,24 +9863,10 @@
                 return;
               }
 
-              // Gentle air displacement puff prevents trailing balls from stacking
-              for (const other of this.balls) {
-                const odx = other.body.position.x - this.arenaCenter.x;
-                const ody = other.body.position.y - this.arenaCenter.y;
-                const odist = Math.hypot(odx, ody) || 1;
-                if (odist < 55) {
-                  this.Body.applyForce(other.body, other.body.position, {
-                    x: (odx / odist) * 0.0014 * other.body.mass,
-                    y: (ody / odist) * 0.0014 * other.body.mass
-                  });
-                }
-              }
-
-              // STRICT CHAMPIONSHIP RULE: AT MOST ONE elimination per interval!
               break;
             }
 
-            // Deflect dynamically during pacing interval or 13s duel
+            // Deflect dynamically during pacing intervals or 13s duel
             if (!isReadyToEliminate && distFromCenter <= holeR + 4) {
               const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
               const repelAngle = distFromCenter > 0.1 ? Math.atan2(-dy, -dx) : Math.random() * Math.PI * 2;
@@ -9887,15 +9906,13 @@
               continue;
             }
 
-            // Outer gap elimination when ready:
-            // Ball's center has cleanly cleared the perimeter opening
+            // Outer gap exit elimination
             if (!b.escaped && isReadyToEliminate && distFromCenter > this.arenaRadius + 6) {
               b.escaped = true;
               this.balls.splice(i, 1);
-              this.World.remove(this.world, b.body); // Immediately remove from Matter physics! Never floats outside!
+              this.World.remove(this.world, b.body); // Immediately remove from Matter world!
               this.lastEliminatedCountry = b.country;
 
-              // Cinematic Drop Animation with particle smoke tail toward tray
               if (!this.eliminatedAnims) this.eliminatedAnims = [];
               this.eliminatedAnims.push({
                 x: pos.x,
@@ -9920,7 +9937,7 @@
 
               this.lastEliminationTime = Date.now();
 
-              // Immediately re-close the gate until next interval
+              // Close gate immediately until next interval
               if (this.arenaGate) {
                 this.arenaGate.isSensor = false;
               }
@@ -9937,10 +9954,8 @@
                 return;
               }
 
-              // STRICT CHAMPIONSHIP RULE: AT MOST ONE elimination per interval!
               break;
             } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius - 2) {
-              // Safety boundary bounce if ball touches perimeter when gate is closed
               const dx = this.arenaCenter.x - pos.x;
               const dy = this.arenaCenter.y - pos.y;
               const d = Math.hypot(dx, dy) || 1;
@@ -9956,7 +9971,6 @@
             }
           }
         }
-
         // Update Cinematic Drop Animations
         if (this.eliminatedAnims && this.eliminatedAnims.length > 0) {
           for (let j = this.eliminatedAnims.length - 1; j >= 0; j--) {
@@ -10707,16 +10721,39 @@
         ctx.fillStyle = this.getGlintGradient(ctx, r);
         ctx.fill();
 
-        // High-contrast clean 3-letter code inside bottom half of marble when <= 25 alive or in duel
+        // Broadcast-Quality 1v1 Final Duel Pulsing Aura
+        if (this.isDuelMode && this.balls.length === 2) {
+          const duelPulse = 0.5 + Math.sin(Date.now() * 0.008) * 0.5;
+          ctx.save();
+          ctx.shadowColor = '#c084fc';
+          ctx.shadowBlur = 14 + duelPulse * 10;
+          ctx.strokeStyle = '#f5d0fe';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(0, 0, r + 4, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // High-Contrast Broadcast Country Code Pill (Ultra-Legible on any flag)
         if (this.balls.length <= 25 || this.isDuelMode) {
-          ctx.font = `900 ${Math.max(8, r * 0.58)}px var(--font-display)`;
+          const fontSize = Math.max(8.5, Math.round(r * 0.60));
+          ctx.font = `900 ${fontSize}px var(--font-display)`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.lineWidth = 2.5;
+
+          // Semi-transparent dark pill background behind country code
+          const codeWidth = ctx.measureText(ball.country.code).width + 6;
+          ctx.fillStyle = 'rgba(2, 6, 18, 0.78)';
+          ctx.beginPath();
+          ctx.roundRect(-codeWidth / 2, r * 0.18, codeWidth, fontSize + 4, 4);
+          ctx.fill();
+
+          ctx.lineWidth = 2.4;
           ctx.strokeStyle = '#000000';
-          ctx.strokeText(ball.country.code, 0, r * 0.45);
+          ctx.strokeText(ball.country.code, 0, r * 0.46);
           ctx.fillStyle = '#ffffff';
-          ctx.fillText(ball.country.code, 0, r * 0.45);
+          ctx.fillText(ball.country.code, 0, r * 0.46);
         }
 
         // Celebratory Winner Crown & Radiant Laurel Aura (Circle is never empty, winner marble proudly celebrated!)
@@ -10788,14 +10825,21 @@
             this._physicsAccumulator = 0; // Drop stale accumulation if device was heavily bogged down
           }
 
-          // Live Match Duration Timer update
+          // Live Match Duration Timer update: Tournament Countdown Clock
           if (!this.isRoundOver && this.roundStartTime) {
+            const totalDuration = this.targetMatchSeconds || 300;
             const currentElapsedSec = Math.floor((Date.now() - this.roundStartTime) / 1000);
-            if (currentElapsedSec !== this.matchElapsedSec) {
+            const remainingSec = Math.max(0, totalDuration - currentElapsedSec);
+            if (remainingSec !== this.matchCountdownSec) {
+              this.matchCountdownSec = remainingSec;
               this.matchElapsedSec = currentElapsedSec;
-              const m = String(Math.floor(currentElapsedSec / 60)).padStart(2, '0');
-              const s = String(currentElapsedSec % 60).padStart(2, '0');
+              const m = String(Math.floor(remainingSec / 60)).padStart(2, '0');
+              const s = String(remainingSec % 60).padStart(2, '0');
               if (this.dom.matchTimer) this.dom.matchTimer.textContent = `${m}:${s}`;
+              if (this.dom.matchTimerBadge) {
+                if (remainingSec <= 15) this.dom.matchTimerBadge.classList.add('danger');
+                else this.dom.matchTimerBadge.classList.remove('danger');
+              }
             }
           }
 
