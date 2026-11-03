@@ -8814,9 +8814,12 @@
         this.world = null;
         this.balls = [];
         this.eliminatedBalls = [];
+        this.eliminatedAnims = [];
         this.arenaSegments = [];
         this.arenaFins = [];
+        this.arenaGate = null;
         this.centerBumper = null;
+        this.bumperHitTime = 0;
         this.arenaCenter = { x: 270, y: 405 }; // Lifted up to give ample clearance above ALL ELIMINATED box!
         this.arenaRadius = 180;
         this.arenaAngle = 0;
@@ -9113,6 +9116,7 @@
               const ballBody = bodyA.label === 'centerBumper' ? bodyB : bodyA;
               if (ballBody.label === 'ball') {
                 this.audio.playBumperHit();
+                this.bumperHitTime = Date.now();
                 const pos = ballBody.position;
                 const dx = pos.x - this.arenaCenter.x;
                 const dy = pos.y - this.arenaCenter.y;
@@ -9177,7 +9181,7 @@
         }
       }
 
-      // --- 6. ARENA CREATION & PHYSICS DYNAMICS ---
+      // --- 6. ARENA CREATION & PHYSICS DYNAMICS (AAA ESPORTS STADIUM) ---
       createCircularArena() {
         for (const seg of this.arenaSegments) {
           this.World.remove(this.world, seg);
@@ -9188,17 +9192,23 @@
         if (this.centerBumper) {
           this.World.remove(this.world, this.centerBumper);
         }
+        if (this.arenaGate) {
+          this.World.remove(this.world, this.arenaGate);
+        }
 
         this.arenaSegments = [];
         this.arenaFins = [];
         this.centerBumper = null;
+        this.arenaGate = null;
 
         const segAngle = (Math.PI * 2) / this.totalSegments;
         const segLen = (2 * Math.PI * this.arenaRadius) / this.totalSegments + 6;
         const segThick = 36; // Thick solid collision hull prevents any marble tunneling
 
         if (this.arenaTemplate === 'hole') {
-          // --- TEMPLATE 2: CENTER VORTEX HOLE (BLACK HOLE ARENA FROM SCREENSHOT) ---
+          // =========================================================================
+          // TEMPLATE 2: CENTER VORTEX HOLE (BLACK HOLE ARENA FROM REFERENCE SCREENSHOT)
+          // =========================================================================
           // 1. Closed Outer Wall (All 32 segments solid, 0 gap - marbles cannot escape outside)
           for (let i = 0; i < this.totalSegments; i++) {
             const seg = this.Bodies.rectangle(0, 0, segLen, segThick, {
@@ -9215,7 +9225,6 @@
 
           // 2. 6 Rotating Radial Kinetic Spokes (Lavender/Purple blades from screenshot)
           // Extending from r=60px outwards to r=162px (length 102px, width 11px)
-          // Leaves an open orbital moat (r=26px to 60px) around the center sinkhole
           const spokeCount = 6;
           const spokeLen = 102;
           const spokeWidth = 11;
@@ -9236,12 +9245,15 @@
             this.World.add(this.world, spoke);
           }
 
-          // Center sinkhole radius for event horizon elimination (calibrated for 28-36px marbles)
+          // Center sinkhole radius for event horizon elimination
           this.centerHoleRadius = 30;
 
         } else {
-          // --- TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP) ---
-          for (let i = 0; i < this.totalSegments - this.gapSegmentCount; i++) {
+          // =========================================================================
+          // TEMPLATE 1: OUTER RING ESCAPE (ESPORTS TURBINE & TUMBLER LIFTER BLADES)
+          // =========================================================================
+          const activeSegments = this.totalSegments - this.gapSegmentCount;
+          for (let i = 0; i < activeSegments; i++) {
             const seg = this.Bodies.rectangle(0, 0, segLen, segThick, {
               isStatic: true,
               restitution: this.ballRestitution,
@@ -9254,17 +9266,38 @@
             this.World.add(this.world, seg);
           }
 
-          // 4 Kinetic Paddles / Fins
-          for (let f = 0; f < 4; f++) {
-            const fin = this.Bodies.rectangle(0, 0, 42, 12, {
+          // Dynamic Gate Segment at the Exit Gap (Protects 1v1 duel & enforces interval exits)
+          const gapMidAngle = (activeSegments + this.gapSegmentCount / 2) * segAngle;
+          const gateLen = segLen * this.gapSegmentCount + 4;
+          this.arenaGate = this.Bodies.rectangle(0, 0, gateLen, segThick, {
+            isStatic: true,
+            isSensor: true, // Controlled dynamically: false = closed solid shield, true = open
+            restitution: this.ballRestitution,
+            friction: 0.005,
+            render: { visible: false },
+            label: 'arenaGate'
+          });
+          this.arenaGate.baseAngle = gapMidAngle;
+          this.World.add(this.world, this.arenaGate);
+
+          // 4 Pro Tumbler Lifter Blades (Reach down to r=160px to scoop marbles continuously!)
+          // Sweeps marbles from the bottom of the wheel up to 10 o'clock & 2 o'clock!
+          const finCount = 4;
+          const finLen = 104;
+          const finWidth = 11;
+          const finDist = 108;
+          for (let f = 0; f < finCount; f++) {
+            const fin = this.Bodies.rectangle(0, 0, finLen, finWidth, {
               isStatic: true,
-              restitution: 1.05,
+              restitution: 0.98,
               friction: 0.005,
               render: { visible: false },
               label: 'arenaFin'
             });
-            fin.finBaseAngle = f * (Math.PI / 2);
-            fin.finDist = this.arenaRadius * 0.58;
+            fin.finBaseAngle = f * (Math.PI * 2 / finCount);
+            fin.finDist = finDist;
+            fin.finLen = finLen;
+            fin.finWidth = finWidth;
             this.arenaFins.push(fin);
             this.World.add(this.world, fin);
           }
@@ -9272,7 +9305,7 @@
           // Central Super-Bouncy Neon Pinball Bumper
           this.centerBumper = this.Bodies.circle(this.arenaCenter.x, this.arenaCenter.y, 24, {
             isStatic: true,
-            restitution: 1.05,
+            restitution: 1.15,
             friction: 0.001,
             label: 'centerBumper'
           });
@@ -9292,6 +9325,15 @@
           this.Body.setAngle(seg, currentAng + Math.PI / 2);
         }
 
+        // Dynamic Gate Segment (Template 1)
+        if (this.arenaGate) {
+          const gAng = this.arenaGate.baseAngle + this.arenaAngle;
+          const gx = this.arenaCenter.x + Math.cos(gAng) * this.arenaRadius;
+          const gy = this.arenaCenter.y + Math.sin(gAng) * this.arenaRadius;
+          this.Body.setPosition(this.arenaGate, { x: gx, y: gy });
+          this.Body.setAngle(this.arenaGate, gAng + Math.PI / 2);
+        }
+
         if (this.arenaTemplate === 'hole') {
           // Rotate 6 radial spokes synchronously around the central sinkhole
           for (const spoke of this.arenaFins) {
@@ -9302,13 +9344,13 @@
             this.Body.setAngle(spoke, sAng);
           }
         } else {
-          // Rotate 4 kinetic paddles
+          // Rotate 4 scooper blades synchronously with the outer turbine
           for (const fin of this.arenaFins) {
-            const fAng = fin.finBaseAngle + (this.arenaAngle * 1.6);
+            const fAng = fin.finBaseAngle + this.arenaAngle;
             const fx = this.arenaCenter.x + Math.cos(fAng) * fin.finDist;
             const fy = this.arenaCenter.y + Math.sin(fAng) * fin.finDist;
             this.Body.setPosition(fin, { x: fx, y: fy });
-            this.Body.setAngle(fin, fAng + Math.PI / 3);
+            this.Body.setAngle(fin, fAng);
           }
         }
       }
@@ -9357,6 +9399,7 @@
 
         this.balls = [];
         this.eliminatedBalls = [];
+        this.eliminatedAnims = [];
         this.powerups = [];
         this.particles.clear();
 
@@ -9592,7 +9635,7 @@
           }
         }
 
-        // Anti-Spoke-Camping: If a ball is riding or idle on a moving spoke, kick it off smoothly
+        // Anti-Spoke-Camping: If a ball is riding or idle on a moving blade, nudge it off smoothly
         for (const b of this.balls) {
           const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
           if (spd < 1.2) {
@@ -9609,17 +9652,26 @@
           }
         }
 
-        // Anti-clumping impulse (keeps marbles active and moving)
-        this.antiClumpTimer += dtSec;
-        if (this.antiClumpTimer > 0.65) {
-          this.antiClumpTimer = 0;
-          for (const b of this.balls) {
+        // Continuous Tumbler Agitator (TikTok/YouTube Marble Race Style)
+        // Eliminates bottom clumping: gently rolls marbles along the bottom wall in the direction
+        // of rotation directly onto oncoming scooper blades, lifting them to the top!
+        const bottomY = this.arenaCenter.y + (this.arenaRadius * 0.45);
+        const rotDir = this.currentRotationSpeed >= 0 ? 1 : -1;
+        let bottomPileCount = 0;
+        for (const b of this.balls) {
+          if (b.body.position.y > bottomY) bottomPileCount++;
+        }
+
+        for (const b of this.balls) {
+          const pos = b.body.position;
+          if (pos.y > bottomY) {
             const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
-            if (spd < 1.8 && b.body.position.y > this.arenaCenter.y + 35) {
-              const horizontalDir = b.body.position.x < this.arenaCenter.x ? 1 : -1;
+            if (spd < 2.0) {
+              const rollX = rotDir * (1.6 + Math.random() * 2.2);
+              const liftY = -(2.2 + Math.random() * (bottomPileCount > 5 ? 4.2 : 2.0));
               this.Body.setVelocity(b.body, {
-                x: horizontalDir * (3.8 + Math.random() * 4.0),
-                y: -(4.8 + Math.random() * 4.5)
+                x: b.body.velocity.x * 0.85 + rollX,
+                y: liftY
               });
             }
           }
@@ -9644,7 +9696,6 @@
         const now = Date.now();
         const timeSinceLastElimSec = (now - (this.lastEliminationTime || this.roundStartTime || now)) / 1000;
 
-        // Dynamic pace intervals calibrated to duration presets
         let paceFactor = 1.0;
         if (this.durationMode === 'blitz') paceFactor = 0.50;
         else if (this.durationMode === 'standard') paceFactor = 0.85;
@@ -9672,6 +9723,11 @@
           ? isDuelReadyToEliminate
           : (timeSinceLastElimSec >= baseIntervalSec);
 
+        // Sync Gate Sensor in Ring Mode (Dynamic Physical Forcefield Barrier)
+        if (this.arenaGate) {
+          this.arenaGate.isSensor = isReadyToEliminate;
+        }
+
         // Anti-Stall Auto-Agitator: If no ball has exited for 11s, provide kinetic impulse so balls never freeze
         if (!this.isDuelMode && timeSinceLastElimSec > 11 && (now - (this._lastAgitateTime || 0)) > 2600) {
           this._lastAgitateTime = now;
@@ -9696,7 +9752,6 @@
             const dist = Math.hypot(dx, dy) || 1;
 
             if (dist > holeR + 2) {
-              // Upward buoyancy counteracting gravity when below center + strong orbital swirl
               const pullForce = 0.00065 * b.body.mass;
               const swirlForce = 0.00038 * b.body.mass;
               const antiGravityLift = (pos.y > this.arenaCenter.y) ? (0.00048 * b.body.mass) : 0;
@@ -9734,8 +9789,23 @@
             if (!b.escaped && isReadyToEliminate && distFromCenter <= absorbRadius) {
               b.escaped = true;
               this.balls.splice(i, 1);
-              this.World.remove(this.world, b.body);
+              this.World.remove(this.world, b.body); // Immediately remove from Matter world!
               this.lastEliminatedCountry = b.country;
+
+              // Cinematic Drop Animation
+              if (!this.eliminatedAnims) this.eliminatedAnims = [];
+              this.eliminatedAnims.push({
+                x: pos.x,
+                y: pos.y,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: 2.5,
+                radius: b.radius,
+                country: b.country,
+                flagCanvas: b.flagCanvas,
+                alpha: 1.0,
+                scale: 1.0,
+                trail: []
+              });
 
               // Sound & AI Voice Commentary
               this.audio.playEliminate();
@@ -9748,7 +9818,6 @@
 
               this.lastEliminationTime = Date.now();
 
-              // If exactly 1 ball remains, THAT BALL IS THE CHAMPION!
               if (this.balls.length === 1) {
                 const winner = this.balls[0];
                 this.Body.setVelocity(winner.body, { x: 0, y: -0.2 });
@@ -9761,7 +9830,7 @@
                 return;
               }
 
-              // Gentle physical air displacement puff prevents trailing balls from clumping
+              // Gentle air displacement puff prevents trailing balls from stacking
               for (const other of this.balls) {
                 const odx = other.body.position.x - this.arenaCenter.x;
                 const ody = other.body.position.y - this.arenaCenter.y;
@@ -9778,7 +9847,7 @@
               break;
             }
 
-            // During pacing interval or 13s duel: marbles deflect dynamically off event horizon
+            // Deflect dynamically during pacing interval or 13s duel
             if (!isReadyToEliminate && distFromCenter <= holeR + 4) {
               const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
               const repelAngle = distFromCenter > 0.1 ? Math.atan2(-dy, -dx) : Math.random() * Math.PI * 2;
@@ -9820,11 +9889,26 @@
 
             // Outer gap elimination when ready:
             // Ball's center has cleanly cleared the perimeter opening
-            if (!b.escaped && isReadyToEliminate && distFromCenter > this.arenaRadius + 10) {
+            if (!b.escaped && isReadyToEliminate && distFromCenter > this.arenaRadius + 6) {
               b.escaped = true;
               this.balls.splice(i, 1);
-              this.eliminatedBalls.push(b);
+              this.World.remove(this.world, b.body); // Immediately remove from Matter physics! Never floats outside!
               this.lastEliminatedCountry = b.country;
+
+              // Cinematic Drop Animation with particle smoke tail toward tray
+              if (!this.eliminatedAnims) this.eliminatedAnims = [];
+              this.eliminatedAnims.push({
+                x: pos.x,
+                y: pos.y,
+                vx: (pos.x - this.arenaCenter.x) * 0.05 + (Math.random() - 0.5) * 1.5,
+                vy: 2.0,
+                radius: b.radius,
+                country: b.country,
+                flagCanvas: b.flagCanvas,
+                alpha: 1.0,
+                scale: 1.0,
+                trail: []
+              });
 
               this.audio.playEliminate();
               this.audio.speakElimination(b.country.name);
@@ -9835,6 +9919,11 @@
               this.updateAliveHUD();
 
               this.lastEliminationTime = Date.now();
+
+              // Immediately re-close the gate until next interval
+              if (this.arenaGate) {
+                this.arenaGate.isSensor = false;
+              }
 
               if (this.balls.length === 1) {
                 const winner = this.balls[0];
@@ -9850,8 +9939,8 @@
 
               // STRICT CHAMPIONSHIP RULE: AT MOST ONE elimination per interval!
               break;
-            } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius + 8) {
-              // During 13s duel or rapid consecutive exit: gentle boundary deflection
+            } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius - 2) {
+              // Safety boundary bounce if ball touches perimeter when gate is closed
               const dx = this.arenaCenter.x - pos.x;
               const dy = this.arenaCenter.y - pos.y;
               const d = Math.hypot(dx, dy) || 1;
@@ -9868,11 +9957,20 @@
           }
         }
 
-        for (let j = this.eliminatedBalls.length - 1; j >= 0; j--) {
-          const eb = this.eliminatedBalls[j];
-          if (eb.body.position.y > this.V_HEIGHT + 60 || eb.body.position.x < -60 || eb.body.position.x > this.V_WIDTH + 60) {
-            this.World.remove(this.world, eb.body);
-            this.eliminatedBalls.splice(j, 1);
+        // Update Cinematic Drop Animations
+        if (this.eliminatedAnims && this.eliminatedAnims.length > 0) {
+          for (let j = this.eliminatedAnims.length - 1; j >= 0; j--) {
+            const ea = this.eliminatedAnims[j];
+            ea.vy += 0.38;
+            ea.x += ea.vx;
+            ea.y += ea.vy;
+            ea.alpha -= 0.022;
+            ea.scale = Math.max(0.25, ea.scale - 0.015);
+            if (ea.trail.length < 5) ea.trail.unshift({ x: ea.x, y: ea.y });
+            else { ea.trail.pop(); ea.trail.unshift({ x: ea.x, y: ea.y }); }
+            if (ea.alpha <= 0 || ea.y > this.V_HEIGHT + 30) {
+              this.eliminatedAnims.splice(j, 1);
+            }
           }
         }
       }
@@ -10088,13 +10186,15 @@
         ctx.save();
         const theme = this.currentTheme || ARENA_THEMES[0];
         const isMobile = this.isMobileDevice;
+        const cx = this.arenaCenter.x;
+        const cy = this.arenaCenter.y;
+        const rArena = this.arenaRadius;
+        const total = this.totalSegments;
+        const segAngle = (Math.PI * 2) / total;
 
-        // Stadium Floor Ambient Depth Gradient (Cached per theme - 0 GC overhead)
+        // 1. Stadium Floor Ambient Depth Gradient
         if (!this._stadiumGrad || this._stadiumGradTheme !== theme.name) {
-          const radGrad = ctx.createRadialGradient(
-            this.arenaCenter.x, this.arenaCenter.y, 10,
-            this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius
-          );
+          const radGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, rArena);
           radGrad.addColorStop(0, 'rgba(255, 255, 255, 0.04)');
           radGrad.addColorStop(0.7, theme.inner);
           radGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
@@ -10103,80 +10203,78 @@
         }
 
         ctx.beginPath();
-        ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius, 0, Math.PI * 2);
+        ctx.arc(cx, cy, rArena, 0, Math.PI * 2);
         ctx.fillStyle = this._stadiumGrad;
         ctx.fill();
 
-        // Stadium Floor Laser Markings (Ring mode only)
-        if (this.arenaTemplate === 'ring') {
-          ctx.lineWidth = 1.2;
-          ctx.strokeStyle = theme.floorLine;
-          ctx.setLineDash([4, 6]);
+        // 2. High-Tech Radial Sectors & Radar Dashed Markings
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = theme.floorLine;
+        ctx.setLineDash([4, 6]);
+        ctx.beginPath();
+        ctx.arc(cx, cy, rArena * 0.38, 0, Math.PI * 2);
+        ctx.arc(cx, cy, rArena * 0.72, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
 
-          ctx.beginPath();
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.38, 0, Math.PI * 2);
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 0.72, 0, Math.PI * 2);
-          ctx.stroke();
-
-          ctx.setLineDash([]);
-          const notchLen = 14;
-          const r72 = this.arenaRadius * 0.72;
-          const notches = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
-          ctx.beginPath();
-          for (const ang of notches) {
-            const nx = this.arenaCenter.x + Math.cos(ang) * r72;
-            const ny = this.arenaCenter.y + Math.sin(ang) * r72;
-            ctx.moveTo(nx - Math.cos(ang) * notchLen, ny - Math.sin(ang) * notchLen);
-            ctx.lineTo(nx + Math.cos(ang) * notchLen, ny + Math.sin(ang) * notchLen);
-          }
-          ctx.stroke();
+        // Radial crosshair notches
+        const notchLen = 14;
+        const r72 = rArena * 0.72;
+        const notches = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
+        ctx.beginPath();
+        for (const ang of notches) {
+          const nx = cx + Math.cos(ang) * r72;
+          const ny = cy + Math.sin(ang) * r72;
+          ctx.moveTo(nx - Math.cos(ang) * notchLen, ny - Math.sin(ang) * notchLen);
+          ctx.lineTo(nx + Math.cos(ang) * notchLen, ny + Math.sin(ang) * notchLen);
         }
+        ctx.stroke();
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
-          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (FROM USER REFERENCE SCREENSHOT)
+          // TEMPLATE 2: DUAL-RAIL CYBER TURBINE & 6 PURPLE LASER SPOKES (FROM SCREENSHOT)
           // =========================================================================
 
-          // 1. Closed Outer Neon Cyan Ring (All 32 segments solid with high-gloss glow)
-          ctx.save();
-          if (isMobile) {
-            ctx.strokeStyle = '#06b6d4';
-            ctx.lineWidth = 13;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-            for (const seg of this.arenaSegments) {
-              const v = seg.vertices;
-              ctx.moveTo(v[0].x, v[0].y);
-              for (let k = 1; k < v.length; k++) ctx.lineTo(v[k].x, v[k].y);
-              ctx.closePath();
-            }
-            ctx.stroke();
+          // A. Multi-Layer Cyber Turbine Outer Wheel (Segmented Cogs with Neon Glow)
+          const R_in = rArena - 14;
+          const R_out = rArena + 14;
 
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 7;
-            ctx.stroke();
-          } else {
-            ctx.shadowColor = '#06b6d4';
-            ctx.shadowBlur = 18;
-            ctx.strokeStyle = '#38bdf8';
-            ctx.fillStyle = '#0284c7';
-            ctx.lineWidth = 8;
-            ctx.lineCap = 'round';
+          // Segmented Turbine Cogs (Dual-Rail Gear Teeth)
+          for (let i = 0; i < total; i++) {
+            const a1 = this.arenaAngle + (i * segAngle) + 0.018;
+            const a2 = this.arenaAngle + ((i + 1) * segAngle) - 0.018;
+
             ctx.beginPath();
-            for (const seg of this.arenaSegments) {
-              const v = seg.vertices;
-              ctx.moveTo(v[0].x, v[0].y);
-              for (let k = 1; k < v.length; k++) ctx.lineTo(v[k].x, v[k].y);
-              ctx.closePath();
-            }
+            ctx.arc(cx, cy, R_out, a1, a2, false);
+            ctx.arc(cx, cy, R_in, a2, a1, true);
+            ctx.closePath();
+
+            ctx.fillStyle = 'rgba(6, 182, 212, 0.22)';
             ctx.fill();
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 1.6;
             ctx.stroke();
-            ctx.shadowBlur = 0;
           }
+
+          // Outer & Inner Neon Glowing Rails
+          ctx.save();
+          if (!isMobile) {
+            ctx.shadowColor = '#00e5ff';
+            ctx.shadowBlur = 18;
+          }
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 3.5;
+
+          ctx.beginPath();
+          ctx.arc(cx, cy, R_out, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(cx, cy, R_in, 0, Math.PI * 2);
+          ctx.stroke();
           ctx.restore();
 
-          // 2. 6 Rotating Radial Kinetic Spokes (Lavender/Purple blades from screenshot)
+          // B. 6 Glowing Purple/Lavender Laser Blades (Authentic from Reference Screenshot)
           ctx.save();
           for (const spoke of this.arenaFins) {
             const v = spoke.vertices;
@@ -10189,23 +10287,32 @@
               ctx.shadowColor = '#c084fc';
               ctx.shadowBlur = 18;
             }
-            ctx.fillStyle = '#9333ea';
+            ctx.fillStyle = '#581c87';
             ctx.fill();
 
-            // Inner core lavender edge
-            ctx.strokeStyle = '#f5d0fe';
+            // Vibrant Neon Purple Edge
+            ctx.strokeStyle = '#c084fc';
             ctx.lineWidth = 2.4;
+            ctx.stroke();
+
+            // Electric Lavender Core Highlight Line
+            const spX = spoke.position.x;
+            const spY = spoke.position.y;
+            const spAng = spoke.angle;
+            const halfL = (spoke.spokeLen || 102) / 2 - 4;
+            ctx.strokeStyle = '#f5d0fe';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(spX - Math.cos(spAng) * halfL, spY - Math.sin(spAng) * halfL);
+            ctx.lineTo(spX + Math.cos(spAng) * halfL, spY + Math.sin(spAng) * halfL);
             ctx.stroke();
           }
           ctx.restore();
 
-          // 3. Central Glowing Black Hole (Deep Cosmic Void from Reference Screenshot)
-          ctx.save();
-          const cx = this.arenaCenter.x;
-          const cy = this.arenaCenter.y;
+          // C. Center Cosmic Black Hole (From Screenshot)
           const holeR = this.centerHoleRadius || 30;
 
-          // A. Outer Gravitational Accretion Disk / Purple Atmospheric Halo
+          // Accretion Disk / Purple Halo
           const haloGrad = ctx.createRadialGradient(cx, cy, holeR, cx, cy, holeR + 18);
           haloGrad.addColorStop(0, 'rgba(236, 72, 153, 0.35)');
           haloGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.14)');
@@ -10215,13 +10322,13 @@
           ctx.arc(cx, cy, holeR + 18, 0, Math.PI * 2);
           ctx.fill();
 
-          // B. Deep Pitch-Black Circular Sinkhole
+          // Deep Pitch-Black Sinkhole
           ctx.fillStyle = '#010103';
           ctx.beginPath();
           ctx.arc(cx, cy, holeR, 0, Math.PI * 2);
           ctx.fill();
 
-          // C. Inner Depth Radial Singularity Gradient
+          // Inner Singularity Gradient
           const holeGrad = ctx.createRadialGradient(cx, cy, 1, cx, cy, holeR - 1);
           holeGrad.addColorStop(0, '#000000');
           holeGrad.addColorStop(0.65, '#05020c');
@@ -10232,7 +10339,7 @@
           ctx.arc(cx, cy, holeR - 1, 0, Math.PI * 2);
           ctx.fill();
 
-          // D. Swirling Galaxy Core Spiral Arms
+          // Swirling Galaxy Core Spiral Arms
           const spin = this.arenaAngle * 3.0;
           ctx.lineWidth = 1.4;
           for (let a = 0; a < 3; a++) {
@@ -10243,7 +10350,7 @@
             ctx.stroke();
           }
 
-          // E. Intense Glowing Neon Pink/Magenta Event Horizon Ring (Exactly like user screenshot)
+          // Glowing Neon Pink/Magenta Event Horizon Ring
           ctx.save();
           if (!isMobile) {
             ctx.shadowColor = '#ff007f';
@@ -10255,7 +10362,7 @@
           ctx.arc(cx, cy, holeR, 0, Math.PI * 2);
           ctx.stroke();
 
-          // Crisp electric magenta inner highlight
+          // Inner Magenta Highlight
           ctx.strokeStyle = '#f472b6';
           ctx.lineWidth = 1.2;
           ctx.beginPath();
@@ -10263,132 +10370,201 @@
           ctx.stroke();
           ctx.restore();
 
-          ctx.restore();
-
         } else {
           // =========================================================================
-          // TEMPLATE 1: OUTER RING ESCAPE (CLASSIC WHEEL GAP)
+          // TEMPLATE 1: OUTER RING ESCAPE (PRO SEGMENTED TURBINE & HOLOGRAPHIC GATE)
           // =========================================================================
+          const activeCount = total - this.gapSegmentCount;
+          const R_in = rArena - 14;
+          const R_out = rArena + 14;
 
-          // Outer Boundary Segments with Refined Neon Glow
-          if (isMobile) {
-            ctx.strokeStyle = theme.glow;
-            ctx.lineWidth = 14;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+          const gapStartAng = this.arenaAngle + (activeCount * segAngle);
+          const gapEndAng = this.arenaAngle + (total * segAngle);
+
+          // A. Dual-Rail Segmented Cyber Turbine Teeth
+          for (let i = 0; i < activeCount; i++) {
+            const a1 = this.arenaAngle + (i * segAngle) + 0.018;
+            const a2 = this.arenaAngle + ((i + 1) * segAngle) - 0.018;
+
             ctx.beginPath();
-            for (const seg of this.arenaSegments) {
-              const v = seg.vertices;
-              ctx.moveTo(v[0].x, v[0].y);
-              for (let k = 1; k < v.length; k++) {
-                ctx.lineTo(v[k].x, v[k].y);
-              }
-              ctx.closePath();
-            }
-            ctx.stroke();
+            ctx.arc(cx, cy, R_out, a1, a2, false);
+            ctx.arc(cx, cy, R_in, a2, a1, true);
+            ctx.closePath();
 
-            ctx.strokeStyle = theme.border;
-            ctx.fillStyle = theme.border;
-            ctx.lineWidth = 8;
-            ctx.stroke();
+            ctx.fillStyle = 'rgba(6, 182, 212, 0.22)';
             ctx.fill();
-          } else {
+            ctx.strokeStyle = theme.border;
+            ctx.lineWidth = 1.6;
+            ctx.stroke();
+          }
+
+          // Outer & Inner Neon Rails (Spanning active arc)
+          ctx.save();
+          if (!isMobile) {
             ctx.shadowColor = theme.glow;
-            ctx.shadowBlur = 14;
-            ctx.strokeStyle = theme.border;
-            ctx.fillStyle = theme.border;
-            ctx.lineWidth = 8;
-            ctx.lineCap = 'round';
+            ctx.shadowBlur = 18;
+          }
+          ctx.strokeStyle = theme.border;
+          ctx.lineWidth = 3.5;
 
+          ctx.beginPath();
+          ctx.arc(cx, cy, R_out, gapEndAng, gapStartAng, false);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(cx, cy, R_in, gapEndAng, gapStartAng, false);
+          ctx.stroke();
+          ctx.restore();
+
+          // Radial Gap Hazard End Caps
+          const drawEndCap = (ang) => {
+            const x1 = cx + Math.cos(ang) * R_in;
+            const y1 = cy + Math.sin(ang) * R_in;
+            const x2 = cx + Math.cos(ang) * R_out;
+            const y2 = cy + Math.sin(ang) * R_out;
             ctx.beginPath();
-            for (const seg of this.arenaSegments) {
-              const v = seg.vertices;
-              ctx.moveTo(v[0].x, v[0].y);
-              for (let k = 1; k < v.length; k++) {
-                ctx.lineTo(v[k].x, v[k].y);
-              }
-              ctx.closePath();
-            }
-            ctx.fill();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 3.5;
             ctx.stroke();
-            ctx.shadowBlur = 0;
+
+            // Hazard warning LED
+            ctx.beginPath();
+            ctx.arc((x1 + x2) / 2, (y1 + y2) / 2, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffedd5';
+            ctx.fill();
+          };
+          drawEndCap(gapStartAng);
+          drawEndCap(gapEndAng);
+
+          // B. Holographic Energy Gate Barrier Across the Gap
+          const gateIsOpen = this.arenaGate ? this.arenaGate.isSensor : false;
+          ctx.save();
+          if (!gateIsOpen) {
+            // Closed: High-tech Electric Blue Forcefield Shield
+            if (!isMobile) {
+              ctx.shadowColor = '#00e5ff';
+              ctx.shadowBlur = 14;
+            }
+            ctx.strokeStyle = 'rgba(0, 229, 255, 0.85)';
+            ctx.lineWidth = 2.4;
+            ctx.setLineDash([3, 4]);
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, rArena, gapStartAng, gapEndAng, false);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Shield Core Arc
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.arc(cx, cy, rArena, gapStartAng + 0.05, gapEndAng - 0.05, false);
+            ctx.stroke();
+          } else {
+            // Open: Flashing Warning Red Hazard Exit Portal
+            if (!isMobile) {
+              ctx.shadowColor = '#f43f5e';
+              ctx.shadowBlur = 18;
+            }
+            ctx.strokeStyle = 'rgba(244, 63, 94, 0.95)';
+            ctx.lineWidth = 3.2;
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, rArena, gapStartAng, gapEndAng, false);
+            ctx.stroke();
+
+            // Animated Exit Chevrons
+            const gapMid = gapStartAng + (gapEndAng - gapStartAng) / 2;
+            const exX = cx + Math.cos(gapMid) * (rArena + 18);
+            const exY = cy + Math.sin(gapMid) * (rArena + 18);
+            ctx.fillStyle = '#f43f5e';
+            ctx.beginPath();
+            ctx.arc(exX, exY, 5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+
+          // C. 4 Sleek Cybernetic Scooper Blades (Dual-Tone Neon Tumbler Flippers)
+          ctx.save();
+          for (const fin of this.arenaFins) {
+            const v = fin.vertices;
+            ctx.beginPath();
+            ctx.moveTo(v[0].x, v[0].y);
+            for (let k = 1; k < v.length; k++) ctx.lineTo(v[k].x, v[k].y);
+            ctx.closePath();
+
+            if (!isMobile) {
+              ctx.shadowColor = theme.border;
+              ctx.shadowBlur = 14;
+            }
+            ctx.fillStyle = '#0f172a';
+            ctx.fill();
+
+            // Neon Border
+            ctx.strokeStyle = theme.border;
+            ctx.lineWidth = 2.2;
+            ctx.stroke();
+
+            // Inner Core Laser Stripe
+            const fX = fin.position.x;
+            const fY = fin.position.y;
+            const fAng = fin.angle;
+            const halfL = (fin.finLen || 104) / 2 - 4;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(fX - Math.cos(fAng) * halfL, fY - Math.sin(fAng) * halfL);
+            ctx.lineTo(fX + Math.cos(fAng) * halfL, fY + Math.sin(fAng) * halfL);
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          // D. Multi-Tier Arcade Pinball Bumper with Hit Flash
+          const bumperPulse = Math.max(0, 1 - (Date.now() - (this.bumperHitTime || 0)) / 250);
+          const curR = 24 + bumperPulse * 6;
+
+          // Dynamic Hit Shockwave Ripple
+          if (bumperPulse > 0.05) {
+            ctx.save();
+            ctx.strokeStyle = `rgba(0, 229, 255, ${bumperPulse * 0.8})`;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(cx, cy, curR + (1 - bumperPulse) * 22, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
           }
 
-          // Translucent Holographic Kinetic Flippers
-          if (isMobile) {
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            ctx.beginPath();
-            for (const fin of this.arenaFins) {
-              const v = fin.vertices;
-              ctx.moveTo(v[0].x, v[0].y);
-              for (let k = 1; k < v.length; k++) {
-                ctx.lineTo(v[k].x, v[k].y);
-              }
-              ctx.closePath();
-            }
-            ctx.fill();
-          } else {
-            ctx.shadowColor = theme.border;
-            ctx.shadowBlur = 12;
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            ctx.beginPath();
-            for (const fin of this.arenaFins) {
-              const v = fin.vertices;
-              ctx.moveTo(v[0].x, v[0].y);
-              for (let k = 1; k < v.length; k++) {
-                ctx.lineTo(v[k].x, v[k].y);
-              }
-              ctx.closePath();
-            }
-            ctx.fill();
-            ctx.shadowBlur = 0;
-          }
-
-          // Central Super-Bouncy Neon Pinball Bumper
-          if (isMobile) {
-            ctx.fillStyle = theme.glow;
-            ctx.beginPath();
-            ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 29, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = theme.bumper;
-            ctx.beginPath();
-            ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
+          // Outer Chrome Housing Bevel
+          ctx.save();
+          if (!isMobile) {
             ctx.shadowColor = theme.bumper;
-            ctx.shadowBlur = 20;
-            ctx.fillStyle = theme.bumper;
-            ctx.beginPath();
-            ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 24, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            ctx.shadowBlur = 16 + bumperPulse * 16;
           }
-
-          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2.4;
+          ctx.fillStyle = theme.bumper;
           ctx.beginPath();
-          ctx.arc(this.arenaCenter.x, this.arenaCenter.y, 14, 0, Math.PI * 2);
+          ctx.arc(cx, cy, curR, 0, Math.PI * 2);
           ctx.fill();
+          ctx.stroke();
 
-          // Exit Hazard Gate
-          const exitAngle = this.arenaAngle + ((this.totalSegments - this.gapSegmentCount / 2) * (Math.PI * 2 / this.totalSegments));
-          const exitX = this.arenaCenter.x + Math.cos(exitAngle) * (this.arenaRadius + 14);
-          const exitY = this.arenaCenter.y + Math.sin(exitAngle) * (this.arenaRadius + 14);
-
-          if (isMobile) {
-            ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
-            ctx.beginPath();
-            ctx.arc(exitX, exitY, 11, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
-            ctx.shadowColor = '#f43f5e';
-            ctx.shadowBlur = 16;
-          }
-          ctx.fillStyle = '#f43f5e';
+          // Brushed Titanium Inner Dome
+          ctx.fillStyle = '#0b132b';
           ctx.beginPath();
-          ctx.arc(exitX, exitY, 6, 0, Math.PI * 2);
+          ctx.arc(cx, cy, curR * 0.62, 0, Math.PI * 2);
           ctx.fill();
-          ctx.shadowBlur = 0;
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Central Illuminated Star / Emblem
+          ctx.fillStyle = bumperPulse > 0.2 ? '#ffffff' : '#00e5ff';
+          ctx.beginPath();
+          ctx.arc(cx, cy, curR * 0.28, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
         }
 
         ctx.restore();
@@ -10430,6 +10606,56 @@
             ctx.fillText('💣', x, y + 1);
           }
         }
+        ctx.restore();
+      }
+
+      // Cinematic Drop Animation into ALL ELIMINATED Tray
+      drawEliminatedAnim(ctx, anim) {
+        if (!anim || anim.alpha <= 0.01) return;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, anim.alpha));
+        ctx.translate(anim.x, anim.y);
+        ctx.scale(anim.scale, anim.scale);
+
+        const r = anim.radius;
+
+        // Particle Smoke Drop Trail
+        if (anim.trail && anim.trail.length > 1) {
+          ctx.save();
+          for (let t = 0; t < anim.trail.length; t++) {
+            const p = anim.trail[t];
+            const pAlpha = (1 - t / anim.trail.length) * 0.35 * anim.alpha;
+            ctx.fillStyle = anim.country.color || '#38bdf8';
+            ctx.globalAlpha = pAlpha;
+            ctx.beginPath();
+            ctx.arc(p.x - anim.x, p.y - anim.y, r * (1 - t / anim.trail.length * 0.5), 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        // Ambient Shadow
+        ctx.beginPath();
+        ctx.arc(0, 2.4, r + 0.6, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(244, 63, 94, 0.45)';
+        ctx.fill();
+
+        // High-Res Flag
+        ctx.drawImage(anim.flagCanvas, -r, -r, r * 2, r * 2);
+
+        // Bevel
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.lineWidth = 2.0;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+
+        // 3D Glass Crescent
+        ctx.beginPath();
+        ctx.arc(0, 0, r - 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = this.getGlintGradient(ctx, r);
+        ctx.fill();
+
         ctx.restore();
       }
 
@@ -10598,8 +10824,10 @@
           this.drawArena(this.ctx);
           this.drawPowerups(this.ctx);
 
-          for (const ball of this.eliminatedBalls) {
-            this.drawBall(this.ctx, ball);
+          if (this.eliminatedAnims) {
+            for (const ea of this.eliminatedAnims) {
+              this.drawEliminatedAnim(this.ctx, ea);
+            }
           }
 
           for (const ball of this.balls) {
@@ -10618,7 +10846,20 @@
 
       drawBackgroundGrid(ctx) {
         ctx.save();
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.03)';
+
+        // 1. Dramatic Stadium Overhead Spotlight Cone (from Reference Screenshot)
+        const spotGrad = ctx.createRadialGradient(
+          this.arenaCenter.x, this.arenaCenter.y - 150, 15,
+          this.arenaCenter.x, this.arenaCenter.y, this.arenaRadius * 1.55
+        );
+        spotGrad.addColorStop(0, 'rgba(56, 189, 248, 0.14)');
+        spotGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.04)');
+        spotGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = spotGrad;
+        ctx.fillRect(0, 0, this.V_WIDTH, this.V_HEIGHT);
+
+        // 2. High-Tech Precision Grid Lines
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.035)';
         ctx.lineWidth = 1;
         const gridSize = 40;
         ctx.beginPath();
@@ -10631,6 +10872,7 @@
           ctx.lineTo(this.V_WIDTH, y);
         }
         ctx.stroke();
+
         ctx.restore();
       }
 
