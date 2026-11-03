@@ -6202,16 +6202,25 @@
       speakElimination(countryName) {
         if (this.muted || !this.aiVoiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
         try {
-          if (window.speechSynthesis.paused) {
-            window.speechSynthesis.resume();
+          if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+            window.speechSynthesis.cancel();
           }
-          const text = `${countryName} eliminated!`;
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.rate = 1.1; // Snappy commentator pace
-          utterance.pitch = 1.0;
-          utterance.volume = 1.0;
-          if (this.preferredVoice) utterance.voice = this.preferredVoice;
-          window.speechSynthesis.speak(utterance);
+          if (this._speakTimeout) {
+            clearTimeout(this._speakTimeout);
+            this._speakTimeout = null;
+          }
+          // Debounce 25ms ensures Chrome/Edge cleanly resets the audio synthesis thread
+          this._speakTimeout = setTimeout(() => {
+            try {
+              if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+              const utterance = new SpeechSynthesisUtterance(`${countryName} eliminated!`);
+              utterance.rate = 1.18; // Crisp, fast commentator pace
+              utterance.pitch = 1.0;
+              utterance.volume = 1.0;
+              if (this.preferredVoice) utterance.voice = this.preferredVoice;
+              window.speechSynthesis.speak(utterance);
+            } catch (err) {}
+          }, 25);
         } catch (e) {
           console.warn("SpeechSynthesis speakElimination error:", e);
         }
@@ -6470,19 +6479,28 @@
       }
 
       announceWinner(countryName) {
-        if (this.muted || !this.aiVoiceEnabled || !window.speechSynthesis) return;
+        if (this.muted || !this.aiVoiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
         try {
+          if (this._speakTimeout) {
+            clearTimeout(this._speakTimeout);
+            this._speakTimeout = null;
+          }
           window.speechSynthesis.cancel();
           this.pendingVoiceCount = 0;
-          const text = `${countryName} is the Champion! Winner! Comment your country and subscribe for the next battle!`;
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.rate = 1.05;
-          utterance.pitch = 1.1;
-          utterance.volume = 1.0;
-          if (this.preferredVoice) utterance.voice = this.preferredVoice;
-          window.speechSynthesis.speak(utterance);
+          setTimeout(() => {
+            try {
+              if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+              const text = `${countryName} is the Champion! Winner! Comment your country and subscribe for the next battle!`;
+              const utterance = new SpeechSynthesisUtterance(text);
+              utterance.rate = 1.05;
+              utterance.pitch = 1.08;
+              utterance.volume = 1.0;
+              if (this.preferredVoice) utterance.voice = this.preferredVoice;
+              window.speechSynthesis.speak(utterance);
+            } catch (err) {}
+          }, 60);
         } catch (e) {
-          console.warn("SpeechSynthesis error:", e);
+          console.warn("SpeechSynthesis announceWinner error:", e);
         }
       }
 
@@ -8822,6 +8840,8 @@
         this.targetZoom = 1.0;
 
         this.isDuelMode = false;
+        this.duelStartTime = null;
+        this.lastEliminatedCountry = null;
 
         this.isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 640);
 
@@ -8926,9 +8946,71 @@
         this.startEngagementTicker();
         this.security.init();
         if (this.humanStreamer) this.humanStreamer.init();
+        this.initBackgroundWorker();
 
         this.startNewRound();
         requestAnimationFrame((t) => this.gameLoop(t));
+      }
+
+      // Background Web Worker Ticker: guarantees 100% continuous execution on PC even when minimized!
+      initBackgroundWorker() {
+        try {
+          const workerCode = `
+            let timer = null;
+            self.onmessage = function(e) {
+              if (e.data === 'start') {
+                if (!timer) {
+                  timer = setInterval(function() {
+                    self.postMessage('tick');
+                  }, 33);
+                }
+              } else if (e.data === 'stop') {
+                if (timer) {
+                  clearInterval(timer);
+                  timer = null;
+                }
+              }
+            };
+          `;
+          const blob = new Blob([workerCode], { type: 'application/javascript' });
+          const workerUrl = URL.createObjectURL(blob);
+          this.bgWorker = new Worker(workerUrl);
+
+          this.bgWorker.onmessage = (e) => {
+            if (e.data === 'tick' && document.hidden) {
+              this.runBackgroundPhysicsStep();
+            }
+          };
+
+          this.bgWorker.postMessage('start');
+
+          document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+              this._lastTimestamp = performance.now();
+              this._physicsAccumulator = 0;
+            }
+          });
+        } catch (e) {
+          console.warn("Background worker setup note:", e);
+        }
+      }
+
+      runBackgroundPhysicsStep() {
+        if (this.isRoundOver) return;
+        const stepMs = 33.333; // ~30 fps background simulation step
+        this.Engine.update(this.engine, stepMs);
+        this.updateCircularArena(stepMs / 16.666);
+        this.checkBallPhysicsAndEliminations(stepMs / 1000);
+
+        if (this.roundStartTime) {
+          const currentElapsedSec = Math.floor((Date.now() - this.roundStartTime) / 1000);
+          if (currentElapsedSec !== this.matchElapsedSec) {
+            this.matchElapsedSec = currentElapsedSec;
+            const m = String(Math.floor(currentElapsedSec / 60)).padStart(2, '0');
+            const s = String(currentElapsedSec % 60).padStart(2, '0');
+            if (this.dom.matchTimer) this.dom.matchTimer.textContent = `${m}:${s}`;
+          }
+        }
       }
 
       setupCanvasDPI() {
@@ -9174,6 +9256,8 @@
         this.isRoundOver = false;
         this.roundWinner = null;
         this.isDuelMode = false;
+        this.duelStartTime = null;
+        this.lastEliminatedCountry = null;
         this.targetZoom = 1.0;
         this.currentZoom = 1.0;
         this.audio.stopHeartbeatLoop();
@@ -9357,6 +9441,7 @@
 
         if (alive === 2 && !this.isDuelMode) {
           this.isDuelMode = true;
+          this.duelStartTime = Date.now();
           if (this.dom.leaderboardStrip) this.dom.leaderboardStrip.style.display = 'none';
           this.dom.duelBanner.classList.remove('hidden');
 
@@ -9417,6 +9502,21 @@
           }
         }
 
+        // Safety check: if 1 ball remains, trigger victory immediately
+        if (this.balls.length === 1) {
+          const winner = this.balls[0];
+          this.Body.setVelocity(winner.body, { x: 0, y: -0.5 });
+          this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 30 });
+          this.triggerVictory(winner);
+          return;
+        }
+        if (this.balls.length === 0) {
+          if (this.lastEliminatedCountry) {
+            this.triggerVictory({ country: this.lastEliminatedCountry });
+          }
+          return;
+        }
+
         // =========================================================================
         // NATURAL MARATHON PACING: GUARANTEED 15+ MINUTE CHAMPIONSHIP DURATION
         // =========================================================================
@@ -9426,8 +9526,22 @@
         const minPaceIntervalSec = targetTotalSec / initialCount;
         const timeSinceLastElimSec = (now - (this.lastEliminationTime || this.roundStartTime || now)) / 1000;
         
-        // Ready to absorb next nation when pacing interval has elapsed or in final duel
-        const isReadyToEliminate = (timeSinceLastElimSec >= minPaceIntervalSec) || (this.balls.length <= 2);
+        // Final 1v1 Duel Control: Enforce AT LEAST 15 seconds of intense duel fighting between the 2 balls!
+        let isDuelReadyToEliminate = false;
+        if (this.balls.length === 2) {
+          if (!this.duelStartTime) {
+            this.duelStartTime = now;
+          }
+          const duelElapsedSec = (now - this.duelStartTime) / 1000;
+          if (duelElapsedSec >= 15) {
+            isDuelReadyToEliminate = true;
+          }
+        }
+
+        // Ready to absorb next nation when pacing interval has elapsed or after 15s final duel
+        const isReadyToEliminate = (this.balls.length === 2)
+          ? isDuelReadyToEliminate
+          : (timeSinceLastElimSec >= minPaceIntervalSec);
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
@@ -9461,6 +9575,7 @@
               b.escaped = true;
               this.balls.splice(i, 1);
               this.World.remove(this.world, b.body);
+              this.lastEliminatedCountry = b.country;
 
               // Sound & AI Voice Commentary
               this.audio.playEliminate();
@@ -9487,21 +9602,32 @@
               }
 
               if (this.balls.length === 1) {
-                this.triggerVictory(this.balls[0]);
+                const winner = this.balls[0];
+                this.Body.setVelocity(winner.body, { x: 0, y: -0.5 });
+                this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 30 });
+                this.triggerVictory(winner);
+                return;
+              }
+              if (this.balls.length === 0) {
+                this.triggerVictory({ country: this.lastEliminatedCountry || COUNTRIES_DB[0] });
                 return;
               }
               continue;
             }
 
-            // Between elimination intervals: marbles roll smoothly across the central hub without sticking
-            if (!isReadyToEliminate && distFromCenter <= holeR) {
+            // Between elimination intervals / during 15s duel: marbles roll and deflect away dynamically
+            if (!isReadyToEliminate && distFromCenter <= holeR + 4) {
               const curSpd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
-              if (curSpd < 2.5) {
-                const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
-                this.Body.setVelocity(b.body, {
-                  x: Math.cos(tangAngle) * 3.2,
-                  y: Math.sin(tangAngle) * 3.2
-                });
+              const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
+              const repelAngle = Math.atan2(-dy, -dx);
+              const repelPwr = this.balls.length === 2 ? 6.5 : 3.5;
+              this.Body.setVelocity(b.body, {
+                x: Math.cos(repelAngle) * repelPwr + Math.cos(tangAngle) * 3.0,
+                y: Math.sin(repelAngle) * repelPwr + Math.sin(tangAngle) * 3.0
+              });
+              if (this.balls.length === 2) {
+                this.audio.playBumperHit();
+                this.particles.spawnBumperSparks(pos.x, pos.y, '#38bdf8');
               }
             }
           }
@@ -9535,6 +9661,7 @@
               b.escaped = true;
               this.balls.splice(i, 1);
               this.eliminatedBalls.push(b);
+              this.lastEliminatedCountry = b.country;
 
               this.audio.playEliminate();
               this.audio.speakElimination(b.country.name); // AI voice speaks "[Country] eliminated!"
@@ -9547,18 +9674,30 @@
               this.lastEliminationTime = Date.now();
 
               if (this.balls.length === 1) {
-                this.triggerVictory(this.balls[0]);
+                const winner = this.balls[0];
+                this.Body.setVelocity(winner.body, { x: 0, y: -0.5 });
+                this.Body.setPosition(winner.body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 30 });
+                this.triggerVictory(winner);
+                return;
+              }
+              if (this.balls.length === 0) {
+                this.triggerVictory({ country: this.lastEliminatedCountry || COUNTRIES_DB[0] });
                 return;
               }
             } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius + 6) {
-              // Soft perimeter bounce keeping ball inside during pacing interval
+              // Soft perimeter bounce keeping ball inside during pacing interval and 15s duel
               const dx = this.arenaCenter.x - pos.x;
               const dy = this.arenaCenter.y - pos.y;
               const d = Math.hypot(dx, dy) || 1;
+              const bouncePwr = this.balls.length === 2 ? 8.0 : 6.5;
               this.Body.setVelocity(b.body, {
-                x: (dx / d) * 6.5,
-                y: (dy / d) * 6.5
+                x: (dx / d) * bouncePwr,
+                y: (dy / d) * bouncePwr
               });
+              if (this.balls.length === 2) {
+                this.audio.playBumperHit();
+                this.particles.spawnBumperSparks(pos.x, pos.y, '#38bdf8');
+              }
             }
           }
         }
@@ -9577,7 +9716,23 @@
         if (this.isRoundOver) return;
         this.isRoundOver = true;
         this.audio.stopHeartbeatLoop();
+
+        if (!winnerBall || !winnerBall.country) {
+          if (this.balls && this.balls.length > 0 && this.balls[0] && this.balls[0].country) {
+            winnerBall = this.balls[0];
+          } else if (this.lastEliminatedCountry) {
+            winnerBall = { country: this.lastEliminatedCountry };
+          } else {
+            winnerBall = { country: COUNTRIES_DB[0] };
+          }
+        }
         this.roundWinner = winnerBall.country;
+
+        // Keep the winner ball safely floating inside the arena so the circle is NEVER empty!
+        if (this.balls && this.balls.length > 0 && this.balls[0] && this.balls[0].body) {
+          this.Body.setVelocity(this.balls[0].body, { x: 0, y: -0.2 });
+          this.Body.setPosition(this.balls[0].body, { x: this.arenaCenter.x, y: this.arenaCenter.y - 25 });
+        }
 
         this.recordWin(this.roundWinner.code);
         this.audio.playVictory();
@@ -10186,16 +10341,10 @@
         if (deltaMs > 100) deltaMs = 100;
         if (deltaMs < 0) deltaMs = 16.666;
 
-        // Background Tab / Minimized Battery & CPU Saver
+        // When tab is minimized or hidden in background, our background Web Worker handles
+        // unthrottled physics and eliminations continuously. We keep requesting animation frame
+        // so that the moment the user restores/un-minimizes the window, 60fps rendering resumes instantly!
         if (document.hidden) {
-          if (!this._lastBgTick || timestamp - this._lastBgTick > 80) {
-            this._lastBgTick = timestamp;
-            if (!this.isRoundOver) {
-              this.Engine.update(this.engine, 80);
-              this.updateCircularArena(80 / 16.666);
-              this.checkBallPhysicsAndEliminations(0.08);
-            }
-          }
           requestAnimationFrame((t) => this.gameLoop(t));
           return;
         }
