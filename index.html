@@ -5326,9 +5326,23 @@
 
         <!-- Panel 2: International Payment (Cards / PayPal / Crypto) -->
         <div class="order-gw-panel" id="panel-intl-pay" style="display: none;">
+          <div class="order-account-box" style="border-color: rgba(0, 121, 193, 0.6); background: rgba(0, 40, 80, 0.35);">
+            <div class="order-account-header">
+              <span class="order-account-label">🅿️ PAYPAL OFFICIAL ACCOUNT (EMAIL):</span>
+              <div class="order-method-pills">
+                <span class="order-method-pill" style="background: #0079c1;">PAYPAL</span>
+                <span class="order-method-pill" style="background: #00457c;">CARDS</span>
+              </div>
+            </div>
+            <div class="order-number-row" style="border-color: rgba(0, 121, 193, 0.4);">
+              <span class="order-number-display" id="order-paypal-email-display" style="font-size: 13px; color: #38bdf8; font-family: monospace;">tawhidh2005@gmail.com</span>
+              <button class="order-btn-copy-num" id="btn-copy-paypal-email" type="button" style="background: #0079c1; color: #fff;">📋 COPY</button>
+            </div>
+          </div>
+
           <div class="order-intl-links">
-            <a href="https://paypal.me/talha2005" target="_blank" rel="noopener noreferrer" class="btn-intl-link btn-paypal" id="link-intl-paypal">
-              <span>🅿️ PAY VIA PAYPAL.ME / CARD</span>
+            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=tawhidh2005%40gmail.com&item_name=Country+Flag+Battle+Royale+Streamer+Pass&currency_code=USD" target="_blank" rel="noopener noreferrer" class="btn-intl-link btn-paypal" id="link-intl-paypal">
+              <span>🅿️ 1-CLICK PAY VIA PAYPAL (tawhidh2005@gmail.com)</span>
             </a>
             <div class="crypto-addr-box">
               <div style="font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 4px;">🪙 USDT (TRC-20) ADDRESS:</div>
@@ -5340,18 +5354,18 @@
           </div>
 
           <div class="order-instructions">
-            <div>1. Complete checkout via PayPal or USDT TRC-20 above.</div>
-            <div>2. Enter your Email / Username and Transaction ID / Reference below.</div>
-            <div>3. Click <b>INSTANT UNLOCK</b> to immediately activate your pass!</div>
+            <div>1. Send <b id="order-inst-amount-usd">$4.99 USD</b> to PayPal: <b>tawhidh2005@gmail.com</b> (or click the PayPal button).</div>
+            <div>2. Enter your PayPal email and the Transaction ID from your confirmation receipt below.</div>
+            <div>3. Click <b>INSTANT UNLOCK</b> to immediately activate your pass 24/7!</div>
           </div>
 
           <div class="order-inputs-grid">
             <div class="order-input-wrapper">
-              <label class="order-input-label">👤 STREAMER EMAIL / USERNAME</label>
-              <input type="text" id="auto-pay-intl-user" class="order-input" placeholder="streamer@gmail.com" maxlength="40">
+              <label class="order-input-label">👤 YOUR PAYPAL EMAIL / STREAMER USERNAME</label>
+              <input type="text" id="auto-pay-intl-user" class="order-input" placeholder="e.g. buyer@gmail.com" maxlength="40">
             </div>
             <div class="order-input-wrapper">
-              <label class="order-input-label">🧾 TRANSACTION ID / ORDER REF</label>
+              <label class="order-input-label">🧾 PAYPAL TRANSACTION ID / ORDER REF</label>
               <input type="text" id="auto-pay-intl-ref" class="order-input" placeholder="e.g. 9KL882319" maxlength="35">
             </div>
           </div>
@@ -5511,6 +5525,11 @@
           <div class="cyber-input-group" style="margin-top: 6px;">
             <label class="cyber-input-label">BKASH / NAGAD NUMBER (OPTIONAL)</label>
             <input type="text" id="admin-setting-bkash" class="cyber-input" placeholder="e.g. 017XXXXXXXX">
+          </div>
+
+          <div class="cyber-input-group" style="margin-top: 6px;">
+            <label class="cyber-input-label">PAYPAL EMAIL FOR INTERNATIONAL CHECKOUT</label>
+            <input type="email" id="admin-setting-paypal" class="cyber-input" placeholder="tawhidh2005@gmail.com">
           </div>
 
           <button class="drawer-btn" id="btn-save-admin-settings" style="margin-top: 8px; border-color: #fbbf24; color: #fbbf24;">
@@ -8099,6 +8118,18 @@
         if (orderPlanPrice) orderPlanPrice.textContent = priceStr;
         if (orderInstAmount) orderInstAmount.textContent = plan.price;
 
+        const orderPaypalDisplay = document.getElementById('order-paypal-email-display');
+        const linkIntlPaypal = document.getElementById('link-intl-paypal');
+        const instAmountUsd = document.getElementById('order-inst-amount-usd');
+        const activePayPal = this.adminPayPal || 'tawhidh2005@gmail.com';
+
+        if (orderPaypalDisplay) orderPaypalDisplay.textContent = activePayPal;
+        if (instAmountUsd) instAmountUsd.textContent = '$' + plan.price.toFixed(2) + ' USD';
+        if (linkIntlPaypal) {
+          const planItem = encodeURIComponent('Country Flag Battle Royale - ' + plan.name);
+          linkIntlPaypal.href = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=' + encodeURIComponent(activePayPal) + '&item_name=' + planItem + '&amount=' + plan.price.toFixed(2) + '&currency_code=USD';
+        }
+
         // Reset views: show forms, hide success receipt
         const panelBd = document.getElementById('panel-bd-pay');
         const panelIntl = document.getElementById('panel-intl-pay');
@@ -8593,6 +8624,7 @@
         // Contact Settings from Storage
         this.adminWhatsApp = localStorage.getItem('cfb_admin_whatsapp') || '8801711729858';
         this.adminBkash = localStorage.getItem('cfb_admin_bkash') || '017XXXXXXXX';
+        this.adminPayPal = localStorage.getItem('cfb_admin_paypal') || 'tawhidh2005@gmail.com';
 
         // Order Modal Elements
         const orderModal = document.getElementById('cyber-order-modal');
@@ -8744,6 +8776,22 @@
           });
         }
 
+        // Copy PayPal Email
+        const btnCopyPaypal = document.getElementById('btn-copy-paypal-email');
+        if (btnCopyPaypal) {
+          btnCopyPaypal.addEventListener('click', () => {
+            const email = (document.getElementById('order-paypal-email-display')?.textContent || 'tawhidh2005@gmail.com').trim();
+            navigator.clipboard.writeText(email).then(() => {
+              btnCopyPaypal.textContent = 'COPIED! ✓';
+              btnCopyPaypal.style.background = '#10b981';
+              setTimeout(() => {
+                btnCopyPaypal.textContent = '📋 COPY';
+                btnCopyPaypal.style.background = '#0079c1';
+              }, 2000);
+            });
+          });
+        }
+
         // Copy Crypto USDT Address
         if (btnCopyCrypto) {
           btnCopyCrypto.addEventListener('click', () => {
@@ -8866,10 +8914,12 @@
         // Admin Contact Settings Inputs in Admin Panel
         const inputWA = document.getElementById('admin-setting-whatsapp');
         const inputBkash = document.getElementById('admin-setting-bkash');
+        const inputPayPal = document.getElementById('admin-setting-paypal');
         const btnSaveSettings = document.getElementById('btn-save-admin-settings');
 
         if (inputWA) inputWA.value = this.adminWhatsApp;
         if (inputBkash) inputBkash.value = this.adminBkash;
+        if (inputPayPal) inputPayPal.value = this.adminPayPal || 'tawhidh2005@gmail.com';
 
         if (btnSaveSettings) {
           btnSaveSettings.addEventListener('click', () => {
@@ -8881,7 +8931,11 @@
               this.adminBkash = inputBkash.value.trim() || '017XXXXXXXX';
               localStorage.setItem('cfb_admin_bkash', this.adminBkash);
             }
-            alert('✅ Admin Contact Settings Saved Successfully!');
+            if (inputPayPal) {
+              this.adminPayPal = inputPayPal.value.trim() || 'tawhidh2005@gmail.com';
+              localStorage.setItem('cfb_admin_paypal', this.adminPayPal);
+            }
+            alert('✅ Admin Contact & PayPal Settings Saved Successfully!');
           });
         }
 
