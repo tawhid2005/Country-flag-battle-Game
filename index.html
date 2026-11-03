@@ -9322,8 +9322,12 @@
 
       updateCircularArena(stepFactor = 1) {
         this.arenaAngle += this.currentRotationSpeed * stepFactor;
+        
+        // Dynamic Counter-Rotating Inner Mechanism (Dual-Rotor Turbine System)
+        // Outer wheel turns Clockwise, inner blades rotate Counter-Clockwise at energetic 1.35x speed!
+        this.innerRotorAngle = (this.innerRotorAngle || 0) - (this.currentRotationSpeed * 1.35 * stepFactor);
 
-        // Outer wall segments
+        // Outer wall segments (Clockwise)
         for (const seg of this.arenaSegments) {
           const currentAng = seg.baseAngle + this.arenaAngle;
           const x = this.arenaCenter.x + Math.cos(currentAng) * this.arenaRadius;
@@ -9342,18 +9346,18 @@
         }
 
         if (this.arenaTemplate === 'hole') {
-          // Rotate 6 radial spokes synchronously around the central sinkhole
+          // 6 Radial Spokes Rotate Counter-Clockwise with Dynamic Kinetic Velocity
           for (const spoke of this.arenaFins) {
-            const sAng = spoke.finBaseAngle + this.arenaAngle;
+            const sAng = spoke.finBaseAngle + this.innerRotorAngle;
             const sx = this.arenaCenter.x + Math.cos(sAng) * spoke.finDist;
             const sy = this.arenaCenter.y + Math.sin(sAng) * spoke.finDist;
             this.Body.setPosition(spoke, { x: sx, y: sy });
             this.Body.setAngle(spoke, sAng);
           }
         } else {
-          // Rotate 4 scooper blades synchronously with the outer turbine
+          // In Ring Mode: Scooper blades counter-rotate to actively lift and fling balls across the bumper!
           for (const fin of this.arenaFins) {
-            const fAng = fin.finBaseAngle + this.arenaAngle;
+            const fAng = fin.finBaseAngle + this.innerRotorAngle;
             const fx = this.arenaCenter.x + Math.cos(fAng) * fin.finDist;
             const fy = this.arenaCenter.y + Math.sin(fAng) * fin.finDist;
             this.Body.setPosition(fin, { x: fx, y: fy });
@@ -10288,7 +10292,41 @@
           ctx.stroke();
           ctx.restore();
 
-          // B. 6 Glowing Purple/Lavender Laser Blades (Authentic from Reference Screenshot)
+          // B. Counter-Rotating Inner Cyber Gear Hub & 6 Purple Laser Blades
+          const rotorAng = this.innerRotorAngle || -this.arenaAngle;
+          const hubR_in = 46;
+          const hubR_out = 60;
+
+          // Inner Counter-Rotating Gear Teeth
+          ctx.save();
+          for (let g = 0; g < 12; g++) {
+            const ga1 = rotorAng + (g * Math.PI / 6) + 0.04;
+            const ga2 = rotorAng + ((g + 0.7) * Math.PI / 6) - 0.04;
+            ctx.beginPath();
+            ctx.arc(cx, cy, hubR_out, ga1, ga2, false);
+            ctx.arc(cx, cy, hubR_in, ga2, ga1, true);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(192, 132, 252, 0.25)';
+            ctx.fill();
+            ctx.strokeStyle = '#c084fc';
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
+          }
+
+          // Hub Inner & Outer Glowing Rings
+          ctx.strokeStyle = '#f5d0fe';
+          ctx.lineWidth = 2.0;
+          ctx.beginPath();
+          ctx.arc(cx, cy, hubR_out, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.strokeStyle = 'rgba(192, 132, 252, 0.6)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(cx, cy, hubR_in, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+
+          // 6 Glowing Purple/Lavender Laser Blades (Rotating with inner rotor)
           ctx.save();
           for (const spoke of this.arenaFins) {
             const v = spoke.vertices;
