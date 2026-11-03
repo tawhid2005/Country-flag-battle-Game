@@ -8972,9 +8972,9 @@
         const onTick = () => {
           if (document.hidden) {
             const now = Date.now();
-            const elapsed = Math.min(100, Math.max(16, now - (this._lastBgTickTime || now)));
+            const elapsed = Math.min(5000, now - (this._lastBgTickTime || now));
             this._lastBgTickTime = now;
-            this.runBackgroundPhysicsStep(elapsed);
+            this.runBackgroundCatchup(elapsed);
           } else {
             this._lastBgTickTime = Date.now();
           }
@@ -9012,7 +9012,7 @@
           console.warn("Background worker setup note:", e);
         }
 
-        // Layer 2: Web Audio Hardware Clock (immune to Chrome sleep when minimized!)
+        // Layer 2: Web Audio Hardware Clock + Silent Keep-Alive (Exempts Chrome tab from background freeze!)
         try {
           this.setupAudioBackgroundClock(onTick);
         } catch (e) {}
@@ -9021,11 +9021,16 @@
         if (this._bgFallbackInterval) clearInterval(this._bgFallbackInterval);
         this._bgFallbackInterval = setInterval(onTick, 40);
 
-        // Layer 4: Visibility change & Window focus recovery
+        // Layer 4: Visibility change & Window focus real-time catchup
         const onTabResume = () => {
+          const now = Date.now();
+          const elapsed = now - (this._lastBgTickTime || now);
+          this._lastBgTickTime = now;
+          if (elapsed > 50) {
+            this.runBackgroundCatchup(elapsed);
+          }
           this._lastTimestamp = performance.now();
           this._physicsAccumulator = 0;
-          this._lastBgTickTime = Date.now();
         };
         document.addEventListener('visibilitychange', () => {
           if (!document.hidden) onTabResume();
@@ -9049,7 +9054,7 @@
               }
             };
             const silentGain = this.audio.ctx.createGain();
-            silentGain.gain.setValueAtTime(0, this.audio.ctx.currentTime);
+            silentGain.gain.setValueAtTime(0.00001, this.audio.ctx.currentTime); // Inaudible keep-alive prevents OS suspension
             node.connect(silentGain);
             silentGain.connect(this.audio.ctx.destination);
             this._audioClockNode = node;
@@ -9067,14 +9072,23 @@
         }
       }
 
-      runBackgroundPhysicsStep(elapsedMs = 33.333) {
+      runBackgroundCatchup(totalElapsedMs) {
         if (this.isRoundOver) return;
         const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
-        const stepMs = Math.min(Math.max(16.666, (elapsedMs || 33.333) * simSpeed), 66.666);
-        this.Engine.update(this.engine, stepMs);
-        this.updateCircularArena(stepMs / 16.666);
-        this.checkBallPhysicsAndEliminations(stepMs / 1000);
+        let remainingMs = Math.min(30000, Math.max(16.666, totalElapsedMs * simSpeed));
+        const fixedStepMs = 16.666;
+        let iterations = 0;
 
+        while (remainingMs >= fixedStepMs && iterations < 35) {
+          this.Engine.update(this.engine, fixedStepMs);
+          this.updateCircularArena(1);
+          this.checkBallPhysicsAndEliminations(fixedStepMs / 1000);
+          remainingMs -= fixedStepMs;
+          iterations++;
+          if (this.isRoundOver) break;
+        }
+
+        // Live Countdown Match Timer update
         if (this.roundStartTime) {
           const totalDuration = this.targetMatchSeconds || 300;
           const currentElapsedSec = Math.floor((Date.now() - this.roundStartTime) / 1000);
@@ -9093,6 +9107,9 @@
         }
       }
 
+      runBackgroundPhysicsStep(elapsedMs = 33.333) {
+        this.runBackgroundCatchup(elapsedMs);
+      }
       setupCanvasDPI() {
         const isMobile = this.isMobileDevice;
         const maxDpr = isMobile ? Math.min(window.devicePixelRatio || 1, 1.25) : Math.min(window.devicePixelRatio || 1, 2);
@@ -10790,26 +10807,7 @@
           ctx.restore();
         }
 
-        // High-Contrast Broadcast Country Code Pill (Ultra-Legible on any flag)
-        if (this.balls.length <= 25 || this.isDuelMode) {
-          const fontSize = Math.max(8.5, Math.round(r * 0.60));
-          ctx.font = `900 ${fontSize}px var(--font-display)`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
 
-          // Semi-transparent dark pill background behind country code
-          const codeWidth = ctx.measureText(ball.country.code).width + 6;
-          ctx.fillStyle = 'rgba(2, 6, 18, 0.78)';
-          ctx.beginPath();
-          ctx.roundRect(-codeWidth / 2, r * 0.18, codeWidth, fontSize + 4, 4);
-          ctx.fill();
-
-          ctx.lineWidth = 2.4;
-          ctx.strokeStyle = '#000000';
-          ctx.strokeText(ball.country.code, 0, r * 0.46);
-          ctx.fillStyle = '#ffffff';
-          ctx.fillText(ball.country.code, 0, r * 0.46);
-        }
 
         // Celebratory Winner Crown & Radiant Laurel Aura (Circle is never empty, winner marble proudly celebrated!)
         if (this.isRoundOver && this.roundWinner && ball.country && ball.country.code === this.roundWinner.code) {
