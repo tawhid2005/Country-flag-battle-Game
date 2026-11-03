@@ -9223,7 +9223,7 @@
           for (let s = 0; s < spokeCount; s++) {
             const spoke = this.Bodies.rectangle(0, 0, spokeLen, spokeWidth, {
               isStatic: true,
-              restitution: 1.08,
+              restitution: 0.98,
               friction: 0.005,
               render: { visible: false },
               label: 'arenaFin'
@@ -9272,7 +9272,7 @@
           // Central Super-Bouncy Neon Pinball Bumper
           this.centerBumper = this.Bodies.circle(this.arenaCenter.x, this.arenaCenter.y, 24, {
             isStatic: true,
-            restitution: 1.25,
+            restitution: 1.05,
             friction: 0.001,
             label: 'centerBumper'
           });
@@ -9577,6 +9577,35 @@
               x: -Math.cos(ang) * 4.0,
               y: -Math.sin(ang) * 4.0
             });
+          }
+        }
+
+        // Max Velocity Clamp (Prevents physics explosions, tunneling, and super-speed glitches)
+        const maxSpd = 16.0;
+        for (const b of this.balls) {
+          const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
+          if (spd > maxSpd) {
+            this.Body.setVelocity(b.body, {
+              x: (b.body.velocity.x / spd) * maxSpd,
+              y: (b.body.velocity.y / spd) * maxSpd
+            });
+          }
+        }
+
+        // Anti-Spoke-Camping: If a ball is riding or idle on a moving spoke, kick it off smoothly
+        for (const b of this.balls) {
+          const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
+          if (spd < 1.2) {
+            const dx = b.body.position.x - this.arenaCenter.x;
+            const dy = b.body.position.y - this.arenaCenter.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist > 52 && dist < this.arenaRadius - 12) {
+              const tangAng = Math.atan2(dy, dx) + Math.PI / 2;
+              this.Body.setVelocity(b.body, {
+                x: b.body.velocity.x + Math.cos(tangAng) * 2.8,
+                y: b.body.velocity.y + Math.sin(tangAng) * 2.8 - 1.8
+              });
+            }
           }
         }
 
@@ -10406,6 +10435,7 @@
 
       // 3D Glossy Championship Marble (Ultra-Clean, Zero Dangling Overlap)
       drawBall(ctx, ball) {
+        if (!ball || !ball.body || !ball.body.position || isNaN(ball.body.position.x) || isNaN(ball.body.position.y)) return;
         const pos = ball.body.position;
         const r = ball.radius;
 
