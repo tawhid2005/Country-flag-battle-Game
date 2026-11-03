@@ -6680,19 +6680,6 @@
         }
       }
 
-      spawnFloatingText(x, y, text, color = '#fef08a') {
-        if (!this.floatingTexts) this.floatingTexts = [];
-        this.floatingTexts.push({
-          x,
-          y,
-          text,
-          color,
-          alpha: 1.0,
-          vy: -1.4,
-          scale: 1.15
-        });
-      }
-
       update(dtFactor = 1) {
         for (let i = this.particles.length - 1; i >= 0; i--) {
           const p = this.particles[i];
@@ -6704,18 +6691,6 @@
 
           if (p.alpha <= 0) {
             this.particles.splice(i, 1);
-          }
-        }
-
-        if (this.floatingTexts) {
-          for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
-            const ft = this.floatingTexts[i];
-            ft.y += ft.vy * dtFactor;
-            ft.alpha -= 0.024 * dtFactor;
-            ft.scale = Math.max(0.85, ft.scale - 0.008 * dtFactor);
-            if (ft.alpha <= 0) {
-              this.floatingTexts.splice(i, 1);
-            }
           }
         }
       }
@@ -6737,28 +6712,11 @@
             ctx.fill();
           }
         }
-
-        // Render High-Dopamine Floating Combat Texts (CLOSE CALL! / CLUTCH!)
-        if (this.floatingTexts && this.floatingTexts.length > 0) {
-          for (const ft of this.floatingTexts) {
-            ctx.globalAlpha = Math.max(0, ft.alpha);
-            const size = Math.round(11 * ft.scale);
-            ctx.font = `900 ${size}px var(--font-display)`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.lineWidth = 3.2;
-            ctx.strokeStyle = '#000000';
-            ctx.strokeText(ft.text, ft.x, ft.y);
-            ctx.fillStyle = ft.color;
-            ctx.fillText(ft.text, ft.x, ft.y);
-          }
-        }
         ctx.restore();
       }
 
       clear() {
         this.particles = [];
-        this.floatingTexts = [];
       }
     }
 
@@ -9873,7 +9831,6 @@
               b.hasShield = false;
               this.audio.playShieldBreak();
               this.particles.spawnShieldShatter(pos.x, pos.y);
-              this.particles.spawnFloatingText(pos.x, pos.y - 14, 'SHIELD SAVED! 🛡️', '#00e5ff');
               this.pushKillfeed(b.country, '🛡️ SHIELD SAVED!');
               const d = distFromCenter || 1;
               this.Body.setVelocity(b.body, {
@@ -9932,9 +9889,6 @@
 
             // Deflect dynamically during pacing intervals or 13s duel
             if (!isReadyToEliminate && distFromCenter <= holeR + 4) {
-              if (Math.random() < 0.28) {
-                this.particles.spawnFloatingText(pos.x, pos.y - 14, 'CLOSE CALL! ⚡', '#fef08a');
-              }
               const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
               const repelAngle = distFromCenter > 0.1 ? Math.atan2(-dy, -dx) : Math.random() * Math.PI * 2;
               const repelPwr = this.balls.length === 2 ? 7.5 : 3.8;
