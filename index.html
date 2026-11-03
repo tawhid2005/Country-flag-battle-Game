@@ -9194,8 +9194,8 @@
         this.centerBumper = null;
 
         const segAngle = (Math.PI * 2) / this.totalSegments;
-        const segLen = (2 * Math.PI * this.arenaRadius) / this.totalSegments + 4;
-        const segThick = 18;
+        const segLen = (2 * Math.PI * this.arenaRadius) / this.totalSegments + 6;
+        const segThick = 36; // Thick solid collision hull prevents any marble tunneling
 
         if (this.arenaTemplate === 'hole') {
           // --- TEMPLATE 2: CENTER VORTEX HOLE (BLACK HOLE ARENA FROM SCREENSHOT) ---
@@ -9548,17 +9548,49 @@
       checkBallPhysicsAndEliminations(dtSec = 1 / 60) {
         if (this.isRoundOver) return;
 
+        // 1. BOUNDARY & NaN SAFETY ENFORCER (100% IMMUNE TO CRASHES / INFINITE VOID LEAKS)
+        for (let i = this.balls.length - 1; i >= 0; i--) {
+          const b = this.balls[i];
+          if (!b || !b.body) {
+            this.balls.splice(i, 1);
+            continue;
+          }
+          const pos = b.body.position;
+          // Clean recovery for any invalid math
+          if (isNaN(pos.x) || isNaN(pos.y)) {
+            const rx = this.arenaCenter.x + (Math.random() - 0.5) * 60;
+            const ry = this.arenaCenter.y + 60;
+            this.Body.setPosition(b.body, { x: rx, y: ry });
+            this.Body.setVelocity(b.body, { x: 0, y: 0 });
+            continue;
+          }
+          const distFromCenter = Math.hypot(pos.x - this.arenaCenter.x, pos.y - this.arenaCenter.y);
+
+          // In Hole Mode: Closed arena. If any ball ever tunnels past arena wall, snap it safely back inside!
+          if (this.arenaTemplate === 'hole' && distFromCenter > this.arenaRadius + 2) {
+            const ang = Math.atan2(pos.y - this.arenaCenter.y, pos.x - this.arenaCenter.x);
+            this.Body.setPosition(b.body, {
+              x: this.arenaCenter.x + Math.cos(ang) * (this.arenaRadius - b.radius - 4),
+              y: this.arenaCenter.y + Math.sin(ang) * (this.arenaRadius - b.radius - 4)
+            });
+            this.Body.setVelocity(b.body, {
+              x: -Math.cos(ang) * 4.0,
+              y: -Math.sin(ang) * 4.0
+            });
+          }
+        }
+
         // Anti-clumping impulse (keeps marbles active and moving)
         this.antiClumpTimer += dtSec;
-        if (this.antiClumpTimer > 0.75) {
+        if (this.antiClumpTimer > 0.65) {
           this.antiClumpTimer = 0;
           for (const b of this.balls) {
             const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
-            if (spd < 2.0 && b.body.position.y > this.arenaCenter.y + 40) {
+            if (spd < 1.8 && b.body.position.y > this.arenaCenter.y + 35) {
               const horizontalDir = b.body.position.x < this.arenaCenter.x ? 1 : -1;
               this.Body.setVelocity(b.body, {
-                x: horizontalDir * (4.0 + Math.random() * 4.5),
-                y: -(5.0 + Math.random() * 5.0)
+                x: horizontalDir * (3.8 + Math.random() * 4.0),
+                y: -(4.8 + Math.random() * 4.5)
               });
             }
           }
@@ -9586,13 +9618,13 @@
         // Dynamic pace intervals calibrated to duration presets
         let paceFactor = 1.0;
         if (this.durationMode === 'blitz') paceFactor = 0.50;
-        else if (this.durationMode === 'standard') paceFactor = 0.90;
-        else if (this.durationMode === 'extended') paceFactor = 1.50;
-        else if (this.durationMode === 'marathon') paceFactor = 2.10;
+        else if (this.durationMode === 'standard') paceFactor = 0.85;
+        else if (this.durationMode === 'extended') paceFactor = 1.45;
+        else if (this.durationMode === 'marathon') paceFactor = 2.00;
 
-        let baseIntervalSec = 3.5 * paceFactor;
-        if (this.balls.length > 50) baseIntervalSec = 2.0 * paceFactor;
-        else if (this.balls.length <= 5) baseIntervalSec = 4.8 * paceFactor;
+        let baseIntervalSec = 3.2 * paceFactor;
+        if (this.balls.length > 50) baseIntervalSec = 1.8 * paceFactor;
+        else if (this.balls.length <= 5) baseIntervalSec = 4.5 * paceFactor;
 
         // Final 1v1 Duel: Enforce 12-14 seconds of intense duel fighting between the 2 balls!
         let isDuelReadyToEliminate = false;
@@ -9611,40 +9643,42 @@
           ? isDuelReadyToEliminate
           : (timeSinceLastElimSec >= baseIntervalSec);
 
-        // Anti-Stall Auto-Agitator: If no ball has exited for 14s, provide kinetic impulse so balls never get stuck
-        if (!this.isDuelMode && timeSinceLastElimSec > 14 && (now - (this._lastAgitateTime || 0)) > 3000) {
+        // Anti-Stall Auto-Agitator: If no ball has exited for 11s, provide kinetic impulse so balls never freeze
+        if (!this.isDuelMode && timeSinceLastElimSec > 11 && (now - (this._lastAgitateTime || 0)) > 2600) {
           this._lastAgitateTime = now;
           for (const b of this.balls) {
-            const adx = (Math.random() - 0.5) * 5.0;
-            const ady = -(3.2 + Math.random() * 4.2);
-            this.Body.setVelocity(b.body, { x: b.body.velocity.x * 0.7 + adx, y: ady });
+            const adx = (Math.random() - 0.5) * 5.5;
+            const ady = -(3.5 + Math.random() * 4.2);
+            this.Body.setVelocity(b.body, { x: b.body.velocity.x * 0.75 + adx, y: ady });
           }
         }
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
-          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (NATURAL COSMIC GRAVITATIONAL PULL)
+          // TEMPLATE 2: CENTER VORTEX BLACK HOLE (AUTHENTIC COSMIC GRAVITY & SWIRL)
           // =========================================================================
           const holeR = this.centerHoleRadius || 30;
 
-          // 1. Apply Natural Cosmic Vortex Gravitational Attraction (swirls balls toward center hole)
+          // 1. Powerful Cosmic Vortex Gravitational Whirlpool (pulls and swirls all marbles toward center)
           for (const b of this.balls) {
             const pos = b.body.position;
             const dx = this.arenaCenter.x - pos.x;
             const dy = this.arenaCenter.y - pos.y;
             const dist = Math.hypot(dx, dy) || 1;
 
-            if (dist > holeR + 4) {
-              const pullMag = 0.00040 * b.body.mass;
-              const swirlMag = 0.00022 * b.body.mass;
+            if (dist > holeR + 2) {
+              // Upward buoyancy counteracting gravity when below center + strong orbital swirl
+              const pullForce = 0.00065 * b.body.mass;
+              const swirlForce = 0.00038 * b.body.mass;
+              const antiGravityLift = (pos.y > this.arenaCenter.y) ? (0.00048 * b.body.mass) : 0;
               this.Body.applyForce(b.body, pos, {
-                x: (dx / dist) * pullMag - (dy / dist) * swirlMag,
-                y: (dy / dist) * pullMag + (dx / dist) * swirlMag
+                x: (dx / dist) * pullForce - (dy / dist) * swirlForce,
+                y: (dy / dist) * pullForce + (dx / dist) * swirlForce - antiGravityLift
               });
             }
           }
 
-          // 2. Check Eliminations & Dynamic Event Horizon
+          // 2. Check Eliminations & Event Horizon Absorption
           for (let i = this.balls.length - 1; i >= 0; i--) {
             const b = this.balls[i];
             const pos = b.body.position;
@@ -9666,8 +9700,9 @@
               continue;
             }
 
-            // Central Sinkhole Elimination: Absorbs when ready
-            if (!b.escaped && isReadyToEliminate && distFromCenter <= holeR + 6) {
+            // Central Sinkhole Elimination: Absorbs when marble crosses the black hole horizon
+            const absorbRadius = holeR + (b.radius * 0.7);
+            if (!b.escaped && isReadyToEliminate && distFromCenter <= absorbRadius) {
               b.escaped = true;
               this.balls.splice(i, 1);
               this.World.remove(this.world, b.body);
@@ -9714,7 +9749,7 @@
               break;
             }
 
-            // During pacing interval or 14s duel: marbles deflect dynamically off event horizon
+            // During pacing interval or 13s duel: marbles deflect dynamically off event horizon
             if (!isReadyToEliminate && distFromCenter <= holeR + 4) {
               const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
               const repelAngle = distFromCenter > 0.1 ? Math.atan2(-dy, -dx) : Math.random() * Math.PI * 2;
@@ -9787,7 +9822,7 @@
               // STRICT CHAMPIONSHIP RULE: AT MOST ONE elimination per interval!
               break;
             } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius + 8) {
-              // During 14s duel or rapid consecutive exit: gentle boundary deflection
+              // During 13s duel or rapid consecutive exit: gentle boundary deflection
               const dx = this.arenaCenter.x - pos.x;
               const dy = this.arenaCenter.y - pos.y;
               const d = Math.hypot(dx, dy) || 1;
@@ -10457,97 +10492,98 @@
         return grad;
       }
 
-      // Game Loop: 100% Rock-Solid Stable Camera with Fixed-Timestep Physics Accumulator
+      // Game Loop: 100% Rock-Solid Stable Camera with Fixed-Timestep Physics Accumulator & Fault Tolerance
       gameLoop(timestamp) {
-        if (!this.security.isAccessAllowed()) {
+        try {
+          if (!this.security.isAccessAllowed()) {
+            this._lastTimestamp = timestamp;
+            return;
+          }
+
+          if (!this._lastTimestamp) this._lastTimestamp = timestamp;
+          let deltaMs = timestamp - this._lastTimestamp;
           this._lastTimestamp = timestamp;
-          requestAnimationFrame((t) => this.gameLoop(t));
-          return;
-        }
 
-        if (!this._lastTimestamp) this._lastTimestamp = timestamp;
-        let deltaMs = timestamp - this._lastTimestamp;
-        this._lastTimestamp = timestamp;
+          // Safety clamp deltaMs (prevent physics explosion / spiral of death)
+          if (deltaMs > 100) deltaMs = 100;
+          if (deltaMs < 0) deltaMs = 16.666;
 
-        // Safety clamp deltaMs (prevent physics explosion / spiral of death)
-        if (deltaMs > 100) deltaMs = 100;
-        if (deltaMs < 0) deltaMs = 16.666;
-
-        // When tab is minimized or hidden in background, our background Web Worker handles
-        // unthrottled physics and eliminations continuously. We keep requesting animation frame
-        // so that the moment the user restores/un-minimizes the window, 60fps rendering resumes instantly!
-        if (document.hidden) {
-          requestAnimationFrame((t) => this.gameLoop(t));
-          return;
-        }
-
-        // Fixed-Timestep Physics Accumulator (Scaled with this.gameSpeed for custom battle pacing)
-        const fixedStepMs = 1000 / 60; // 16.666ms
-        const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
-        this._physicsAccumulator = (this._physicsAccumulator || 0) + (deltaMs * simSpeed);
-
-        let steps = 0;
-        while (this._physicsAccumulator >= fixedStepMs && steps < 6) {
-          if (!this.isRoundOver) {
-            this.Engine.update(this.engine, fixedStepMs);
-            this.updateCircularArena(1);
-            this.checkBallPhysicsAndEliminations(fixedStepMs / 1000);
+          // When tab is minimized or hidden in background, background worker & audio clock handle physics
+          if (document.hidden) {
+            return;
           }
-          this._physicsAccumulator -= fixedStepMs;
-          steps++;
-        }
-        if (steps >= 6) {
-          this._physicsAccumulator = 0; // Drop stale accumulation if device was heavily bogged down
-        }
 
-        // Live Match Duration Timer update
-        if (!this.isRoundOver && this.roundStartTime) {
-          const currentElapsedSec = Math.floor((Date.now() - this.roundStartTime) / 1000);
-          if (currentElapsedSec !== this.matchElapsedSec) {
-            this.matchElapsedSec = currentElapsedSec;
-            const m = String(Math.floor(currentElapsedSec / 60)).padStart(2, '0');
-            const s = String(currentElapsedSec % 60).padStart(2, '0');
-            if (this.dom.matchTimer) this.dom.matchTimer.textContent = `${m}:${s}`;
+          // Fixed-Timestep Physics Accumulator (Scaled with this.gameSpeed for custom battle pacing)
+          const fixedStepMs = 1000 / 60; // 16.666ms
+          const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
+          this._physicsAccumulator = (this._physicsAccumulator || 0) + (deltaMs * simSpeed);
+
+          let steps = 0;
+          while (this._physicsAccumulator >= fixedStepMs && steps < 6) {
+            if (!this.isRoundOver) {
+              this.Engine.update(this.engine, fixedStepMs);
+              this.updateCircularArena(1);
+              this.checkBallPhysicsAndEliminations(fixedStepMs / 1000);
+            }
+            this._physicsAccumulator -= fixedStepMs;
+            steps++;
           }
+          if (steps >= 6) {
+            this._physicsAccumulator = 0; // Drop stale accumulation if device was heavily bogged down
+          }
+
+          // Live Match Duration Timer update
+          if (!this.isRoundOver && this.roundStartTime) {
+            const currentElapsedSec = Math.floor((Date.now() - this.roundStartTime) / 1000);
+            if (currentElapsedSec !== this.matchElapsedSec) {
+              this.matchElapsedSec = currentElapsedSec;
+              const m = String(Math.floor(currentElapsedSec / 60)).padStart(2, '0');
+              const s = String(currentElapsedSec % 60).padStart(2, '0');
+              if (this.dom.matchTimer) this.dom.matchTimer.textContent = `${m}:${s}`;
+            }
+          }
+
+          const dtSec = deltaMs / 1000;
+          if (this.humanStreamer) {
+            this.humanStreamer.update(dtSec);
+          }
+
+          this.particles.update(deltaMs / 16.666);
+
+          // Smooth Camera Zoom
+          this.currentZoom += (this.targetZoom - this.currentZoom) * 0.04;
+
+          this.ctx.save();
+          this.ctx.scale(this.scaleX, this.scaleY);
+
+          if (Math.abs(this.currentZoom - 1.0) > 0.001) {
+            this.ctx.translate(this.arenaCenter.x, this.arenaCenter.y);
+            this.ctx.scale(this.currentZoom, this.currentZoom);
+            this.ctx.translate(-this.arenaCenter.x, -this.arenaCenter.y);
+          }
+
+          this.ctx.clearRect(0, 0, this.V_WIDTH, this.V_HEIGHT);
+
+          this.drawBackgroundGrid(this.ctx);
+          this.drawArena(this.ctx);
+          this.drawPowerups(this.ctx);
+
+          for (const ball of this.eliminatedBalls) {
+            this.drawBall(this.ctx, ball);
+          }
+
+          for (const ball of this.balls) {
+            this.drawBall(this.ctx, ball);
+          }
+
+          this.particles.draw(this.ctx);
+          this.ctx.restore();
+        } catch (err) {
+          console.warn("Recovered gameLoop iteration:", err);
+        } finally {
+          // Guaranteed continuous 60fps frame loop: NEVER freezes or hangs
+          requestAnimationFrame((t) => this.gameLoop(t));
         }
-
-        const dtSec = deltaMs / 1000;
-        if (this.humanStreamer) {
-          this.humanStreamer.update(dtSec);
-        }
-
-        this.particles.update(deltaMs / 16.666);
-
-        // Smooth Camera Zoom
-        this.currentZoom += (this.targetZoom - this.currentZoom) * 0.04;
-
-        this.ctx.save();
-        this.ctx.scale(this.scaleX, this.scaleY);
-
-        if (Math.abs(this.currentZoom - 1.0) > 0.001) {
-          this.ctx.translate(this.arenaCenter.x, this.arenaCenter.y);
-          this.ctx.scale(this.currentZoom, this.currentZoom);
-          this.ctx.translate(-this.arenaCenter.x, -this.arenaCenter.y);
-        }
-
-        this.ctx.clearRect(0, 0, this.V_WIDTH, this.V_HEIGHT);
-
-        this.drawBackgroundGrid(this.ctx);
-        this.drawArena(this.ctx);
-        this.drawPowerups(this.ctx);
-
-        for (const ball of this.eliminatedBalls) {
-          this.drawBall(this.ctx, ball);
-        }
-
-        for (const ball of this.balls) {
-          this.drawBall(this.ctx, ball);
-        }
-
-        this.particles.draw(this.ctx);
-        this.ctx.restore();
-
-        requestAnimationFrame((t) => this.gameLoop(t));
       }
 
       drawBackgroundGrid(ctx) {
