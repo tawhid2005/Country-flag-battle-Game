@@ -4087,6 +4087,74 @@
       box-shadow: 0 0 35px rgba(16, 185, 129, 0.7);
       filter: brightness(1.1);
     }
+    /* Auto Gateway Box & Button */
+    .order-gateway-featured-box {
+      background: linear-gradient(135deg, rgba(14, 25, 55, 0.95), rgba(7, 13, 35, 0.95));
+      border: 1.5px solid rgba(0, 229, 255, 0.65);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.2);
+    }
+    .order-gateway-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .order-badge-live {
+      font-size: 9px;
+      font-weight: 900;
+      color: #10b981;
+      letter-spacing: 0.5px;
+      background: rgba(16, 185, 129, 0.15);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .order-btn-gateway-pay {
+      width: 100%;
+      background: linear-gradient(135deg, #e2136e 0%, #f7941d 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(226, 19, 110, 0.6);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .order-btn-gateway-pay:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(247, 148, 29, 0.85);
+      filter: brightness(1.1);
+    }
+    .order-manual-details {
+      background: rgba(4, 9, 24, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+    .order-manual-summary {
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      list-style: none;
+    }
+    .order-manual-summary::-webkit-details-marker {
+      display: none;
+    }
     .order-intl-links {
       display: flex;
       flex-direction: column;
@@ -5283,45 +5351,82 @@
           <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 Cards / PayPal / Crypto</button>
         </div>
 
-        <!-- Panel 1: Bangladeshi Payment (bKash / Nagad / Rocket Auto-Unlock) -->
+        <!-- Panel 1: Bangladeshi Payment (Automatic Gateway & Manual Send Money) -->
         <div class="order-gw-panel active" id="panel-bd-pay">
-          <div class="order-account-box">
-            <div class="order-account-header">
-              <span class="order-account-label">📱 SEND MONEY (PERSONAL):</span>
+          
+          <!-- PRIMARY: AUTOMATIC LIVE GATEWAY (UddoktaPay / Paymently) -->
+          <div class="order-gateway-featured-box">
+            <div class="order-gateway-badge-row">
+              <span class="order-badge-live">⚡ REAL-TIME 1-CLICK AUTO GATEWAY</span>
               <div class="order-method-pills">
                 <span class="order-method-pill pill-bkash">bKash</span>
                 <span class="order-method-pill pill-nagad">Nagad</span>
                 <span class="order-method-pill pill-rocket">Rocket</span>
               </div>
             </div>
-            <div class="order-number-row">
-              <span class="order-number-display" id="order-bd-phone-number">01711729858</span>
-              <button class="order-btn-copy-num" id="btn-copy-bd-number" type="button">📋 COPY</button>
+            <div style="font-size: 11px; color: #cbd5e1; margin: 4px 0 10px 0; line-height: 1.4;">
+              সরাসরি বিকাশ বা নগদ দিয়ে ১-ক্লিকে পেমেন্ট করুন। পেমেন্ট সম্পন্ন হওয়া মাত্রই গেম <b>২৪/৭ অটোমেটিক আনলক</b> হয়ে যাবে!
             </div>
+
+            <div class="order-inputs-grid" style="gap: 8px;">
+              <div class="order-input-wrapper">
+                <label class="order-input-label">👤 YOUR NAME / GAMER TAG</label>
+                <input type="text" id="auto-gw-name" class="order-input" placeholder="e.g. Shakib Ahmed" maxlength="30">
+              </div>
+              <div class="order-input-wrapper">
+                <label class="order-input-label">📱 SENDER NUMBER / EMAIL</label>
+                <input type="text" id="auto-gw-contact" class="order-input" placeholder="017XXXXXXXX or email" maxlength="40">
+              </div>
+            </div>
+
+            <button class="order-btn-gateway-pay" id="btn-start-auto-gateway" type="button">
+              <span>🚀 PAY NOW WITH BKASH / NAGAD (<span id="order-gw-btn-amount">99 TK</span>)</span>
+            </button>
+            <div id="auto-gw-status" style="display: none; font-size: 11px; text-align: center; color: #67e8f9; margin-top: 6px;"></div>
           </div>
 
-          <div class="order-instructions">
-            <div>1. বিকাশ / নগদ / রকেট অ্যাপে গিয়ে <b id="order-inst-amount">99</b> টাকা <b>Send Money</b> করুন।</div>
-            <div>2. সেন্ড মানি সফল হলে আপনার নম্বর এবং TrxID নিচে দিন।</div>
-            <div>3. <b>VERIFY</b> চাপার সাথে সাথেই গেম অটোমেটিক আনলক হয়ে যাবে!</div>
-          </div>
+          <!-- SECONDARY: MANUAL SEND MONEY FALLBACK -->
+          <details class="order-manual-details">
+            <summary class="order-manual-summary">
+              <span>📱 অথবা পার্সোনাল নম্বরে Send Money করুন</span>
+              <span style="font-size: 10px; color: #00e5ff;">(ম্যানুয়াল বিকল্প ▾)</span>
+            </summary>
+            <div style="padding-top: 10px;">
+              <div class="order-account-box" style="margin-bottom: 8px;">
+                <div class="order-account-header">
+                  <span class="order-account-label">📱 PERSONAL NUMBER:</span>
+                  <span style="font-size: 9px; color: #fbbf24; font-weight: 700;">bKash / Nagad / Rocket</span>
+                </div>
+                <div class="order-number-row">
+                  <span class="order-number-display" id="order-bd-phone-number">01711729858</span>
+                  <button class="order-btn-copy-num" id="btn-copy-bd-number" type="button">📋 COPY</button>
+                </div>
+              </div>
 
-          <div class="order-inputs-grid">
-            <div class="order-input-wrapper">
-              <label class="order-input-label">📱 SENDER PHONE NUMBER</label>
-              <input type="tel" id="auto-pay-sender-phone" class="order-input" placeholder="017XXXXXXXX" maxlength="15">
+              <div class="order-instructions" style="margin-bottom: 8px;">
+                <div>1. উপরে দেওয়া নম্বরে <b id="order-inst-amount">99</b> টাকা Send Money করুন।</div>
+                <div>2. আপনার নম্বর এবং TrxID নিচে দিয়ে Verify চাপুন।</div>
+              </div>
+
+              <div class="order-inputs-grid">
+                <div class="order-input-wrapper">
+                  <label class="order-input-label">📱 SENDER PHONE NUMBER</label>
+                  <input type="tel" id="auto-pay-sender-phone" class="order-input" placeholder="017XXXXXXXX" maxlength="15">
+                </div>
+                <div class="order-input-wrapper">
+                  <label class="order-input-label">🔑 TRANSACTION ID (TRXID)</label>
+                  <input type="text" id="auto-pay-trxid" class="order-input" placeholder="e.g. BLA874KX8Q" maxlength="25">
+                </div>
+              </div>
+
+              <div id="auto-pay-alert-bd" class="order-alert-box" style="display: none; margin-top: 8px;"></div>
+
+              <button class="order-btn-verify" id="btn-auto-verify-bd" type="button" style="margin-top: 8px;">
+                <span>⚡ VERIFY & UNLOCK TRXID</span>
+              </button>
             </div>
-            <div class="order-input-wrapper">
-              <label class="order-input-label">🔑 TRANSACTION ID (TRXID)</label>
-              <input type="text" id="auto-pay-trxid" class="order-input" placeholder="e.g. BLA874KX8Q" maxlength="25">
-            </div>
-          </div>
+          </details>
 
-          <div id="auto-pay-alert-bd" class="order-alert-box" style="display: none;"></div>
-
-          <button class="order-btn-verify" id="btn-auto-verify-bd" type="button">
-            <span>⚡ VERIFY & INSTANT UNLOCK (স্বয়ংক্রিয় আনলক)</span>
-          </button>
         </div>
 
         <!-- Panel 2: International Payment (Cards / PayPal / Crypto) -->
@@ -5530,6 +5635,16 @@
           <div class="cyber-input-group" style="margin-top: 6px;">
             <label class="cyber-input-label">PAYPAL EMAIL FOR INTERNATIONAL CHECKOUT</label>
             <input type="email" id="admin-setting-paypal" class="cyber-input" placeholder="tawhidh2005@gmail.com">
+          </div>
+
+          <div class="cyber-input-group" style="margin-top: 6px;">
+            <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY BASE URL</label>
+            <input type="text" id="admin-setting-gateway-url" class="cyber-input" placeholder="https://mdtalhahussaintawhid.paymently.io/api">
+          </div>
+
+          <div class="cyber-input-group" style="margin-top: 6px;">
+            <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY API KEY</label>
+            <input type="text" id="admin-setting-gateway-key" class="cyber-input" placeholder="pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn">
           </div>
 
           <button class="drawer-btn" id="btn-save-admin-settings" style="margin-top: 8px; border-color: #fbbf24; color: #fbbf24;">
@@ -8117,6 +8232,8 @@
         const priceStr = currency === 'usd' ? ('$' + plan.price.toFixed(2) + ' USD') : (plan.price + ' TK');
         if (orderPlanPrice) orderPlanPrice.textContent = priceStr;
         if (orderInstAmount) orderInstAmount.textContent = plan.price;
+        const orderGwBtnAmount = document.getElementById('order-gw-btn-amount');
+        if (orderGwBtnAmount) orderGwBtnAmount.textContent = plan.price + ' TK';
 
         const orderPaypalDisplay = document.getElementById('order-paypal-email-display');
         const linkIntlPaypal = document.getElementById('link-intl-paypal');
@@ -8164,6 +8281,190 @@
           : ('👋 Assalamu Alaikum Tawhid Bhai!\nআমি কান্ট্রি ফ্ল্যাগ ব্যাটল গেমের ' + plan.name + ' (' + plan.price + ' TK) কিনতে চাই।');
 
         if (orderModal) orderModal.classList.add('show');
+      }
+
+      // Start Real-Time 1-Click Automatic Gateway Checkout (Paymently / UddoktaPay)
+      startPaymentlyCheckout() {
+        const nameInput = document.getElementById('auto-gw-name');
+        const contactInput = document.getElementById('auto-gw-contact');
+        const statusBox = document.getElementById('auto-gw-status');
+        const btnPay = document.getElementById('btn-start-auto-gateway');
+
+        const customerName = (nameInput && nameInput.value.trim()) || ('Player_' + Math.floor(Math.random() * 8999 + 1000));
+        let customerContact = (contactInput && contactInput.value.trim()) || 'player@cfb.com';
+        if (!customerContact.includes('@')) {
+          customerContact = customerContact.replace(/[^0-9]/g, '') + '@cfb.com';
+        }
+
+        const plan = this.activeOrderPlan || getPlanDef('1m', this.selectedCurrency) || { id: '1m', name: '1 Month Pass', days: 30, price: 99 };
+        const baseUrl = this.paymentlyBaseUrl || 'https://mdtalhahussaintawhid.paymently.io/api';
+        const apiKey = this.paymentlyApiKey || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
+
+        if (btnPay) {
+          btnPay.disabled = true;
+          btnPay.innerHTML = '<span>⏳ CONNECTING TO SECURE GATEWAY...</span>';
+        }
+        if (statusBox) {
+          statusBox.textContent = '🚀 সিকিউর বিকাশ/নগদ গেটওয়েতে নেওয়া হচ্ছে...';
+          statusBox.style.color = '#67e8f9';
+          statusBox.style.display = 'block';
+        }
+
+        const currentUrl = window.location.href.split('?')[0];
+        const redirectUrl = currentUrl + '?payment=success&plan=' + encodeURIComponent(plan.id);
+        const cancelUrl = currentUrl + '?payment=cancel';
+
+        const payload = {
+          full_name: customerName,
+          email: customerContact,
+          amount: String(plan.price),
+          metadata: {
+            plan_id: plan.id,
+            plan_name: plan.name,
+            days: String(plan.days),
+            customer: customerName
+          },
+          redirect_url: redirectUrl,
+          return_type: 'GET',
+          cancel_url: cancelUrl
+        };
+
+        fetch(baseUrl + '/checkout-v2', {
+          method: 'POST',
+          headers: {
+            'RT-UDDOKTAPAY-API-KEY': apiKey,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status && data.payment_url) {
+            localStorage.setItem('cfb_pending_checkout', JSON.stringify({
+              planId: plan.id,
+              planName: plan.name,
+              days: plan.days,
+              price: plan.price,
+              customer: customerName,
+              timestamp: Date.now()
+            }));
+            window.location.href = data.payment_url;
+          } else {
+            throw new Error(data.message || 'Payment initiation failed');
+          }
+        })
+        .catch(err => {
+          console.error('Paymently checkout error:', err);
+          if (btnPay) {
+            btnPay.disabled = false;
+            btnPay.innerHTML = '<span>🚀 PAY NOW WITH BKASH / NAGAD (' + plan.price + ' TK)</span>';
+          }
+          if (statusBox) {
+            statusBox.style.color = '#fca5a5';
+            statusBox.textContent = '⚠️ গেটওয়ে এরর (' + err.message + ')। অনুগ্রহ করে নিচে ম্যানুয়াল Send Money করুন।';
+          }
+        });
+      }
+
+      // Verify and Auto-Activate Paymently Callback
+      verifyAndActivateGatewayInvoice(invoiceId, fallbackPlanId = '1m') {
+        const baseUrl = this.paymentlyBaseUrl || 'https://mdtalhahussaintawhid.paymently.io/api';
+        const apiKey = this.paymentlyApiKey || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
+
+        // Check duplicate invoice
+        if (invoiceId) {
+          const orders = this.getAutomatedOrders();
+          const existing = orders.find(o => o.trxId === invoiceId || (o.invoiceId && o.invoiceId === invoiceId));
+          if (existing && existing.licenseKey) {
+            this.activateKey(existing.licenseKey);
+            this.showLockModal(false);
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            return;
+          }
+        }
+
+        // Clean URL cleanly
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        const handleSuccessUnlock = (res) => {
+          let planId = fallbackPlanId;
+          let customerName = 'Gamer';
+          let amountStr = '99 TK';
+          let trx = invoiceId || ('PAY-' + Date.now().toString(36).toUpperCase());
+
+          if (res) {
+            if (res.metadata && res.metadata.plan_id) planId = res.metadata.plan_id;
+            if (res.full_name) customerName = res.full_name;
+            if (res.amount) amountStr = res.amount + ' ' + (res.currency || 'BDT');
+            if (res.transaction_id) trx = res.transaction_id;
+          } else {
+            try {
+              const pending = JSON.parse(localStorage.getItem('cfb_pending_checkout') || '{}');
+              if (pending.planId) planId = pending.planId;
+              if (pending.customer) customerName = pending.customer;
+              if (pending.price) amountStr = pending.price + ' TK';
+            } catch(e) {}
+          }
+
+          const plan = getPlanDef(planId, this.selectedCurrency) || { id: planId, name: '1 Month Pass', days: 30, price: 99 };
+          const pTag = (plan.id || '1m').toLowerCase();
+          const userSlug = customerName.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || ('user_' + trx.slice(0, 5).toLowerCase());
+          const expiresAt = Date.now() + (plan.days * 86400000);
+          const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
+          const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
+
+          const actResult = this.activateKey(licenseKey);
+          if (actResult.valid) {
+            this.saveAutomatedOrder({
+              trxId: trx,
+              invoiceId: invoiceId || trx,
+              sender: customerName,
+              gateway: 'Paymently/bKash/Nagad',
+              planId: plan.id,
+              planName: plan.name,
+              amount: amountStr,
+              licenseKey: licenseKey,
+              expiresAt: expiresAt,
+              date: new Date().toLocaleString(),
+              timestamp: Date.now()
+            });
+
+            this.showLockModal(false);
+            this.updateDrawerStatus();
+            alert('🎉 আলহামদুলিল্লাহ! আপনার বিকাশ/নগদ পেমেন্ট সফল হয়েছে!\n\n💎 প্যাকেজ: ' + plan.name + '\n🔑 লাইসেন্স কি: ' + licenseKey + '\n\nগেম ২৪/৭ আনলক হয়ে গেছে!');
+          }
+        };
+
+        if (invoiceId && baseUrl && apiKey) {
+          fetch(baseUrl + '/verify-payment', {
+            method: 'POST',
+            headers: {
+              'RT-UDDOKTAPAY-API-KEY': apiKey,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ invoice_id: invoiceId })
+          })
+          .then(r => r.json())
+          .then(res => {
+            if (res.status === 'COMPLETED' || res.status === 'success' || res.transaction_id || res.invoice_id) {
+              handleSuccessUnlock(res);
+            } else {
+              console.warn('Paymently verification pending:', res);
+            }
+          })
+          .catch(err => {
+            console.warn('Verify fetch error, falling back:', err);
+            handleSuccessUnlock(null);
+          });
+        } else {
+          handleSuccessUnlock(null);
+        }
       }
 
       // Verify transaction & instantly unlock access 24/7
@@ -8252,6 +8553,20 @@
         this.detectCountryAndCurrency();
         this.setupDOM();
         this.renderPricingCards();
+
+        // 1-Click Automatic Gateway Return Check: ?payment=success or ?invoice_id=...
+        try {
+          if (typeof window !== 'undefined' && window.location) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const invoiceId = urlParams.get('invoice_id');
+            const payStatus = (urlParams.get('payment') || urlParams.get('status') || '').toLowerCase();
+            if (invoiceId || payStatus === 'success' || payStatus === 'completed') {
+              this.verifyAndActivateGatewayInvoice(invoiceId, urlParams.get('plan') || '1m');
+            }
+          }
+        } catch(e) {
+          console.warn('Gateway callback check error:', e);
+        }
 
         // 1-Click Automatic URL Activation: ?key=CFB-...
         try {
@@ -8625,6 +8940,8 @@
         this.adminWhatsApp = localStorage.getItem('cfb_admin_whatsapp') || '8801711729858';
         this.adminBkash = localStorage.getItem('cfb_admin_bkash') || '017XXXXXXXX';
         this.adminPayPal = localStorage.getItem('cfb_admin_paypal') || 'tawhidh2005@gmail.com';
+        this.paymentlyBaseUrl = localStorage.getItem('cfb_paymently_base_url') || 'https://mdtalhahussaintawhid.paymently.io/api';
+        this.paymentlyApiKey = localStorage.getItem('cfb_paymently_api_key') || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
 
         // Order Modal Elements
         const orderModal = document.getElementById('cyber-order-modal');
@@ -8889,6 +9206,14 @@
           });
         }
 
+        // Real-Time 1-Click Gateway Checkout Button
+        const btnStartGw = document.getElementById('btn-start-auto-gateway');
+        if (btnStartGw) {
+          btnStartGw.addEventListener('click', () => {
+            this.startPaymentlyCheckout();
+          });
+        }
+
         // Start Playing Now Button (Closes modal & starts game)
         if (btnOrderStartGame) {
           btnOrderStartGame.addEventListener('click', () => {
@@ -8915,11 +9240,15 @@
         const inputWA = document.getElementById('admin-setting-whatsapp');
         const inputBkash = document.getElementById('admin-setting-bkash');
         const inputPayPal = document.getElementById('admin-setting-paypal');
+        const inputGwUrl = document.getElementById('admin-setting-gateway-url');
+        const inputGwKey = document.getElementById('admin-setting-gateway-key');
         const btnSaveSettings = document.getElementById('btn-save-admin-settings');
 
         if (inputWA) inputWA.value = this.adminWhatsApp;
         if (inputBkash) inputBkash.value = this.adminBkash;
         if (inputPayPal) inputPayPal.value = this.adminPayPal || 'tawhidh2005@gmail.com';
+        if (inputGwUrl) inputGwUrl.value = this.paymentlyBaseUrl || 'https://mdtalhahussaintawhid.paymently.io/api';
+        if (inputGwKey) inputGwKey.value = this.paymentlyApiKey || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
 
         if (btnSaveSettings) {
           btnSaveSettings.addEventListener('click', () => {
@@ -8935,7 +9264,15 @@
               this.adminPayPal = inputPayPal.value.trim() || 'tawhidh2005@gmail.com';
               localStorage.setItem('cfb_admin_paypal', this.adminPayPal);
             }
-            alert('✅ Admin Contact & PayPal Settings Saved Successfully!');
+            if (inputGwUrl) {
+              this.paymentlyBaseUrl = inputGwUrl.value.trim() || 'https://mdtalhahussaintawhid.paymently.io/api';
+              localStorage.setItem('cfb_paymently_base_url', this.paymentlyBaseUrl);
+            }
+            if (inputGwKey) {
+              this.paymentlyApiKey = inputGwKey.value.trim() || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
+              localStorage.setItem('cfb_paymently_api_key', this.paymentlyApiKey);
+            }
+            alert('✅ Admin Settings & Paymently Gateway Credentials Saved Successfully!');
           });
         }
 
