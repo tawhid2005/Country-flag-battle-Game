@@ -8310,9 +8310,20 @@
           statusBox.style.display = 'block';
         }
 
-        const currentUrl = window.location.href.split('?')[0];
-        const redirectUrl = currentUrl + '?payment=success&plan=' + encodeURIComponent(plan.id);
-        const cancelUrl = currentUrl + '?payment=cancel';
+        // Always ensure a valid http/https URL for Paymently validator (handles file:/// local test gracefully)
+        let baseSiteUrl = 'https://tawhid2005.github.io/Country-flag-battle-Game/';
+        if (typeof window !== 'undefined' && window.location) {
+          const proto = window.location.protocol;
+          if (proto === 'http:' || proto === 'https:') {
+            baseSiteUrl = window.location.origin + window.location.pathname;
+          }
+        }
+        if (!baseSiteUrl.endsWith('/') && !baseSiteUrl.endsWith('.html')) {
+          baseSiteUrl += '/';
+        }
+
+        const redirectUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=success&plan=' + encodeURIComponent(plan.id);
+        const cancelUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=cancel';
 
         const payload = {
           full_name: customerName,
