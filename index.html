@@ -5383,6 +5383,11 @@
               <span>🚀 PAY NOW WITH BKASH / NAGAD (<span id="order-gw-btn-amount">99 TK</span>)</span>
             </button>
             <div id="auto-gw-status" style="display: none; font-size: 11px; text-align: center; color: #67e8f9; margin-top: 6px;"></div>
+            <div style="display: flex; justify-content: center; margin-top: 8px;">
+              <a id="btn-emergency-wa-order" href="#" style="font-size: 10px; color: #4ade80; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; background: rgba(37, 211, 102, 0.08); border: 1px solid rgba(37, 211, 102, 0.25);">
+                <span>💬 গেটওয়ে ছাড়া সরাসরি WhatsApp এ কিনতে চান? ক্লিক করুন 📲</span>
+              </a>
+            </div>
           </div>
 
           <!-- SECONDARY: MANUAL SEND MONEY FALLBACK -->
@@ -8283,6 +8288,57 @@
         if (orderModal) orderModal.classList.add('show');
       }
 
+      // Automatic WhatsApp Redirection when Gateway is unavailable or on error
+      triggerWhatsAppFallback(customerName, customerContact, plan, errorReason = '') {
+        const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
+        const reasonLine = errorReason ? ('⚠️ এরর তথ্য: ' + errorReason + '\n') : '';
+        const orderMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
+          '🎮 কান্ট্রি ফ্ল্যাগ ব্যাটল গেমে পেমেন্ট গেটওয়েতে সমস্যা হচ্ছে:\n' +
+          '━━━━━━━━━━━━━━━━━━━━━\n' +
+          '💎 প্যাকেজ: ' + plan.name + ' (' + plan.price + ' TK)\n' +
+          '⏳ মেয়াদ: ' + plan.days + ' Days 24/7 Access\n' +
+          '👤 কাস্টমার নাম: ' + customerName + '\n' +
+          '📱 কন্টাক্ট নম্বর: ' + customerContact + '\n' +
+          reasonLine +
+          '━━━━━━━━━━━━━━━━━━━━━\n' +
+          'দয়া করে আমাকে আপনার বিকাশ/নগদ পার্সোনাল নম্বর দিন, আমি টাকা পাঠিয়ে গেম এক্টিভ করতে চাই!';
+
+        const encoded = encodeURIComponent(orderMsg);
+        const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
+
+        // Auto launch WhatsApp in new tab
+        try {
+          window.open(waUrl, '_blank');
+        } catch(e) {
+          console.warn('WhatsApp auto pop-up note:', e);
+        }
+
+        // Show prominent interactive fallback card in modal
+        const statusBox = document.getElementById('auto-gw-status');
+        if (statusBox) {
+          statusBox.style.display = 'block';
+          statusBox.innerHTML = `
+            <div style="background: rgba(239, 68, 68, 0.15); border: 1.5px solid rgba(239, 68, 68, 0.5); border-radius: 10px; padding: 12px; margin-top: 8px; text-align: left;">
+              <div style="color: #fca5a5; font-weight: 800; font-size: 11px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                <span>⚠️ গেটওয়েতে সমস্যা হয়েছে! সরাসরি WhatsApp এ পাঠানো হচ্ছে...</span>
+              </div>
+              <div style="color: #cbd5e1; font-size: 10px; line-height: 1.4; margin-bottom: 8px;">
+                আপনার অর্ডার তথ্য নিয়ে সরাসরি WhatsApp ওপেন করা হয়েছে। উইন্ডো না খুললে নিচের বাটনে চাপ দিন:
+              </div>
+              <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-order-whatsapp" style="padding: 10px; font-size: 11px; text-decoration: none; width: 100%; box-sizing: border-box; text-align: center; border-radius: 8px;">
+                <span>📲 সরাসরি WhatsApp এ মেসেজ পাঠান (তাৎক্ষণিক সমাধান)</span>
+              </a>
+            </div>
+          `;
+        }
+
+        const btnPay = document.getElementById('btn-start-auto-gateway');
+        if (btnPay) {
+          btnPay.disabled = false;
+          btnPay.innerHTML = '<span>📲 WhatsApp এ পাঠান বা পুনরায় চেষ্টা করুন</span>';
+        }
+      }
+
       // Start Real-Time 1-Click Automatic Gateway Checkout (Paymently / UddoktaPay)
       startPaymentlyCheckout() {
         const nameInput = document.getElementById('auto-gw-name');
@@ -8340,6 +8396,10 @@
           cancel_url: cancelUrl
         };
 
+        // 8-second timeout controller so if gateway hangs, WhatsApp immediately triggers
+        const abortCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timeoutTimer = abortCtrl ? setTimeout(() => abortCtrl.abort(), 8500) : null;
+
         fetch(baseUrl + '/checkout-v2', {
           method: 'POST',
           headers: {
@@ -8347,11 +8407,15 @@
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          signal: abortCtrl ? abortCtrl.signal : undefined
         })
-        .then(res => res.json())
+        .then(res => {
+          if (timeoutTimer) clearTimeout(timeoutTimer);
+          return res.json();
+        })
         .then(data => {
-          if (data.status && data.payment_url) {
+          if (data && data.status && data.payment_url) {
             localStorage.setItem('cfb_pending_checkout', JSON.stringify({
               planId: plan.id,
               planName: plan.name,
@@ -8362,19 +8426,15 @@
             }));
             window.location.href = data.payment_url;
           } else {
-            throw new Error(data.message || 'Payment initiation failed');
+            const msg = (data && data.message) ? data.message : 'Gateway response invalid';
+            this.triggerWhatsAppFallback(customerName, customerContact, plan, msg);
           }
         })
         .catch(err => {
-          console.error('Paymently checkout error:', err);
-          if (btnPay) {
-            btnPay.disabled = false;
-            btnPay.innerHTML = '<span>🚀 PAY NOW WITH BKASH / NAGAD (' + plan.price + ' TK)</span>';
-          }
-          if (statusBox) {
-            statusBox.style.color = '#fca5a5';
-            statusBox.textContent = '⚠️ গেটওয়ে এরর (' + err.message + ')। অনুগ্রহ করে নিচে ম্যানুয়াল Send Money করুন।';
-          }
+          if (timeoutTimer) clearTimeout(timeoutTimer);
+          console.error('Paymently checkout error, opening WhatsApp:', err);
+          const errMsg = err.name === 'AbortError' ? 'Gateway Timeout (Slow network)' : err.message;
+          this.triggerWhatsAppFallback(customerName, customerContact, plan, errMsg);
         });
       }
 
@@ -9222,6 +9282,20 @@
         if (btnStartGw) {
           btnStartGw.addEventListener('click', () => {
             this.startPaymentlyCheckout();
+          });
+        }
+
+        // Direct Emergency WhatsApp Button
+        const btnEmergencyWa = document.getElementById('btn-emergency-wa-order');
+        if (btnEmergencyWa) {
+          btnEmergencyWa.addEventListener('click', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('auto-gw-name');
+            const contactInput = document.getElementById('auto-gw-contact');
+            const customerName = (nameInput && nameInput.value.trim()) || 'Player';
+            const customerContact = (contactInput && contactInput.value.trim()) || 'Not provided';
+            const plan = this.activeOrderPlan || getPlanDef('1m', this.selectedCurrency) || { id: '1m', name: '1 Month Pass', days: 30, price: 99 };
+            this.triggerWhatsAppFallback(customerName, customerContact, plan, 'Manual WhatsApp Request');
           });
         }
 
