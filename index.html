@@ -3975,6 +3975,8 @@
     .pill-bkash { background: #e2136e; }
     .pill-nagad { background: #f7941d; }
     .pill-rocket { background: #8c3494; }
+    .pill-binance { background: #F3BA2F; color: #0b0e14; font-weight: 900; }
+    .pill-bybit { background: #17181e; color: #F7A600; border: 1px solid rgba(247, 166, 0, 0.7); font-weight: 900; }
     .order-number-row {
       display: flex;
       justify-content: space-between;
@@ -5347,14 +5349,14 @@
 
         <!-- Gateway Selector Tabs -->
         <div class="order-gateway-tabs" id="order-tabs-wrapper">
-          <button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">🇧🇩 bKash / Nagad / Rocket</button>
-          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 Cards / PayPal / Crypto</button>
+          <button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">🇧🇩 bKash / Nagad / Binance / Bybit</button>
+          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 PayPal / Cards / USDT</button>
         </div>
 
         <!-- Panel 1: Bangladeshi Payment (Automatic Gateway & Manual Send Money) -->
         <div class="order-gw-panel active" id="panel-bd-pay">
           
-          <!-- PRIMARY: AUTOMATIC LIVE GATEWAY (UddoktaPay / Paymently) -->
+          <!-- PRIMARY: AUTOMATIC LIVE GATEWAY (Paymently / bKash / Nagad / Binance / Bybit) -->
           <div class="order-gateway-featured-box">
             <div class="order-gateway-badge-row">
               <span class="order-badge-live">⚡ REAL-TIME 1-CLICK AUTO GATEWAY</span>
@@ -5362,10 +5364,12 @@
                 <span class="order-method-pill pill-bkash">bKash</span>
                 <span class="order-method-pill pill-nagad">Nagad</span>
                 <span class="order-method-pill pill-rocket">Rocket</span>
+                <span class="order-method-pill pill-binance">Binance</span>
+                <span class="order-method-pill pill-bybit">Bybit</span>
               </div>
             </div>
             <div style="font-size: 11px; color: #cbd5e1; margin: 4px 0 10px 0; line-height: 1.4;">
-              সরাসরি বিকাশ বা নগদ দিয়ে ১-ক্লিকে পেমেন্ট করুন। পেমেন্ট সম্পন্ন হওয়া মাত্রই গেম <b>২৪/৭ অটোমেটিক আনলক</b> হয়ে যাবে!
+              বিকাশ, নগদ, রকেট, Binance ও Bybit দিয়ে ১-ক্লিকে পেমেন্ট করুন। পেমেন্ট সম্পন্ন হওয়া মাত্রই গেম <b>২৪/৭ অটোমেটিক আনলক</b> হয়ে যাবে!
             </div>
 
             <div class="order-inputs-grid" style="gap: 8px;">
@@ -5380,7 +5384,7 @@
             </div>
 
             <button class="order-btn-gateway-pay" id="btn-start-auto-gateway" type="button">
-              <span>🚀 PAY NOW WITH BKASH / NAGAD (<span id="order-gw-btn-amount">99 TK</span>)</span>
+              <span>🚀 PAY NOW (BKASH / NAGAD / BINANCE / BYBIT) (<span id="order-gw-btn-amount">99 TK</span>)</span>
             </button>
             <div id="auto-gw-status" style="display: none; font-size: 11px; text-align: center; color: #67e8f9; margin-top: 6px;"></div>
             <div style="display: flex; justify-content: center; margin-top: 8px;">
@@ -5451,6 +5455,9 @@
           </div>
 
           <div class="order-intl-links">
+            <button class="order-btn-gateway-pay" id="btn-start-intl-gateway" type="button" style="background: linear-gradient(135deg, #F3BA2F 0%, #F7A600 100%); color: #0b0e14; box-shadow: 0 0 22px rgba(243, 186, 47, 0.5); margin: 0 0 6px 0; padding: 12px; font-size: 12px;">
+              <span>⚡ 1-CLICK PAY VIA BINANCE / BYBIT (AUTO GATEWAY)</span>
+            </button>
             <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=tawhidh2005%40gmail.com&item_name=Country+Flag+Battle+Royale+Streamer+Pass&currency_code=USD" target="_blank" rel="noopener noreferrer" class="btn-intl-link btn-paypal" id="link-intl-paypal">
               <span>🅿️ 1-CLICK PAY VIA PAYPAL (tawhidh2005@gmail.com)</span>
             </a>
@@ -9281,6 +9288,14 @@
         const btnStartGw = document.getElementById('btn-start-auto-gateway');
         if (btnStartGw) {
           btnStartGw.addEventListener('click', () => {
+            this.startPaymentlyCheckout();
+          });
+        }
+
+        // Real-Time Binance / Bybit Checkout Button (International Tab)
+        const btnStartIntlGw = document.getElementById('btn-start-intl-gateway');
+        if (btnStartIntlGw) {
+          btnStartIntlGw.addEventListener('click', () => {
             this.startPaymentlyCheckout();
           });
         }
