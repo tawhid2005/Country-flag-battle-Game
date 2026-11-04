@@ -8386,7 +8386,7 @@
         }
 
         const redirectUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=success&plan=' + encodeURIComponent(plan.id);
-        const cancelUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=cancel';
+        const cancelUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=fail&reason=Payment_Cancelled_by_User';
 
         const payload = {
           full_name: customerName,
@@ -8443,6 +8443,63 @@
           const errMsg = err.name === 'AbortError' ? 'Gateway Timeout (Slow network)' : err.message;
           this.triggerWhatsAppFallback(customerName, customerContact, plan, errMsg);
         });
+      }
+
+      // Handle Payment Failure / Cancellation: Auto-open WhatsApp with Order details
+      handlePaymentFailureWhatsApp(reason = 'Payment Failed on Gateway') {
+        let pending = {};
+        try {
+          pending = JSON.parse(localStorage.getItem('cfb_pending_checkout') || '{}');
+        } catch(e) {}
+
+        const planName = pending.planName || '1 Month Pass';
+        const planPrice = pending.price || '99';
+        const customer = pending.customer || 'Player';
+        const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
+
+        const failMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
+          '❌ কান্ট্রি ফ্ল্যাগ ব্যাটল গেমে পেমেন্ট করতে গিয়ে সমস্যা / ফেইল হয়েছে:\n' +
+          '━━━━━━━━━━━━━━━━━━━━━\n' +
+          '💎 প্যাকেজ: ' + planName + ' (' + planPrice + ' TK)\n' +
+          '👤 কাস্টমার নাম: ' + customer + '\n' +
+          '⚠️ স্ট্যাটাস: ' + reason + '\n' +
+          '━━━━━━━━━━━━━━━━━━━━━\n' +
+          'দয়া করে আমাকে আপনার বিকাশ/নগদ পার্সোনাল নম্বর দিন, আমি টাকা পাঠিয়ে গেম ম্যানুয়ালি এক্টিভ করতে চাই!';
+
+        const encoded = encodeURIComponent(failMsg);
+        const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
+
+        // Clean URL cleanly so refreshing doesn't loop
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Auto launch WhatsApp in new tab
+        try {
+          window.open(waUrl, '_blank');
+        } catch(e) {
+          console.warn('WhatsApp auto pop-up note:', e);
+        }
+
+        // Open Order Modal and display direct failure alert with 1-click WhatsApp button
+        this.openOrderModal(pending.planId || '1m', this.selectedCurrency);
+        const statusBox = document.getElementById('auto-gw-status');
+        if (statusBox) {
+          statusBox.style.display = 'block';
+          statusBox.innerHTML = `
+            <div style="background: rgba(239, 68, 68, 0.18); border: 1.5px solid rgba(239, 68, 68, 0.6); border-radius: 10px; padding: 12px; margin-top: 8px; text-align: left;">
+              <div style="color: #fca5a5; font-weight: 800; font-size: 11px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                <span>❌ পেমেন্ট সম্পন্ন হয়নি (ফেইল হয়েছে)!</span>
+              </div>
+              <div style="color: #cbd5e1; font-size: 10px; line-height: 1.4; margin-bottom: 8px;">
+                অর্ডার তথ্যসহ আপনার জন্য সরাসরি Tawhid Bhai-এর WhatsApp ওপেন করা হয়েছে। উইন্ডো না খুললে নিচের বাটনে চাপ দিন:
+              </div>
+              <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-order-whatsapp" style="padding: 10px; font-size: 11px; text-decoration: none; width: 100%; box-sizing: border-box; text-align: center; border-radius: 8px;">
+                <span>📲 সরাসরি WhatsApp ইনবক্সে পাঠান (তাৎক্ষণিক এক্টিভেশন)</span>
+              </a>
+            </div>
+          `;
+        }
       }
 
       // Verify and Auto-Activate Paymently Callback
@@ -8530,8 +8587,10 @@
           })
           .then(r => r.json())
           .then(res => {
-            if (res.status === 'COMPLETED' || res.status === 'success' || res.transaction_id || res.invoice_id) {
+            if (res.status === 'COMPLETED' || res.status === 'success' || res.transaction_id) {
               handleSuccessUnlock(res);
+            } else if (res.status === 'CANCELLED' || res.status === 'FAILED') {
+              this.handlePaymentFailureWhatsApp('Payment ' + res.status + ' on Gateway');
             } else {
               console.warn('Paymently verification pending:', res);
             }
@@ -8632,13 +8691,17 @@
         this.setupDOM();
         this.renderPricingCards();
 
-        // 1-Click Automatic Gateway Return Check: ?payment=success or ?invoice_id=...
+        // 1-Click Automatic Gateway Return Check: ?payment=success or ?payment=fail or ?invoice_id=...
         try {
           if (typeof window !== 'undefined' && window.location) {
             const urlParams = new URLSearchParams(window.location.search);
             const invoiceId = urlParams.get('invoice_id');
             const payStatus = (urlParams.get('payment') || urlParams.get('status') || '').toLowerCase();
-            if (invoiceId || payStatus === 'success' || payStatus === 'completed') {
+            const reason = urlParams.get('reason') || 'Payment Failed or Cancelled on Gateway';
+
+            if (payStatus === 'fail' || payStatus === 'failed' || payStatus === 'cancel' || payStatus === 'cancelled') {
+              this.handlePaymentFailureWhatsApp(reason);
+            } else if (invoiceId || payStatus === 'success' || payStatus === 'completed') {
               this.verifyAndActivateGatewayInvoice(invoiceId, urlParams.get('plan') || '1m');
             }
           }
