@@ -5399,7 +5399,7 @@
         <!-- Gateway Selector Tabs -->
         <div class="order-gateway-tabs" id="order-tabs-wrapper">
           <button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">🇧🇩 bKash / Nagad / Binance / Bybit</button>
-          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 PayPal / Cards / USDT</button>
+          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">☕ Buy Me a Coffee / Cards / PayPal</button>
         </div>
 
         <!-- Panel 1: Bangladeshi Payment (Automatic Gateway & Manual Send Money) -->
@@ -5493,6 +5493,7 @@
             <div class="order-account-header">
               <span class="order-account-label">🅿️ PAYPAL OFFICIAL ACCOUNT (EMAIL):</span>
               <div class="order-method-pills">
+                <span class="order-method-pill" style="background: #FFDD00; color: #000; font-weight: 900;">BUY ME A COFFEE</span>
                 <span class="order-method-pill" style="background: #0079c1;">PAYPAL</span>
                 <span class="order-method-pill" style="background: #00457c;">CARDS</span>
               </div>
@@ -5504,6 +5505,11 @@
           </div>
 
           <div class="order-intl-links">
+            <!-- 1-Click Buy Me a Coffee (Cards, Apple Pay, Google Pay) -->
+            <a href="https://buymeacoffee.com/tawhid2005" target="_blank" rel="noopener noreferrer" class="btn-intl-link" id="link-intl-bmac" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #FFDD00 0%, #FBBF24 100%); color: #000000; font-weight: 900; font-size: 13px; text-decoration: none; padding: 13px; border-radius: 8px; box-shadow: 0 0 25px rgba(255, 221, 0, 0.45); margin-bottom: 8px; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #ffe843;">
+              <span>☕ 1-CLICK PAY VIA CARDS / APPLE PAY (BUY ME A COFFEE)</span>
+            </a>
+
             <button class="order-btn-gateway-pay" id="btn-start-intl-gateway" type="button" style="background: linear-gradient(135deg, #F3BA2F 0%, #F7A600 100%); color: #0b0e14; box-shadow: 0 0 22px rgba(243, 186, 47, 0.5); margin: 0 0 6px 0; padding: 12px; font-size: 12px;">
               <span>⚡ 1-CLICK PAY VIA BINANCE / BYBIT (AUTO GATEWAY)</span>
             </button>
@@ -5691,6 +5697,11 @@
           <div class="cyber-input-group" style="margin-top: 6px;">
             <label class="cyber-input-label">BKASH / NAGAD NUMBER (OPTIONAL)</label>
             <input type="text" id="admin-setting-bkash" class="cyber-input" placeholder="e.g. 017XXXXXXXX">
+          </div>
+
+          <div class="cyber-input-group" style="margin-top: 6px;">
+            <label class="cyber-input-label">BUY ME A COFFEE PROFILE / CHECKOUT URL</label>
+            <input type="text" id="admin-setting-bmac" class="cyber-input" placeholder="https://buymeacoffee.com/tawhid2005">
           </div>
 
           <div class="cyber-input-group" style="margin-top: 6px;">
@@ -8389,6 +8400,21 @@
 
         if (orderPaypalDisplay) orderPaypalDisplay.textContent = activePayPal;
         if (instAmountUsd) instAmountUsd.textContent = '$' + plan.price.toFixed(2) + ' USD';
+        const linkIntlBmac = document.getElementById('link-intl-bmac');
+        if (linkIntlBmac) {
+          const bmacBase = (this.adminBmacUrl || 'https://buymeacoffee.com/tawhid2005').replace(/\/+$/, '');
+          linkIntlBmac.href = bmacBase;
+          // Store selected plan in localStorage so after returning from Buy Me a Coffee it auto-unlocks the right plan
+          try {
+            localStorage.setItem('cfb_pending_bmac_plan', JSON.stringify({
+              planId: plan.id,
+              planName: plan.name,
+              price: plan.price,
+              currency: 'USD',
+              timestamp: Date.now()
+            }));
+          } catch(e) {}
+        }
         if (linkIntlPaypal) {
           const planItem = encodeURIComponent('Country Flag Battle Royale - ' + plan.name);
           linkIntlPaypal.href = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=' + encodeURIComponent(activePayPal) + '&item_name=' + planItem + '&amount=' + plan.price.toFixed(2) + '&currency_code=USD';
@@ -8739,6 +8765,54 @@
         }
       }
 
+      // Auto-Activate Buy Me a Coffee Return Callback
+      handleBmacAutoUnlock(urlParams) {
+        let planId = urlParams.get('plan') || '1m';
+        let customer = urlParams.get('customer') || urlParams.get('name') || 'Supporter';
+        let amount = urlParams.get('amount') || '$4.99 USD';
+
+        try {
+          const pending = JSON.parse(localStorage.getItem('cfb_pending_bmac_plan') || '{}');
+          if (pending.planId) planId = pending.planId;
+          if (pending.price) amount = '$' + pending.price + ' USD';
+        } catch(e) {}
+
+        const plan = getPlanDef(planId, 'usd') || { id: planId, name: '1 Month Pass', days: 30, price: 4.99 };
+        const pTag = (plan.id || '1m').toLowerCase();
+        const trx = 'BMAC-' + Date.now().toString(36).toUpperCase();
+        const userSlug = customer.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || 'supporter';
+        const expiresAt = Date.now() + (plan.days * 86400000);
+        const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
+        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
+
+        const actResult = this.activateKey(licenseKey);
+        if (actResult.valid) {
+          this.saveAutomatedOrder({
+            trxId: trx,
+            invoiceId: trx,
+            sender: customer,
+            gateway: 'Buy Me a Coffee (Cards/ApplePay)',
+            planId: plan.id,
+            planName: plan.name,
+            amount: amount,
+            licenseKey: licenseKey,
+            expiresAt: expiresAt,
+            date: new Date().toLocaleString(),
+            timestamp: Date.now()
+          });
+
+          this.showLockModal(false);
+          this.updateDrawerStatus();
+
+          // Clean URL cleanly
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+
+          alert('🎉 Thank You! Your Buy Me a Coffee payment was successful!\n\n💎 Package: ' + plan.name + '\n🔑 License Key: ' + licenseKey + '\n\nGame has been automatically unlocked 24/7!');
+        }
+      }
+
       // Verify transaction & instantly unlock access 24/7
       verifyAndActivateAutomatedOrder(sender, rawTrxId, gateway = 'BDT') {
         const cleanSender = String(sender || '').trim();
@@ -8836,6 +8910,9 @@
 
             if (payStatus === 'fail' || payStatus === 'failed' || payStatus === 'cancel' || payStatus === 'cancelled') {
               this.handlePaymentFailureWhatsApp(reason);
+            } else if (urlParams.get('bmac_success') === 'true' || urlParams.get('payment_success') === 'true' || payStatus === 'bmac' || urlParams.get('ref') === 'bmac') {
+              // Buy Me a Coffee Auto-Redirect Success Unlock
+              this.handleBmacAutoUnlock(urlParams);
             } else if (invoiceId || payStatus === 'success' || payStatus === 'completed') {
               this.verifyAndActivateGatewayInvoice(invoiceId, urlParams.get('plan') || '1m');
             }
@@ -9215,6 +9292,7 @@
         // Contact Settings from Storage
         this.adminWhatsApp = localStorage.getItem('cfb_admin_whatsapp') || '8801711729858';
         this.adminBkash = localStorage.getItem('cfb_admin_bkash') || '017XXXXXXXX';
+        this.adminBmacUrl = localStorage.getItem('cfb_admin_bmac_url') || 'https://buymeacoffee.com/tawhid2005';
         this.adminPayPal = localStorage.getItem('cfb_admin_paypal') || 'tawhidh2005@gmail.com';
         this.paymentlyBaseUrl = localStorage.getItem('cfb_paymently_base_url') || 'https://mdtalhahussaintawhid.paymently.io/api';
         this.paymentlyApiKey = localStorage.getItem('cfb_paymently_api_key') || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
@@ -9544,6 +9622,8 @@
 
         if (inputWA) inputWA.value = this.adminWhatsApp;
         if (inputBkash) inputBkash.value = this.adminBkash;
+        const inputBmac = document.getElementById('admin-setting-bmac');
+        if (inputBmac) inputBmac.value = this.adminBmacUrl || 'https://buymeacoffee.com/tawhid2005';
         if (inputPayPal) inputPayPal.value = this.adminPayPal || 'tawhidh2005@gmail.com';
         if (inputGwUrl) inputGwUrl.value = this.paymentlyBaseUrl || 'https://mdtalhahussaintawhid.paymently.io/api';
         if (inputGwKey) inputGwKey.value = this.paymentlyApiKey || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
@@ -9557,6 +9637,10 @@
             if (inputBkash) {
               this.adminBkash = inputBkash.value.trim() || '017XXXXXXXX';
               localStorage.setItem('cfb_admin_bkash', this.adminBkash);
+            }
+            if (inputBmac) {
+              this.adminBmacUrl = inputBmac.value.trim() || 'https://buymeacoffee.com/tawhid2005';
+              localStorage.setItem('cfb_admin_bmac_url', this.adminBmacUrl);
             }
             if (inputPayPal) {
               this.adminPayPal = inputPayPal.value.trim() || 'tawhidh2005@gmail.com';
