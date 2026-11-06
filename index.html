@@ -5401,7 +5401,7 @@
         <!-- Gateway Selector Tabs -->
         <div class="order-gateway-tabs" id="order-tabs-wrapper">
           <button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">🇧🇩 bKash / Nagad / Binance / Bybit</button>
-          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">💳 Gumroad (Cards/Apple Pay) / PayPal / USDT</button>
+          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">💳 International Payment (Gumroad)</button>
         </div>
 
         <!-- Panel 1: Bangladeshi Payment (Automatic Gateway & Manual Send Money) -->
@@ -5490,71 +5490,39 @@
         </div>
 
         <!-- Panel 2: International Payment (Cards / PayPal / Crypto) -->
+        <div class="or<!-- Panel 2: International Payment (Gumroad 1-Click Cards / Apple Pay / Google Pay / PayPal) -->
         <div class="order-gw-panel" id="panel-intl-pay" style="display: none;">
-          <div class="order-account-box" style="border-color: rgba(0, 121, 193, 0.6); background: rgba(0, 40, 80, 0.35);">
-            <div class="order-account-header">
-              <span class="order-account-label">🅿️ PAYPAL OFFICIAL ACCOUNT (EMAIL):</span>
+          <div class="order-gateway-featured-box" style="border-color: rgba(255, 144, 232, 0.5); background: linear-gradient(180deg, rgba(30, 10, 35, 0.6) 0%, rgba(10, 5, 20, 0.85) 100%);">
+            <div class="order-gateway-badge-row">
+              <span class="order-badge-live" style="background: linear-gradient(135deg, #ff90e8 0%, #ff63da 100%); color: #000; box-shadow: 0 0 14px rgba(255, 99, 218, 0.6);">⚡ OFFICIAL 1-CLICK INTERNATIONAL GATEWAY</span>
               <div class="order-method-pills">
                 <span class="order-method-pill" style="background: #ff90e8; color: #000; font-weight: 900;">GUMROAD</span>
-                <span class="order-method-pill" style="background: #FFDD00; color: #000; font-weight: 900;">BUY ME A COFFEE</span>
-                <span class="order-method-pill" style="background: #0079c1;">PAYPAL</span>
-                <span class="order-method-pill" style="background: #00457c;">CARDS</span>
+                <span class="order-method-pill" style="background: #0079c1;">CARDS</span>
+                <span class="order-method-pill" style="background: #000000; border: 1px solid #fff;">APPLE PAY</span>
+                <span class="order-method-pill" style="background: #4285F4;">GOOGLE PAY</span>
+                <span class="order-method-pill" style="background: #00457c;">PAYPAL</span>
               </div>
             </div>
-            <div class="order-number-row" style="border-color: rgba(0, 121, 193, 0.4);">
-              <span class="order-number-display" id="order-paypal-email-display" style="font-size: 13px; color: #38bdf8; font-family: monospace;">tawhidh2005@gmail.com</span>
-              <button class="order-btn-copy-num" id="btn-copy-paypal-email" type="button" style="background: #0079c1; color: #fff;">📋 COPY</button>
-            </div>
-          </div>
 
-          <div class="order-intl-links">
-            <!-- 1-Click Gumroad Checkout (All Cards, Apple Pay, Google Pay, PayPal) -->
-            <a href="https://tawhidh.gumroad.com/l/hedbi" target="_blank" rel="noopener noreferrer" class="btn-intl-link gumroad-button" id="link-intl-gumroad" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #ff90e8 0%, #ff63da 100%); color: #000000; font-weight: 900; font-size: 13px; text-decoration: none; padding: 14px; border-radius: 8px; box-shadow: 0 0 25px rgba(255, 99, 218, 0.5); margin-bottom: 8px; transition: transform 0.2s, box-shadow 0.2s; border: 2px solid #ffffff;">
-              <span>💳 1-CLICK PAY VIA CARDS / APPLE PAY (GUMROAD)</span>
+            <div style="font-size: 11px; color: #cbd5e1; line-height: 1.5; margin: 8px 0 12px 0;">
+              International credit/debit cards (Visa, Mastercard, Amex), Apple Pay, Google Pay &amp; PayPal accepted worldwide with zero hassle. Instant automated 24/7 access activation.
+            </div>
+
+            <!-- Dynamic 1-Click Gumroad Checkout Button -->
+            <a href="https://tawhidh.gumroad.com/l/hedbi" target="_blank" rel="noopener noreferrer" class="gumroad-button" id="link-intl-gumroad" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #ff90e8 0%, #ff63da 100%); color: #000000; font-family: Orbitron, sans-serif; font-weight: 900; font-size: 13px; text-decoration: none; padding: 15px 20px; border-radius: 10px; box-shadow: 0 0 30px rgba(255, 99, 218, 0.55); transition: all 0.2s; border: 2px solid #ffffff; letter-spacing: 0.5px;">
+              <span>💳 PAY NOW WITH CARDS / APPLE PAY (<span id="gumroad-btn-price-display">$3.99 USD</span>)</span>
             </a>
 
-            <!-- Buy Me a Coffee Alternative -->
-            <a href="https://buymeacoffee.com/tawhid2005" target="_blank" rel="noopener noreferrer" class="btn-intl-link" id="link-intl-bmac" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #FFDD00 0%, #FBBF24 100%); color: #000000; font-weight: 800; font-size: 12px; text-decoration: none; padding: 10px; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 221, 0, 0.3); margin-bottom: 8px; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #ffe843;">
-              <span>☕ ALTERNATIVE: PAY VIA BUY ME A COFFEE</span>
-            </a>
-
-            <button class="order-btn-gateway-pay" id="btn-start-intl-gateway" type="button" style="background: linear-gradient(135deg, #F3BA2F 0%, #F7A600 100%); color: #0b0e14; box-shadow: 0 0 22px rgba(243, 186, 47, 0.5); margin: 0 0 6px 0; padding: 12px; font-size: 12px;">
-              <span>⚡ 1-CLICK PAY VIA BINANCE / BYBIT (AUTO GATEWAY)</span>
-            </button>
-            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=tawhidh2005%40gmail.com&item_name=Country+Flag+Battle+Royale+Streamer+Pass&currency_code=USD" target="_blank" rel="noopener noreferrer" class="btn-intl-link btn-paypal" id="link-intl-paypal">
-              <span>🅿️ 1-CLICK PAY VIA PAYPAL (tawhidh2005@gmail.com)</span>
-            </a>
-            <div class="crypto-addr-box">
-              <div style="font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 4px;">🪙 USDT (TRC-20) ADDRESS:</div>
-              <div class="crypto-addr-row">
-                <span class="crypto-addr-text" id="crypto-trc20-address">TKjF928KxNms82KqpLm903JsLk29PskL9a</span>
-                <button class="order-btn-copy-num" id="btn-copy-crypto-addr" type="button">📋 COPY</button>
-              </div>
+            <div style="font-size: 10px; color: #94a3b8; text-align: center; margin-top: 8px;">
+              🔒 256-Bit SSL Encrypted &bull; Direct Secure Checkout by Gumroad
             </div>
           </div>
 
-          <div class="order-instructions">
-            <div>1. Send <b id="order-inst-amount-usd">$4.99 USD</b> to PayPal: <b>tawhidh2005@gmail.com</b> (or click the PayPal button).</div>
-            <div>2. Enter your PayPal email and the Transaction ID from your confirmation receipt below.</div>
-            <div>3. Click <b>INSTANT UNLOCK</b> to immediately activate your pass 24/7!</div>
+          <div class="order-instructions" style="margin-top: 14px;">
+            <div>1. Click the <b>PAY NOW WITH CARDS / APPLE PAY</b> button above to open the secure Gumroad checkout.</div>
+            <div>2. Complete payment with any international Card, Apple Pay, Google Pay, or PayPal.</div>
+            <div>3. After payment, click <b>Open Game &amp; Unlock 24/7</b> on your receipt to instantly activate the game!</div>
           </div>
-
-          <div class="order-inputs-grid">
-            <div class="order-input-wrapper">
-              <label class="order-input-label">👤 YOUR PAYPAL EMAIL / STREAMER USERNAME</label>
-              <input type="text" id="auto-pay-intl-user" class="order-input" placeholder="e.g. buyer@gmail.com" maxlength="40">
-            </div>
-            <div class="order-input-wrapper">
-              <label class="order-input-label">🧾 PAYPAL TRANSACTION ID / ORDER REF</label>
-              <input type="text" id="auto-pay-intl-ref" class="order-input" placeholder="e.g. 9KL882319" maxlength="35">
-            </div>
-          </div>
-
-          <div id="auto-pay-alert-intl" class="order-alert-box" style="display: none;"></div>
-
-          <button class="order-btn-verify" id="btn-auto-verify-intl" type="button">
-            <span>⚡ VERIFY & UNLOCK GLOBAL PASS</span>
-          </button>
         </div>
 
         <!-- Panel 3: Success Receipt (Shown when unlocked) -->
@@ -8414,8 +8382,15 @@
         if (orderPaypalDisplay) orderPaypalDisplay.textContent = activePayPal;
         if (instAmountUsd) instAmountUsd.textContent = '$' + plan.price.toFixed(2) + ' USD';
         const linkIntlGumroad = document.getElementById('link-intl-gumroad');
+        const gumroadPriceDisplay = document.getElementById('gumroad-btn-price-display');
+        const planPriceUsd = plan.price.toFixed(2);
+        if (gumroadPriceDisplay) {
+          gumroadPriceDisplay.textContent = '$' + planPriceUsd + ' USD';
+        }
         if (linkIntlGumroad) {
-          linkIntlGumroad.href = this.adminGumroadUrl || 'https://tawhidh.gumroad.com/l/hedbi';
+          const rawBase = (this.adminGumroadUrl || 'https://tawhidh.gumroad.com/l/hedbi').split('?')[0];
+          // Pass dynamic plan price and direct checkout parameters
+          linkIntlGumroad.href = rawBase + '?wanted=true&price=' + planPriceUsd;
           try {
             localStorage.setItem('cfb_pending_intl_plan', JSON.stringify({
               planId: plan.id,
