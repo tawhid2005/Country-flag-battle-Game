@@ -5108,11 +5108,14 @@
       </div>
     </section>
 
-    <!-- Tap to unmute audio overlay -->
+    <!-- Interactive Start / Unmute Game Overlay -->
     <div id="audio-overlay" role="button" tabindex="0">
-      <div class="audio-icon-pulse">🔊</div>
-      <div class="audio-overlay-title">CLICK TO ENABLE LIVE BROADCAST</div>
-      <p class="audio-overlay-desc">Activates procedural physics synth audio & speech commentary engine.</p>
+      <div class="audio-icon-pulse" style="background: linear-gradient(135deg, #10b981, #00e5ff); box-shadow: 0 0 50px rgba(0, 229, 255, 0.8);">▶️</div>
+      <div class="audio-overlay-title" style="font-size: 24px; font-weight: 900; letter-spacing: 1.5px; background: linear-gradient(135deg, #ffffff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CLICK TO START GAME</div>
+      <p class="audio-overlay-desc" style="max-width: 380px; font-size: 13px; color: #94a3b8; margin: 10px 0 16px 0;">Starts 195 Country Flag Battle Royale with real-time 60 FPS physics &amp; live commentary audio.</p>
+      <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; padding: 12px 28px; border-radius: 999px; font-weight: 900; font-size: 14px; letter-spacing: 1px; box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); display: inline-flex; align-items: center; gap: 8px;">
+        <span>🚀 START BATTLE ROYALE</span>
+      </div>
     </div>
 
     <!-- Streamer Drawer -->
@@ -10490,11 +10493,12 @@
         this.isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 640);
 
         this.roundNumber = 1;
-        this.selectedBatchSize = this.isMobileDevice ? 50 : 120;
+        this.selectedBatchSize = this.isMobileDevice ? 40 : 60;
         this.baseRotationSpeed = 0.022;
         this.currentRotationSpeed = 0.022;
         this.gravityY = 0.42;
         this.ballRestitution = 0.98;
+        this.isGameStarted = false;
         this.isRoundOver = false;
         this.roundWinner = null;
         this.themeIndex = 0;
@@ -10601,6 +10605,7 @@
         this._lastBgTickTime = Date.now();
 
         const onTick = () => {
+          if (!this.isGameStarted) return;
           if (document.hidden) {
             const now = Date.now();
             const elapsed = Math.min(5000, now - (this._lastBgTickTime || now));
@@ -10743,7 +10748,7 @@
       }
       setupCanvasDPI() {
         const isMobile = this.isMobileDevice;
-        const maxDpr = isMobile ? Math.min(window.devicePixelRatio || 1, 1.25) : Math.min(window.devicePixelRatio || 1, 2);
+        const maxDpr = isMobile ? Math.min(window.devicePixelRatio || 1, 1.25) : Math.min(window.devicePixelRatio || 1, 1.5);
         const rect = this.viewport.getBoundingClientRect();
 
         const newW = Math.round(rect.width * maxDpr);
@@ -12490,6 +12495,21 @@
             return;
           }
 
+          // If game has not started yet (waiting on Start Screen click), render static preview without updating physics
+          if (!this.isGameStarted) {
+            this.roundStartTime = Date.now();
+            this.ctx.save();
+            this.ctx.scale(this.scaleX, this.scaleY);
+            this.ctx.clearRect(0, 0, this.V_WIDTH, this.V_HEIGHT);
+            this.drawBackgroundGrid(this.ctx);
+            this.drawArena(this.ctx);
+            for (const ball of this.balls) {
+              this.drawBall(this.ctx, ball);
+            }
+            this.ctx.restore();
+            return;
+          }
+
           // Fixed-Timestep Physics Accumulator (Scaled with this.gameSpeed for custom battle pacing)
           const fixedStepMs = 1000 / 60; // 16.666ms
           const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
@@ -12606,13 +12626,23 @@
 
       // --- 10. EVENT LISTENERS & STREAMER DRAWER ---
       setupEventListeners() {
-        const unlockAudio = () => {
+        const startGameAndAudio = () => {
+          if (!this.isGameStarted) {
+            this.isGameStarted = true;
+            this.roundStartTime = Date.now();
+          }
           this.audio.init();
           if (this.dom.audioOverlay) this.dom.audioOverlay.classList.add('hidden');
         };
-        this.dom.audioOverlay.addEventListener('click', unlockAudio);
-        document.addEventListener('pointerdown', unlockAudio, { once: false });
-        window.addEventListener('keydown', unlockAudio, { once: false });
+        this.dom.audioOverlay.addEventListener('click', startGameAndAudio);
+        document.addEventListener('pointerdown', (e) => {
+          // If clicked on drawer, modal, or links, don't trigger start
+          if (e.target.closest('#streamer-drawer') || e.target.closest('#cyber-order-modal') || e.target.closest('#admin-license-modal')) return;
+          startGameAndAudio();
+        }, { once: false });
+        window.addEventListener('keydown', (e) => {
+          if (e.key === ' ' || e.key === 'Enter') startGameAndAudio();
+        }, { once: false });
         window.addEventListener('keydown', (e) => {
           if (e.key.toLowerCase() === 'h' || e.key.toLowerCase() === 's') {
             this.toggleDrawer();
