@@ -5404,7 +5404,7 @@
         <!-- Gateway Selector Tabs -->
         <div class="order-gateway-tabs" id="order-tabs-wrapper">
           <button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">🇧🇩 bKash / Nagad / Binance / Bybit</button>
-          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">💳 International Payment (Gumroad)</button>
+          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 International (Payoneer / Cards / WhatsApp)</button>
         </div>
 
         <!-- Panel 1: Bangladeshi Payment (Automatic Gateway & Manual Send Money) -->
@@ -5494,38 +5494,82 @@
 
         <!-- Panel 2: International Payment (Cards / PayPal / Crypto) -->
         <div class="or<!-- Panel 2: International Payment (Gumroad 1-Click Cards / Apple Pay / Google Pay / PayPal) -->
+        <div class="or<!-- Panel 2: International Payment (Direct Payoneer Cards / Wire / WhatsApp Fallback) -->
         <div class="order-gw-panel" id="panel-intl-pay" style="display: none;">
-          <div class="order-gateway-featured-box" style="border-color: rgba(255, 144, 232, 0.5); background: linear-gradient(180deg, rgba(30, 10, 35, 0.6) 0%, rgba(10, 5, 20, 0.85) 100%);">
-            <div class="order-gateway-badge-row">
-              <span class="order-badge-live" style="background: linear-gradient(135deg, #ff90e8 0%, #ff63da 100%); color: #000; box-shadow: 0 0 14px rgba(255, 99, 218, 0.6);">⚡ OFFICIAL 1-CLICK INTERNATIONAL GATEWAY</span>
+          
+          <!-- Payoneer Official Receiving Account Card -->
+          <div class="order-account-box" style="border-color: rgba(0, 229, 255, 0.6); background: linear-gradient(180deg, rgba(14, 25, 56, 0.9) 0%, rgba(7, 13, 30, 0.95) 100%); padding: 14px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 0 25px rgba(0, 229, 255, 0.25);">
+            <div class="order-account-header" style="margin-bottom: 10px;">
+              <span class="order-account-label" style="font-weight: 900; color: #00e5ff; font-size: 11px;">🏛️ DIRECT PAYONEER US BANK (CITIBANK USA):</span>
               <div class="order-method-pills">
-                <span class="order-method-pill" style="background: #ff90e8; color: #000; font-weight: 900;">GUMROAD</span>
-                <span class="order-method-pill" style="background: #0079c1;">CARDS</span>
-                <span class="order-method-pill" style="background: #000000; border: 1px solid #fff;">APPLE PAY</span>
-                <span class="order-method-pill" style="background: #4285F4;">GOOGLE PAY</span>
-                <span class="order-method-pill" style="background: #00457c;">PAYPAL</span>
+                <span class="order-method-pill" style="background: #ff4800; color: #fff; font-weight: 900;">PAYONEER</span>
+                <span class="order-method-pill" style="background: #0079c1;">CITIBANK</span>
+                <span class="order-method-pill" style="background: #10b981;">ACH / WIRE</span>
               </div>
             </div>
 
-            <div style="font-size: 11px; color: #cbd5e1; line-height: 1.5; margin: 8px 0 12px 0;">
-              International credit/debit cards (Visa, Mastercard, Amex), Apple Pay, Google Pay &amp; PayPal accepted worldwide with zero hassle. Instant automated 24/7 access activation.
+            <div style="font-size: 11px; color: #cbd5e1; line-height: 1.6; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
+                <span style="color: #94a3b8;">Beneficiary:</span>
+                <b style="color: #ffffff;">Md Talha Hussain Tawhid</b>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
+                <span style="color: #94a3b8;">Bank Name:</span>
+                <b style="color: #38bdf8;">Citibank, New York (Checking)</b>
+              </div>
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
+                <span style="color: #94a3b8;">Routing (ABA):</span>
+                <b style="color: #fbbf24; font-family: monospace;">031100209</b>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 2px;">
+                <span style="color: #94a3b8;">Account Number:</span>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <b id="payoneer-account-display" style="color: #00e5ff; font-family: monospace; font-size: 13px;">70588400001576562</b>
+                  <button type="button" id="btn-copy-payoneer-acc" class="order-btn-copy-num" style="padding: 2px 8px; font-size: 9px;">📋 COPY</button>
+                </div>
+              </div>
             </div>
 
-            <!-- Dynamic 1-Click Gumroad Checkout Button -->
-            <a href="https://tawhidh.gumroad.com/l/hedbi" target="_blank" rel="noopener noreferrer" class="gumroad-button" id="link-intl-gumroad" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #ff90e8 0%, #ff63da 100%); color: #000000; font-family: Orbitron, sans-serif; font-weight: 900; font-size: 13px; text-decoration: none; padding: 15px 20px; border-radius: 10px; box-shadow: 0 0 30px rgba(255, 99, 218, 0.55); transition: all 0.2s; border: 2px solid #ffffff; letter-spacing: 0.5px;">
-              <span>💳 PAY NOW WITH CARDS / APPLE PAY (<span id="gumroad-btn-price-display">$3.99 USD</span>)</span>
-            </a>
-
-            <div style="font-size: 10px; color: #94a3b8; text-align: center; margin-top: 8px;">
-              🔒 256-Bit SSL Encrypted &bull; Direct Secure Checkout by Gumroad
+            <div style="font-size: 10px; color: #94a3b8; text-align: center;">
+              Payoneer to Payoneer Email: <b style="color: #38bdf8;">tawhidh2005@gmail.com</b> (Instant $0 Fee)
             </div>
           </div>
 
-          <div class="order-instructions" style="margin-top: 14px;">
-            <div>1. Click the <b>PAY NOW WITH CARDS / APPLE PAY</b> button above to open the secure Gumroad checkout.</div>
-            <div>2. Complete payment with any international Card, Apple Pay, Google Pay, or PayPal.</div>
-            <div>3. After payment, click <b>Open Game &amp; Unlock 24/7</b> on your receipt to instantly activate the game!</div>
-          </div>
+          <!-- Direct Instant WhatsApp International Checkout Button -->
+          <button type="button" class="order-btn-gateway-pay" id="btn-intl-whatsapp-checkout" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #ffffff; box-shadow: 0 0 25px rgba(37, 211, 102, 0.55); margin-bottom: 10px; padding: 14px; font-size: 12px; letter-spacing: 0.5px; border: 1.5px solid #86efac;">
+            <span>💬 1-CLICK PAY VIA WHATSAPP INBOX (<span id="intl-btn-price-display">$3.99 USD</span>)</span>
+          </button>
+
+          <!-- Gumroad Cards/ApplePay Optional Alternative -->
+          <a href="https://tawhidh.gumroad.com/l/hedbi" target="_blank" rel="noopener noreferrer" class="gumroad-button" id="link-intl-gumroad" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255, 144, 232, 0.12); color: #ff90e8; font-weight: 700; font-size: 11px; text-decoration: none; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255, 144, 232, 0.4); margin-bottom: 12px; transition: all 0.2s;">
+            <span>💳 Alternative: Pay via Gumroad Card Checkout (Direct Web)</span>
+          </a>
+
+          <!-- Manual Verification Box for International Buyers -->
+          <details class="order-send-money-box" style="margin-top: 6px;">
+            <summary class="order-send-money-title">
+              <span>⚡ Enter Payoneer Transaction ID / Ref (Instant Unlock)</span>
+            </summary>
+            <div style="margin-top: 10px;">
+              <div class="order-inputs-grid" style="gap: 8px;">
+                <div class="order-input-wrapper">
+                  <label class="order-input-label">👤 YOUR NAME / SENDER EMAIL</label>
+                  <input type="text" id="auto-pay-intl-user" class="order-input" placeholder="e.g. buyer@gmail.com" maxlength="40">
+                </div>
+                <div class="order-input-wrapper">
+                  <label class="order-input-label">🧾 TRANSACTION ID / PAYMENT REF</label>
+                  <input type="text" id="auto-pay-intl-ref" class="order-input" placeholder="e.g. 98471624" maxlength="35">
+                </div>
+              </div>
+
+              <div id="auto-pay-alert-intl" class="order-alert-box" style="display: none; margin-top: 8px;"></div>
+
+              <button class="order-btn-verify" id="btn-auto-verify-intl" type="button" style="margin-top: 8px;">
+                <span>⚡ VERIFY & UNLOCK GLOBAL PASS</span>
+              </button>
+            </div>
+          </details>
+
         </div>
 
         <!-- Panel 3: Success Receipt (Shown when unlocked) -->
@@ -8386,9 +8430,13 @@
         if (instAmountUsd) instAmountUsd.textContent = '$' + plan.price.toFixed(2) + ' USD';
         const linkIntlGumroad = document.getElementById('link-intl-gumroad');
         const gumroadPriceDisplay = document.getElementById('gumroad-btn-price-display');
+        const intlPriceDisplay = document.getElementById('intl-btn-price-display');
         const planPriceUsd = plan.price.toFixed(2);
         if (gumroadPriceDisplay) {
           gumroadPriceDisplay.textContent = '$' + planPriceUsd + ' USD';
+        }
+        if (intlPriceDisplay) {
+          intlPriceDisplay.textContent = '$' + planPriceUsd + ' USD';
         }
         if (linkIntlGumroad) {
           const rawBase = (this.adminGumroadUrl || 'https://tawhidh.gumroad.com/l/hedbi').split('?')[0];
@@ -8621,15 +8669,17 @@
         const planPrice = pending.price || '99';
         const customer = pending.customer || 'Player';
         const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
+        const currencySymbol = pending.currency === 'USD' ? '$' : '';
+        const currencySuffix = pending.currency === 'USD' ? ' USD' : ' TK';
 
         const failMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
           '❌ কান্ট্রি ফ্ল্যাগ ব্যাটল গেমে পেমেন্ট করতে গিয়ে সমস্যা / ফেইল হয়েছে:\n' +
           '━━━━━━━━━━━━━━━━━━━━━\n' +
-          '💎 প্যাকেজ: ' + planName + ' (' + planPrice + ' TK)\n' +
+          '💎 প্যাকেজ: ' + planName + ' (' + currencySymbol + planPrice + currencySuffix + ')\n' +
           '👤 কাস্টমার নাম: ' + customer + '\n' +
           '⚠️ স্ট্যাটাস: ' + reason + '\n' +
           '━━━━━━━━━━━━━━━━━━━━━\n' +
-          'দয়া করে আমাকে আপনার বিকাশ/নগদ পার্সোনাল নম্বর দিন, আমি টাকা পাঠিয়ে গেম ম্যানুয়ালি এক্টিভ করতে চাই!';
+          'পেমেন্ট সম্পন্ন করতে সহায়তা করুন এবং সরাসরি এক্টিভেশন দিন!';
 
         const encoded = encodeURIComponent(failMsg);
         const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
@@ -9621,6 +9671,43 @@
         if (btnStartGw) {
           btnStartGw.addEventListener('click', () => {
             this.startPaymentlyCheckout();
+          });
+        }
+
+        // Copy Payoneer Account Number Button
+        const btnCopyPayoneer = document.getElementById('btn-copy-payoneer-acc');
+        if (btnCopyPayoneer) {
+          btnCopyPayoneer.addEventListener('click', () => {
+            const accNum = (document.getElementById('payoneer-account-display')?.textContent || '70588400001576562').trim();
+            navigator.clipboard.writeText(accNum).then(() => {
+              btnCopyPayoneer.textContent = 'COPIED! ✓';
+              btnCopyPayoneer.style.background = '#10b981';
+              setTimeout(() => {
+                btnCopyPayoneer.textContent = '📋 COPY';
+                btnCopyPayoneer.style.background = '';
+              }, 2200);
+            }).catch(() => {
+              prompt('Copy Account Number:', accNum);
+            });
+          });
+        }
+
+        // 1-Click International WhatsApp Checkout Button
+        const btnIntlWa = document.getElementById('btn-intl-whatsapp-checkout');
+        if (btnIntlWa) {
+          btnIntlWa.addEventListener('click', () => {
+            const plan = this.activeOrderPlan || getPlanDef('1m', 'usd');
+            const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
+            const msg = '👋 Hello Tawhid!\n' +
+              '🎮 I want to purchase Country Flag Battle Royale International Access:\n' +
+              '━━━━━━━━━━━━━━━━━━━━━\n' +
+              '💎 Package: ' + plan.name + ' ($' + plan.price.toFixed(2) + ' USD)\n' +
+              '⏳ Duration: ' + plan.days + ' Days 24/7 Access\n' +
+              '🏛️ Preferred Gateway: Payoneer / Citibank US / Cards\n' +
+              '━━━━━━━━━━━━━━━━━━━━━\n' +
+              'Please send me the direct payment link / invoice to instantly activate my account!';
+            const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+            window.open(waUrl, '_blank');
           });
         }
 
