@@ -1,5 +1,5 @@
 # ==============================================================================
-# ROBOTS.TXT FOR COUNTRY FLAG BATTLE GAME (https://countryflagbattlegame.vercel.app/)
+# ROBOTS.TXT FOR COUNTRY FLAG BATTLE GAME (https://countryflagbattle.xyz/)
 # Optimized for Googlebot, Bingbot, Applebot, and AI Search Overviews
 # ==============================================================================
 
@@ -42,4 +42,4 @@ User-agent: CCBot
 Allow: /
 
 # Canonical Sitemap Declaration
-Sitemap: https://countryflagbattlegame.vercel.app/sitemap.xml
+Sitemap: https://countryflagbattle.xyz/sitemap.xml
