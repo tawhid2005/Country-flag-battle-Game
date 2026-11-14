@@ -5517,86 +5517,53 @@
         <!-- Panel 2: International Payment -->
         <div class="order-gw-panel" id="panel-intl-pay" style="display: none;">
           
-          <!-- Payoneer Citibank Account Card -->
-          <div class="order-account-box" style="border-color: rgba(0, 229, 255, 0.6); background: linear-gradient(180deg, rgba(14, 25, 56, 0.9) 0%, rgba(7, 13, 30, 0.95) 100%); padding: 12px; border-radius: 12px; box-shadow: 0 0 25px rgba(0, 229, 255, 0.25);">
-            <div class="order-account-header" style="margin-bottom: 8px;">
-              <span class="order-account-label" style="font-weight: 900; color: #00e5ff; font-size: 11px;">🏛️ DIRECT PAYONEER US BANK (CITIBANK USA):</span>
-              <div class="order-method-pills">
-                <span class="order-method-pill" style="background: #ff4800; color: #fff; font-weight: 900;">PAYONEER</span>
-                <span class="order-method-pill" style="background: #0079c1;">CITIBANK</span>
+          <!-- Polar.sh Official 1-Click Card / Apple Pay / Google Pay Checkout Box -->
+          <div style="background: linear-gradient(135deg, rgba(0, 110, 255, 0.1) 0%, rgba(138, 43, 226, 0.12) 100%); border: 1.5px solid rgba(0, 180, 255, 0.55); border-radius: 14px; padding: 14px; box-shadow: 0 0 25px rgba(0, 150, 255, 0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 11px; font-weight: 900; color: #00e5ff; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                <span>⚡ SECURE GLOBAL CHECKOUT</span>
+              </span>
+              <div style="display: flex; gap: 4px;">
+                <span style="font-size: 9px; font-weight: 800; background: #00e5ff; color: #020617; padding: 2px 6px; border-radius: 4px;">POLAR.SH</span>
+                <span style="font-size: 9px; font-weight: 800; background: #10b981; color: #ffffff; padding: 2px 6px; border-radius: 4px;">INSTANT</span>
               </div>
             </div>
 
-            <div style="font-size: 11px; color: #cbd5e1; line-height: 1.6; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px;">
-              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
-                <span style="color: #94a3b8;">Beneficiary:</span>
-                <b style="color: #ffffff;">Md Talha Hussain Tawhid</b>
+            <!-- Supported Methods Badges -->
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
+              <span class="order-method-pill" style="background: #1a1f71; color: #fff; font-weight: 900;">VISA</span>
+              <span class="order-method-pill" style="background: #eb001b; color: #fff; font-weight: 900;">MASTERCARD</span>
+              <span class="order-method-pill" style="background: #000000; color: #fff; border: 1px solid rgba(255,255,255,0.4); font-weight: 900;"> APPLE PAY</span>
+              <span class="order-method-pill" style="background: #ffffff; color: #3c4043; font-weight: 900;">G PAY</span>
+              <span class="order-method-pill" style="background: #002f6c; color: #fff; font-weight: 900;">AMEX</span>
+            </div>
+
+            <div style="font-size: 11px; color: #cbd5e1; line-height: 1.5; margin-bottom: 12px;">
+              Pay securely from any country worldwide using Credit/Debit Card, Apple Pay, or Google Pay via <b>Polar.sh</b>. Your game pass is <b>instantly unlocked 24/7</b> right after payment!
+            </div>
+
+            <div class="order-inputs-grid" style="gap: 8px; margin-bottom: 12px;">
+              <div class="order-input-wrapper">
+                <label class="order-input-label">👤 YOUR NAME / GAMER TAG</label>
+                <input type="text" id="polar-customer-name" class="order-input" placeholder="e.g. Alex Hunter" maxlength="35">
               </div>
-              <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
-                <span style="color: #94a3b8;">Bank Name:</span>
-                <b style="color: #38bdf8;">Citibank, New York (Checking)</b>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
-                <span style="color: #94a3b8;">Routing (ABA):</span>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                  <b id="payoneer-routing-display" style="color: #fbbf24; font-family: monospace;">031100209</b>
-                  <button type="button" id="btn-copy-payoneer-routing" class="order-btn-copy-num" style="padding: 2px 6px; font-size: 9px;">📋 COPY</button>
-                </div>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
-                <span style="color: #94a3b8;">Account Number:</span>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                  <b id="payoneer-account-display" style="color: #00e5ff; font-family: monospace; font-size: 12px;">70588400001576562</b>
-                  <button type="button" id="btn-copy-payoneer-acc" class="order-btn-copy-num" style="padding: 2px 6px; font-size: 9px;">📋 COPY</button>
-                </div>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: #94a3b8;">Payoneer Email:</span>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                  <b id="payoneer-email-display" style="color: #38bdf8; font-family: monospace; font-size: 11px;">tawhidh2005@gmail.com</b>
-                  <button type="button" id="btn-copy-payoneer-email" class="order-btn-copy-num" style="padding: 2px 6px; font-size: 9px;">📋 COPY</button>
-                </div>
+              <div class="order-input-wrapper">
+                <label class="order-input-label">📧 YOUR EMAIL (RECEIPT & AUTO-ACTIVATION)</label>
+                <input type="email" id="polar-customer-email" class="order-input" placeholder="e.g. gamer@gmail.com" maxlength="45">
               </div>
             </div>
-            <div style="font-size: 10px; color: #94a3b8; text-align: center;">
-              SWIFT / BIC Code: <b style="color: #fbbf24; font-family: monospace;">CITIUS33</b>
-            </div>
+
+            <!-- Main Polar Checkout CTA Button -->
+            <button class="order-btn-gateway-pay" id="btn-start-polar-checkout" type="button" style="background: linear-gradient(135deg, #0070f3 0%, #7928ca 100%); box-shadow: 0 0 30px rgba(0, 112, 243, 0.6); padding: 14px; margin-top: 0; font-size: 13px;">
+              <span>🚀 PAY NOW WITH CARD / WALLET (<span id="polar-btn-price-display">$3.99 USD</span>)</span>
+            </button>
+            <div id="polar-gw-status" style="display: none; font-size: 11px; text-align: center; color: #67e8f9; margin-top: 6px;"></div>
           </div>
 
-          <!-- Direct Instant WhatsApp International Checkout Button -->
-          <button type="button" class="btn-order-whatsapp" id="btn-intl-whatsapp-checkout" style="width: 100%; padding: 13px; font-size: 12px;">
-            <span>💬 1-CLICK PAY VIA WHATSAPP (<span id="intl-btn-price-display">$3.99 USD</span>) 📲</span>
+          <!-- Secondary WhatsApp Fallback for International -->
+          <button type="button" class="btn-order-whatsapp" id="btn-intl-whatsapp-checkout" style="width: 100%; padding: 12px; font-size: 11px; background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.35); color: #4ade80; box-shadow: none;">
+            <span>💬 Prefer WhatsApp / Custom Payment? Chat with Admin (+8801711729858)</span>
           </button>
-
-          <!-- Enter Transaction Reference -->
-          <details class="order-manual-details" style="margin-top: 2px;">
-            <summary class="order-manual-summary">
-              <span>⚡ Enter Payoneer Transaction ID / Ref</span>
-              <span style="font-size: 10px; color: #00e5ff;">(Instant Unlock ▾)</span>
-            </summary>
-            <div style="margin-top: 8px;">
-              <div class="order-inputs-grid" style="gap: 8px;">
-                <div class="order-input-wrapper">
-                  <label class="order-input-label">👤 SENDER EMAIL / PAYONEER NAME</label>
-                  <input type="text" id="auto-pay-intl-user" class="order-input" placeholder="e.g. buyer@gmail.com" maxlength="40">
-                </div>
-                <div class="order-input-wrapper">
-                  <label class="order-input-label">🧾 TRANSACTION ID / PAYMENT REF</label>
-                  <input type="text" id="auto-pay-intl-ref" class="order-input" placeholder="e.g. 98471624" maxlength="35">
-                </div>
-              </div>
-              <div id="auto-pay-alert-intl" class="order-alert-box" style="display: none; margin-top: 6px;"></div>
-              <button class="order-btn-verify" id="btn-auto-verify-intl" type="button" style="margin-top: 6px;">
-                <span>⚡ VERIFY & UNLOCK GLOBAL PASS</span>
-              </button>
-            </div>
-          </details>
-
-          <!-- Gumroad Alternative -->
-          <a href="https://tawhidh.gumroad.com/l/hedbi" target="_blank" rel="noopener noreferrer" class="gumroad-button" id="link-intl-gumroad" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255, 144, 232, 0.1); color: #ff90e8; font-weight: 700; font-size: 11px; text-decoration: none; padding: 9px 12px; border-radius: 8px; border: 1px solid rgba(255, 144, 232, 0.35); margin-top: 2px;">
-            <span>💳 Alternative: Pay via Gumroad Card Checkout (Direct Web)</span>
-          </a>
-
         </div>
 
         <!-- Panel 3: Success Receipt (Shown when unlocked) -->
@@ -5731,7 +5698,8 @@
             <option value="2m" selected>2 Months — 149 TK (60 Days)</option>
             <option value="4m">4 Months — 239 TK (120 Days)</option>
             <option value="8m">8 Months — 399 TK (240 Days)</option>
-            <option value="12m">12 Months — 499 TK (365 Days)</option>
+            <option value="12m">12 Months — 499 TK / $19.99 (365 Days)</option>
+            <option value="lifetime">👑 Lifetime Pass — 699 TK / $25.99 (Unlimited Access)</option>
             <option value="custom">Custom Days...</option>
           </select>
         </div>
@@ -5816,6 +5784,11 @@
           <div class="cyber-input-group" style="margin-top: 6px;">
             <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY API KEY</label>
             <input type="text" id="admin-setting-gateway-key" class="cyber-input" placeholder="pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn">
+          </div>
+
+          <div class="cyber-input-group" style="margin-top: 6px;">
+            <label class="cyber-input-label">POLAR.SH ORGANIZATION ACCESS TOKEN</label>
+            <input type="text" id="admin-setting-polar-token" class="cyber-input" placeholder="polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi">
           </div>
 
           <button class="drawer-btn" id="btn-save-admin-settings" style="margin-top: 8px; border-color: #fbbf24; color: #fbbf24;">
@@ -7708,14 +7681,16 @@
         { id: '2m', name: '2 Months', price: 149, currency: 'TK', symbol: '৳', days: 60, tag: 'Popular', highlight: true },
         { id: '4m', name: '4 Months', price: 239, currency: 'TK', symbol: '৳', days: 120, tag: 'Value' },
         { id: '8m', name: '8 Months', price: 399, currency: 'TK', symbol: '৳', days: 240, tag: 'Pro' },
-        { id: '12m', name: '12 Months', price: 499, currency: 'TK', symbol: '৳', days: 365, tag: 'Best Value', vip: true }
+        { id: '12m', name: '12 Months', price: 499, currency: 'TK', symbol: '৳', days: 365, tag: 'Yearly Pro' },
+        { id: 'lifetime', name: 'Lifetime VIP', price: 699, currency: 'TK', symbol: '৳', days: 3650, tag: '👑 BEST VALUE • LIFETIME', highlight: true, vip: true }
       ],
       usd: [
-        { id: '1m', name: '1 Month', price: 3.99, currency: 'USD', symbol: '$', days: 30, tag: 'Starter' },
-        { id: '2m', name: '2 Months', price: 5.99, currency: 'USD', symbol: '$', days: 60, tag: 'Popular', highlight: true },
-        { id: '4m', name: '4 Months', price: 9.99, currency: 'USD', symbol: '$', days: 120, tag: 'Value' },
-        { id: '8m', name: '8 Months', price: 15.99, currency: 'USD', symbol: '$', days: 240, tag: 'Pro' },
-        { id: '12m', name: '12 Months', price: 19.99, currency: 'USD', symbol: '$', days: 365, tag: 'Best Value', vip: true }
+        { id: '1m', name: '1 Month', price: 3.99, currency: 'USD', symbol: '$', days: 30, tag: 'Starter', polarProductId: 'fb8af379-2bfd-40fa-ae41-834020eef919' },
+        { id: '2m', name: '2 Months', price: 5.99, currency: 'USD', symbol: '$', days: 60, tag: 'Popular', highlight: true, polarProductId: '1fd12c45-72c8-4131-9d4a-917c24ce5d47' },
+        { id: '4m', name: '4 Months', price: 9.99, currency: 'USD', symbol: '$', days: 120, tag: 'Value', polarProductId: '8999eb1f-1e1d-45f5-b72b-7fba422a387a' },
+        { id: '8m', name: '8 Months', price: 15.99, currency: 'USD', symbol: '$', days: 240, tag: 'Pro', polarProductId: '638101fd-a10f-46d3-8a17-9285f3e54194' },
+        { id: '12m', name: '12 Months', price: 19.99, currency: 'USD', symbol: '$', days: 365, tag: 'Yearly Pro', polarProductId: '0feee5db-ed25-4887-81d7-cc3b4089305b' },
+        { id: 'lifetime', name: 'Lifetime VIP', price: 25.99, currency: 'USD', symbol: '$', days: 3650, tag: '👑 BEST VALUE • LIFETIME', highlight: true, vip: true, polarProductId: '0d5b371e-72e6-4a8a-8ee3-cdfa55c05a7a' }
       ]
     };
 
@@ -7734,6 +7709,7 @@
         this.trialDurationSec = 86400; // 24 Hours Generous Free Trial (never interrupts 15-min broadcast)
         this.trialRemainingSec = 86400;
         this.trialInterval = null;
+        this.polarAccessToken = (typeof localStorage !== 'undefined' && localStorage.getItem('cfb_admin_polar_token')) || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
         this.currentOrderMsg = '';
         this.loadDatabase();
         // Background live cloud sync
@@ -8432,7 +8408,7 @@
                 <span class="cyber-plan-name">${plan.name.toUpperCase()}</span>
                 <span class="cyber-plan-badge" style="${plan.vip ? 'background:#c084fc; color:#020617;' : (plan.highlight ? 'background:#fbbf24; color:#020617;' : 'background:#0284c7; color:#fff;')}">${plan.tag}</span>
               </div>
-              <span class="cyber-plan-duration">${plan.days} Days Unlimited Access</span>
+              <span class="cyber-plan-duration">${plan.id === 'lifetime' ? '👑 Lifetime Unlimited Access (Never Pay Again)' : (plan.days + ' Days Unlimited Access')}</span>
             </div>
             <div class="cyber-plan-price-wrap">
               <span class="cyber-plan-price" style="font-size: 16px; font-weight: 900; color: #fbbf24;">${priceFormatted}</span>
@@ -8512,27 +8488,24 @@
           if (panelBd) panelBd.style.display = 'none';
 
           const priceUsdStr = '$' + usdPlan.price.toFixed(2) + ' USD';
-          if (orderPlanName) orderPlanName.textContent = usdPlan.name.toUpperCase() + ' PASS';
-          if (orderPlanDuration) orderPlanDuration.textContent = usdPlan.days + ' Days Unlimited Access';
+          const planTitle = usdPlan.id === 'lifetime' ? 'LIFETIME VIP PASS' : (usdPlan.name.toUpperCase() + ' PASS');
+          const planDuration = usdPlan.id === 'lifetime' ? '👑 Lifetime Unlimited Access' : (usdPlan.days + ' Days Unlimited Access');
+
+          if (orderPlanName) orderPlanName.textContent = planTitle;
+          if (orderPlanDuration) orderPlanDuration.textContent = planDuration;
           if (orderPlanPrice) orderPlanPrice.textContent = priceUsdStr;
 
-          const intlPriceDisplay = document.getElementById('intl-btn-price-display');
-          if (intlPriceDisplay) intlPriceDisplay.textContent = priceUsdStr;
-
-          const linkIntlGumroad = document.getElementById('link-intl-gumroad');
-          if (linkIntlGumroad) {
-            const rawBase = (this.adminGumroadUrl || 'https://tawhidh.gumroad.com/l/hedbi').split('?')[0];
-            linkIntlGumroad.href = rawBase + '?wanted=true&price=' + usdPlan.price.toFixed(2);
-          }
+          const polarPriceDisplay = document.getElementById('polar-btn-price-display');
+          if (polarPriceDisplay) polarPriceDisplay.textContent = priceUsdStr;
 
           this.currentOrderMsg = '👋 Hello Tawhid!\n' +
             '🎮 I want to purchase Country Flag Battle Royale International Access:\n' +
             '━━━━━━━━━━━━━━━━━━━━━\n' +
             '💎 Package: ' + usdPlan.name + ' (' + priceUsdStr + ')\n' +
-            '⏳ Duration: ' + usdPlan.days + ' Days 24/7 Access\n' +
-            '🏛️ Preferred Gateway: Payoneer / Citibank US / Cards\n' +
+            '⏳ Duration: ' + planDuration + '\n' +
+            '🏛️ Preferred Gateway: Polar.sh (Card / Apple Pay / Google Pay)\n' +
             '━━━━━━━━━━━━━━━━━━━━━\n' +
-            'Please send me payment instructions / invoice to activate my pass!';
+            'Please assist me with activating my pass!';
         } else {
           this.activeOrderPlan = bdtPlan;
           if (tabBd) tabBd.classList.add('active');
@@ -8775,6 +8748,157 @@
         } catch(e) {}
 
         this.showFailRecoveryModal(plan, reason);
+      }
+
+      // Start Real-Time 1-Click Polar.sh International Checkout (Cards / Apple Pay / Google Pay)
+      startPolarCheckout() {
+        const nameInput = document.getElementById('polar-customer-name');
+        const emailInput = document.getElementById('polar-customer-email');
+        const statusBox = document.getElementById('polar-gw-status');
+        const btnPay = document.getElementById('btn-start-polar-checkout');
+
+        const customerName = (nameInput && nameInput.value.trim()) || ('Player_' + Math.floor(Math.random() * 8999 + 1000));
+        const customerEmail = (emailInput && emailInput.value.trim()) || '';
+
+        const plan = this.activeUsdPlan || getPlanDef(this.activePlanId || '1m', 'usd');
+        const polarToken = this.polarAccessToken || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
+        const productId = plan.polarProductId || 'fb8af379-2bfd-40fa-ae41-834020eef919';
+
+        if (btnPay) {
+          btnPay.disabled = true;
+          btnPay.innerHTML = '<span>⏳ CONNECTING TO POLAR SECURE CHECKOUT...</span>';
+        }
+        if (statusBox) {
+          statusBox.textContent = '🚀 Redirecting to Polar.sh Cards & Apple Pay checkout...';
+          statusBox.style.color = '#67e8f9';
+          statusBox.style.display = 'block';
+        }
+
+        let baseSiteUrl = 'https://countryflagbattlegame.vercel.app/';
+        if (typeof window !== 'undefined' && window.location) {
+          const proto = window.location.protocol;
+          if (proto === 'http:' || proto === 'https:') {
+            baseSiteUrl = window.location.origin + window.location.pathname;
+          }
+        }
+        if (!baseSiteUrl.endsWith('/') && !baseSiteUrl.endsWith('.html')) {
+          baseSiteUrl += '/';
+        }
+
+        const successUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=success&ref=polar&plan=' + encodeURIComponent(plan.id) + '&checkout_id={CHECKOUT_ID}';
+
+        const payload = {
+          products: [productId],
+          success_url: successUrl
+        };
+        if (customerEmail && customerEmail.includes('@')) {
+          payload.customer_email = customerEmail;
+        }
+        if (customerName) {
+          payload.customer_name = customerName;
+        }
+
+        const abortCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timeoutTimer = abortCtrl ? setTimeout(() => abortCtrl.abort(), 8500) : null;
+
+        fetch('https://api.polar.sh/v1/checkouts/custom/', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + polarToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+          },
+          body: JSON.stringify(payload),
+          signal: abortCtrl ? abortCtrl.signal : undefined
+        })
+        .then(res => {
+          if (timeoutTimer) clearTimeout(timeoutTimer);
+          if (!res.ok) {
+            return res.json().then(errData => {
+              throw new Error((errData && (errData.detail || errData.message)) ? JSON.stringify(errData.detail || errData.message) : ('HTTP ' + res.status));
+            });
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (data && data.url) {
+            try {
+              localStorage.setItem('cfb_pending_polar_checkout', JSON.stringify({
+                planId: plan.id,
+                planName: plan.name,
+                price: plan.price,
+                currency: 'USD',
+                customer: customerName,
+                checkoutId: data.id,
+                timestamp: Date.now()
+              }));
+            } catch(e) {}
+            window.location.href = data.url;
+          } else {
+            throw new Error('Polar returned invalid checkout response');
+          }
+        })
+        .catch(err => {
+          if (timeoutTimer) clearTimeout(timeoutTimer);
+          console.error('Polar checkout error:', err);
+          if (btnPay) {
+            btnPay.disabled = false;
+            btnPay.innerHTML = '<span>🚀 PAY NOW WITH CARD / WALLET (<span id="polar-btn-price-display">$' + plan.price.toFixed(2) + ' USD</span>)</span>';
+          }
+          const errMsg = err.name === 'AbortError' ? 'Network Timeout' : (err.message || 'Error creating checkout');
+          this.showFailRecoveryModal(plan, 'Polar Checkout Error: ' + errMsg);
+        });
+      }
+
+      // Auto-Activate Polar.sh Checkout Callback (?payment=success&ref=polar&checkout_id=...)
+      handlePolarAutoUnlock(urlParams) {
+        let planId = urlParams.get('plan') || '1m';
+        const checkoutId = urlParams.get('checkout_id');
+        let customer = 'International Gamer';
+        let amount = '$3.99 USD';
+
+        try {
+          const pending = JSON.parse(localStorage.getItem('cfb_pending_polar_checkout') || '{}');
+          if (pending.planId) planId = pending.planId;
+          if (pending.customer) customer = pending.customer;
+          if (pending.price) amount = '$' + pending.price + ' USD';
+        } catch(e) {}
+
+        const plan = getPlanDef(planId, 'usd') || { id: planId, name: '1 Month Pass', days: 30, price: 3.99 };
+        const pTag = (plan.id || '1m').toLowerCase();
+        const trx = (checkoutId && checkoutId.length > 5) ? ('POL-' + checkoutId.slice(0, 10).toUpperCase()) : ('POL-' + Date.now().toString(36).toUpperCase());
+        const userSlug = customer.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || 'gamer';
+        const expiresAt = Date.now() + (plan.days * 86400000);
+        const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
+        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
+
+        const actResult = this.activateKey(licenseKey);
+        if (actResult.valid) {
+          this.saveAutomatedOrder({
+            trxId: trx,
+            invoiceId: checkoutId || trx,
+            sender: customer,
+            gateway: 'Polar.sh (Cards/ApplePay)',
+            planId: plan.id,
+            planName: plan.name,
+            amount: amount,
+            licenseKey: licenseKey,
+            expiresAt: expiresAt,
+            date: new Date().toLocaleString(),
+            timestamp: Date.now()
+          });
+
+          this.showLockModal(false);
+          this.updateDrawerStatus();
+
+          // Clean URL cleanly
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+
+          alert('🎉 ALHAMDULILLAH! Your Polar.sh card payment was successful!\n\n💎 Plan: ' + plan.name + '\n🔑 License Key: ' + licenseKey + '\n\nArena access has been automatically unlocked 24/7!');
+        }
       }
 
       // Verify and Auto-Activate Paymently Callback
@@ -9072,6 +9196,9 @@
 
             if (payStatus === 'fail' || payStatus === 'failed' || payStatus === 'cancel' || payStatus === 'cancelled') {
               this.handlePaymentFailureWhatsApp(reason);
+            } else if (urlParams.get('ref') === 'polar' || urlParams.get('polar_success') === 'true') {
+              // Polar.sh Auto-Redirect Success Unlock
+              this.handlePolarAutoUnlock(urlParams);
             } else if (urlParams.get('ref') === 'gumroad' || urlParams.get('gumroad_success') === 'true') {
               // Gumroad Auto-Redirect Success Unlock
               this.handleGumroadAutoUnlock(urlParams);
@@ -9635,6 +9762,14 @@
           });
         }
 
+        // Polar.sh International Checkout Button
+        const btnStartPolar = document.getElementById('btn-start-polar-checkout');
+        if (btnStartPolar) {
+          btnStartPolar.addEventListener('click', () => {
+            this.startPolarCheckout();
+          });
+        }
+
         // Copy bKash/Nagad Number
         if (btnCopyBdNum) {
           btnCopyBdNum.addEventListener('click', () => {
@@ -9836,7 +9971,10 @@
         const inputPayPal = document.getElementById('admin-setting-paypal');
         const inputGwUrl = document.getElementById('admin-setting-gateway-url');
         const inputGwKey = document.getElementById('admin-setting-gateway-key');
+        const inputPolarToken = document.getElementById('admin-setting-polar-token');
         const btnSaveSettings = document.getElementById('btn-save-admin-settings');
+
+        if (inputPolarToken) inputPolarToken.value = this.polarAccessToken || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
 
         if (inputWA) inputWA.value = this.adminWhatsApp;
         if (inputBkash) inputBkash.value = this.adminBkash;
@@ -9878,7 +10016,11 @@
               this.paymentlyApiKey = inputGwKey.value.trim() || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
               localStorage.setItem('cfb_paymently_api_key', this.paymentlyApiKey);
             }
-            alert('✅ Admin Settings & Paymently Gateway Credentials Saved Successfully!');
+            if (inputPolarToken) {
+              this.polarAccessToken = inputPolarToken.value.trim() || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
+              localStorage.setItem('cfb_admin_polar_token', this.polarAccessToken);
+            }
+            alert('✅ Admin Settings, Paymently & Polar Credentials Saved Successfully!');
           });
         }
 
