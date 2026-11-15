@@ -1,0 +1,170 @@
+{
+  "url": "https://flagsbattle.com",
+  "title": "FlagsBattle - The World's Biggest Flag Battle Game for Your Live Streams",
+  "title_length": 72,
+  "meta_description": "FlagsBattle is the world",
+  "meta_description_length": 24,
+  "headings": [
+    {
+      "tag": "h1",
+      "text": "The world's biggest flag battle. Now on your channel."
+    },
+    {
+      "tag": "h2",
+      "text": "Streams playing FlagsBattle right now"
+    },
+    {
+      "tag": "h2",
+      "text": "9 million views. 1.14 million in a single day."
+    },
+    {
+      "tag": "h2",
+      "text": "Three steps to your own arena"
+    },
+    {
+      "tag": "h3",
+      "text": "Download the app"
+    },
+    {
+      "tag": "h3",
+      "text": "Add your YouTube API key"
+    },
+    {
+      "tag": "h3",
+      "text": "Go live"
+    },
+    {
+      "tag": "h3",
+      "text": "Reads your live chat"
+    },
+    {
+      "tag": "h3",
+      "text": "Leaderboards on screen"
+    },
+    {
+      "tag": "h3",
+      "text": "Sound, effects and TTS"
+    },
+    {
+      "tag": "h3",
+      "text": "Runs by itself"
+    },
+    {
+      "tag": "h3",
+      "text": "Light on your PC"
+    },
+    {
+      "tag": "h3",
+      "text": "Updates included"
+    },
+    {
+      "tag": "h2",
+      "text": "Three modes. One rule: the last flag wins."
+    },
+    {
+      "tag": "h3",
+      "text": "Normal Mode"
+    },
+    {
+      "tag": "h3",
+      "text": "Lightning Mode"
+    },
+    {
+      "tag": "h3",
+      "text": "Chaos Mode"
+    },
+    {
+      "tag": "h3",
+      "text": "How viewers help their country"
+    },
+    {
+      "tag": "h2",
+      "text": "See the game before you go live."
+    },
+    {
+      "tag": "h2",
+      "text": "One plan. Everything in it."
+    },
+    {
+      "tag": "h2",
+      "text": "The fan stand. Cheer for your country."
+    },
+    {
+      "tag": "h2",
+      "text": "Vote for your country"
+    },
+    {
+      "tag": "h3",
+      "text": "Game rating"
+    },
+    {
+      "tag": "h3",
+      "text": "1 vote daily"
+    },
+    {
+      "tag": "h3",
+      "text": "Game statistics"
+    },
+    {
+      "tag": "h3",
+      "text": "Most supported countries"
+    },
+    {
+      "tag": "h3",
+      "text": "Top supporters"
+    },
+    {
+      "tag": "h3",
+      "text": "Country wins"
+    },
+    {
+      "tag": "h3",
+      "text": "Cheer for your country"
+    },
+    {
+      "tag": "h3",
+      "text": "This week's stand"
+    },
+    {
+      "tag": "h3",
+      "text": "How the stand works"
+    },
+    {
+      "tag": "h3",
+      "text": "Which country do you support?"
+    },
+    {
+      "tag": "h3",
+      "text": "Design your dream game"
+    },
+    {
+      "tag": "h2",
+      "text": "Your channel. Your arena."
+    },
+    {
+      "tag": "h4",
+      "text": "Game"
+    },
+    {
+      "tag": "h4",
+      "text": "Community"
+    },
+    {
+      "tag": "h4",
+      "text": "FlagsBattle"
+    },
+    {
+      "tag": "h2",
+      "text": "Welcome back"
+    },
+    {
+      "tag": "h2",
+      "text": "Join FlagsBattle"
+    }
+  ],
+  "word_count": 1402,
+  "schemas_count": 1,
+  "schemas": [
+    "\r\n    {\r\n      \"@context\": \"https://schema.org\",\r\n      \"@graph\": [\r\n      {\r\n        \"@type\": \"WebSite\",\r\n        \"@id\": \"https://flagsbattle.com/#website\",\r\n        \"name\": \"FlagsBattle\",\r\n        \"alternateName\": \"Flags Battle\",\r\n        \"url\": \"https://flagsbattle.com/\",\r\n        \"inLanguage\": ["
+  ]
+}

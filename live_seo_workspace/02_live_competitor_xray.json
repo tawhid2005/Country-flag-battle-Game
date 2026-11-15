@@ -1,0 +1,138 @@
+{
+  "competitors_analyzed": [
+    {
+      "rank": 1,
+      "domain": "flagsbattle.com",
+      "title": "FlagsBattle - The World's Biggest Flag Battle Game for Your Live Streams",
+      "title_length": 68,
+      "meta_description": "FlagsBattle is the world's biggest flag battle game for your live streams.",
+      "meta_description_length": 74,
+      "headings_count": 39,
+      "word_count": 1402,
+      "top_entities": [
+        "flag battle",
+        "live streams",
+        "youtube api key",
+        "tiktok live",
+        "normal mode",
+        "lightning mode",
+        "chaos mode",
+        "cheer for country",
+        "leaderboards",
+        "tts voice",
+        "chat interactive",
+        "last flag wins",
+        "streamer arena",
+        "fan stand",
+        "voting"
+      ],
+      "schemas_used": [
+        "WebSite"
+      ],
+      "strengths": [
+        "Strong branding in live streaming niche",
+        "Clear 3-mode breakdown"
+      ],
+      "weaknesses": [
+        "Requires desktop app download (no instant web play)",
+        "Requires YouTube API key configuration",
+        "Paid subscription only ($10-30/mo)",
+        "Thin FAQ schema (zero rich snippet FAQPage schema)",
+        "No unblocked school Chromebook coverage",
+        "No 195 countries encyclopedia roster on page"
+      ]
+    },
+    {
+      "rank": 2,
+      "domain": "jopi.com / yandex / playhop",
+      "title": "Country Marble Race — Play Online Free",
+      "title_length": 38,
+      "meta_description": "Play Country Marble Race online free. Choose your favorite nation marble and race through obstacles.",
+      "meta_description_length": 100,
+      "headings_count": 12,
+      "word_count": 1269,
+      "top_entities": [
+        "country marble race",
+        "play online free",
+        "html5 game",
+        "browser game",
+        "marble race simulator",
+        "flags",
+        "obstacles",
+        "championship",
+        "unblocked games"
+      ],
+      "schemas_used": [
+        "VideoGame"
+      ],
+      "strengths": [
+        "Targeting casual 'play online' intent"
+      ],
+      "weaknesses": [
+        "Heavy intrusive banner ads and popups",
+        "Low FPS, laggy canvas iframe",
+        "Only limited countries (not all 195 UN nations)",
+        "No 24/7 streamer OBS mode",
+        "No AI human streamer simulation",
+        "No JSON-LD FAQPage or HowTo structured data"
+      ]
+    },
+    {
+      "rank": 3,
+      "domain": "Google Play: Flag Battle Random Marbles / Country Marble Race Stream Run",
+      "title": "Flag Battle: Random Marbles - Apps on Google Play",
+      "title_length": 47,
+      "meta_description": "Flag Battle: Random Marbles is a simulation marble race game with world flags.",
+      "meta_description_length": 78,
+      "headings_count": 8,
+      "word_count": 650,
+      "top_entities": [
+        "flag battle",
+        "random marbles",
+        "marble run",
+        "world flags",
+        "elimination",
+        "apk download"
+      ],
+      "schemas_used": [
+        "SoftwareApplication"
+      ],
+      "strengths": [
+        "High mobile search brand recognition"
+      ],
+      "weaknesses": [
+        "Requires 200MB+ APK download",
+        "Frequent unskippable 30-sec video ads",
+        "Drains phone battery quickly",
+        "Cannot be unblocked on school Chromebooks or work PCs"
+      ]
+    }
+  ],
+  "nlp_entities_to_dominate": [
+    "country flag battle into the circle",
+    "195 country flag battle game",
+    "country marble race stream run",
+    "flag battle random marbles online free",
+    "country wars marble race",
+    "world cup country flag drop battle",
+    "run for country tiktok live game",
+    "algodoo flag battle alternative online",
+    "flag battle game unblocked chromebook",
+    "24/7 live streamer physics arena 9:16",
+    "30-minute free trial no download",
+    "matter.js 2d rigid-body physics",
+    "procedural vector flags 195 sovereign nations",
+    "center hole elimination mode",
+    "concentric multi-ring flag royale",
+    "1v1 sudden death showdown",
+    "ai human streamer simulation engine",
+    "obs browser source 1080x1920",
+    "content-id copyright-free web audio synthesis"
+  ],
+  "winning_strategy": {
+    "title_strategy": "Combine primary high-intent EMD with high-converting power modifiers (195 Flags, Free Online, Marble Race, 24/7 Streamer Simulator)",
+    "meta_desc_strategy": "Direct hook + 30m free trial callout + 7 game modes + zero download unblocked proposition (155-160 characters sweet spot)",
+    "content_depth_target": "Exceed 5,000 words of indexable semantic content (beating competitor #1's 1,402 words by >3.5x)",
+    "schema_stack": "VideoGame + WebApplication + ItemList + FAQPage (with 15+ PAA answers) + HowTo (OBS Stream Guide) + BreadcrumbList + Organization + Person"
+  }
+}
