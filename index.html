@@ -3730,18 +3730,159 @@
 
     .admin-modal-dialog {
       width: 100%;
-      max-width: 480px;
-      max-height: 90vh;
+      max-width: 820px;
+      max-height: 92vh;
       background: radial-gradient(circle at 50% 15%, rgba(18, 28, 55, 0.99) 0%, rgba(4, 8, 20, 0.99) 85%);
       border: 1.5px solid rgba(251, 191, 36, 0.55);
       border-radius: 20px;
-      padding: 22px 18px;
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.95), 0 0 35px rgba(251, 191, 36, 0.25);
+      padding: 22px 20px;
+      box-shadow: 0 15px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(251, 191, 36, 0.25);
       display: flex;
       flex-direction: column;
       overflow-y: auto;
       overflow-x: hidden;
       animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (max-width: 640px) {
+      .admin-modal-dialog {
+        padding: 14px 10px;
+        max-height: 95vh;
+        border-radius: 16px;
+      }
+    }
+
+    /* Live Admin KPI Summary Cards */
+    .admin-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 4px 14px 14px 14px;
+    }
+    @media (max-width: 640px) {
+      .admin-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        margin: 4px 2px 10px 2px;
+      }
+    }
+    .admin-kpi-card {
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 8px 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .admin-kpi-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+    }
+    .admin-kpi-val {
+      font-size: 13px;
+      font-weight: 900;
+      font-family: var(--font-display);
+    }
+
+    /* WhatsApp Customer Recovery & 1-Click Link Buttons */
+    .btn-wa-recover {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: rgba(37, 211, 102, 0.18);
+      border: 1px solid #25D366;
+      color: #4ade80;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-wa-recover:hover {
+      background: #25D366;
+      color: #020617;
+      box-shadow: 0 0 15px rgba(37, 211, 102, 0.6);
+    }
+
+    .btn-copy-activation-link {
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.5);
+      color: #00e5ff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-copy-activation-link:hover {
+      background: #00e5ff;
+      color: #020617;
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+    }
+
+    /* Celebration Toast Notification */
+    .cyber-toast-celebration {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120px);
+      z-index: 999999;
+      background: linear-gradient(135deg, rgba(8, 16, 42, 0.98) 0%, rgba(15, 23, 50, 0.98) 100%);
+      border: 2px solid #00e5ff;
+      border-radius: 16px;
+      padding: 14px 20px;
+      box-shadow: 0 10px 45px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 229, 255, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 90vw;
+      width: 440px;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+    }
+    .cyber-toast-celebration.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .toast-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .toast-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .toast-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 900;
+      color: #00e5ff;
+      letter-spacing: 0.5px;
+    }
+    .toast-sub {
+      font-size: 11px;
+      color: #e2e8f0;
+      line-height: 1.3;
+    }
+    .toast-close-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
     }
 
     .admin-modal-header {
@@ -3768,10 +3909,17 @@
       display: flex;
       gap: 6px;
       margin-bottom: 14px;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .admin-nav-tabs::-webkit-scrollbar {
+      display: none;
     }
 
     .admin-nav-tab {
-      flex: 1;
+      flex: 0 0 auto;
       padding: 8px 6px;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.05);
@@ -5563,6 +5711,17 @@
       </div>
     </div>
 
+    
+    <!-- 1-Click Activation Celebration Banner / Toast -->
+    <div id="cyber-celebration-toast" class="cyber-toast-celebration" role="alert" aria-live="polite">
+      <div class="toast-icon">🎉</div>
+      <div class="toast-body">
+        <div class="toast-title" id="toast-title-text">PASS ACTIVATED 24/7!</div>
+        <div class="toast-sub" id="toast-sub-text">Welcome to Country Flag Battle Royale. Arena is unlocked!</div>
+      </div>
+      <button class="toast-close-btn" id="btn-close-toast" type="button">&times;</button>
+    </div>
+
     <!-- Order Confirmation & Automated Checkout Terminal (True Fixed Center Popup) -->
     <div id="cyber-order-modal" role="dialog" aria-modal="true">
       <div class="order-modal-card">
@@ -5581,10 +5740,36 @@
           <div class="order-plan-price-tag" id="order-card-plan-price">99 TK</div>
         </div>
 
-        <!-- Gateway Selector Tabs -->
+        <!-- STEP 1: SET STREAMER USERNAME & PASSWORD BEFORE PAYMENT -->
+        <div class="order-creds-container" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(0, 229, 255, 0.45); border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 11px; font-weight: 800; color: #00e5ff; display: flex; align-items: center; gap: 5px;">
+              <span>👤 1. SET STREAMER LOGIN (আইডি ও পাসওয়ার্ড)</span>
+            </span>
+            <span style="font-size: 9px; background: rgba(0, 229, 255, 0.2); color: #67e8f9; padding: 2px 6px; border-radius: 4px; font-weight: 800;">AUTO-ACTIVATED</span>
+          </div>
+          <div style="font-size: 10px; color: #94a3b8; line-height: 1.4; margin-bottom: 8px;">
+            Set your Streamer ID & Password below. Your pass will be automatically bound to this account so you can log in on PC and Mobile 24/7!
+          </div>
+          <div class="order-inputs-grid" style="gap: 8px;">
+            <div class="order-input-wrapper">
+              <label class="order-input-label">👤 STREAMER USER ID (ইউজার আইডি)</label>
+              <input type="text" id="order-checkout-username" class="order-input" placeholder="e.g. streamer_pro" maxlength="25">
+            </div>
+            <div class="order-input-wrapper">
+              <label class="order-input-label">🔑 CHOOSE PASSWORD (পাসওয়ার্ড)</label>
+              <div style="position: relative;">
+                <input type="password" id="order-checkout-password" class="order-input" placeholder="e.g. stream1234" maxlength="30" style="padding-right: 36px;">
+                <button type="button" id="btn-toggle-checkout-pass" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 13px;">👁️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gateway Selector Tabs (Shown for BD, cleanly hidden for pure International) -->
         <div class="order-gateway-tabs" id="order-tabs-wrapper">
           <button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">🇧🇩 bKash / Nagad / Rocket</button>
-          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 International (Payoneer / USD)</button>
+          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 International (Cards / Apple Pay / USD)</button>
         </div>
 
         <!-- Panel 1: Bangladeshi Payment -->
@@ -5631,45 +5816,25 @@
                 <input type="tel" id="auto-pay-sender-phone" class="order-input" placeholder="017XXXXXXXX" maxlength="15">
               </div>
               <div class="order-input-wrapper">
-                <label class="order-input-label">🔑 TRANSACTION ID (TRXID)</label>
-                <input type="text" id="auto-pay-trxid" class="order-input" placeholder="e.g. BLA874KX8Q" maxlength="25">
+                <label class="order-input-label">⚡ TRANSACTION ID (TrxID)</label>
+                <input type="text" id="auto-pay-trx-id" class="order-input" placeholder="e.g. BGA78X912K" maxlength="25">
               </div>
             </div>
 
-            <div id="auto-pay-alert-bd" class="order-alert-box" style="display: none; margin-top: 6px;"></div>
-
-            <button class="order-btn-verify" id="btn-auto-verify-bd" type="button" style="margin-top: 6px;">
-              <span>⚡ VERIFY & INSTANT UNLOCK (তাৎক্ষণিক আনলক)</span>
+            <button class="order-btn-verify" id="btn-verify-auto-order" type="button">
+              <span>⚡ VERIFY & UNLOCK ACCESS (যাচাই ও আনলক)</span>
             </button>
+            <div id="auto-pay-alert-bd" class="order-status-alert" style="display: none;"></div>
           </div>
 
-          <!-- METHOD 3: OPTIONAL AUTO-GATEWAY -->
-          <details class="order-manual-details" style="margin-top: 2px;">
-            <summary class="order-manual-summary">
-              <span>⚡ অনলাইন গেটওয়ে দিয়ে চেষ্টা করতে চান?</span>
-              <span style="font-size: 10px; color: #00e5ff;">(Binance / Bybit / Gateway ▾)</span>
-            </summary>
-            <div style="padding-top: 8px;">
-              <div class="order-inputs-grid" style="gap: 8px;">
-                <div class="order-input-wrapper">
-                  <label class="order-input-label">👤 YOUR NAME</label>
-                  <input type="text" id="auto-gw-name" class="order-input" placeholder="e.g. Shakib Ahmed" maxlength="30">
-                </div>
-                <div class="order-input-wrapper">
-                  <label class="order-input-label">📱 SENDER NUMBER / EMAIL</label>
-                  <input type="text" id="auto-gw-contact" class="order-input" placeholder="017XXXXXXXX or email" maxlength="40">
-                </div>
-              </div>
-              <button class="order-btn-gateway-pay" id="btn-start-auto-gateway" type="button" style="margin-top: 8px;">
-                <span>🚀 START GATEWAY (<span id="order-gw-btn-amount">99 TK</span>)</span>
-              </button>
-              <div id="auto-gw-status" style="display: none; font-size: 11px; text-align: center; color: #67e8f9; margin-top: 6px;"></div>
-            </div>
-          </details>
+          <!-- Switch to International Card Option for BD users -->
+          <div style="text-align: center; margin-top: 6px; font-size: 11px; color: #94a3b8;">
+            আন্তর্জাতিক ক্রেডিট কার্ড / ডলার দিয়ে কিনতে চান? <a href="#" id="link-switch-to-intl" style="color: #00e5ff; font-weight: 700; text-decoration: underline;">Cards / Apple Pay (USD)</a>
+          </div>
 
         </div>
 
-        <!-- Panel 2: International Payment -->
+        <!-- Panel 2: International Payment (Clean, Global, Professional) -->
         <div class="order-gw-panel" id="panel-intl-pay" style="display: none;">
           
           <!-- Polar.sh Official 1-Click Card / Apple Pay / Google Pay Checkout Box -->
@@ -5699,7 +5864,7 @@
 
             <div class="order-inputs-grid" style="gap: 8px; margin-bottom: 12px;">
               <div class="order-input-wrapper">
-                <label class="order-input-label">👤 YOUR NAME / GAMER TAG</label>
+                <label class="order-input-label">👤 YOUR FULL NAME / STREAMER NAME</label>
                 <input type="text" id="polar-customer-name" class="order-input" placeholder="e.g. Alex Hunter" maxlength="35">
               </div>
               <div class="order-input-wrapper">
@@ -5716,9 +5881,15 @@
           </div>
 
           <!-- Secondary WhatsApp Fallback for International -->
-          <button type="button" class="btn-order-whatsapp" id="btn-intl-whatsapp-checkout" style="width: 100%; padding: 12px; font-size: 11px; background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.35); color: #4ade80; box-shadow: none;">
+          <button type="button" class="btn-order-whatsapp" id="btn-intl-whatsapp-checkout" style="width: 100%; padding: 12px; font-size: 11px; background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.35); color: #4ade80; box-shadow: none; margin-top: 8px;">
             <span>💬 Prefer WhatsApp / Custom Payment? Chat with Admin (+8801711729858)</span>
           </button>
+
+          <!-- Discreet Switch to BD BDT for travelers/VPN users -->
+          <div style="text-align: center; margin-top: 10px; font-size: 11px; color: #94a3b8;">
+            Paying from Bangladesh? <a href="#" id="link-switch-to-bd" style="color: #00e5ff; font-weight: 700; text-decoration: underline;">Switch to bKash / Nagad / Rocket (BDT)</a>
+          </div>
+
         </div>
 
         <!-- Panel 3: Success Receipt (Shown when unlocked) -->
@@ -5735,15 +5906,28 @@
               <span style="color: #10b981; font-weight: 800;">🟢 ACTIVE</span>
             </div>
             <div class="order-receipt-row">
+              <span>STREAMER ID:</span>
+              <span id="order-success-userid" style="color: #00e5ff; font-weight: 800;">gamer</span>
+            </div>
+            <div class="order-receipt-row">
+              <span>PASSWORD:</span>
+              <span id="order-success-pass" style="color: #fbbf24; font-weight: 800;">••••••</span>
+            </div>
+            <div class="order-receipt-row">
               <span>EXPIRES:</span>
               <span id="order-success-expires" style="color: #fbbf24; font-weight: 700;">30 Days</span>
             </div>
             <div class="order-receipt-key-box">
               <div style="font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 4px;">YOUR UNIVERSAL LICENSE KEY:</div>
               <div id="order-success-key" class="order-success-key-text">CFB-1M-...</div>
-              <button class="btn-order-copy" id="btn-copy-success-key" type="button" style="margin-top: 6px; width: 100%;">
-                <span>📋 COPY LICENSE KEY</span>
-              </button>
+              <div style="display: flex; gap: 6px; margin-top: 6px;">
+                <button class="btn-order-copy" id="btn-copy-success-key" type="button" style="flex: 1;">
+                  <span>📋 COPY KEY</span>
+                </button>
+                <button class="btn-order-copy" id="btn-copy-success-link" type="button" style="flex: 1; background: rgba(0, 229, 255, 0.2); border-color: #00e5ff; color: #00e5ff;">
+                  <span>🚀 COPY 1-CLICK LINK</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -5752,7 +5936,7 @@
           </button>
         </div>
 
-        <!-- WhatsApp Fallback Link -->
+        <!-- WhatsApp Support Link -->
         <button class="btn-order-whatsapp-mini" id="btn-order-wa-support" type="button">
           <span>💬 Need help or manual activation? Chat on WhatsApp (+8801711729858)</span>
         </button>
@@ -5810,156 +5994,177 @@
       <div class="admin-modal-dialog">
         <div class="admin-modal-header">
           <div class="admin-modal-title">
-            <span>👑 MASTER ADMIN LICENSE PORTAL</span>
+            <span>👑 MASTER ADMIN CONTROL CENTER</span>
           </div>
           <button class="drawer-close" id="admin-modal-close-btn">&times;</button>
         </div>
 
-      <!-- Realtime Global Cloud Sync Banner -->
-      <div id="admin-cloud-sync-banner" style="display: flex; align-items: center; justify-content: space-between; margin: 10px 14px 4px 14px; padding: 8px 12px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 8px; font-size: 11px;">
-        <span id="admin-cloud-sync-label" style="color: #67e8f9; font-weight: 700;">🌐 CLOUD DATABASE: ONLINE & SYNCED</span>
-        <button id="btn-admin-cloud-sync" style="background: #00e5ff; color: #020617; font-weight: 800; font-size: 10px; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🔄 SYNC NOW</button>
-      </div>
+        <!-- Realtime Global Cloud Sync Banner -->
+        <div id="admin-cloud-sync-banner" style="display: flex; align-items: center; justify-content: space-between; margin: 4px 14px 10px 14px; padding: 8px 12px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 8px; font-size: 11px;">
+          <span id="admin-cloud-sync-label" style="color: #67e8f9; font-weight: 700;">🌐 CLOUD DATABASE: ONLINE & SYNCED</span>
+          <button id="btn-admin-cloud-sync" style="background: #00e5ff; color: #020617; font-weight: 800; font-size: 10px; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🔄 SYNC NOW</button>
+        </div>
 
-      <nav class="admin-nav-tabs">
-        <button class="admin-nav-tab active" id="admin-tab-btn-create">➕ CREATE LICENSE</button>
-        <button class="admin-nav-tab" id="admin-tab-btn-list">📋 SUBSCRIBERS (<span id="admin-sub-count">0</span>)</button>
-        <button class="admin-nav-tab" id="admin-tab-btn-orders">📥 AUTOMATED ORDERS (<span id="admin-orders-count">0</span>)</button>
-        <button class="admin-nav-tab" id="admin-tab-btn-backup">💾 BACKUP & TOOLS</button>
-      </nav>
-
-      <!-- Admin Tab 1: Create New Subscriber License -->
-      <section class="admin-section active" id="admin-sec-create">
-        <div class="cyber-input-group">
-          <label class="cyber-input-label">USER ID / USERNAME</label>
-          <div style="display: flex; gap: 6px;">
-            <input type="text" id="admin-new-user" class="cyber-input" placeholder="e.g. streamer_pro">
-            <button class="drawer-btn" id="btn-gen-userid" style="width: 80px; padding: 0;">🎲 AUTO</button>
+        <!-- Live KPI Summary Cards (Revenue, Subs, Orders, Failed) -->
+        <div class="admin-kpi-grid">
+          <div class="admin-kpi-card">
+            <div class="admin-kpi-label">💰 TOTAL REVENUE</div>
+            <div class="admin-kpi-val" id="admin-kpi-revenue" style="color: #fbbf24;">$0 / 0৳</div>
+          </div>
+          <div class="admin-kpi-card">
+            <div class="admin-kpi-label">👥 SUBSCRIBERS</div>
+            <div class="admin-kpi-val" id="admin-kpi-subs" style="color: #00e5ff;">0</div>
+          </div>
+          <div class="admin-kpi-card">
+            <div class="admin-kpi-label">📦 COMPLETED ORDERS</div>
+            <div class="admin-kpi-val" id="admin-kpi-orders" style="color: #10b981;">0</div>
+          </div>
+          <div class="admin-kpi-card">
+            <div class="admin-kpi-label">⚠️ FAILED ATTEMPTS</div>
+            <div class="admin-kpi-val" id="admin-kpi-failed" style="color: #f87171;">0</div>
           </div>
         </div>
 
-        <div class="cyber-input-group">
-          <label class="cyber-input-label">PASSWORD</label>
-          <div style="display: flex; gap: 6px;">
-            <input type="text" id="admin-new-pass" class="cyber-input" placeholder="e.g. pass1234">
-            <button class="drawer-btn" id="btn-gen-pass" style="width: 80px; padding: 0;">🎲 AUTO</button>
+        <!-- Mobile & PC Responsive Navigation Tabs -->
+        <nav class="admin-nav-tabs">
+          <button class="admin-nav-tab active" id="admin-tab-btn-orders">📥 ORDERS (<span id="admin-orders-count">0</span>)</button>
+          <button class="admin-nav-tab" id="admin-tab-btn-list">👥 SUBSCRIBERS (<span id="admin-sub-count">0</span>)</button>
+          <button class="admin-nav-tab" id="admin-tab-btn-failed">⚠️ FAILED (<span id="admin-failed-count">0</span>)</button>
+          <button class="admin-nav-tab" id="admin-tab-btn-create">➕ GENERATE KEY</button>
+          <button class="admin-nav-tab" id="admin-tab-btn-backup">⚙️ SETTINGS & TOOLS</button>
+        </nav>
+
+        <!-- Admin Tab 1: Automated & Card Orders -->
+        <section class="admin-section active" id="admin-sec-orders">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="font-size: 12px; font-weight: 800; color: #00e5ff;">📥 ALL ORDERS & LIVE TRANSACTIONS</div>
+            <button id="btn-clear-automated-orders" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🗑️ CLEAR ALL</button>
           </div>
-        </div>
-
-        <div class="cyber-input-group">
-          <label class="cyber-input-label">SUBSCRIPTION PLAN</label>
-          <select id="admin-new-plan" class="drawer-select">
-            <option value="1m">1 Month — 99 TK (30 Days)</option>
-            <option value="2m" selected>2 Months — 149 TK (60 Days)</option>
-            <option value="4m">4 Months — 239 TK (120 Days)</option>
-            <option value="8m">8 Months — 399 TK (240 Days)</option>
-            <option value="12m">12 Months — 499 TK / $19.99 (365 Days)</option>
-            <option value="lifetime">👑 Lifetime Pass — 699 TK / $25.99 (Unlimited Access)</option>
-            <option value="custom">Custom Days...</option>
-          </select>
-        </div>
-
-        <div class="cyber-input-group" id="admin-custom-days-wrap" style="display: none;">
-          <label class="cyber-input-label">CUSTOM DURATION (DAYS)</label>
-          <input type="number" id="admin-custom-days" class="cyber-input" placeholder="e.g. 45" min="1">
-        </div>
-
-        <button class="cyber-btn-primary" id="btn-generate-license" style="background: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);">
-          <span>🚀 GENERATE & SAVE LICENSE</span>
-        </button>
-
-        <div id="admin-card-result-wrap" style="display: none; flex-direction: column; gap: 8px;">
-          <div style="font-size: 11px; font-weight: 800; color: #10b981;">✅ LICENSE CREATED! READY TO SEND:</div>
-          <div class="admin-license-card-result" id="admin-card-result-text"></div>
-          <button class="drawer-btn" id="btn-copy-card-result" style="border-color: #10b981; color: #10b981;">
-            📋 COPY FOR WHATSAPP / MESSENGER
-          </button>
-        </div>
-      </section>
-
-      <!-- Admin Tab 2: Subscribers List -->
-      <section class="admin-section" id="admin-sec-list">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 11px; font-weight: 800; color: #94a3b8;">ACTIVE DATABASE</span>
-          <div style="display: flex; gap: 6px;">
-            <button class="drawer-btn" id="btn-refresh-subscribers" style="padding: 4px 10px;">🔄 REFRESH</button>
-            <button class="drawer-btn" id="btn-cloud-sync-subscribers" style="padding: 4px 10px; border-color: #00e5ff; color: #00e5ff;">☁️ CLOUD SYNC</button>
+          <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <input type="text" id="admin-search-orders" class="cyber-input" placeholder="🔍 Filter orders by name, trx, or plan..." style="font-size: 11px; padding: 8px 12px;">
           </div>
-        </div>
-        <div id="admin-subscribers-list-container" style="display: flex; flex-direction: column; gap: 8px;">
-          <!-- Dynamically populated -->
-        </div>
-      </section>
+          <div class="admin-subscribers-list" id="admin-automated-orders-container"></div>
+        </section>
 
-      <!-- Admin Tab 3: Backup & Restore Tools -->
-      <section class="admin-section" id="admin-sec-backup">
-        <div style="font-size: 11px; color: #94a3b8; line-height: 1.5;">
-          Export all active licenses to JSON to backup or migrate between computers and browsers.
-        </div>
-        <button class="drawer-btn" id="btn-export-licenses">💾 EXPORT LICENSES BACKUP (JSON)</button>
-        <div class="cyber-input-group">
-          <label class="cyber-input-label">IMPORT BACKUP JSON</label>
-          <textarea id="admin-import-json" class="cyber-input" rows="3" placeholder="Paste backup JSON here..."></textarea>
-        </div>
-        <button class="drawer-btn" id="btn-import-licenses" style="border-color: #00e5ff; color: #00e5ff;">📥 IMPORT & MERGE LICENSES</button>
+        <!-- Admin Tab 2: Subscribers & Logged In Accounts -->
+        <section class="admin-section" id="admin-sec-list">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="font-size: 12px; font-weight: 800; color: #00e5ff;">👥 ACTIVE STREAMER LICENSES</div>
+            <button class="drawer-btn" id="btn-refresh-subscribers" style="font-size: 10px; padding: 4px 8px;">🔄 REFRESH</button>
+          </div>
+          <div id="admin-subscribers-list-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </section>
 
-        <div style="border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 12px; margin-top: 10px;">
-          <div style="font-size: 11px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">⚙️ ADMIN CONTACT & WHATSAPP SETTINGS</div>
-          
+        <!-- Admin Tab 3: Failed / Abandoned Payments & 1-Click WhatsApp Recovery -->
+        <section class="admin-section" id="admin-sec-failed">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div>
+              <div style="font-size: 12px; font-weight: 800; color: #f87171;">⚠️ FAILED & ABANDONED ORDERS</div>
+              <div style="font-size: 10px; color: #94a3b8;">Recover customers directly via WhatsApp in 1-click!</div>
+            </div>
+            <button id="btn-clear-failed-orders" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🗑️ CLEAR LIST</button>
+          </div>
+          <div class="admin-subscribers-list" id="admin-failed-orders-container"></div>
+        </section>
+
+        <!-- Admin Tab 4: Create / Generate License Key -->
+        <section class="admin-section" id="admin-sec-create">
           <div class="cyber-input-group">
-            <label class="cyber-input-label">ADMIN WHATSAPP NUMBER (WITH COUNTRY CODE)</label>
-            <input type="text" id="admin-setting-whatsapp" class="cyber-input" placeholder="e.g. 8801711729858">
+            <label class="cyber-input-label">STREAMER USER ID / USERNAME</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="admin-new-user" class="cyber-input" placeholder="e.g. streamer_pro">
+              <button class="drawer-btn" id="btn-gen-userid" style="width: 80px; padding: 0;">🎲 AUTO</button>
+            </div>
           </div>
 
-          <div class="cyber-input-group" style="margin-top: 6px;">
-            <label class="cyber-input-label">BKASH / NAGAD NUMBER (OPTIONAL)</label>
-            <input type="text" id="admin-setting-bkash" class="cyber-input" placeholder="e.g. 017XXXXXXXX">
+          <div class="cyber-input-group">
+            <label class="cyber-input-label">PASSWORD</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="admin-new-pass" class="cyber-input" placeholder="e.g. pass1234">
+              <button class="drawer-btn" id="btn-gen-pass" style="width: 80px; padding: 0;">🎲 AUTO</button>
+            </div>
           </div>
 
-          <div class="cyber-input-group" style="margin-top: 6px;">
-            <label class="cyber-input-label">GUMROAD PRODUCT CHECKOUT URL</label>
-            <input type="text" id="admin-setting-gumroad" class="cyber-input" placeholder="https://tawhidh.gumroad.com/l/hedbi">
+          <div class="cyber-input-group">
+            <label class="cyber-input-label">SUBSCRIPTION PLAN</label>
+            <select id="admin-new-plan" class="drawer-select">
+              <option value="1m">1 Month — 99 TK / $3.99 (30 Days)</option>
+              <option value="2m" selected>2 Months — 149 TK / $5.99 (60 Days)</option>
+              <option value="4m">4 Months — 239 TK / $9.99 (120 Days)</option>
+              <option value="8m">8 Months — 399 TK / $15.99 (240 Days)</option>
+              <option value="12m">12 Months — 499 TK / $19.99 (365 Days)</option>
+              <option value="lifetime">👑 Lifetime Pass — 699 TK / $25.99 (Unlimited Access)</option>
+              <option value="custom">Custom Days...</option>
+            </select>
           </div>
 
-          <div class="cyber-input-group" style="margin-top: 6px;">
-            <label class="cyber-input-label">BUY ME A COFFEE PROFILE / CHECKOUT URL</label>
-            <input type="text" id="admin-setting-bmac" class="cyber-input" placeholder="https://buymeacoffee.com/tawhid2005">
+          <div class="cyber-input-group" id="admin-custom-days-wrap" style="display: none;">
+            <label class="cyber-input-label">CUSTOM DURATION (DAYS)</label>
+            <input type="number" id="admin-custom-days" class="cyber-input" placeholder="e.g. 45" min="1">
           </div>
 
-          <div class="cyber-input-group" style="margin-top: 6px;">
-            <label class="cyber-input-label">PAYPAL EMAIL FOR INTERNATIONAL CHECKOUT</label>
-            <input type="email" id="admin-setting-paypal" class="cyber-input" placeholder="tawhidh2005@gmail.com">
-          </div>
-
-          <div class="cyber-input-group" style="margin-top: 6px;">
-            <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY BASE URL</label>
-            <input type="text" id="admin-setting-gateway-url" class="cyber-input" placeholder="https://mdtalhahussaintawhid.paymently.io/api">
-          </div>
-
-          <div class="cyber-input-group" style="margin-top: 6px;">
-            <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY API KEY</label>
-            <input type="text" id="admin-setting-gateway-key" class="cyber-input" placeholder="pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn">
-          </div>
-
-          <div class="cyber-input-group" style="margin-top: 6px;">
-            <label class="cyber-input-label">POLAR.SH ORGANIZATION ACCESS TOKEN</label>
-            <input type="text" id="admin-setting-polar-token" class="cyber-input" placeholder="polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi">
-          </div>
-
-          <button class="drawer-btn" id="btn-save-admin-settings" style="margin-top: 8px; border-color: #fbbf24; color: #fbbf24;">
-            💾 SAVE CONTACT SETTINGS
+          <button class="cyber-btn-primary" id="btn-generate-license" style="background: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);">
+            <span>🚀 GENERATE & SAVE LICENSE</span>
           </button>
-        </div>
-      </section>
 
-      <!-- Admin Tab 4: Automated Orders & Transactions -->
-      <section class="admin-section" id="admin-sec-orders">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <div style="font-size: 12px; font-weight: 800; color: #00e5ff;">📥 AUTOMATED TRANSACTIONS & TRX LOG</div>
-          <button id="btn-clear-automated-orders" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🗑️ CLEAR ALL</button>
-        </div>
-        <div class="admin-subscribers-list" id="admin-automated-orders-container"></div>
-      </section>
+          <div id="admin-card-result-wrap" style="display: none; flex-direction: column; gap: 8px;">
+            <div style="font-size: 11px; font-weight: 800; color: #10b981;">✅ LICENSE CREATED! READY TO SEND:</div>
+            <div class="admin-license-card-result" id="admin-card-result-text"></div>
+            <div style="display: flex; gap: 6px;">
+              <button class="drawer-btn" id="btn-copy-card-result" style="flex: 1; border-color: #10b981; color: #10b981;">
+                📋 COPY FOR WHATSAPP
+              </button>
+              <a href="#" target="_blank" id="btn-share-card-wa" class="drawer-btn" style="flex: 1; border-color: #25D366; color: #25D366; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;">
+                💬 SEND ON WHATSAPP
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Admin Tab 5: Settings & Tools -->
+        <section class="admin-section" id="admin-sec-backup">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 11px; font-weight: 800; color: #00e5ff;">💾 BACKUP & RESTORE LICENSES</div>
+            <button class="drawer-btn" id="btn-export-licenses">📥 EXPORT DATABASE (JSON)</button>
+            <div class="cyber-input-group" style="margin-top: 6px;">
+              <label class="cyber-input-label">RESTORE BACKUP (PASTE JSON)</label>
+              <textarea id="admin-import-json" class="cyber-input" rows="3" placeholder="Paste backup JSON here..."></textarea>
+            </div>
+            <button class="drawer-btn" id="btn-import-licenses" style="border-color: #10b981; color: #10b981;">📤 IMPORT DATABASE</button>
+            
+            <div style="font-size: 11px; font-weight: 800; color: #fbbf24; margin-top: 14px; margin-bottom: 4px;">⚙️ ADMIN CONTACT & GATEWAY SETTINGS</div>
+            
+            <div class="cyber-input-group">
+              <label class="cyber-input-label">ADMIN WHATSAPP NUMBER (WITH COUNTRY CODE)</label>
+              <input type="text" id="admin-setting-whatsapp" class="cyber-input" placeholder="e.g. 8801711729858">
+            </div>
+
+            <div class="cyber-input-group" style="margin-top: 6px;">
+              <label class="cyber-input-label">BKASH / NAGAD NUMBER (OPTIONAL)</label>
+              <input type="text" id="admin-setting-bkash" class="cyber-input" placeholder="e.g. 017XXXXXXXX">
+            </div>
+
+            <div class="cyber-input-group" style="margin-top: 6px;">
+              <label class="cyber-input-label">POLAR.SH ORGANIZATION ACCESS TOKEN</label>
+              <input type="text" id="admin-setting-polar-token" class="cyber-input" placeholder="polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi">
+            </div>
+
+            <div class="cyber-input-group" style="margin-top: 6px;">
+              <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY BASE URL</label>
+              <input type="text" id="admin-setting-gateway-url" class="cyber-input" placeholder="https://mdtalhahussaintawhid.paymently.io/api">
+            </div>
+
+            <div class="cyber-input-group" style="margin-top: 6px;">
+              <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY API KEY</label>
+              <input type="text" id="admin-setting-gateway-key" class="cyber-input" placeholder="pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn">
+            </div>
+
+            <button class="drawer-btn" id="btn-save-admin-settings" style="margin-top: 8px; border-color: #fbbf24; color: #fbbf24;">
+              💾 SAVE SETTINGS
+            </button>
+          </div>
+        </section>
+
       </div>
     </div>
 
@@ -8197,7 +8402,7 @@
 
         const plan = getPlanDef(planId, this.selectedCurrency);
         let days = plan ? plan.days : 30;
-        let planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + plan.currency + ')') : (days + ' Days Pass');
+        let planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + (plan.currency || 'TK') + ')') : (days + ' Days Pass');
 
         if (customDays && parseInt(customDays, 10) > 0) {
           days = parseInt(customDays, 10);
@@ -8220,7 +8425,7 @@
           planId: planId || 'custom',
           planTitle: planTitle,
           price: plan ? plan.price : 'Custom',
-          currency: plan ? plan.currency : 'TK',
+          currency: plan ? (plan.currency || 'TK') : 'TK',
           createdAt: now,
           expiresAt: expiresAt,
           signature: signature,
@@ -8232,8 +8437,14 @@
         this.licenses[cleanUser.toLowerCase()] = license;
         this.saveDatabase(true); // Saves locally and syncs to global cloud immediately!
 
-        const currentOrigin = (typeof window !== 'undefined' && window.location) ? (window.location.origin + window.location.pathname) : '';
-        const activationLink = currentOrigin ? (currentOrigin + '?key=' + licenseKey) : '';
+        let baseDomain = 'https://countryflagbattle.xyz/';
+        if (typeof window !== 'undefined' && window.location) {
+          if (window.location.hostname.includes('countryflagbattle.xyz')) {
+            baseDomain = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '');
+            if (!baseDomain.endsWith('/')) baseDomain += '/';
+          }
+        }
+        const activationLink = baseDomain + '?key=' + encodeURIComponent(licenseKey);
 
         const formattedCard = '🎮 COUNTRY FLAG BATTLE ROYALE — ACCESS LICENSE\n' +
           '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
@@ -8250,21 +8461,39 @@
         return {
           success: true,
           license: license,
-          formattedCard: formattedCard
+          formattedCard: formattedCard,
+          activationLink: activationLink
         };
       }
 
       // Validate and activate a cryptographic license key
       activateKey(rawKey, targetUser = null) {
-        const key = String(rawKey).trim();
-        if (!key.startsWith('CFB-')) return { valid: false, message: 'Invalid key format' };
+        if (!rawKey) return { valid: false, message: 'Invalid key: empty' };
+        let key = String(rawKey).trim();
+        try { key = decodeURIComponent(key); } catch(e) {}
+        key = key.trim().replace(/^['"]|['"]$/g, '');
+        if (!key.toUpperCase().startsWith('CFB-')) return { valid: false, message: 'Invalid key format' };
 
-        const parts = key.split('-');
-        if (parts.length < 5) return { valid: false, message: 'Corrupted license key' };
+        const match = key.match(/^CFB-([a-zA-Z0-9]+)-(.+)-(\d{10,15})-([a-fA-F0-9]{8})$/i);
+        let planTag, keyUser, expStr, sig;
+        if (match) {
+          planTag = match[1].toLowerCase();
+          keyUser = match[2];
+          expStr = match[3];
+          sig = match[4].toLowerCase();
+        } else {
+          const parts = key.split('-');
+          if (parts.length < 5) return { valid: false, message: 'Corrupted license key' };
+          planTag = parts[1].toLowerCase();
+          sig = parts[parts.length - 1].toLowerCase();
+          expStr = parts[parts.length - 2];
+          keyUser = parts.slice(2, parts.length - 2).join('-');
+        }
 
-        const [prefix, planTag, keyUser, expStr, sig] = parts;
         const expiresAt = parseInt(expStr, 10);
-        const expectedSig = sha256Sync(keyUser.toLowerCase() + ':' + expiresAt + ':' + planTag.toLowerCase() + ':' + SECURITY_SALT).slice(0, 8);
+        if (isNaN(expiresAt)) return { valid: false, message: 'Corrupted expiration in key' };
+
+        const expectedSig = sha256Sync(keyUser.toLowerCase() + ':' + expiresAt + ':' + planTag.toLowerCase() + ':' + SECURITY_SALT).slice(0, 8).toLowerCase();
 
         if (sig !== expectedSig) {
           return { valid: false, message: 'Security Alert: Invalid or tampered License Key!' };
@@ -8279,25 +8508,29 @@
           return { valid: false, message: 'This License Key expired on ' + expDate + '!' };
         }
 
-        // Register license in this device's storage
+        // Register license in this device's storage without erasing existing accounts
         const plan = getPlanDef(planTag.toLowerCase(), this.selectedCurrency);
-        const planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + plan.currency + ')') : (planTag.toUpperCase() + ' Pass');
+        const planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + (plan.currency || 'TK') + ')') : (planTag.toUpperCase() + ' Pass');
+
+        this.loadDatabase();
+        const existing = this.licenses[keyUser.toLowerCase()];
+        const passHash = (existing && existing.passHash) ? existing.passHash : sha256Sync(keyUser.toLowerCase() + ':' + key);
+        const passHint = (existing && existing.plainPassHint) ? existing.plainPassHint : key;
 
         const newLicense = {
           userId: keyUser,
-          passHash: sha256Sync(keyUser.toLowerCase() + ':' + key),
+          passHash: passHash,
           planId: planTag.toLowerCase(),
           planTitle: planTitle,
           price: plan ? plan.price : 'Subscription',
-          currency: 'TK',
-          createdAt: Date.now(),
+          currency: plan ? (plan.currency || 'TK') : 'TK',
+          createdAt: (existing && existing.createdAt) || Date.now(),
           expiresAt: expiresAt,
           signature: this.createSignature(keyUser, expiresAt),
           licenseKey: key,
-          plainPassHint: key
+          plainPassHint: passHint
         };
 
-        this.loadDatabase();
         this.licenses[keyUser.toLowerCase()] = newLicense;
         this.saveDatabase(true);
 
@@ -8310,7 +8543,30 @@
           isPermanent: false
         };
         this.saveSession();
-        return { valid: true, session: this.session };
+        return { valid: true, session: this.session, key: key };
+      }
+
+      showActivationCelebrationToast(userId, planTitle) {
+        const toast = document.getElementById('cyber-celebration-toast');
+        const titleEl = document.getElementById('toast-title-text');
+        const subEl = document.getElementById('toast-sub-text');
+        const btnClose = document.getElementById('btn-close-toast');
+
+        if (titleEl) titleEl.textContent = '🎉 PASS ACTIVATED: ' + (userId || 'Streamer').toUpperCase();
+        if (subEl) subEl.textContent = 'Unlocked ' + (planTitle || 'Subscription') + ' • 24/7 Unlimited Access!';
+
+        if (toast) {
+          toast.classList.add('show');
+          if (btnClose) {
+            btnClose.onclick = () => toast.classList.remove('show');
+          }
+          if (this.app && this.app.audio && typeof this.app.audio.playCelebrationHorn === 'function') {
+            try { this.app.audio.playCelebrationHorn(); } catch(e) {}
+          }
+          setTimeout(() => {
+            if (toast) toast.classList.remove('show');
+          }, 6000);
+        }
       }
 
       async login(username, password) {
@@ -8525,6 +8781,7 @@
       }
 
       // Seamless Automatic Geolocation Detection (Bangladesh vs Global USD)
+      // Seamless Automatic Geolocation Detection (Bangladesh vs Global USD)
       detectCountryAndCurrency() {
         // Priority 1: Direct URL override for testing/admin (?currency=bdt or ?currency=usd)
         try {
@@ -8533,6 +8790,7 @@
             const curParam = (urlParams.get('currency') || '').toLowerCase();
             if (curParam === 'bdt' || curParam === 'usd') {
               this.selectedCurrency = curParam;
+              this.isInternational = (curParam === 'usd');
               return;
             }
           }
@@ -8550,8 +8808,10 @@
                                lang.startsWith('bn-') ||
                                languages.includes('bn-bd');
 
+          this.isInternational = !isBangladesh;
           this.selectedCurrency = isBangladesh ? 'bdt' : 'usd';
         } catch(e) {
+          this.isInternational = true;
           this.selectedCurrency = 'usd';
         }
 
@@ -8564,6 +8824,7 @@
                 const detected = data.country.toUpperCase() === 'BD' ? 'bdt' : 'usd';
                 if (detected !== this.selectedCurrency) {
                   this.selectedCurrency = detected;
+                  this.isInternational = (detected === 'usd');
                   this.renderPricingCards();
                 }
               }
@@ -8805,12 +9066,13 @@
       }
 
       // Open automated checkout modal
+      // Open automated checkout modal
       openOrderModal(planId, currency = this.selectedCurrency) {
         this.activePlanId = planId || '1m';
         this.activeBdtPlan = getPlanDef(this.activePlanId, 'bdt') || { id: '1m', name: '1 Month', price: 99, days: 30 };
         this.activeUsdPlan = getPlanDef(this.activePlanId, 'usd') || { id: '1m', name: '1 Month', price: 3.99, days: 30 };
 
-        const targetTab = (currency === 'usd') ? 'intl' : 'bd';
+        const targetTab = (currency === 'usd' || this.isInternational) ? 'intl' : 'bd';
         this.updateOrderModalUI(targetTab);
 
         const orderModal = document.getElementById('cyber-order-modal');
@@ -8835,7 +9097,11 @@
         const orderPlanPrice = document.getElementById('order-card-plan-price');
 
         if (panelSuccess) panelSuccess.style.display = 'none';
-        if (tabsWrapper) tabsWrapper.style.display = 'grid';
+
+        // For international users outside BD: cleanly hide the BD tab header by default
+        if (tabsWrapper) {
+          tabsWrapper.style.display = this.isInternational ? 'none' : 'grid';
+        }
 
         if (tab === 'intl') {
           this.activeOrderPlan = usdPlan;
@@ -9111,15 +9377,42 @@
       startPolarCheckout() {
         const nameInput = document.getElementById('polar-customer-name');
         const emailInput = document.getElementById('polar-customer-email');
+        const userInput = document.getElementById('order-checkout-username');
+        const passInput = document.getElementById('order-checkout-password');
         const statusBox = document.getElementById('polar-gw-status');
         const btnPay = document.getElementById('btn-start-polar-checkout');
 
-        const customerName = (nameInput && nameInput.value.trim()) || ('Player_' + Math.floor(Math.random() * 8999 + 1000));
+        let chosenUser = (userInput && userInput.value.trim().replace(/[^a-zA-Z0-9_]/g, '')) || '';
+        let chosenPass = (passInput && passInput.value.trim()) || '';
+        if (!chosenUser) {
+          chosenUser = 'streamer_' + Math.floor(Math.random() * 8999 + 1000);
+          if (userInput) userInput.value = chosenUser;
+        }
+        if (!chosenPass) {
+          chosenPass = 'cfb' + Math.floor(Math.random() * 89999 + 10000);
+          if (passInput) passInput.value = chosenPass;
+        }
+
+        const customerName = (nameInput && nameInput.value.trim()) || chosenUser;
         const customerEmail = (emailInput && emailInput.value.trim()) || '';
 
         const plan = this.activeUsdPlan || getPlanDef(this.activePlanId || '1m', 'usd');
         const polarToken = this.polarAccessToken || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
         const productId = plan.polarProductId || 'fb8af379-2bfd-40fa-ae41-834020eef919';
+
+        try {
+          localStorage.setItem('cfb_pending_checkout_creds', JSON.stringify({
+            username: chosenUser,
+            password: chosenPass,
+            planId: plan.id,
+            planName: plan.name,
+            price: plan.price,
+            currency: 'USD',
+            customer: customerName,
+            email: customerEmail,
+            timestamp: Date.now()
+          }));
+        } catch(e) {}
 
         if (btnPay) {
           btnPay.disabled = true;
@@ -9180,17 +9473,6 @@
         })
         .then(data => {
           if (data && data.url) {
-            try {
-              localStorage.setItem('cfb_pending_polar_checkout', JSON.stringify({
-                planId: plan.id,
-                planName: plan.name,
-                price: plan.price,
-                currency: 'USD',
-                customer: customerName,
-                checkoutId: data.id,
-                timestamp: Date.now()
-              }));
-            } catch(e) {}
             window.location.href = data.url;
           } else {
             throw new Error('Polar returned invalid checkout response');
@@ -9204,6 +9486,19 @@
             btnPay.innerHTML = '<span>🚀 PAY NOW WITH CARD / WALLET (<span id="polar-btn-price-display">$' + plan.price.toFixed(2) + ' USD</span>)</span>';
           }
           const errMsg = err.name === 'AbortError' ? 'Network Timeout' : (err.message || 'Error creating checkout');
+          
+          this.saveFailedOrder({
+            id: 'FAIL-' + Date.now().toString(36).toUpperCase(),
+            customer: customerName,
+            contact: customerEmail || 'No email provided',
+            plan: plan.name,
+            amount: '$' + plan.price + ' USD',
+            gateway: 'Polar.sh (Card/ApplePay)',
+            reason: errMsg,
+            date: new Date().toLocaleString(),
+            timestamp: Date.now()
+          });
+
           this.showFailRecoveryModal(plan, 'Polar Checkout Error: ' + errMsg);
         });
       }
@@ -9214,28 +9509,52 @@
         const checkoutId = urlParams.get('checkout_id');
         let customer = 'International Gamer';
         let amount = '$3.99 USD';
+        let chosenUser = '';
+        let chosenPass = '';
 
         try {
-          const pending = JSON.parse(localStorage.getItem('cfb_pending_polar_checkout') || '{}');
-          if (pending.planId) planId = pending.planId;
-          if (pending.customer) customer = pending.customer;
-          if (pending.price) amount = '$' + pending.price + ' USD';
+          const raw = localStorage.getItem('cfb_pending_checkout_creds');
+          if (raw) {
+            const pending = JSON.parse(raw);
+            if (pending.planId) planId = pending.planId;
+            if (pending.customer) customer = pending.customer;
+            if (pending.username) chosenUser = pending.username;
+            if (pending.password) chosenPass = pending.password;
+            if (pending.price) amount = '$' + pending.price + ' USD';
+          }
         } catch(e) {}
 
         const plan = getPlanDef(planId, 'usd') || { id: planId, name: '1 Month Pass', days: 30, price: 3.99 };
         const pTag = (plan.id || '1m').toLowerCase();
         const trx = (checkoutId && checkoutId.length > 5) ? ('POL-' + checkoutId.slice(0, 10).toUpperCase()) : ('POL-' + Date.now().toString(36).toUpperCase());
-        const userSlug = customer.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || 'gamer';
+        const userSlug = (chosenUser || customer).replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || 'gamer';
+        const userPass = chosenPass || ('cfb' + Math.floor(Math.random() * 89999 + 10000));
         const expiresAt = Date.now() + (plan.days * 86400000);
         const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
         const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
+
+        this.loadDatabase();
+        this.licenses[userSlug.toLowerCase()] = {
+          userId: userSlug,
+          passHash: sha256Sync(userSlug.toLowerCase() + ':' + userPass),
+          planId: plan.id,
+          planTitle: plan.name + ' ($' + plan.price + ' USD)',
+          price: '$' + plan.price,
+          currency: 'USD',
+          createdAt: Date.now(),
+          expiresAt: expiresAt,
+          signature: this.createSignature(userSlug, expiresAt),
+          licenseKey: licenseKey,
+          plainPassHint: userPass
+        };
+        this.saveDatabase(true);
 
         const actResult = this.activateKey(licenseKey);
         if (actResult.valid) {
           this.saveAutomatedOrder({
             trxId: trx,
             invoiceId: checkoutId || trx,
-            sender: customer,
+            sender: customer + ' (@' + userSlug + ')',
             gateway: 'Polar.sh (Cards/ApplePay)',
             planId: plan.id,
             planName: plan.name,
@@ -9248,13 +9567,13 @@
 
           this.showLockModal(false);
           this.updateDrawerStatus();
+          this.updateAdminKpis();
 
-          // Clean URL cleanly
           if (window.history && window.history.replaceState) {
             window.history.replaceState({}, document.title, window.location.pathname);
           }
 
-          alert('🎉 ALHAMDULILLAH! Your Polar.sh card payment was successful!\n\n💎 Plan: ' + plan.name + '\n🔑 License Key: ' + licenseKey + '\n\nArena access has been automatically unlocked 24/7!');
+          this.showActivationCelebrationToast(userSlug, plan.name);
         }
       }
 
@@ -9484,13 +9803,42 @@
           return { success: false, message: '⚠️ এই Transaction ID টি ইতিমধ্যে ' + existing.date + ' তারিখে ব্যবহার করা হয়েছে!' };
         }
 
+        // Read chosen streamer username and password from inputs if present
+        const userInput = document.getElementById('order-checkout-username');
+        const passInput = document.getElementById('order-checkout-password');
+        let chosenUser = (userInput && userInput.value.trim().replace(/[^a-zA-Z0-9_]/g, '')) || '';
+        let chosenPass = (passInput && passInput.value.trim()) || '';
+        if (!chosenUser) {
+          chosenUser = cleanSender.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || ('user_' + trxId.slice(0, 5).toLowerCase());
+        }
+        if (!chosenPass) {
+          chosenPass = 'cfb' + Math.floor(Math.random() * 89999 + 10000);
+        }
+
         // Active plan
         const plan = this.activeOrderPlan || getPlanDef('1m', this.selectedCurrency) || { id: '1m', name: '1 Month Pass', days: 30, price: 99 };
         const pTag = (plan.id || '1m').toLowerCase();
-        const userSlug = cleanSender.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || ('user_' + trxId.slice(0, 5).toLowerCase());
+        const userSlug = chosenUser.toLowerCase();
         const expiresAt = Date.now() + (plan.days * 86400000);
         const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
         const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
+
+        // Register in database with chosen credentials without erasing existing accounts
+        this.loadDatabase();
+        this.licenses[userSlug] = {
+          userId: chosenUser,
+          passHash: sha256Sync(userSlug + ':' + chosenPass),
+          planId: plan.id,
+          planTitle: plan.name + ' (' + plan.price + ' ' + (plan.currency || 'TK') + ')',
+          price: plan.price,
+          currency: plan.currency || 'TK',
+          createdAt: Date.now(),
+          expiresAt: expiresAt,
+          signature: this.createSignature(chosenUser, expiresAt),
+          licenseKey: licenseKey,
+          plainPassHint: chosenPass
+        };
+        this.saveDatabase(true);
 
         // Activate key immediately on this device!
         const actResult = this.activateKey(licenseKey);
@@ -9502,7 +9850,7 @@
         // Store automated order record
         const newOrder = {
           trxId: trxId,
-          sender: cleanSender,
+          sender: cleanSender + ' (@' + chosenUser + ')',
           gateway: gateway,
           planId: plan.id,
           planName: plan.name,
@@ -9513,6 +9861,7 @@
           timestamp: Date.now()
         };
         this.saveAutomatedOrder(newOrder);
+        this.updateAdminKpis();
 
         // Success View Transition
         const panelBd = document.getElementById('panel-bd-pay');
@@ -9521,20 +9870,20 @@
         const tabsWrapper = document.getElementById('order-tabs-wrapper');
         const successKeyEl = document.getElementById('order-success-key');
         const successExpEl = document.getElementById('order-success-expires');
+        const successUserEl = document.getElementById('order-success-userid');
+        const successPassEl = document.getElementById('order-success-pass');
 
         if (tabsWrapper) tabsWrapper.style.display = 'none';
         if (panelBd) panelBd.style.display = 'none';
         if (panelIntl) panelIntl.style.display = 'none';
         if (panelSuccess) panelSuccess.style.display = 'flex';
 
+        if (successUserEl) successUserEl.textContent = chosenUser;
+        if (successPassEl) successPassEl.textContent = chosenPass;
         if (successKeyEl) successKeyEl.textContent = licenseKey;
         if (successExpEl) successExpEl.textContent = plan.days + ' Days (' + new Date(expiresAt).toLocaleDateString() + ')';
 
-        // Update admin order count badge
-        if (document.getElementById('admin-orders-count')) {
-          document.getElementById('admin-orders-count').textContent = this.getAutomatedOrders().length;
-        }
-
+        this.showActivationCelebrationToast(chosenUser, plan.name);
         return { success: true, licenseKey: licenseKey };
       }
 
@@ -9542,6 +9891,7 @@
         this.detectCountryAndCurrency();
         this.setupDOM();
         this.renderPricingCards();
+        this.updateAdminKpis();
 
         // 1-Click Automatic Gateway Return Check: ?payment=success or ?payment=fail or ?invoice_id=...
         try {
@@ -9552,15 +9902,24 @@
             const reason = urlParams.get('reason') || 'Payment Failed or Cancelled on Gateway';
 
             if (payStatus === 'fail' || payStatus === 'failed' || payStatus === 'cancel' || payStatus === 'cancelled') {
+              this.saveFailedOrder({
+                id: 'FAIL-' + Date.now().toString(36).toUpperCase(),
+                customer: urlParams.get('customer') || 'Website Visitor',
+                contact: urlParams.get('email') || urlParams.get('phone') || 'No contact',
+                plan: urlParams.get('plan') || 'Game Pass',
+                amount: urlParams.get('amount') || 'USD',
+                gateway: 'Online Gateway Callback',
+                reason: reason,
+                date: new Date().toLocaleString(),
+                timestamp: Date.now()
+              });
               this.handlePaymentFailureWhatsApp(reason);
             } else if (urlParams.get('ref') === 'polar' || urlParams.get('polar_success') === 'true') {
               // Polar.sh Auto-Redirect Success Unlock
               this.handlePolarAutoUnlock(urlParams);
             } else if (urlParams.get('ref') === 'gumroad' || urlParams.get('gumroad_success') === 'true') {
-              // Gumroad Auto-Redirect Success Unlock
               this.handleGumroadAutoUnlock(urlParams);
             } else if (urlParams.get('bmac_success') === 'true' || urlParams.get('payment_success') === 'true' || payStatus === 'bmac' || urlParams.get('ref') === 'bmac') {
-              // Buy Me a Coffee Auto-Redirect Success Unlock
               this.handleBmacAutoUnlock(urlParams);
             } else if (invoiceId || payStatus === 'success' || payStatus === 'completed') {
               this.verifyAndActivateGatewayInvoice(invoiceId, urlParams.get('plan') || '1m');
@@ -9570,26 +9929,46 @@
           console.warn('Gateway callback check error:', e);
         }
 
-        // 1-Click Automatic URL Activation: ?key=CFB-...
+        // 1-Click Universal Automatic URL Activation: ?key=CFB-... or #key=CFB-... or ?activate=...
         try {
           if (typeof window !== 'undefined' && window.location) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const keyParam = urlParams.get('key');
-            if (keyParam && keyParam.startsWith('CFB-')) {
-              const actRes = this.activateKey(keyParam);
-              if (actRes.valid) {
-                // Clean URL cleanly without reloading
-                if (window.history && window.history.replaceState) {
-                  window.history.replaceState({}, document.title, window.location.pathname);
+            let keyParam = null;
+            // 1. Search Query Parameters
+            if (window.location.search) {
+              const urlParams = new URLSearchParams(window.location.search);
+              keyParam = urlParams.get('key') || urlParams.get('k') || urlParams.get('activate') || urlParams.get('license') || urlParams.get('code') || urlParams.get('lic');
+            }
+            // 2. Hash Parameters fallback (#key=..., #activate=..., or direct #CFB-...)
+            if (!keyParam && window.location.hash) {
+              const hash = window.location.hash.replace(/^#\/?/, '').trim();
+              if (hash.toUpperCase().startsWith('CFB-')) {
+                keyParam = hash;
+              } else if (hash.includes('=')) {
+                const hashParams = new URLSearchParams(hash);
+                keyParam = hashParams.get('key') || hashParams.get('k') || hashParams.get('activate') || hashParams.get('license');
+              }
+            }
+
+            if (keyParam) {
+              try { keyParam = decodeURIComponent(keyParam).trim(); } catch(e) {}
+              if (keyParam.toUpperCase().startsWith('CFB-')) {
+                const actRes = this.activateKey(keyParam);
+                if (actRes.valid) {
+                  // Clean URL cleanly without reloading
+                  if (window.history && window.history.replaceState) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                  }
+                  this.showLockModal(false);
+                  this.updateDrawerStatus();
+                  this.updateAdminKpis();
+                  const hudTrial = document.getElementById('hud-trial-badge');
+                  if (hudTrial) hudTrial.style.display = 'none';
+
+                  // Modern non-blocking celebration toast
+                  this.showActivationCelebrationToast(actRes.session.userId, actRes.session.planTitle);
+                } else {
+                  this.showLoginAlert(actRes.message, 'error');
                 }
-                this.showLockModal(false);
-                this.updateDrawerStatus();
-                const hudTrial = document.getElementById('hud-trial-badge');
-                if (hudTrial) hudTrial.style.display = 'none';
-                alert('🎉 SUBSCRIPTION ACTIVATED! Welcome ' + actRes.session.userId + ' (' + actRes.session.planTitle + ')');
-                return;
-              } else {
-                this.showLoginAlert(actRes.message, 'error');
               }
             }
           }
@@ -9604,7 +9983,6 @@
           const hudTrial = document.getElementById('hud-trial-badge');
           if (hudTrial) hudTrial.style.display = 'none';
         } else {
-          // Check 30-Minute Free Trial status for this device
           this.handleTrialWorkflow();
           if (check.expired) {
             this.showLoginAlert('⚠️ Your subscription has expired! Please renew with Master Admin.', 'error');
@@ -9780,38 +10158,35 @@
           });
         }
 
-        // Admin Modal Tabs
-        const aTabCreate = document.getElementById('admin-tab-btn-create');
+        // Admin Modal Tabs (5 Mobile & Desktop Tabs)
+        const aTabOrders = document.getElementById('admin-tab-btn-orders');
         const aTabList = document.getElementById('admin-tab-btn-list');
+        const aTabFailed = document.getElementById('admin-tab-btn-failed');
+        const aTabCreate = document.getElementById('admin-tab-btn-create');
         const aTabBackup = document.getElementById('admin-tab-btn-backup');
-        const aSecCreate = document.getElementById('admin-sec-create');
+
+        const aSecOrders = document.getElementById('admin-sec-orders');
         const aSecList = document.getElementById('admin-sec-list');
+        const aSecFailed = document.getElementById('admin-sec-failed');
+        const aSecCreate = document.getElementById('admin-sec-create');
         const aSecBackup = document.getElementById('admin-sec-backup');
 
-        const aTabOrders = document.getElementById('admin-tab-btn-orders');
-        const aSecOrders = document.getElementById('admin-sec-orders');
+        const adminTabs = [aTabOrders, aTabList, aTabFailed, aTabCreate, aTabBackup];
+        const adminSecs = [aSecOrders, aSecList, aSecFailed, aSecCreate, aSecBackup];
 
-        if (aTabCreate && aTabList && aTabBackup) {
-          const switchAdminTab = (activeTab, activeSec) => {
-            [aTabCreate, aTabList, aTabOrders, aTabBackup].forEach(t => t && t.classList.remove('active'));
-            [aSecCreate, aSecList, aSecOrders, aSecBackup].forEach(s => s && s.classList.remove('active'));
-            if (activeTab) activeTab.classList.add('active');
-            if (activeSec) activeSec.classList.add('active');
-          };
+        const switchAdminTab = (activeTab, activeSec) => {
+          adminTabs.forEach(t => t && t.classList.remove('active'));
+          adminSecs.forEach(s => s && s.classList.remove('active'));
+          if (activeTab) activeTab.classList.add('active');
+          if (activeSec) activeSec.classList.add('active');
+          this.updateAdminKpis();
+        };
 
-          aTabCreate.addEventListener('click', () => switchAdminTab(aTabCreate, aSecCreate));
-          aTabList.addEventListener('click', () => {
-            switchAdminTab(aTabList, aSecList);
-            this.renderAdminSubscribers();
-          });
-          if (aTabOrders) {
-            aTabOrders.addEventListener('click', () => {
-              switchAdminTab(aTabOrders, aSecOrders);
-              this.renderAdminAutomatedOrders();
-            });
-          }
-          aTabBackup.addEventListener('click', () => switchAdminTab(aTabBackup, aSecBackup));
-        }
+        if (aTabOrders) aTabOrders.addEventListener('click', () => { switchAdminTab(aTabOrders, aSecOrders); this.renderAdminAutomatedOrders(); });
+        if (aTabList) aTabList.addEventListener('click', () => { switchAdminTab(aTabList, aSecList); this.renderAdminSubscribers(); });
+        if (aTabFailed) aTabFailed.addEventListener('click', () => { switchAdminTab(aTabFailed, aSecFailed); this.renderAdminFailedOrders(); });
+        if (aTabCreate) aTabCreate.addEventListener('click', () => switchAdminTab(aTabCreate, aSecCreate));
+        if (aTabBackup) aTabBackup.addEventListener('click', () => switchAdminTab(aTabBackup, aSecBackup));
 
         const btnClearOrders = document.getElementById('btn-clear-automated-orders');
         if (btnClearOrders) {
@@ -9819,8 +10194,25 @@
             if (confirm('Are you sure you want to clear automated orders history? (Active licenses remain intact)')) {
               localStorage.removeItem('cfb_automated_orders');
               this.renderAdminAutomatedOrders();
+              this.updateAdminKpis();
             }
           });
+        }
+
+        const btnClearFailed = document.getElementById('btn-clear-failed-orders');
+        if (btnClearFailed) {
+          btnClearFailed.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear failed checkout attempts?')) {
+              localStorage.removeItem('cfb_failed_orders');
+              this.renderAdminFailedOrders();
+              this.updateAdminKpis();
+            }
+          });
+        }
+
+        const searchOrdersInput = document.getElementById('admin-search-orders');
+        if (searchOrdersInput) {
+          searchOrdersInput.addEventListener('input', () => this.renderAdminAutomatedOrders());
         }
 
         // Auto ID & Password generators
@@ -9873,7 +10265,14 @@
                 cardResultText.textContent = res.formattedCard;
                 cardResultWrap.style.display = 'flex';
                 this.renderAdminSubscribers();
+                this.updateAdminKpis();
                 await this.syncToCloud();
+
+                const waShareBtn = document.getElementById('btn-share-card-wa');
+                if (waShareBtn) {
+                  const adminWa = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
+                  waShareBtn.href = 'https://wa.me/?text=' + encodeURIComponent(res.formattedCard);
+                }
               } else {
                 alert(res.message);
               }
@@ -10193,7 +10592,7 @@
         if (btnVerifyBd) {
           btnVerifyBd.addEventListener('click', () => {
             const phoneInput = document.getElementById('auto-pay-sender-phone');
-            const trxInput = document.getElementById('auto-pay-trxid');
+            const trxInput = document.getElementById('auto-pay-trx-id') || document.getElementById('auto-pay-trxid');
             const alertBox = document.getElementById('auto-pay-alert-bd');
 
             const phone = phoneInput ? phoneInput.value.trim() : '';
@@ -10262,11 +10661,58 @@
           btnCopySuccessKey.addEventListener('click', () => {
             const key = document.getElementById('order-success-key')?.textContent || '';
             navigator.clipboard.writeText(key).then(() => {
-              btnCopySuccessKey.textContent = '✅ COPIED LICENSE KEY!';
+              btnCopySuccessKey.textContent = 'COPIED! ✓';
               setTimeout(() => {
-                btnCopySuccessKey.textContent = '📋 COPY LICENSE KEY';
+                btnCopySuccessKey.textContent = '📋 COPY KEY';
               }, 2000);
             });
+          });
+        }
+
+        // Copy 1-Click Link on Success Card
+        const btnCopySuccessLink = document.getElementById('btn-copy-success-link');
+        if (btnCopySuccessLink) {
+          btnCopySuccessLink.addEventListener('click', () => {
+            const key = document.getElementById('order-success-key')?.textContent || '';
+            let baseDomain = 'https://countryflagbattle.xyz/';
+            if (typeof window !== 'undefined' && window.location && window.location.hostname.includes('countryflagbattle.xyz')) {
+              baseDomain = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '');
+              if (!baseDomain.endsWith('/')) baseDomain += '/';
+            }
+            const actLink = baseDomain + '?key=' + encodeURIComponent(key);
+            navigator.clipboard.writeText(actLink).then(() => {
+              btnCopySuccessLink.textContent = 'LINK COPIED! ✓';
+              setTimeout(() => {
+                btnCopySuccessLink.textContent = '🚀 COPY 1-CLICK LINK';
+              }, 2000);
+            });
+          });
+        }
+
+        // Streamer Password Eye Visibility Toggle in Order Modal
+        const btnToggleCheckoutPass = document.getElementById('btn-toggle-checkout-pass');
+        const inputCheckoutPass = document.getElementById('order-checkout-password');
+        if (btnToggleCheckoutPass && inputCheckoutPass) {
+          btnToggleCheckoutPass.addEventListener('click', () => {
+            const isText = inputCheckoutPass.type === 'text';
+            inputCheckoutPass.type = isText ? 'password' : 'text';
+            btnToggleCheckoutPass.textContent = isText ? '👁️' : '🔒';
+          });
+        }
+
+        // Smooth BD <-> International Currency Switch Links in Order Modal
+        const linkSwitchToBd = document.getElementById('link-switch-to-bd');
+        if (linkSwitchToBd) {
+          linkSwitchToBd.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.updateOrderModalUI('bd');
+          });
+        }
+        const linkSwitchToIntl = document.getElementById('link-switch-to-intl');
+        if (linkSwitchToIntl) {
+          linkSwitchToIntl.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.updateOrderModalUI('intl');
           });
         }
 
@@ -10400,21 +10846,170 @@
         }
       }
 
+      getFailedOrders() {
+        try {
+          const raw = localStorage.getItem('cfb_failed_orders');
+          return raw ? JSON.parse(raw) : [];
+        } catch(e) {
+          return [];
+        }
+      }
+
+      saveFailedOrder(failedOrder) {
+        try {
+          const list = this.getFailedOrders();
+          list.unshift(failedOrder);
+          localStorage.setItem('cfb_failed_orders', JSON.stringify(list.slice(0, 100)));
+          this.updateAdminKpis();
+          if (document.getElementById('admin-failed-count')) {
+            document.getElementById('admin-failed-count').textContent = list.length;
+          }
+        } catch(e) {}
+      }
+
+      updateAdminKpis() {
+        const orders = this.getAutomatedOrders();
+        const failed = this.getFailedOrders();
+        this.loadDatabase();
+        const subsCount = Object.keys(this.licenses).length;
+
+        let totalUsd = 0;
+        let totalBdt = 0;
+
+        orders.forEach(o => {
+          const amt = String(o.amount || '');
+          if (amt.includes('$')) {
+            const num = parseFloat(amt.replace(/[^0-9.]/g, ''));
+            if (!isNaN(num)) totalUsd += num;
+          } else {
+            const num = parseFloat(amt.replace(/[^0-9.]/g, ''));
+            if (!isNaN(num)) totalBdt += num;
+          }
+        });
+
+        const revEl = document.getElementById('admin-kpi-revenue');
+        const subsEl = document.getElementById('admin-kpi-subs');
+        const ordersEl = document.getElementById('admin-kpi-orders');
+        const failedEl = document.getElementById('admin-kpi-failed');
+
+        if (revEl) revEl.textContent = '$' + totalUsd.toFixed(2) + ' / ' + totalBdt.toFixed(0) + '৳';
+        if (subsEl) subsEl.textContent = subsCount;
+        if (ordersEl) ordersEl.textContent = orders.length;
+        if (failedEl) failedEl.textContent = failed.length;
+
+        if (document.getElementById('admin-orders-count')) {
+          document.getElementById('admin-orders-count').textContent = orders.length;
+        }
+        if (document.getElementById('admin-sub-count')) {
+          document.getElementById('admin-sub-count').textContent = subsCount;
+        }
+        if (document.getElementById('admin-failed-count')) {
+          document.getElementById('admin-failed-count').textContent = failed.length;
+        }
+      }
+
+      renderAdminFailedOrders() {
+        const container = document.getElementById('admin-failed-orders-container');
+        const countBadge = document.getElementById('admin-failed-count');
+        if (!container) return;
+
+        const list = this.getFailedOrders();
+        if (countBadge) countBadge.textContent = list.length;
+
+        if (list.length === 0) {
+          container.innerHTML = '<div style="color: #94a3b8; font-size: 11px; text-align: center; padding: 20px;">No failed or abandoned checkout attempts logged. All checkout attempts will show here in real-time.</div>';
+          return;
+        }
+
+        container.innerHTML = '';
+        const adminWa = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
+
+        list.forEach((item, idx) => {
+          const card = document.createElement('div');
+          card.className = 'admin-order-item';
+          card.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+          
+          const custName = item.customer || 'Customer';
+          const custPlan = item.plan || 'Pass';
+          const reason = item.reason || 'Payment Incomplete';
+          
+          const recoveryMsg = `👋 Hello ${custName}! I noticed you had an issue with your ${custPlan} (${item.amount || ''}) checkout on Country Flag Battle Royale: ${reason}. I can help you unlock your 24/7 pass immediately!`;
+          const waUrl = 'https://wa.me/' + adminWa + '?text=' + encodeURIComponent(recoveryMsg);
+
+          card.innerHTML = `
+            <div class="admin-order-header">
+              <span class="admin-order-phone">⚠️ ${custName} (${item.contact || 'No contact'})</span>
+              <span class="admin-order-amount" style="color: #f87171;">${item.amount || 'USD'}</span>
+            </div>
+            <div class="admin-order-body">
+              <span><b>Gateway:</b> ${item.gateway || 'Polar.sh'}</span>
+              <span style="color: #f87171; font-weight: 700;">❌ FAILED / DROPPED</span>
+            </div>
+            <div style="font-size: 10px; color: #fca5a5; margin-top: 2px;">
+              <span><b>Reason:</b> ${reason}</span>
+            </div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">
+              <span>📅 ${item.date || 'Recent'}</span>
+            </div>
+            <div style="margin-top: 6px; display: flex; gap: 8px; align-items: center;">
+              <a href="${waUrl}" target="_blank" class="btn-wa-recover" style="flex: 1;">
+                <span>💬 RECOVER ON WHATSAPP</span>
+              </a>
+              <button class="order-btn-copy-num btn-dismiss-failed-order" data-index="${idx}" style="padding: 6px 10px; font-size: 10px; background: rgba(255,255,255,0.06); color: #94a3b8;">
+                🗑️ Dismiss
+              </button>
+            </div>
+          `;
+
+          const dismissBtn = card.querySelector('.btn-dismiss-failed-order');
+          if (dismissBtn) {
+            dismissBtn.addEventListener('click', (e) => {
+              const i = parseInt(e.currentTarget.getAttribute('data-index'), 10);
+              const currentList = this.getFailedOrders();
+              currentList.splice(i, 1);
+              localStorage.setItem('cfb_failed_orders', JSON.stringify(currentList));
+              this.renderAdminFailedOrders();
+              this.updateAdminKpis();
+            });
+          }
+
+          container.appendChild(card);
+        });
+      }
+
       renderAdminAutomatedOrders() {
         const container = document.getElementById('admin-automated-orders-container');
         const countBadge = document.getElementById('admin-orders-count');
         if (!container) return;
 
-        const orders = this.getAutomatedOrders();
+        let orders = this.getAutomatedOrders();
         if (countBadge) countBadge.textContent = orders.length;
 
+        const searchInput = document.getElementById('admin-search-orders');
+        const filterVal = (searchInput && searchInput.value.trim().toLowerCase()) || '';
+        if (filterVal) {
+          orders = orders.filter(o => 
+            (o.sender && o.sender.toLowerCase().includes(filterVal)) ||
+            (o.trxId && o.trxId.toLowerCase().includes(filterVal)) ||
+            (o.planName && o.planName.toLowerCase().includes(filterVal)) ||
+            (o.licenseKey && o.licenseKey.toLowerCase().includes(filterVal))
+          );
+        }
+
         if (orders.length === 0) {
-          container.innerHTML = '<div style="color: #94a3b8; font-size: 11px; text-align: center; padding: 20px;">No automated orders received yet. All new automatic purchases will appear here in real-time.</div>';
+          container.innerHTML = '<div style="color: #94a3b8; font-size: 11px; text-align: center; padding: 20px;">' + (filterVal ? 'No orders match search filter.' : 'No automated orders received yet.') + '</div>';
           return;
         }
 
         container.innerHTML = '';
-        orders.forEach((order, index) => {
+        let baseDomain = 'https://countryflagbattle.xyz/';
+        if (typeof window !== 'undefined' && window.location && window.location.hostname.includes('countryflagbattle.xyz')) {
+          baseDomain = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '');
+          if (!baseDomain.endsWith('/')) baseDomain += '/';
+        }
+
+        orders.forEach((order) => {
+          const actLink = baseDomain + '?key=' + encodeURIComponent(order.licenseKey);
           const item = document.createElement('div');
           item.className = 'admin-order-item';
           item.innerHTML = `
@@ -10429,18 +11024,29 @@
             <div style="font-size: 10px; color: #64748b; margin-top: 2px;">
               <span>📅 ${order.date} | Plan: <b>${order.planName}</b></span>
             </div>
-            <div style="margin-top: 4px; display: flex; gap: 6px; align-items: center;">
-              <span class="admin-order-key">${order.licenseKey}</span>
-              <button class="order-btn-copy-num btn-copy-order-row-key" data-key="${order.licenseKey}" style="padding: 3px 6px; font-size: 9px; flex-shrink: 0;">📋 COPY KEY</button>
+            <div style="margin-top: 4px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+              <span class="admin-order-key" style="flex: 1; min-width: 140px;">${order.licenseKey}</span>
+              <button class="order-btn-copy-num btn-copy-order-row-key" data-key="${order.licenseKey}" style="padding: 4px 8px; font-size: 9px;">📋 KEY</button>
+              <button class="btn-copy-activation-link btn-copy-order-row-link" data-link="${actLink}" style="padding: 4px 8px; font-size: 9px;">🚀 1-CLICK LINK</button>
             </div>
           `;
 
-          const copyBtn = item.querySelector('.btn-copy-order-row-key');
-          if (copyBtn) {
-            copyBtn.addEventListener('click', () => {
+          const copyKeyBtn = item.querySelector('.btn-copy-order-row-key');
+          if (copyKeyBtn) {
+            copyKeyBtn.addEventListener('click', () => {
               navigator.clipboard.writeText(order.licenseKey).then(() => {
-                copyBtn.textContent = 'COPIED! ✓';
-                setTimeout(() => { copyBtn.textContent = '📋 COPY KEY'; }, 2000);
+                copyKeyBtn.textContent = 'COPIED! ✓';
+                setTimeout(() => { copyKeyBtn.textContent = '📋 KEY'; }, 2000);
+              });
+            });
+          }
+
+          const copyLinkBtn = item.querySelector('.btn-copy-order-row-link');
+          if (copyLinkBtn) {
+            copyLinkBtn.addEventListener('click', () => {
+              navigator.clipboard.writeText(actLink).then(() => {
+                copyLinkBtn.textContent = 'LINK COPIED! ✓';
+                setTimeout(() => { copyLinkBtn.textContent = '🚀 1-CLICK LINK'; }, 2000);
               });
             });
           }
@@ -10464,10 +11070,17 @@
         }
 
         container.innerHTML = '';
+        let baseDomain = 'https://countryflagbattle.xyz/';
+        if (typeof window !== 'undefined' && window.location && window.location.hostname.includes('countryflagbattle.xyz')) {
+          baseDomain = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '');
+          if (!baseDomain.endsWith('/')) baseDomain += '/';
+        }
+
         entries.forEach(([key, sub]) => {
           const isExpired = Date.now() > sub.expiresAt;
           const statusText = isExpired ? '🔴 EXPIRED' : ('🟢 ' + this.formatTimeRemaining(sub.expiresAt));
           const expDate = new Date(sub.expiresAt).toLocaleDateString();
+          const actLink = baseDomain + '?key=' + encodeURIComponent(sub.licenseKey || '');
 
           const card = document.createElement('div');
           card.className = 'admin-sub-item';
@@ -10485,22 +11098,34 @@
             '</div>' +
             '<div class="admin-sub-actions">' +
               '<button class="admin-sub-btn copy-sub-btn" data-user="' + sub.userId + '">📋 Copy</button>' +
-              '<button class="admin-sub-btn extend-sub-btn" data-user="' + sub.userId + '">➕ +30 Days</button>' +
+              '<button class="admin-sub-btn copy-sub-link-btn" data-link="' + actLink + '">🚀 Link</button>' +
+              '<button class="admin-sub-btn extend-sub-btn" data-user="' + sub.userId + '">➕ +30d</button>' +
               '<button class="admin-sub-btn delete delete-sub-btn" data-user="' + sub.userId + '">🗑️ Delete</button>' +
             '</div>';
 
           container.appendChild(card);
         });
 
-        // Event delegation for subscriber actions
+        // Event delegation
         container.querySelectorAll('.copy-sub-btn').forEach(btn => {
           btn.addEventListener('click', (e) => {
             const u = e.currentTarget.getAttribute('data-user');
             const sub = this.licenses[u.toLowerCase()];
             if (sub) {
-              const text = 'User ID: ' + sub.userId + '\nPassword: ' + (sub.plainPassHint || '') + '\nExpires: ' + new Date(sub.expiresAt).toLocaleDateString();
+              const text = 'User ID: ' + sub.userId + '\nPassword: ' + (sub.plainPassHint || '') + '\nLicense: ' + (sub.licenseKey || '') + '\nExpires: ' + new Date(sub.expiresAt).toLocaleDateString();
               navigator.clipboard.writeText(text);
               alert('Copied credentials for ' + sub.userId + '!');
+            }
+          });
+        });
+
+        container.querySelectorAll('.copy-sub-link-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const link = e.currentTarget.getAttribute('data-link');
+            if (link) {
+              navigator.clipboard.writeText(link);
+              e.currentTarget.textContent = 'Copied! ✓';
+              setTimeout(() => { e.currentTarget.textContent = '🚀 Link'; }, 2000);
             }
           });
         });
@@ -10511,6 +11136,7 @@
             btn.textContent = '⏳ ...';
             if (await this.extendLicense(u, 30)) {
               this.renderAdminSubscribers();
+              this.updateAdminKpis();
               alert('Extended 30 days for ' + u + ' (Synced to Cloud)!');
             }
           });
@@ -10523,13 +11149,13 @@
               btn.textContent = '⏳ ...';
               await this.deleteLicense(u);
               this.renderAdminSubscribers();
+              this.updateAdminKpis();
               alert('Deleted and revoked ' + u + ' from Cloud Database!');
             }
           });
         });
       }
     }
-
     // ==========================================================================
     // 5. AI HUMAN STREAMER SIMULATION ENGINE (100% ANTI-BOT REALISM)
     // ==========================================================================
@@ -11925,57 +12551,48 @@
           }
         }
 
-        // Max Velocity Clamp (Prevents physics explosions, tunneling, and super-speed glitches)
+        // Consolidated High-Performance Kinematics Loop (Clamping, Agitation, Anti-Stall)
         const maxSpd = 16.0;
-        for (const b of this.balls) {
-          const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
+        const bottomY = this.arenaCenter.y + (this.arenaRadius * 0.45);
+        const rotDir = this.currentRotationSpeed >= 0 ? 1 : -1;
+        const totalBalls = this.balls.length;
+
+        for (let i = 0; i < totalBalls; i++) {
+          const b = this.balls[i];
+          const pos = b.body.position;
+          const vel = b.body.velocity;
+          const spd = Math.hypot(vel.x, vel.y);
+
+          // 1. Max Velocity Clamp
           if (spd > maxSpd) {
             this.Body.setVelocity(b.body, {
-              x: (b.body.velocity.x / spd) * maxSpd,
-              y: (b.body.velocity.y / spd) * maxSpd
+              x: (vel.x / spd) * maxSpd,
+              y: (vel.y / spd) * maxSpd
             });
           }
-        }
 
-        // Anti-Spoke-Camping: If a ball is riding or idle on a moving blade, nudge it off smoothly
-        for (const b of this.balls) {
-          const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
+          // 2. Anti-Spoke-Camping
           if (spd < 1.2) {
-            const dx = b.body.position.x - this.arenaCenter.x;
-            const dy = b.body.position.y - this.arenaCenter.y;
+            const dx = pos.x - this.arenaCenter.x;
+            const dy = pos.y - this.arenaCenter.y;
             const dist = Math.hypot(dx, dy);
             if (dist > 52 && dist < this.arenaRadius - 12) {
               const tangAng = Math.atan2(dy, dx) + Math.PI / 2;
               this.Body.setVelocity(b.body, {
-                x: b.body.velocity.x + Math.cos(tangAng) * 2.8,
-                y: b.body.velocity.y + Math.sin(tangAng) * 2.8 - 1.8
+                x: vel.x + Math.cos(tangAng) * 2.8,
+                y: vel.y + Math.sin(tangAng) * 2.8 - 1.8
               });
             }
           }
-        }
 
-        // Continuous Tumbler Agitator (TikTok/YouTube Marble Race Style)
-        // Eliminates bottom clumping: gently rolls marbles along the bottom wall in the direction
-        // of rotation directly onto oncoming scooper blades, lifting them to the top!
-        const bottomY = this.arenaCenter.y + (this.arenaRadius * 0.45);
-        const rotDir = this.currentRotationSpeed >= 0 ? 1 : -1;
-        let bottomPileCount = 0;
-        for (const b of this.balls) {
-          if (b.body.position.y > bottomY) bottomPileCount++;
-        }
-
-        for (const b of this.balls) {
-          const pos = b.body.position;
-          if (pos.y > bottomY) {
-            const spd = Math.hypot(b.body.velocity.x, b.body.velocity.y);
-            if (spd < 2.0) {
-              const rollX = rotDir * (1.6 + Math.random() * 2.2);
-              const liftY = -(2.2 + Math.random() * (bottomPileCount > 5 ? 4.2 : 2.0));
-              this.Body.setVelocity(b.body, {
-                x: b.body.velocity.x * 0.85 + rollX,
-                y: liftY
-              });
-            }
+          // 3. Continuous Tumbler Agitator
+          if (pos.y > bottomY && spd < 2.0) {
+            const rollX = rotDir * (1.6 + Math.random() * 2.2);
+            const liftY = -(2.2 + Math.random() * 3.5);
+            this.Body.setVelocity(b.body, {
+              x: vel.x * 0.85 + rollX,
+              y: liftY
+            });
           }
         }
 
@@ -12498,6 +13115,73 @@
         }
       }
 
+      // High-Performance Offscreen Pre-Render Cache for Rotating Arena Mechanisms (100% Zero-Lag GPU Blitting)
+      _getTurbineWheelCanvas(R_in, R_out, total, segAngle) {
+        const size = Math.ceil((R_out + 6) * 2);
+        const key = `${size}_${total}_${R_in}_${R_out}`;
+        if (this._cachedTurbineCanvas && this._cachedTurbineKey === key) {
+          return this._cachedTurbineCanvas;
+        }
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        const ctx = c.getContext('2d');
+        const cx = size / 2;
+        const cy = size / 2;
+
+        for (let i = 0; i < total; i++) {
+          const a1 = (i * segAngle) + 0.018;
+          const a2 = ((i + 1) * segAngle) - 0.018;
+
+          ctx.beginPath();
+          ctx.arc(cx, cy, R_out, a1, a2, false);
+          ctx.arc(cx, cy, R_in, a2, a1, true);
+          ctx.closePath();
+
+          ctx.fillStyle = 'rgba(6, 182, 212, 0.22)';
+          ctx.fill();
+          ctx.strokeStyle = '#00e5ff';
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
+        }
+
+        this._cachedTurbineCanvas = c;
+        this._cachedTurbineKey = key;
+        return c;
+      }
+
+      _getGearHubCanvas(hubR_in, hubR_out) {
+        const size = Math.ceil((hubR_out + 6) * 2);
+        const key = `${size}_${hubR_in}_${hubR_out}`;
+        if (this._cachedHubCanvas && this._cachedHubKey === key) {
+          return this._cachedHubCanvas;
+        }
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        const ctx = c.getContext('2d');
+        const cx = size / 2;
+        const cy = size / 2;
+
+        for (let g = 0; g < 12; g++) {
+          const ga1 = (g * Math.PI / 6) + 0.04;
+          const ga2 = ((g + 0.7) * Math.PI / 6) - 0.04;
+          ctx.beginPath();
+          ctx.arc(cx, cy, hubR_out, ga1, ga2, false);
+          ctx.arc(cx, cy, hubR_in, ga2, ga1, true);
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(192, 132, 252, 0.25)';
+          ctx.fill();
+          ctx.strokeStyle = '#c084fc';
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
+        }
+
+        this._cachedHubCanvas = c;
+        this._cachedHubKey = key;
+        return c;
+      }
+
       // --- 8. HIGH-DPI CANVAS RENDERING (MASTER ESPORTS STADIUM) ---
       drawArena(ctx) {
         ctx.save();
@@ -12556,22 +13240,13 @@
           const R_in = rArena - 14;
           const R_out = rArena + 14;
 
-          // Segmented Turbine Cogs (Dual-Rail Gear Teeth)
-          for (let i = 0; i < total; i++) {
-            const a1 = this.arenaAngle + (i * segAngle) + 0.018;
-            const a2 = this.arenaAngle + ((i + 1) * segAngle) - 0.018;
-
-            ctx.beginPath();
-            ctx.arc(cx, cy, R_out, a1, a2, false);
-            ctx.arc(cx, cy, R_in, a2, a1, true);
-            ctx.closePath();
-
-            ctx.fillStyle = 'rgba(6, 182, 212, 0.22)';
-            ctx.fill();
-            ctx.strokeStyle = '#00e5ff';
-            ctx.lineWidth = 1.6;
-            ctx.stroke();
-          }
+          // A. Multi-Layer Cyber Turbine Outer Wheel (GPU Pre-Rendered Texture Blit)
+          const turbineCanvas = this._getTurbineWheelCanvas(R_in, R_out, total, segAngle);
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(this.arenaAngle);
+          ctx.drawImage(turbineCanvas, -turbineCanvas.width / 2, -turbineCanvas.height / 2);
+          ctx.restore();
 
           // Outer & Inner Neon Glowing Rails (100% GPU-accelerated - zero CPU shadowBlur)
           ctx.save();
@@ -12599,21 +13274,13 @@
           const hubR_in = 46;
           const hubR_out = 60;
 
-          // Inner Counter-Rotating Gear Teeth
+          // Inner Counter-Rotating Gear Teeth (GPU Pre-Rendered Texture Blit)
+          const hubCanvas = this._getGearHubCanvas(hubR_in, hubR_out);
           ctx.save();
-          for (let g = 0; g < 12; g++) {
-            const ga1 = rotorAng + (g * Math.PI / 6) + 0.04;
-            const ga2 = rotorAng + ((g + 0.7) * Math.PI / 6) - 0.04;
-            ctx.beginPath();
-            ctx.arc(cx, cy, hubR_out, ga1, ga2, false);
-            ctx.arc(cx, cy, hubR_in, ga2, ga1, true);
-            ctx.closePath();
-            ctx.fillStyle = 'rgba(192, 132, 252, 0.25)';
-            ctx.fill();
-            ctx.strokeStyle = '#c084fc';
-            ctx.lineWidth = 1.4;
-            ctx.stroke();
-          }
+          ctx.translate(cx, cy);
+          ctx.rotate(rotorAng);
+          ctx.drawImage(hubCanvas, -hubCanvas.width / 2, -hubCanvas.height / 2);
+          ctx.restore();
 
           // Hub Inner & Outer Glowing Rings
           ctx.strokeStyle = '#f5d0fe';
