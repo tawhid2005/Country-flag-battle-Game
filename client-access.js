@@ -177,14 +177,15 @@
     }));
     $('btn-manual-claim')?.addEventListener('click',async()=>{
       const button=$('btn-manual-claim'),status=$('manual-claim-status');button.disabled=true;status.hidden=false;status.textContent='Submitting your payment information…';
+      status.className='checkout-help claim-status';$('checkout-transfer-whatsapp').hidden=true;
       try{
         const result=await this.api('manual/claim',{planId:this.activePlanId || '1m',method:this.manualPaymentMethod,email:$('checkout-bd-email').value.trim(),phone:$('checkout-bd-phone').value.trim(),password:$('checkout-bd-password').value,sender:$('manual-sender').value.trim(),trxId:$('manual-transaction').value.trim(),confirmed:$('manual-confirm').checked});
-        if(!this.acceptServerSession(result.session))throw new Error('Access was created but the login session could not be opened. Please sign in with your email and password.');$('checkout-bd-password').value='';status.textContent='Access activated successfully. Opening the game…';this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);this.updateDrawerStatus();setTimeout(()=>{this.closeOrderModal?.();if(!this.isGameStarted)this.startGame();},700);
-      }catch(error){status.textContent=error.message+' If you need help, use WhatsApp support.';}finally{button.disabled=false;}
+        if(!this.acceptServerSession(result.session))throw new Error('Access was created but the login session could not be opened. Please sign in with your email and password.');$('checkout-bd-password').value='';status.classList.add('success');status.textContent='✓ Payment information accepted. Access is active—opening the game…';this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);this.updateDrawerStatus();setTimeout(()=>{this.closeOrderModal?.();if(!this.isGameStarted)this.startGame();},700);
+      }catch(error){status.classList.add('failed');status.textContent='Payment confirmation failed: '+error.message;$('checkout-transfer-whatsapp').hidden=false;this.updateWhatsAppLinks();}finally{button.disabled=false;}
     });
     $('checkout-retry-payment')?.addEventListener('click',()=>{const id=gameStorage.getItem('cfb_pending_order');if(id)this.pollPayment(id);});
     if($('btn-start-polar-checkout'))$('btn-start-polar-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('polar');};
-    if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('sslcommerz');};
+    if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();const panel=$('manual-transfer-panel');panel.open=true;panel.scrollIntoView?.({behavior:'smooth',block:'start'});};
     this.updateWhatsAppLinks();
     // Remove credentials saved by previous releases.
     for (const key of ['cfb_pending_checkout_creds','cfb_admin_polar_token','cfb_paymently_api_key','cfb_auth_session']) gameStorage.removeItem(key);

@@ -14,6 +14,7 @@ export async function runCheckoutChecks(){
     assert.equal($('polar-btn-price-display').textContent,'$5.99');
     security.manualPaymentMethod='Nagad';security.updateWhatsAppLinks();assert.ok(new URL($('checkout-transfer-whatsapp').href).searchParams.get('text').includes('Method: Nagad'));
     document.querySelector('[data-manual-method="Rocket"]').click();assert.equal($('manual-transfer-panel').classList.contains('theme-rocket'),true);assert.equal($('manual-method-title').textContent,'Pay with Rocket');
+    $('manual-transfer-panel').open=false;$('btn-start-bd-checkout').click();assert.equal($('manual-transfer-panel').open,true,'Pay securely must reveal the method chooser');
     security.isInternational=true;security.updateOrderModalUI('bd');assert.equal($('panel-bd-pay').style.display,'none');assert.equal($('order-tabs-wrapper').style.display,'none');
     security.isInternational=false;security.updateOrderModalUI('intl');
     let submitted,navigated;
