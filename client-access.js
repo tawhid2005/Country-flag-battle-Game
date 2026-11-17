@@ -40,13 +40,13 @@
     link.href='https://wa.me/8801711729858?text='+encodeURIComponent(detail);notice.appendChild(link);
     const close=document.createElement('button');close.type='button';close.textContent='Dismiss';close.style.cssText='padding:6px 10px';close.onclick=()=>notice.remove();notice.appendChild(close);
   };
-  proto.acceptServerSession = function(session) {
+  proto.acceptServerSession = function(session, keepPaymentModal=false) {
     if (!session || session.role !== 'subscriber' || session.expiresAt <= Date.now()) return false;
     this.session=session; this.serverVerifiedUntil=Date.now()+90000;
     gameStorage.removeItem('cfb_auth_session');
     if (this.trialInterval) clearInterval(this.trialInterval);
     this.showLockModal(false);this.updateDrawerStatus();
-    $('cyber-order-modal')?.classList.remove('show');this.syncInterfacePause?.();
+    if(!keepPaymentModal)$('cyber-order-modal')?.classList.remove('show');this.syncInterfacePause?.();
     if (this.app) {
       if (this.app.isRoundOver) this.app.startNewRound();
       if (!this.app.isGameStarted) {this.app.isGameStarted=true;this.app.roundStartTime=Date.now();}
@@ -188,12 +188,12 @@
       this.updateWhatsAppLinks();
     }));
     $('btn-manual-claim')?.addEventListener('click',async()=>{
-      const button=$('btn-manual-claim'),status=$('manual-claim-status');button.disabled=true;status.hidden=false;status.textContent='Submitting your payment information…';
+      const button=$('btn-manual-claim'),label=$('manual-claim-label'),status=$('manual-claim-status');button.disabled=true;button.classList.remove('confirmed');button.classList.add('processing');button.setAttribute('aria-busy','true');label.textContent='Confirming payment…';status.hidden=false;status.textContent='Submitting your payment information…';
       status.className='checkout-help claim-status';
       try{
         const result=await this.api('manual/claim',{planId:this.activePlanId || '1m',method:this.manualPaymentMethod,email:$('checkout-bd-email').value.trim(),phone:$('checkout-bd-phone').value.trim(),password:$('checkout-bd-password').value,sender:$('manual-sender').value.trim(),trxId:$('manual-transaction').value.trim(),confirmed:$('manual-confirm').checked});
-        if(!this.acceptServerSession(result.session))throw new Error('Access was created but the login session could not be opened. Please sign in with your email and password.');$('checkout-bd-password').value='';status.classList.add('success');status.textContent='✓ Payment information accepted. Access is active—opening the game…';this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);this.updateDrawerStatus();setTimeout(()=>{this.closeOrderModal?.();if(!this.isGameStarted)this.startGame();},700);
-      }catch(error){status.classList.add('failed');status.textContent='Payment confirmation failed: '+error.message;this.updateWhatsAppLinks();}finally{button.disabled=false;}
+        if(!this.acceptServerSession(result.session,true))throw new Error('Access was created but the login session could not be opened. Please sign in with your email and password.');$('checkout-bd-password').value='';button.classList.remove('processing');button.classList.add('confirmed');label.textContent='Payment confirmed — access active';status.classList.add('success');status.textContent='✓ Payment information accepted. Access is active—opening the game…';this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);this.updateDrawerStatus();setTimeout(()=>{$('cyber-order-modal')?.classList.remove('show');this.syncInterfacePause();if(!this.isGameStarted)this.startGame();},1000);
+      }catch(error){button.classList.remove('processing');label.textContent='Confirm payment & activate';status.classList.add('failed');status.textContent='Payment confirmation failed: '+error.message;this.updateWhatsAppLinks();}finally{button.setAttribute('aria-busy','false');button.disabled=false;}
     });
     $('checkout-retry-payment')?.addEventListener('click',()=>{const id=gameStorage.getItem('cfb_pending_order');if(id)this.pollPayment(id);});
     if($('btn-start-polar-checkout'))$('btn-start-polar-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('polar');};

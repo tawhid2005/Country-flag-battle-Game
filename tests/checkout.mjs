@@ -5,7 +5,7 @@ export async function runCheckoutChecks(){
     if(mode!=='fresh')return;
     const $=id=>context.document.getElementById(id),security=app.security;
     for(const id of ['checkout-address','checkout-city','checkout-postcode','auto-pay-trx-id'])assert.equal($(id),null,'Obsolete Bangladesh fields must be removed');
-    for(const id of ['checkout-bd-email','checkout-bd-phone','checkout-bd-password','btn-start-bd-checkout'])assert.ok($(id),'Three-field Bangladesh checkout must be present');
+    for(const id of ['checkout-bd-email','checkout-bd-phone','checkout-bd-password','btn-start-bd-checkout','btn-manual-claim','manual-claim-label','checkout-transfer-whatsapp'])assert.ok($(id),'Bangladesh checkout controls must be present');
     assert.equal($('btn-start-bd-checkout').disabled,true,'Payment methods must stay locked until account details are complete');
     assert.equal($('checkout-transfer-whatsapp').hidden,false,'WhatsApp diagnostics must be available before confirmation');
     security.activePlanId='2m';$('manual-sender').value='01712345678';$('manual-transaction').value='TX-TEST-123';$('checkout-bd-email').value='player@example.com';security.updateWhatsAppLinks();

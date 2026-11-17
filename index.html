@@ -5753,9 +5753,9 @@
             <label>Sender number <input class="order-input" type="tel" id="manual-sender" autocomplete="tel" placeholder="01XXXXXXXXX"></label>
             <label>Transaction ID <input class="order-input" id="manual-transaction" maxlength="40" placeholder="Your payment reference"></label>
             <label class="claim-confirm"><input type="checkbox" id="manual-confirm"> <span>আমি নিশ্চিত করছি যে উপরের নম্বরে সঠিক amount পাঠিয়েছি এবং সম্পূর্ণ TrxID দিয়েছি।</span></label>
-            <a class="checkout-whatsapp secondary payment-support" id="checkout-transfer-whatsapp" target="_blank" rel="noopener noreferrer">Payment সমস্যা? WhatsApp-এ details পাঠান →</a>
-            <button class="manual-claim-button" id="btn-manual-claim" type="button">Confirm payment & activate →</button>
+            <button class="manual-claim-button" id="btn-manual-claim" type="button" aria-live="polite"><span class="claim-button-icon" aria-hidden="true">✓</span><span class="claim-button-copy"><strong id="manual-claim-label">Confirm payment & activate</strong><small>Instant account access after confirmation</small></span><span class="claim-button-arrow" aria-hidden="true">→</span></button>
             <div id="manual-claim-status" class="checkout-help" role="status" hidden></div>
+            <a class="checkout-whatsapp secondary payment-support" id="checkout-transfer-whatsapp" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">●</span> Payment সমস্যা? WhatsApp support</a>
             <p class="checkout-footnote">একটি TrxID একবারই ব্যবহার করা যাবে। ভুল তথ্য দিলে account review বা access বন্ধ হতে পারে।</p>
           </details>
         </div>
@@ -12887,7 +12887,7 @@
       // 1. Register Service Worker with cache busting
       if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=16.0.0')
+          navigator.serviceWorker.register('./sw.js?v=17.0.0')
             .then(reg => {
               console.log('PWA ServiceWorker registered:', reg.scope);
               reg.addEventListener('updatefound', () => {
