@@ -9,8 +9,8 @@ export async function runAdminLoginChecks(){
   assert.match(html,/<form[^>]*id="login-form"[^>]*autocomplete="on"/);
   assert.match(html,/name="username"[^>]*autocomplete="username"/);
   assert.match(html,/name="password"[^>]*type="password"[^>]*autocomplete="current-password"/);
-  assert.match(html,/id="clear-events"/);assert.match(html,/id="new-phone"/);
-  assert.match(source,/admin\/delete-account/);assert.match(source,/admin\/clear-events/);assert.match(source,/result\.reused/);
+  assert.match(html,/id="clear-events"/);assert.match(html,/id="new-phone"/);assert.match(html,/data-view="orders-bd"/);assert.match(html,/data-view="orders-intl"/);
+  assert.match(source,/admin\/delete-account/);assert.match(source,/admin\/clear-events/);assert.match(source,/result\.reused/);assert.match(source,/Gateway \/ TrxID/);assert.match(source,/startsWith\('claim:'\)/);
   const env={APP_ORIGIN:'https://game.example',SESSION_SECRET:'s'.repeat(40),ADMIN_USERNAME:'owner',ADMIN_PASSWORD_HASH:hashPassword('long-test-password'),SUPABASE_URL:'https://db.example',SUPABASE_SERVICE_ROLE_KEY:'test-service-key'};
   assert.equal(adminSetupStatus(env).ready,true);
   assert.ok(adminSetupStatus({...env,SESSION_SECRET:''}).missing.includes('SESSION_SECRET'));

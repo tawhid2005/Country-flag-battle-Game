@@ -17,6 +17,10 @@
   function pill(row,status){const cell=td(row,'');const badge=document.createElement('span');badge.className='status '+status;badge.textContent=status.replaceAll('_',' ');cell.appendChild(badge);}
   function action(cell,label,fn){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=async()=>{button.disabled=true;message('');try{await fn();}catch(error){message(error.message);}finally{button.disabled=false;}};cell.appendChild(button);}
   function account(id){return data.accounts?.find(item=>item.id===id);}
+  function paymentReference(order){
+    if(order.checkout_id?.startsWith('claim:')){const parts=order.checkout_id.split(':');return {method:parts[1],reference:parts.slice(2).join(':')};}
+    return {method:order.provider,reference:order.provider_id || order.checkout_id || 'Pending'};
+  }
   async function deliverAccess(item,plan,result){
     const draft=onboarding.get(item.id);
     if(!draft)return message(result.reused?'This grant was already processed; duplicate order prevented.':'Access granted. Copy the activation link from Orders & payments.');
@@ -27,13 +31,14 @@
     onboarding.delete(item.id);
   }
   function render(){
-    const isAccounts=view==='accounts',isEvents=view==='events';
+    const isAccounts=view==='accounts',isEvents=view==='events',isBd=view==='orders-bd',isIntl=view==='orders-intl';
     $('create-panel').hidden=!isAccounts;$('summary-panel').hidden=view!=='overview';$('clear-events').hidden=!isEvents;
-    const titles={overview:'Overview',orders:'Orders & payments',accounts:'Player access',events:'Activity log'};
-    $('page-title').textContent=titles[view];$('table-title').textContent=isAccounts?'Player accounts':isEvents?'Recent activity':'Payment orders';
-    const columns=isAccounts?['Player / account','Email','Access until (Dhaka)','Status','Actions']:isEvents?['Time (Dhaka)','Event','Order','Detail']:['Order','Player','Plan','Amount','Status','Created (Dhaka)','Actions'];
+    const titles={overview:'Overview',orders:'All orders','orders-bd':'Bangladesh payments','orders-intl':'International payments',accounts:'Player access',events:'Activity log'};
+    $('page-title').textContent=titles[view];$('table-title').textContent=isAccounts?'Player accounts':isEvents?'Recent activity':isBd?'Bangladesh payment confirmations':isIntl?'International gateway payments':'Payment orders';
+    const columns=isAccounts?['Player / account','Email','Access until (Dhaka)','Status','Actions']:isEvents?['Time (Dhaka)','Event','Order','Detail']:['Order','Player','Plan','Gateway / TrxID','Amount','Status','Created (Dhaka)','Actions'];
     $('table-head').replaceChildren();const tr=document.createElement('tr');for(const title of columns){const th=document.createElement('th');th.textContent=title;tr.appendChild(th);}$('table-head').appendChild(tr);
-    const records=isAccounts?data.accounts||[]:isEvents?data.events||[]:data.orders||[];
+    let records=isAccounts?data.accounts||[]:isEvents?data.events||[]:data.orders||[];
+    if(isBd)records=records.filter(item=>item.currency==='bdt');if(isIntl)records=records.filter(item=>item.currency==='usd');
     const query=$('search').value.trim().toLowerCase();const visible=records.filter(item=>JSON.stringify([item,account(item.account_id)]).toLowerCase().includes(query));
     $('table-body').replaceChildren();
     for(const item of visible){const row=document.createElement('tr');
@@ -46,9 +51,12 @@
         if(active)action(cell,'Revoke',async()=>{if(!confirm('Revoke access for '+item.username+'?'))return;await api('admin/revoke',{accountId:item.id});await refresh();});
         action(cell,'Delete player',async()=>{const typed=prompt('This permanently deletes the player and their orders. Type the username to continue:');if(typed===null)return;await api('admin/delete-account',{accountId:item.id,confirmUsername:typed});onboarding.delete(item.id);message('Player and related records deleted.');await refresh();});
       }else if(isEvents){td(row,date(item.created_at));td(row,item.kind);td(row,item.order_id);td(row,item.detail);}
-      else{td(row,item.id.slice(0,8),item.provider);td(row,account(item.account_id)?.username || item.account_id);td(row,data.plans?.[item.plan_id]?.name || item.plan_id);td(row,money(item.amount_minor,item.currency));pill(row,item.status);td(row,date(item.created_at));const cell=td(row,'');
+      else{const payment=paymentReference(item);td(row,item.id.slice(0,8),item.provider);td(row,account(item.account_id)?.username || item.account_id);td(row,data.plans?.[item.plan_id]?.name || item.plan_id);td(row,payment.reference,payment.method);td(row,money(item.amount_minor,item.currency));pill(row,item.status);td(row,date(item.created_at));const cell=td(row,'');
         if(item.provider!=='manual')action(cell,'Verify again',async()=>{await api('admin/reconcile',{orderId:item.id});message('Gateway verification completed.');await refresh();});
-        if(item.status==='paid')action(cell,'Copy activation link',async()=>{const result=await api('admin/activation',{orderId:item.id});await navigator.clipboard.writeText(result.link);message('Activation link copied. It opens the game, never the admin page.');});
+        if(item.status==='paid'){
+          action(cell,'Copy activation link',async()=>{const result=await api('admin/activation',{orderId:item.id});await navigator.clipboard.writeText(result.link);message('Activation link copied. It opens the game, never the admin page.');});
+          action(cell,'Copy WhatsApp reply',async()=>{const result=await api('admin/activation',{orderId:item.id}),player=account(item.account_id),plan=data.plans?.[item.plan_id]?.name || item.plan_id,payment=paymentReference(item);const text=['🎮 Country Flag Battle payment confirmed','',`Login ID: ${player?.username || player?.email || 'your registered email'}`,`Email: ${player?.email || 'your registered email'}`,'Password: use the password you created during payment',`Plan: ${plan}`,`Payment: ${payment.method} · ${payment.reference}`,'',`One-click activation: ${result.link}`,'','Keep your login information private.'].join('\n');await navigator.clipboard.writeText(text);message('Ready-to-send WhatsApp login reply copied.');});
+        }
       }$('table-body').appendChild(row);
     }
     $('empty-state').hidden=visible.length>0;$('previous').disabled=page===0;$('next').disabled=!data.hasMore;$('page-number').textContent='Page '+(page+1);

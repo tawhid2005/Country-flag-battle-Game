@@ -6,6 +6,8 @@ export async function runCheckoutChecks(){
     const $=id=>context.document.getElementById(id),security=app.security;
     for(const id of ['checkout-address','checkout-city','checkout-postcode','auto-pay-trx-id'])assert.equal($(id),null,'Obsolete Bangladesh fields must be removed');
     for(const id of ['checkout-bd-email','checkout-bd-phone','checkout-bd-password','btn-start-bd-checkout'])assert.ok($(id),'Three-field Bangladesh checkout must be present');
+    assert.equal($('btn-start-bd-checkout').disabled,true,'Payment methods must stay locked until account details are complete');
+    assert.equal($('checkout-transfer-whatsapp').hidden,false,'WhatsApp diagnostics must be available before confirmation');
     security.activePlanId='2m';$('manual-sender').value='01712345678';$('manual-transaction').value='TX-TEST-123';$('checkout-bd-email').value='player@example.com';security.updateWhatsAppLinks();
     const link=new URL($('checkout-transfer-whatsapp').href),message=link.searchParams.get('text');
     assert.equal(link.hostname,'wa.me');assert.ok(message.includes('149 TK'));assert.ok(message.includes('TX-TEST-123'));assert.ok(!message.includes('password'));
@@ -15,6 +17,7 @@ export async function runCheckoutChecks(){
     security.manualPaymentMethod='Nagad';security.updateWhatsAppLinks();assert.ok(new URL($('checkout-transfer-whatsapp').href).searchParams.get('text').includes('Method: Nagad'));
     document.querySelector('[data-manual-method="Rocket"]').click();assert.equal($('manual-transfer-panel').classList.contains('theme-rocket'),true);assert.equal($('manual-method-title').textContent,'Pay with Rocket');assert.ok($('manual-method-logo').src.includes('rocket-logo.png'));
     $('manual-transfer-panel').open=false;$('btn-start-bd-checkout').click();assert.equal($('manual-transfer-panel').open,true,'Pay securely must reveal the method chooser');
+    security.openOrderModal('2m','bdt');assert.equal(app._interfacePaused,true,'Payment modal must pause game physics and audio');$('cyber-order-modal').classList.remove('show');security.syncInterfacePause();assert.equal(app._interfacePaused,false,'Closing in-app surfaces must resume the game');
     security.isInternational=true;security.updateOrderModalUI('bd');assert.equal($('panel-bd-pay').style.display,'none');assert.equal($('order-tabs-wrapper').style.display,'none');
     security.isInternational=false;security.updateOrderModalUI('intl');
     let submitted,navigated;

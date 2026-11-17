@@ -46,7 +46,7 @@
     gameStorage.removeItem('cfb_auth_session');
     if (this.trialInterval) clearInterval(this.trialInterval);
     this.showLockModal(false);this.updateDrawerStatus();
-    $('cyber-order-modal')?.classList.remove('show');
+    $('cyber-order-modal')?.classList.remove('show');this.syncInterfacePause?.();
     if (this.app) {
       if (this.app.isRoundOver) this.app.startNewRound();
       if (!this.app.isGameStarted) {this.app.isGameStarted=true;this.app.roundStartTime=Date.now();}
@@ -140,7 +140,8 @@
     const bd=getPlanDef(this.activePlanId || '1m','bdt'),intl=getPlanDef(this.activePlanId || '1m','usd');
     const set=(id,lines)=>{const link=$(id);if(link)link.href='https://wa.me/8801711729858?text='+encodeURIComponent(lines.filter(Boolean).join('\n'));};
     set('checkout-bd-whatsapp',['আসসালামু আলাইকুম, Country Flag Battle-এর pass কিনতে চাই।','Plan: '+bd.name,'Amount: '+bd.price+' TK','Payment: bKash / Nagad / Rocket','পেমেন্ট ও activation-এর নিয়ম জানাবেন।']);
-    set('checkout-transfer-whatsapp',['Country Flag Battle — payment support','Method: '+(this.manualPaymentMethod || 'bKash'),'Plan: '+bd.name+' · '+bd.price+' TK','Sender: '+($('manual-sender')?.value || 'not provided'),'TrxID: '+($('manual-transaction')?.value || 'not provided'),'Email: '+($('checkout-bd-email')?.value || 'not provided'),'Activation-এ সাহায্য করুন।']);
+    const claimStatus=$('manual-claim-status'),issue=claimStatus?.classList.contains('failed') ? claimStatus.textContent:'Payment confirmation / login assistance requested';
+    set('checkout-transfer-whatsapp',['Country Flag Battle — Bangladesh payment support','Method: '+(this.manualPaymentMethod || 'bKash'),'Plan: '+bd.name+' · '+bd.price+' TK','Email: '+($('checkout-bd-email')?.value || 'not provided'),'Mobile: '+($('checkout-bd-phone')?.value || 'not provided'),'Password entered: '+(($('checkout-bd-password')?.value || '').length>=10?'yes':'no'),'Sender: '+($('manual-sender')?.value || 'not provided'),'TrxID: '+($('manual-transaction')?.value || 'not provided'),'Problem: '+issue,'Please check the payment and send my login/activation information.']);
     set('checkout-intl-whatsapp',['Country Flag Battle — Polar payment support','Plan: '+intl.name+' · $'+intl.price.toFixed(2), 'Order: '+(gameStorage.getItem('cfb_pending_order') || 'checkout not started')]);
   };
   proto.updateOrderModalUI = function(tab='bd') {
@@ -161,11 +162,22 @@
   };
   proto.openOrderModal = function(planId,currency=this.selectedCurrency) {
     this.activePlanId=planId || '1m';this.activeBdtPlan=getPlanDef(this.activePlanId,'bdt');this.activeUsdPlan=getPlanDef(this.activePlanId,'usd');
-    this.updateOrderModalUI(currency==='usd'?'intl':'bd');$('cyber-order-modal')?.classList.add('show');
+    this.updateOrderModalUI(currency==='usd'?'intl':'bd');$('cyber-order-modal')?.classList.add('show');this.syncInterfacePause?.();
+  };
+  proto.updateBangladeshPaymentGate = function() {
+    const email=$('checkout-bd-email'),phone=$('checkout-bd-phone'),password=$('checkout-bd-password'),button=$('btn-start-bd-checkout'),hint=$('bd-payment-gate-hint');
+    const ready=!!email?.validity?.valid && /^(?:\+?880|0)1[3-9][0-9]{8}$/.test(phone?.value.trim().replace(/[\s-]/g,'') || '') && (password?.value.length || 0)>=10;
+    if(button)button.disabled=!ready;if(hint){hint.classList.toggle('ready',ready);hint.textContent=ready?'✓ Account details complete — choose your payment method.':'Complete email, mobile number and password to continue.';}this.updateWhatsAppLinks();
+    return ready;
+  };
+  proto.syncInterfacePause = function() {
+    const paused=!!document.querySelector('#cyber-order-modal.show,#cyber-lock-modal.show,#cyber-fail-recovery-modal.show,#streamer-drawer.open');
+    this.app?.setInterfacePaused?.(paused);
   };
   proto.init = function() {
     this.detectCountryAndCurrency();this.setupDOM();this.renderPricingCards();this.handleTrialWorkflow();this.updateDrawerStatus();
-    for(const id of ['manual-sender','manual-transaction','checkout-bd-email'])$(id)?.addEventListener('input',()=>this.updateWhatsAppLinks());
+    for(const id of ['checkout-bd-email','checkout-bd-phone','checkout-bd-password'])$(id)?.addEventListener('input',()=>this.updateBangladeshPaymentGate());
+    for(const id of ['manual-sender','manual-transaction'])$(id)?.addEventListener('input',()=>this.updateWhatsAppLinks());
     this.manualPaymentMethod='bKash';
     document.querySelectorAll('[data-manual-method]').forEach(button=>button.addEventListener('click',()=>{
       this.manualPaymentMethod=button.dataset.manualMethod;
@@ -177,15 +189,16 @@
     }));
     $('btn-manual-claim')?.addEventListener('click',async()=>{
       const button=$('btn-manual-claim'),status=$('manual-claim-status');button.disabled=true;status.hidden=false;status.textContent='Submitting your payment information…';
-      status.className='checkout-help claim-status';$('checkout-transfer-whatsapp').hidden=true;
+      status.className='checkout-help claim-status';
       try{
         const result=await this.api('manual/claim',{planId:this.activePlanId || '1m',method:this.manualPaymentMethod,email:$('checkout-bd-email').value.trim(),phone:$('checkout-bd-phone').value.trim(),password:$('checkout-bd-password').value,sender:$('manual-sender').value.trim(),trxId:$('manual-transaction').value.trim(),confirmed:$('manual-confirm').checked});
         if(!this.acceptServerSession(result.session))throw new Error('Access was created but the login session could not be opened. Please sign in with your email and password.');$('checkout-bd-password').value='';status.classList.add('success');status.textContent='✓ Payment information accepted. Access is active—opening the game…';this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);this.updateDrawerStatus();setTimeout(()=>{this.closeOrderModal?.();if(!this.isGameStarted)this.startGame();},700);
-      }catch(error){status.classList.add('failed');status.textContent='Payment confirmation failed: '+error.message;$('checkout-transfer-whatsapp').hidden=false;this.updateWhatsAppLinks();}finally{button.disabled=false;}
+      }catch(error){status.classList.add('failed');status.textContent='Payment confirmation failed: '+error.message;this.updateWhatsAppLinks();}finally{button.disabled=false;}
     });
     $('checkout-retry-payment')?.addEventListener('click',()=>{const id=gameStorage.getItem('cfb_pending_order');if(id)this.pollPayment(id);});
     if($('btn-start-polar-checkout'))$('btn-start-polar-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('polar');};
-    if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();const panel=$('manual-transfer-panel');panel.open=true;panel.scrollIntoView?.({behavior:'smooth',block:'start'});};
+    if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();if(!this.updateBangladeshPaymentGate())return;const panel=$('manual-transfer-panel');panel.open=true;panel.scrollIntoView?.({behavior:'smooth',block:'start'});};
+    const pauseObserver=new MutationObserver(()=>this.syncInterfacePause());for(const id of ['cyber-order-modal','cyber-lock-modal','cyber-fail-recovery-modal','streamer-drawer']){const el=$(id);if(el)pauseObserver.observe(el,{attributes:true,attributeFilter:['class']});}this.interfacePauseObserver=pauseObserver;this.updateBangladeshPaymentGate();this.syncInterfacePause();
     this.updateWhatsAppLinks();
     // Remove credentials saved by previous releases.
     for (const key of ['cfb_pending_checkout_creds','cfb_admin_polar_token','cfb_paymently_api_key','cfb_auth_session']) gameStorage.removeItem(key);

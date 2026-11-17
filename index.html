@@ -5739,7 +5739,8 @@
           <label>Email<input type="email" class="order-input" id="checkout-bd-email" autocomplete="email" maxlength="160" placeholder="you@example.com"></label>
           <label>Mobile number<input type="tel" class="order-input" id="checkout-bd-phone" autocomplete="tel" maxlength="15" placeholder="01XXXXXXXXX"></label>
           <label>Game password<input type="password" class="order-input" id="checkout-bd-password" autocomplete="new-password" minlength="10" maxlength="128" placeholder="কমপক্ষে ১০ অক্ষর"></label>
-          <button class="checkout-polar checkout-bd-auto" id="btn-start-bd-checkout" type="button">Pay securely · <span id="bd-btn-price-display">99 TK</span> →</button>
+          <button class="checkout-polar checkout-bd-auto" id="btn-start-bd-checkout" type="button" disabled>Pay securely · <span id="bd-btn-price-display">99 TK</span> →</button>
+          <p class="payment-gate-hint" id="bd-payment-gate-hint">Complete email, mobile number and password to continue.</p>
           <div id="bd-gw-status" role="status" class="checkout-help" hidden></div>
           <a class="checkout-whatsapp" id="checkout-bd-whatsapp" target="_blank" rel="noopener noreferrer" hidden>WhatsApp support →</a>
           <details class="transfer-details payment-experience theme-bkash" id="manual-transfer-panel"><summary>Send Money · instant activation</summary>
@@ -5752,9 +5753,9 @@
             <label>Sender number <input class="order-input" type="tel" id="manual-sender" autocomplete="tel" placeholder="01XXXXXXXXX"></label>
             <label>Transaction ID <input class="order-input" id="manual-transaction" maxlength="40" placeholder="Your payment reference"></label>
             <label class="claim-confirm"><input type="checkbox" id="manual-confirm"> <span>আমি নিশ্চিত করছি যে উপরের নম্বরে সঠিক amount পাঠিয়েছি এবং সম্পূর্ণ TrxID দিয়েছি।</span></label>
+            <a class="checkout-whatsapp secondary payment-support" id="checkout-transfer-whatsapp" target="_blank" rel="noopener noreferrer">Payment সমস্যা? WhatsApp-এ details পাঠান →</a>
             <button class="manual-claim-button" id="btn-manual-claim" type="button">Confirm payment & activate →</button>
             <div id="manual-claim-status" class="checkout-help" role="status" hidden></div>
-            <a class="checkout-whatsapp secondary payment-support" id="checkout-transfer-whatsapp" target="_blank" rel="noopener noreferrer" hidden>WhatsApp-এ সাহায্য নিন →</a>
             <p class="checkout-footnote">একটি TrxID একবারই ব্যবহার করা যাবে। ভুল তথ্য দিলে account review বা access বন্ধ হতে পারে।</p>
           </details>
         </div>
@@ -10128,7 +10129,7 @@
         this._lastBgTickTime = Date.now();
 
         const onTick = () => {
-          if (!this.isGameStarted) return;
+          if (!this.isGameStarted || this._interfacePaused) return;
           if (document.hidden) {
             const now = Date.now();
             const elapsed = Math.min(250, now - (this._lastBgTickTime || now));
@@ -10191,7 +10192,7 @@
       }
 
       runBackgroundCatchup(totalElapsedMs) {
-        if (this.isRoundOver) return;
+        if (this.isRoundOver || this._interfacePaused) return;
         const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
         let remainingMs = Math.min(180, Math.max(16.666, totalElapsedMs * simSpeed));
         const fixedStepMs = 16.666;
@@ -12157,6 +12158,13 @@
           let deltaMs = timestamp - this._lastTimestamp;
           this._lastTimestamp = timestamp;
 
+          // In-app payment, access and settings surfaces pause physics and sound.
+          // Browser tab visibility is intentionally separate: hidden tabs continue through the worker.
+          if (this._interfacePaused) {
+            this._physicsAccumulator = 0;
+            return;
+          }
+
           // Safety clamp deltaMs (prevent physics explosion / spiral of death)
           if (deltaMs > 100) deltaMs = 100;
           if (deltaMs < 0) deltaMs = 16.666;
@@ -12746,6 +12754,23 @@
         }
       }
 
+      setInterfacePaused(paused) {
+        paused=!!paused;
+        if (this._interfacePaused===paused) return;
+        this._interfacePaused=paused;
+        if (paused) {
+          this._interfacePauseStarted=Date.now();
+          try { this.audio?.ctx?.suspend?.(); } catch (_) {}
+          try { if (window.speechSynthesis?.speaking) window.speechSynthesis.pause(); } catch (_) {}
+        } else {
+          const held=Math.max(0,Date.now()-(this._interfacePauseStarted || Date.now()));
+          if (this.roundStartTime) this.roundStartTime+=held;
+          this._interfacePauseStarted=0;this._lastTimestamp=performance.now();this._physicsAccumulator=0;this._lastBgTickTime=Date.now();
+          try { if (!this.audio?.muted) this.audio?.ctx?.resume?.(); } catch (_) {}
+          try { if (this.audio?.aiVoiceEnabled && window.speechSynthesis?.paused) window.speechSynthesis.resume(); } catch (_) {}
+        }
+      }
+
       // --- 11. KILLFEED, TICKER & LEADERBOARD SYSTEM ---
       pushKillfeed(country, actionText = 'ELIMINATED') {
         const tag = document.createElement('div');
@@ -12862,7 +12887,7 @@
       // 1. Register Service Worker with cache busting
       if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=15.0.0')
+          navigator.serviceWorker.register('./sw.js?v=16.0.0')
             .then(reg => {
               console.log('PWA ServiceWorker registered:', reg.scope);
               reg.addEventListener('updatefound', () => {
