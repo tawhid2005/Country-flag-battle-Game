@@ -3,3 +3,4 @@
 !.env.example
 node_modules/
 .vercel/
+.admin-credentials.local.json

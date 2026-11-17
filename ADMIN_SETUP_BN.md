@@ -17,6 +17,8 @@
 3. Supabase project-এ [database/schema.sql](database/schema.sql) চালিয়ে tables/functions তৈরি করুন। তারপর Vercel deployment **Redeploy** করুন। নতুন environment variables কেবল redeploy-এর পর কার্যকর হবে।
 4. `https://www.countryflagbattle.xyz/admin` খুলুন। Environment-এ দেওয়া ID এবং hash তৈরিতে ব্যবহৃত **মূল password** দিয়ে login করুন; hash দিয়ে login করবেন না।
 
+স্থানীয়ভাবে `.admin-credentials.local.json` প্রস্তুত করা থাকলে তার প্রতিটি নামের মান Vercel-এর একই নামের Environment Variable-এ বসান। এই private ফাইল GitHub-এ যায় না এবং অ্যাপ নিজে এটি পড়ে না। `ADMIN_PASSWORD_HASH`-এর `scrypt$…` মানটি হুবহু কপি করুন। Supabase-এর settings-ও দিতে হবে; তারপর Redeploy করুন। শুধু GitHub-এ push করলে লাইভ password বদলায় না।
+
 ## Google Password Manager
 
 Login form এখন browser autofill ও password manager-এর উপযোগী। সফল login-এর পর সমর্থিত Chrome-এ password manager-এ save করার অনুরোধ করা হয়। এটি browser-এর নিজস্ব setting ও confirmation অনুযায়ী কাজ করে; ব্যর্থ login-এর credentials save করার অনুরোধ করা হয় না।

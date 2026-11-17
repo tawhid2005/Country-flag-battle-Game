@@ -24,7 +24,9 @@ $credentialForHash = New-Object System.Management.Automation.PSCredential('admin
 $credentialForHash.GetNetworkCredential().Password | node scripts/hash-admin-password.mjs
 ```
 
-Copy only the resulting `scrypt$...` hash to `ADMIN_PASSWORD_HASH`. Use a strong unique password. Generate `SESSION_SECRET` with `node -e "console.log(require('node:crypto').randomBytes(48).toString('base64url'))"` and copy it directly to the server environment. Rotating this secret invalidates sessions and all activation links.
+Copy only the resulting `scrypt$...` hash to `ADMIN_PASSWORD_HASH`. The helper accepts passwords of 12–128 characters. Use a strong unique password. Generate `SESSION_SECRET` with `node -e "console.log(require('node:crypto').randomBytes(48).toString('base64url'))"` and copy it directly to the server environment. Rotating this secret invalidates sessions and all activation links.
+
+If `.admin-credentials.local.json` has been prepared locally, copy its named values into the corresponding Vercel environment settings. This optional private file is ignored by Git, is not loaded by the application, and is never deployed through a GitHub push. Keep the `scrypt$...` value unchanged when copying it. Supabase settings are still required, and changes take effect only after redeploying. A successful local hash check does not configure or verify the live login.
 
 **Rotate/revoke the Polar and Paymently secrets exposed by older releases**, even if the old source is deleted. The old unauthenticated shared JSON database is disconnected and must not hold current customer credentials. Secure/remove its old contents separately after preserving any necessary customer records.
 
