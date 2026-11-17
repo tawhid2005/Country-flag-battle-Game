@@ -172,7 +172,7 @@
       document.querySelectorAll('[data-manual-method]').forEach(item=>item.classList.toggle('selected',item===button));
       const instruction=$('manual-payment-instruction');if(instruction){instruction.replaceChildren();const strong=document.createElement('strong');strong.textContent=this.manualPaymentMethod;instruction.append(strong,document.createTextNode(' app থেকে এই personal number-এ Send Money করুন:'));}
       const panel=$('manual-transfer-panel'),theme=this.manualPaymentMethod.toLowerCase();if(panel)panel.className='transfer-details payment-experience theme-'+theme;
-      if($('manual-method-mark'))$('manual-method-mark').textContent=this.manualPaymentMethod[0];if($('manual-method-title'))$('manual-method-title').textContent='Pay with '+this.manualPaymentMethod;
+      const logo=$('manual-method-logo'),logos={bKash:'./assets/payments/bkash-mark.png',Nagad:'./assets/payments/nagad-logo.png',Rocket:'./assets/payments/rocket-logo.png'};if(logo){logo.src=logos[this.manualPaymentMethod];logo.alt=this.manualPaymentMethod;}if($('manual-method-title'))$('manual-method-title').textContent='Pay with '+this.manualPaymentMethod;
       this.updateWhatsAppLinks();
     }));
     $('btn-manual-claim')?.addEventListener('click',async()=>{

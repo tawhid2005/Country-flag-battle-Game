@@ -15,3 +15,14 @@
 .claim-status{padding:11px 12px!important;border-radius:9px;background:#162238;margin:0 0 9px!important}.claim-status.failed{background:#39161b;color:#ffb8bd;border:1px solid #d95761}.claim-status.success{background:#103226;color:#9ff2ca;border:1px solid #2ab77d}.payment-support{background:#25d366!important;color:#071d12!important;font-weight:800!important;box-shadow:0 8px 24px #25d3662b!important;margin-bottom:10px}
 @keyframes payReveal{from{opacity:.25;transform:translateY(-8px)}to{opacity:1;transform:none}}
 @media(max-width:380px){.payment-experience{padding:12px}.payment-brand{font-size:11px}.brand-symbol{width:22px;height:22px}.payment-method-head{padding:10px}}
+#cyber-order-modal .simple-checkout{overflow-x:hidden}
+.payment-experience{width:100%;max-width:100%;min-width:0;overflow:hidden;padding:16px;margin-top:16px}
+.payment-brand-grid{width:100%;max-width:100%;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.payment-brand{width:100%;min-width:0!important;min-height:78px;margin:0!important;padding:8px 3px!important;display:flex;flex-direction:column;gap:3px;border-radius:10px!important;overflow:hidden;white-space:normal}
+.payment-brand img{display:block;width:48px;height:28px;max-width:72%;object-fit:contain;filter:drop-shadow(0 2px 3px #0004)}
+.payment-brand span{font-size:11px;line-height:1.1;font-weight:850}.payment-brand small{font-size:7px;line-height:1.1;opacity:.82;font-weight:600}
+.payment-brand.selected{outline:2px solid #fff;outline-offset:-3px;transform:translateY(-1px)}
+.payment-method-head{min-width:0;display:grid;grid-template-columns:48px minmax(0,1fr) auto;padding:11px;gap:10px}.selected-logo{display:grid!important;place-items:center;width:44px;height:44px;border-radius:11px!important;background:#fff!important;overflow:hidden}.selected-logo img{width:39px;height:34px;object-fit:contain}.payment-method-head>div{min-width:0}.payment-method-head strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.secure-chip{align-self:start;font-size:7px;font-weight:900;letter-spacing:.7px;background:#ffffff25;border:1px solid #ffffff66;border-radius:99px;padding:4px 6px}
+.payment-number{width:100%;min-width:0}.payment-number strong{min-width:0;font-size:clamp(15px,5vw,19px)}.payment-number button{flex:0 0 auto;padding:7px 9px!important;font-size:9px}
+.claim-confirm span{min-width:0;overflow-wrap:anywhere}.manual-claim-button{display:block;max-width:100%;white-space:normal;line-height:1.35;min-height:46px}.payment-support{max-width:100%;white-space:normal}
+@media(max-width:360px){.payment-experience{padding:11px}.payment-brand-grid{gap:5px}.payment-brand{min-height:72px;padding:7px 2px!important}.payment-brand img{width:40px;height:24px}.payment-brand span{font-size:9px}.payment-method-head{grid-template-columns:42px minmax(0,1fr)}.selected-logo{width:39px;height:39px}.secure-chip{display:none}}
