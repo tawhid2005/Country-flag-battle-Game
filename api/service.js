@@ -193,6 +193,7 @@ export function createHandler(env, fetcher = fetch) {
       }
       if (route === 'account/logout' && req.method === 'POST') {setSession(res,'subscriber','',0);return json(200,{success:true});}
       if (route === 'activate' && req.method === 'POST') {
+        if(/^CFB-/i.test(String(body.key || '')))fail(410,'This older activation key needs reissuing after purchase verification. Contact support for a new activation link.');
         await limited(req,'activate',20,300);
         const [prefix,id] = String(body.key || '').split('.');
         const order = prefix === 'CFB2' ? await orderBy(id) : null;

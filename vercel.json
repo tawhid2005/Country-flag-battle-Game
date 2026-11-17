@@ -27,7 +27,7 @@
       "destination": "/$1"
     },
     {
-      "source": "/((?!api(?:/|$)|admin(?:/|$)|server(?:/|$)|database(?:/|$)|tests(?:/|$)|client-access\\.js|checkout\\.css|vendor/|googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*|404\\.html).*)",
+      "source": "/((?!api(?:/|$)|admin(?:/|$)|server(?:/|$)|database(?:/|$)|tests(?:/|$)|client-access\\.js|activation-links\\.js|checkout\\.css|vendor/|googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*|404\\.html).*)",
       "destination": "/index.html"
     }
   ],
@@ -185,6 +185,50 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/admin",
+      "has": [
+        {
+          "type": "query",
+          "key": "key"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/admin",
+      "has": [
+        {
+          "type": "query",
+          "key": "activate"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/admin/:path*",
+      "has": [
+        {
+          "type": "query",
+          "key": "key"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/admin/:path*",
+      "has": [
+        {
+          "type": "query",
+          "key": "activate"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
+    },
     {
       "source": "/admin/index.html",
       "destination": "/admin",

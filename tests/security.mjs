@@ -64,12 +64,15 @@ export async function runSecurityChecks() {
   allowRate=false;assert.equal((await call('admin/login',{username:'owner',password:'a-long-test-password'})).statusCode,429);allowRate=true;
   const login=await call('admin/login',{username:'owner',password:'a-long-test-password'});assert.equal(login.statusCode,200);assert.match(login.headers['set-cookie'],/HttpOnly; Secure; SameSite=Strict/);
   const adminCookie=login.headers['set-cookie'].split(';')[0];assert.equal((await call('admin/monitor',undefined,{cookie:adminCookie})).statusCode,200);
+  assert.equal((await call('activate',{key:'CFB-LIFETIME-demo player-2110000000000-deadbeef'})).statusCode,410,'Legacy client-signed keys require verified reissue');
   assert.equal((await call('activate',{key:activationKey(order,secret)})).statusCode,403,'Unpaid order cannot activate');
   const userCookie='__Host-cfb_game='+userToken;
   providerPaid=false;
   assert.equal((await call('payment/status',{orderId},{cookie:userCookie})).body.status,'pending');assert.equal(grants,0,'Success return alone must not grant access');
   providerPaid=true;
   const fulfilled=await call('payment/status',{orderId},{cookie:userCookie});assert.equal(fulfilled.statusCode,200);assert.equal(fulfilled.body.status,'paid');assert.equal(fulfilled.body.session.role,'subscriber');
+  const issued=await call('admin/activation',{orderId},{cookie:adminCookie});assert.equal(issued.statusCode,200);
+  const issuedUrl=new URL(issued.body.link);assert.equal(issuedUrl.pathname,'/');assert.equal(new URLSearchParams(issuedUrl.hash.slice(1)).get('activate'),activationKey(order,secret));
   await call('payment/status',{orderId},{cookie:userCookie});assert.equal(grants,1,'Duplicate reconciliation must grant once');
   const receipt=sign({role:'payment',sub:orderId,accountId,exp:Date.now()+60000},secret);
   const recovered=await call('payment/status',{orderId,receipt});

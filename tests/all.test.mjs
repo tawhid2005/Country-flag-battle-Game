@@ -6,6 +6,7 @@ import {runClientAccessChecks} from './client-access.mjs';
 import {runCheckoutChecks} from './checkout.mjs';
 import {runTransitionChecks} from './transitions.mjs';
 import {runAdminLoginChecks} from './admin-login.mjs';
+import {runActivationLinkChecks} from './activation-links.mjs';
 test('Game startup, controls, rendering transforms and containment',async()=>{await runStartupChecks();});
 test('Complete rounds reach their deadlines in both arena modes',{timeout:120000},async()=>{await runTimingChecks();});
 test('Extended and marathon presets reach 9 and 13 minutes',{timeout:120000},async()=>{await runTimingChecks(['extended','marathon'],[40]);});
@@ -15,3 +16,4 @@ test('Public login and activation never navigate to admin',async()=>{await runCl
 test('Manual WhatsApp and simplified Polar checkout',async()=>{await runCheckoutChecks();});
 test('Continuous hazard entry/exit and completed elimination animations',async()=>{await runTransitionChecks();});
 test('Admin configuration and browser password-manager compatibility',async()=>{await runAdminLoginChecks();});
+test('Activation links always open the public game',async()=>{await runActivationLinkChecks();});

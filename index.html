@@ -8982,12 +8982,7 @@
         if (btnCopySuccessLink) {
           btnCopySuccessLink.addEventListener('click', () => {
             const key = document.getElementById('order-success-key')?.textContent || '';
-            let baseDomain = 'https://countryflagbattle.xyz/';
-            if (typeof window !== 'undefined' && window.location && window.location.hostname.includes('countryflagbattle.xyz')) {
-              baseDomain = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '');
-              if (!baseDomain.endsWith('/')) baseDomain += '/';
-            }
-            const actLink = baseDomain + '?key=' + encodeURIComponent(key);
+            const actLink = CFBActivationLinks.build(key);
             navigator.clipboard.writeText(actLink).then(() => {
               btnCopySuccessLink.textContent = 'LINK COPIED! ✓';
               setTimeout(() => {
@@ -9234,14 +9229,9 @@
         }
 
         container.innerHTML = '';
-        let baseDomain = 'https://countryflagbattle.xyz/';
-        if (typeof window !== 'undefined' && window.location && window.location.hostname.includes('countryflagbattle.xyz')) {
-          baseDomain = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '');
-          if (!baseDomain.endsWith('/')) baseDomain += '/';
-        }
 
         orders.forEach((order) => {
-          const actLink = baseDomain + '?key=' + encodeURIComponent(order.licenseKey);
+          const actLink = order.licenseKey ? CFBActivationLinks.build(order.licenseKey) : '';
           const item = document.createElement('div');
           item.className = 'admin-order-item';
           item.innerHTML = `
@@ -9302,17 +9292,12 @@
         }
 
         container.innerHTML = '';
-        let baseDomain = 'https://countryflagbattle.xyz/';
-        if (typeof window !== 'undefined' && window.location && window.location.hostname.includes('countryflagbattle.xyz')) {
-          baseDomain = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '');
-          if (!baseDomain.endsWith('/')) baseDomain += '/';
-        }
 
         entries.forEach(([key, sub]) => {
           const isExpired = Date.now() > sub.expiresAt;
           const statusText = isExpired ? '🔴 EXPIRED' : ('🟢 ' + this.formatTimeRemaining(sub.expiresAt));
           const expDate = new Date(sub.expiresAt).toLocaleDateString();
-          const actLink = baseDomain + '?key=' + encodeURIComponent(sub.licenseKey || '');
+          const actLink = sub.licenseKey ? CFBActivationLinks.build(sub.licenseKey) : '';
 
           const card = document.createElement('div');
           card.className = 'admin-sub-item';
@@ -12847,7 +12832,7 @@
       // 1. Register Service Worker with cache busting
       if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=9.0.0')
+          navigator.serviceWorker.register('./sw.js?v=10.0.0')
             .then(reg => {
               console.log('PWA ServiceWorker registered:', reg.scope);
               reg.addEventListener('updatefound', () => {
@@ -12913,6 +12898,7 @@
       });
     })();
   </script>
+  <script src="./activation-links.js"></script>
   <script src="./client-access.js"></script>
 </body>
 

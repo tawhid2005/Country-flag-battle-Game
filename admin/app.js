@@ -72,6 +72,7 @@
   $('previous').onclick=()=>{if(page>0){page--;refresh();}};$('next').onclick=()=>{page++;refresh();};
   $('create-form').onsubmit=async event=>{event.preventDefault();const button=event.target.querySelector('button');button.disabled=true;try{await api('admin/account',{username:$('new-username').value,email:$('new-email').value,password:$('new-password').value});$('new-password').value='';message('Account created. Verify payment, then grant a plan.');await refresh();}catch(error){message(error.message);}finally{button.disabled=false;}};
   async function bootstrap(){
+    if(window.__cfbActivationRedirect)return;
     try {
       const health=await api('health');
       if(health.adminOrigin && location.protocol==='https:' && location.origin!==health.adminOrigin){location.replace(health.adminOrigin+'/admin');return;}

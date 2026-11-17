@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const url = new URL(location.href);
   const params = new URLSearchParams(url.hash.replace(/^#/, ''));
-  const activation = params.get('activate') || params.get('key') || url.searchParams.get('key') || url.searchParams.get('activate');
+  const activation = CFBActivationLinks.read(url);
   const returningOrder = url.searchParams.get('payment_return');
   const returningReceipt = params.get('receipt');
   if (returningReceipt) {try {history.replaceState(null,'',url.pathname+url.search);} catch (_) {}}
@@ -68,6 +68,7 @@
     return result;
   };
   proto.activateKey = async function(key) {
+    if(/^CFB-/i.test(String(key || '')))throw Object.assign(new Error('This activation link was issued by an older version. Contact WhatsApp support to verify your purchase and get a new activation link.'),{code:'LEGACY_ACTIVATION_KEY'});
     const result=await this.api('activate',{key});
     if (result.valid) this.acceptServerSession(result.session);
     return result;

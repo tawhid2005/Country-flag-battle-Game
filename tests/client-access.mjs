@@ -9,7 +9,7 @@ export async function runClientAccessChecks() {
     class Engine {showLockModal(){}updateDrawerStatus(){}showActivationCelebrationToast(){}}
     const context={URL,URLSearchParams,SecurityEngine:Engine,location:{href:input,protocol:url.protocol,pathname:url.pathname,hash:url.hash,assign:value=>redirects.push(value)},
       history:{replaceState:(state,title,path)=>changes.push(path)},document:{getElementById:()=>null},gameStorage:{getItem(){return null;},removeItem(){}},setInterval(){},clearInterval(){}};
-    vm.createContext(context);vm.runInContext(code,context);
+    vm.createContext(context);vm.runInContext(await fs.readFile(new URL('../activation-links.js', import.meta.url), 'utf8'),context);vm.runInContext(code,context);
     const engine=new Engine();engine.api=async(path)=>path==='activate'?{valid:true,session}:{success:true,role:'subscriber',session};
     await engine.login('player','password');assert.equal(engine.session.role,'subscriber');assert.ok(engine.isAuthenticated());
     if(input.includes('CFB2'))await engine.bootServerAccess();

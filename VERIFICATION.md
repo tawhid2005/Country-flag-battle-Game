@@ -49,3 +49,9 @@ For the post-exit fix, separate bounded checks also passed: 120-country standard
 ## Admin login and password-manager follow-up
 
 The live public health endpoint reported database=false and admin=false. No default administrator password is embedded in this build: hosting environment configuration and the database are required. Added setting-name-only diagnostics, canonical admin-origin navigation and password-manager-compatible form names/autocomplete. A supporting browser is asked to store credentials only after successful authentication; browser settings and consent remain authoritative. Mocked admin UI and server checks passed; actual Google Password Manager saving and live administrator access remain unverified until hosting setup is completed.
+
+## Activation links issued from /admin
+
+Fixed three old link generators that inherited the current /admin path. A shared root-only URL builder now uses a fragment for the bearer token. Conditional Vercel redirects handle admin key/activate queries, and an early admin-script fallback covers query aliases and fragment links before the login page or admin API bootstraps. Ordinary /admin without a customer key remains an administrator route.
+
+Synthetic regression keys with spaces were used; no customer activation key was stored in the repository. Old CFB- client-signed keys are not accepted as proof of payment. They now show a clear reissue message; a paid server-side order and a newly issued CFB2 key are still required. Routing correction does not retroactively validate a legacy key or create a subscription.

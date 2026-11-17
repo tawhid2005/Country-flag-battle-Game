@@ -55,6 +55,7 @@ export async function runStartupChecks(onApp) {
     vm.createContext(context);
     vm.runInContext(matter, context);
     vm.runInContext(main + '\n globalThis.TestApp = BattleRoyaleApp;', context);
+    vm.runInContext(await fs.readFile(new URL('../activation-links.js', import.meta.url), 'utf8'), context);
     vm.runInContext(await fs.readFile(new URL('../client-access.js', import.meta.url), 'utf8'), context);
     const app = new context.TestApp();
     assert.equal(app.balls.length, mode === 'high-count' ? 120 : mode === 'saved' ? 40 : 60);
