@@ -5453,6 +5453,13 @@
         <button class="drawer-close" id="drawer-close-btn">&times;</button>
       </div>
 
+      <!-- Prominent Master Admin Button at Top of Drawer -->
+      <div style="padding: 12px 14px 6px 14px;">
+        <button class="drawer-btn" id="drawer-btn-admin-top" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin:0; background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), rgba(245, 158, 11, 0.65)); border: 2px solid #fbbf24; color: #fbbf24; font-weight: 900; font-size: 13px; padding: 12px; box-shadow: 0 0 20px rgba(251, 191, 36, 0.45); border-radius: 12px; cursor: pointer;">
+          👑 MASTER ADMIN CONTROL CENTER
+        </button>
+      </div>
+
       <!-- Arena Template Selector (Hole vs Outer Ring) -->
       <div class="drawer-control-group">
         <label class="drawer-label">
@@ -7154,6 +7161,19 @@
      * - 100% Rock-Solid Stable Camera
      * - Simulated Audience Live Chat Cheer Balloons
      */
+
+    // Automatic Cache Purge for New Release (Bypasses any stale service worker caches)
+    try {
+      if (typeof window !== 'undefined' && 'caches' in window) {
+        const CURRENT_RELEASE_VER = '4.0.0';
+        if (localStorage.getItem('cfb_client_release_ver') !== CURRENT_RELEASE_VER) {
+          caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))).then(() => {
+            localStorage.setItem('cfb_client_release_ver', CURRENT_RELEASE_VER);
+            console.log('[CFB] Cache storage purged to release ' + CURRENT_RELEASE_VER);
+          }).catch(() => {});
+        }
+      }
+    } catch(e) {}
 
     // --- 1. COMPREHENSIVE COUNTRY DATABASE ---
     const COUNTRIES_DB = [
@@ -10029,33 +10049,35 @@
         // 1-Click Master Admin URL Route Check (/admin, #admin, ?admin)
         try {
           if (typeof window !== 'undefined' && window.location) {
-            const path = (window.location.pathname || '').toLowerCase();
-            const hash = (window.location.hash || '').toLowerCase();
-            const search = (window.location.search || '').toLowerCase();
+            const checkAdminUrl = () => {
+              const path = (window.location.pathname || '').toLowerCase();
+              const hash = (window.location.hash || '').toLowerCase();
+              const search = (window.location.search || '').toLowerCase();
 
-            if (path.includes('/admin') || hash.includes('admin') || search.includes('admin')) {
-              setTimeout(() => {
+              if (path.includes('/admin') || hash.includes('admin') || search.includes('admin')) {
                 this.openAdminPanel();
-              }, 120);
-            }
+              }
+            };
+            checkAdminUrl();
+            setTimeout(checkAdminUrl, 100);
+            setTimeout(checkAdminUrl, 450);
+            window.addEventListener('hashchange', checkAdminUrl);
+            window.addEventListener('popstate', checkAdminUrl);
           }
         } catch(e) {
           console.warn('Admin route check error:', e);
-        }
-
-        if (typeof window !== 'undefined') {
-          window.addEventListener('hashchange', () => {
-            const h = (window.location.hash || '').toLowerCase();
-            if (h.includes('admin')) {
-              this.openAdminPanel();
-            }
-          });
         }
       }
 
       openAdminPanel() {
         const adminModal = document.getElementById('admin-license-modal');
         if (!adminModal) return;
+
+        // Hide any overlapping lock or order modals
+        this.showLockModal(false);
+        const orderModal = document.getElementById('cyber-order-modal');
+        if (orderModal) orderModal.classList.remove('show');
+        if (this.app) this.app.toggleDrawer(false);
 
         const authGate = document.getElementById('admin-auth-gate');
         const mainContent = document.getElementById('admin-main-content');
@@ -10214,11 +10236,18 @@
 
         // Drawer Admin Panel Trigger
         const btnAdminPanel = document.getElementById('drawer-btn-admin-panel');
+        const btnAdminTop = document.getElementById('drawer-btn-admin-top');
         const adminModal = document.getElementById('admin-license-modal');
         const adminClose = document.getElementById('admin-modal-close-btn');
 
         if (btnAdminPanel) {
           btnAdminPanel.addEventListener('click', () => {
+            if (this.app) this.app.toggleDrawer(false);
+            this.openAdminPanel();
+          });
+        }
+        if (btnAdminTop) {
+          btnAdminTop.addEventListener('click', () => {
             if (this.app) this.app.toggleDrawer(false);
             this.openAdminPanel();
           });
@@ -12253,29 +12282,39 @@
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
-          // TEMPLATE 2: CENTER VORTEX HOLE (BLACK HOLE ARENA FROM REFERENCE SCREENSHOT)
+          // TEMPLATE 2: CENTER VORTEX HOLE (STATIONARY UNBREAKABLE CIRCULAR VAULT)
           // =========================================================================
-          // 1. Closed Outer Wall (All 32 segments solid, 0 gap - marbles cannot escape outside)
-          for (let i = 0; i < this.totalSegments; i++) {
-            const seg = this.Bodies.rectangle(0, 0, segLen, segThick, {
+          // 48 heavy-duty stationary collision blocks forming a continuous sealed boundary.
+          // Because these are stationary static bodies (not teleported per frame), Matter.js
+          // continuous collision solver guarantees ZERO tunneling or ejection!
+          const holeSegments = 48;
+          const hSegAngle = (Math.PI * 2) / holeSegments;
+          const hSegLen = (2 * Math.PI * (this.arenaRadius + 18)) / holeSegments + 8;
+          const hSegThick = 52;
+          for (let i = 0; i < holeSegments; i++) {
+            const currentAng = i * hSegAngle;
+            const x = this.arenaCenter.x + Math.cos(currentAng) * (this.arenaRadius + 22);
+            const y = this.arenaCenter.y + Math.sin(currentAng) * (this.arenaRadius + 22);
+            const seg = this.Bodies.rectangle(x, y, hSegLen, hSegThick, {
               isStatic: true,
-              restitution: this.ballRestitution,
+              angle: currentAng + Math.PI / 2,
+              restitution: 0.90,
               friction: 0.005,
               render: { visible: false },
               label: 'arenaWall'
             });
-            seg.baseAngle = i * segAngle;
+            seg.isStationary = true;
             this.arenaSegments.push(seg);
             this.World.add(this.world, seg);
           }
 
           // 2. 6 Rotating Radial Kinetic Spokes (Lavender/Purple blades from screenshot)
-          // Extending from r=56px outwards to r=134px (length 78px, width 10px, dist 95px)
-          // Leaves generous 30px corridor before outer wall so marbles NEVER get pinched or crushed!
+          // Extending from r=54px outwards to r=126px (length 72px, width 10px, dist 90px)
+          // Leaves generous 40px corridor before outer wall so marbles NEVER get pinched or crushed!
           const spokeCount = 6;
-          const spokeLen = 78;
+          const spokeLen = 72;
           const spokeWidth = 10;
-          const spokeDist = 95;
+          const spokeDist = 90;
           for (let s = 0; s < spokeCount; s++) {
             const spoke = this.Bodies.rectangle(0, 0, spokeLen, spokeWidth, {
               isStatic: true,
@@ -12370,13 +12409,15 @@
         // Outer wheel turns Clockwise, inner blades rotate Counter-Clockwise at energetic 1.35x speed!
         this.innerRotorAngle = (this.innerRotorAngle || 0) - (this.currentRotationSpeed * 1.35 * stepFactor);
 
-        // Outer wall segments (Clockwise)
-        for (const seg of this.arenaSegments) {
-          const currentAng = seg.baseAngle + this.arenaAngle;
-          const x = this.arenaCenter.x + Math.cos(currentAng) * this.arenaRadius;
-          const y = this.arenaCenter.y + Math.sin(currentAng) * this.arenaRadius;
-          this.Body.setPosition(seg, { x, y });
-          this.Body.setAngle(seg, currentAng + Math.PI / 2);
+        // Outer wall segments (Only rotated in Ring mode where exit gap rotates)
+        if (this.arenaTemplate !== 'hole') {
+          for (const seg of this.arenaSegments) {
+            const currentAng = seg.baseAngle + this.arenaAngle;
+            const x = this.arenaCenter.x + Math.cos(currentAng) * this.arenaRadius;
+            const y = this.arenaCenter.y + Math.sin(currentAng) * this.arenaRadius;
+            this.Body.setPosition(seg, { x, y });
+            this.Body.setAngle(seg, currentAng + Math.PI / 2);
+          }
         }
 
         // Dynamic Gate Segment (Template 1)
@@ -13839,8 +13880,23 @@
         const pos = ball.body.position;
         const r = ball.radius;
 
+        // Absolute Visual Boundary Lock: In Hole mode, marbles can NEVER visually render outside the turbine wheel
+        let drawX = pos.x;
+        let drawY = pos.y;
+        if (this.arenaTemplate === 'hole') {
+          const maxRenderDist = this.arenaRadius - r - 4;
+          const dx = pos.x - this.arenaCenter.x;
+          const dy = pos.y - this.arenaCenter.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist > maxRenderDist) {
+            const ang = Math.atan2(dy, dx);
+            drawX = this.arenaCenter.x + Math.cos(ang) * maxRenderDist;
+            drawY = this.arenaCenter.y + Math.sin(ang) * maxRenderDist;
+          }
+        }
+
         ctx.save();
-        ctx.translate(pos.x, pos.y);
+        ctx.translate(drawX, drawY);
 
         // Shield Aura
         if (ball.hasShield) {
@@ -14630,11 +14686,25 @@
 
     // --- Progressive Web App (PWA) Install Manager ---
     (function initPWA() {
-      // 1. Register Service Worker
+      // 1. Register Service Worker with cache busting
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('PWA ServiceWorker registered:', reg.scope))
+          navigator.serviceWorker.register('/sw.js?v=4.0.0')
+            .then(reg => {
+              console.log('PWA ServiceWorker registered:', reg.scope);
+              reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      console.log('[SW] New update available, refreshing client...');
+                      window.location.reload();
+                    }
+                  });
+                }
+              });
+              try { reg.update(); } catch(e) {}
+            })
             .catch(err => console.warn('PWA ServiceWorker registration note:', err));
         });
       }
