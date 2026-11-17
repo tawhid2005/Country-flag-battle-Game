@@ -217,6 +217,28 @@ export function createHandler(env, fetcher = fetch) {
         const {account,entitlement}=await accountSession(req); return json(200,{session:publicSession(account,entitlement)});
       }
       if (route === 'account/logout' && req.method === 'POST') {setSession(res,'subscriber','',0);return json(200,{success:true});}
+      if (route === 'manual/claim' && req.method === 'POST') {
+        await limited(req,'manual-claim',5,3600);
+        const plan=PLANS[body.planId],method=String(body.method || '').toLowerCase(),methods={bkash:'bKash',nagad:'Nagad',rocket:'Rocket'};
+        const email=String(body.email || '').trim().toLowerCase(),phone=String(body.phone || '').replace(/[^0-9]/g,''),sender=String(body.sender || '').replace(/[^0-9]/g,'');
+        const trxId=String(body.trxId || '').trim().toUpperCase().replace(/\s+/g,''),username=email;
+        if(!plan || !methods[method])fail(400,'Select bKash, Nagad or Rocket');
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length>160 || typeof body.password!=='string' || body.password.length<10 || body.password.length>128)fail(400,'Enter a valid email and password of 10–128 characters');
+        if(!/^01[3-9][0-9]{8}$/.test(phone) || !/^01[3-9][0-9]{8}$/.test(sender))fail(400,'Enter valid Bangladesh mobile and sender numbers');
+        if(!/^[A-Z0-9-]{6,40}$/.test(trxId))fail(400,'Enter the complete 6–40 character transaction ID');
+        if(body.confirmed!==true)fail(400,'Confirm that the payment information is correct');
+        let account=await one('cfb_accounts?username=eq.'+enc(username));
+        if(account && (!verifyPassword(body.password,account.password_hash) || email!==account.email))fail(401,'This email already has an account. Enter its existing password.');
+        if(!account)[account]=await db('cfb_accounts','POST',{id:randomUUID(),username,email,password_hash:hashPassword(body.password)});
+        const checkoutId='claim:'+method+':'+trxId;
+        let order=await one('cfb_orders?checkout_id=eq.'+enc(checkoutId));
+        if(order && order.account_id!==account.id)fail(409,'This transaction ID has already been used');
+        if(!order){order={id:randomUUID(),account_id:account.id,provider:'manual',plan_id:body.planId,amount_minor:plan.bdt,currency:'bdt',checkout_id:checkoutId};await db('cfb_orders','POST',order);}
+        if(order.status!=='paid'){await complete(order,'claim:'+method+':'+trxId);await event(order.id,'customer_claim_activated',methods[method]);order=await orderBy(order.id);}
+        setSession(res,'subscriber',account.id);
+        const entitlement=await one('cfb_entitlements?account_id=eq.'+account.id+'&revoked=eq.false');
+        return json(200,{success:true,orderId:order.id,link:origin()+'/#activate='+activationKey(order,secret()),session:publicSession(account,entitlement)});
+      }
       if (route === 'activate' && req.method === 'POST') {
         if(/^CFB-/i.test(String(body.key || '')))fail(410,'This older activation key needs reissuing after purchase verification. Contact support for a new activation link.');
         await limited(req,'activate',20,300);

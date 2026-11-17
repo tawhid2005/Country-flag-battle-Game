@@ -1,0 +1,12 @@
+.payment-experience{--pay:#e2136e;--pay-dark:#8b0b43;border:1px solid var(--pay);border-radius:14px;padding:14px;background:linear-gradient(145deg,#2c1022,#091323 55%);transition:.25s}
+.payment-experience.theme-nagad{--pay:#f36f21;--pay-dark:#9e3908;background:linear-gradient(145deg,#31180b,#091323 55%)}
+.payment-experience.theme-rocket{--pay:#6b2c91;--pay-dark:#371050;background:linear-gradient(145deg,#20102d,#091323 55%)}
+.payment-brand{display:flex;align-items:center;justify-content:center;gap:6px}
+.brand-symbol{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#fff;color:#172033;font-size:15px;font-weight:950}
+.payment-brand.selected{box-shadow:0 0 0 3px #ffffff38}
+.payment-method-head{display:flex;align-items:center;gap:11px;padding:12px;border-radius:10px;background:linear-gradient(135deg,var(--pay),var(--pay-dark));color:#fff;margin-bottom:12px}
+.payment-method-head>span{display:grid;place-items:center;width:42px;height:42px;background:#fff;color:var(--pay);border-radius:50%;font-size:24px;font-weight:950}
+.payment-method-head strong,.payment-method-head small{display:block}.payment-method-head small{font-size:10px;opacity:.86;margin-top:2px}
+.payment-experience .payment-number{border-color:var(--pay);box-shadow:inset 0 0 20px #0005}.payment-experience .payment-number button,.manual-claim-button{background:var(--pay);border-color:var(--pay);color:#fff}
+.claim-confirm{display:flex!important;align-items:flex-start;gap:9px;padding:10px;background:#07111f;border-radius:9px;margin-bottom:12px;line-height:1.5}.claim-confirm input{width:auto!important;margin:3px 0 0!important;accent-color:var(--pay)}
+.manual-claim-button{width:100%;padding:13px;border:0;border-radius:9px;font-weight:750;cursor:pointer;margin-bottom:9px}.manual-claim-button:disabled{opacity:.6;cursor:wait}

@@ -1,6 +1,6 @@
 // Cache only public game resources. Never cache administrative or API responses.
-const CACHE_NAME = 'cfb-cache-v12';
-const PUBLIC_ASSETS = ['/', '/index.html', '/vendor/matter.min.js', '/client-access.js', '/activation-links.js', '/checkout.css', '/manifest.json', '/icon-192.png', '/icon-512.png', '/favicon.png'];
+const CACHE_NAME = 'cfb-cache-v13';
+const PUBLIC_ASSETS = ['/', '/index.html', '/vendor/matter.min.js', '/client-access.js', '/activation-links.js', '/checkout.css', '/checkout-themes.css', '/manifest.json', '/icon-192.png', '/icon-512.png', '/favicon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(PUBLIC_ASSETS)).then(() => self.skipWaiting()));
 });
