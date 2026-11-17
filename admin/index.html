@@ -1,45 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Country Flag Battle Royale - Master Admin Control Center</title>
-  <meta http-equiv="refresh" content="0; url=../index.html?admin=true">
-  <script>
-    // Instant Master Admin Redirect
-    var targetUrl = '../index.html?admin=true' + (window.location.hash || '');
-    window.location.replace(targetUrl);
-  </script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #030712;
-      color: #38bdf8;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-    }
-    .spinner {
-      width: 44px;
-      height: 44px;
-      border: 3px solid rgba(56, 189, 248, 0.2);
-      border-top-color: #38bdf8;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 16px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #fbbf24; text-decoration: none; font-weight: bold; margin-top: 12px; }
-  </style>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+  <title>Control Room · Country Flag Battle</title>
+  <link rel="stylesheet" href="/admin/style.css">
+  <script defer src="/admin/app.js"></script>
 </head>
 <body>
-  <div class="spinner"></div>
-  <p style="font-weight: 700; letter-spacing: 0.5px;">👑 Opening Master Admin Control Center...</p>
-  <a href="../index.html?admin=true">Click here if not redirected automatically</a>
-</body>
-</html>
+  <main id="login-view" class="login-shell">
+    <section class="login-card">
+      <div class="brand-mark">CF<span>B</span></div><p class="eyebrow">COUNTRY FLAG BATTLE · OPERATIONS</p>
+      <h1>Welcome to<br>the control room.</h1><p class="muted">Administrator access only. Your game account cannot open this workspace.</p>
+      <form id="login-form">
+        <label>Admin username<input id="username" autocomplete="username" required maxlength="80"></label>
+        <label>Password<input id="password" type="password" autocomplete="current-password" required maxlength="128"></label>
+        <button class="primary" id="login-button">Sign in securely <span>→</span></button>
+      </form>
+      <p id="login-status" role="status" class="message"></p><a class="back" href="/">← Return to game</a>
+      <div class="login-foot"><span class="dot"></span> Private workspace · Server verified access</div>
+    </section>
+    <aside class="login-art" aria-hidden="true"><div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div><div class="core">195<br><small>NATIONS. ONE ARENA.</small></div><p>Every order.<br>Every player.<br>One clear view.</p></aside>
+  </main>
+  <div id="dashboard" hidden>
+    <aside class="sidebar"><div class="brand-mark">CF<span>B</span></div><p class="eyebrow">CONTROL ROOM</p>
+      <nav aria-label="Workspace"><button data-view="overview" class="selected">◫ &nbsp; Overview</button><button data-view="orders">↗ &nbsp; Orders & payments</button><button data-view="accounts">◎ &nbsp; Player access</button><button data-view="events">≡ &nbsp; Activity log</button></nav>
+      <div class="side-bottom"><a href="/" target="_blank" rel="noopener">Open game ↗</a><button id="logout">Sign out</button></div>
+    </aside>
+    <main class="workspace">
+      <header><div><p class="eyebrow">COUNTRY FLAG BATTLE / OPERATIONS</p><h1 id="page-title">Overview</h1><p class="muted" id="updated">Connecting to your database…</p></div><button id="refresh" class="primary compact">↻ Refresh data</button></header>
+      <p id="dashboard-status" class="message" role="status"></p>
+      <section id="integration-status" class="integration-row" aria-label="Integration configuration"></section>
+      <section class="kpis" aria-label="Current page metrics"><article><p>Paid orders</p><strong id="kpi-paid">—</strong><small>Verified and fulfilled</small></article><article><p>Awaiting verification</p><strong id="kpi-pending">—</strong><small>Pending & checkout issues</small></article><article><p>Active player passes</p><strong id="kpi-active">—</strong><small>Active on this data page</small></article><article><p>Verified revenue</p><strong id="kpi-revenue">—</strong><small>USD / BDT shown separately</small></article></section>
+      <section class="panel" id="summary-panel"><div><p class="eyebrow">PAYMENT OPERATIONS</p><h2>Verify. Activate. Monitor.</h2><p class="muted">Payments grant access only after the gateway confirms the matching order, amount and currency. Repeated notifications grant a plan once.</p></div><div class="summary-note"><span class="dot"></span><b>Recovery built in</b><p>Retry verification for a paid order whose notification was delayed. Use manual grants only after independently checking a bank transfer.</p></div></section>
+      <section class="panel data-panel"><div class="table-toolbar"><div><h2 id="table-title">Recent orders</h2><p class="muted" id="data-scope">Up to 200 records per page. Metrics describe this page, not lifetime totals.</p></div><label class="search-label">Search loaded records<input id="search" type="search" placeholder="Username, email, order ID…"></label></div>
+        <div class="table-wrap"><table><thead id="table-head"></thead><tbody id="table-body"></tbody></table></div><p id="empty-state" class="empty" hidden>No matching records on this page.</p>
+        <div class="pagination"><button id="previous">← Previous</button><span id="page-number">Page 1</span><button id="next">Next →</button></div>
+      </section>
+      <section class="panel" id="create-panel" hidden><div><p class="eyebrow">MANUAL ONBOARDING</p><h2>Create a player account</h2><p class="muted">Create the account, then grant a verified plan from its row above. Credentials are stored as salted password hashes.</p></div><form id="create-form" class="create-form"><label>Username<input id="new-username" required minlength="3" maxlength="80"></label><label>Email<input id="new-email" type="email" required></label><label>Initial password<input id="new-password" type="password" required minlength="10" maxlength="128" autocomplete="new-password"></label><button class="primary">Create account</button></form></section>
+    </main>
+  </div>
+</body></html>

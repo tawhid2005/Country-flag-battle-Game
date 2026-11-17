@@ -3,23 +3,31 @@
   "cleanUrls": false,
   "rewrites": [
     {
+      "source": "/api/:endpoint*",
+      "destination": "/api/service?endpoint=:endpoint*"
+    },
+    {
+      "source": "/(server|database|tests|scripts)/:path*",
+      "destination": "/404.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/vendor/:path*",
+      "destination": "/vendor/:path*"
+    },
+    {
       "source": "/(sitemap\\.xml|robots\\.txt|googlee59d340a4eeb0771\\.html|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|apple-touch-icon\\.png|favicon\\.png|favicon\\.ico|og-preview\\.png|og-preview\\.jpg|404\\.html)",
       "destination": "/$1"
     },
     {
-      "source": "/admin",
-      "destination": "/index.html?admin=true"
-    },
-    {
-      "source": "/admin/",
-      "destination": "/index.html?admin=true"
-    },
-    {
-      "source": "/admin/(.*)",
-      "destination": "/index.html?admin=true"
-    },
-    {
-      "source": "/((?!googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*|404\\.html).*)",
+      "source": "/((?!api(?:/|$)|admin(?:/|$)|server(?:/|$)|database(?:/|$)|tests(?:/|$)|client-access\\.js|checkout\\.css|vendor/|googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*|404\\.html).*)",
       "destination": "/index.html"
     }
   ],
@@ -30,10 +38,6 @@
         {
           "key": "X-Robots-Tag",
           "value": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-        },
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
         },
         {
           "key": "X-Content-Type-Options",
@@ -131,6 +135,60 @@
           "value": "public, max-age=3600"
         }
       ]
+    },
+    {
+      "source": "/admin/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/admin",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/admin/index.html",
+      "destination": "/admin",
+      "permanent": false
     }
   ]
 }

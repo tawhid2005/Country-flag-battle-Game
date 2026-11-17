@@ -1,3 +1,5 @@
+> Server-backed accounts, private admin and payment setup: see [SETUP.md](SETUP.md). These services require database and merchant configuration before launch.
+
 # 🏆 Country Flag Battle Royale 24/7 — Into The Circle
 ### The Ultimate Autonomous 195 Country Flag Battle & Esports Marble Race Simulator
 

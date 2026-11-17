@@ -5,41 +5,65 @@
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 # Googlebot & Search Engines
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: Googlebot-Image
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: Googlebot-Mobile
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: Slurp
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: DuckDuckBot
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: Applebot
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 # AI Search Overviews & Answer Engines (Perplexity, ChatGPT, Claude)
 User-agent: GPTBot
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 User-agent: CCBot
 Allow: /
+Disallow: /admin
+Disallow: /api/
 
 # Canonical Sitemap Declaration
 Sitemap: https://countryflagbattle.xyz/sitemap.xml

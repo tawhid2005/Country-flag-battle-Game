@@ -1,83 +1,24 @@
-// Country Flag Battle Royale - PWA Service Worker (v5.0.0 Force Cache Purge)
-const CACHE_NAME = 'cfb-cache-v5';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/og-preview.png',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/apple-touch-icon.png',
-  '/favicon.png'
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
-  );
+// Cache only public game resources. Never cache administrative or API responses.
+const CACHE_NAME = 'cfb-cache-v9';
+const PUBLIC_ASSETS = ['/', '/index.html', '/vendor/matter.min.js', '/client-access.js', '/checkout.css', '/manifest.json', '/icon-192.png', '/icon-512.png', '/favicon.png'];
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(PUBLIC_ASSETS)).then(() => self.skipWaiting()));
 });
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            console.log('[SW] Purging outdated cache:', key);
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
-  );
+self.addEventListener('activate', event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('cfb-cache-') && key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
-
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-
+self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-
-  // Network-First for HTML documents, admin endpoints, and live assets: ALWAYS get fresh code!
-  if (event.request.mode === 'navigate' || event.request.destination === 'document' || url.pathname.includes('admin')) {
-    event.respondWith(
-      fetch(event.request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(() => caches.match(event.request) || caches.match('/index.html'))
-    );
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/') || url.search || url.hash) return;
+  if (event.request.mode === 'navigate') {
+    if (!['/', '/index.html'].includes(url.pathname)) return;
+    event.respondWith(fetch(event.request).then(response => {
+      if (response.ok) event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone())));
+      return response;
+    }).catch(async () => (await caches.match(event.request)) || (await caches.match('/index.html')) || Response.error()));
     return;
   }
-
-  // Fallback for static media assets
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Fetch in background to revalidate cache
-        fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
-          }
-        }).catch(() => {});
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return networkResponse;
-      });
-    })
-  );
+  if (!PUBLIC_ASSETS.includes(url.pathname)) return;
+  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request)));
 });

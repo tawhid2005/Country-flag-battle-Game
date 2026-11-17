@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import {runStartupChecks} from './startup.mjs';
+export async function runCheckoutChecks(){
+  await runStartupChecks(async(app,context,mode)=>{
+    if(mode!=='fresh')return;
+    const $=id=>context.document.getElementById(id),security=app.security;
+    for(const id of ['checkout-address','checkout-city','checkout-postcode','btn-start-bd-checkout','auto-pay-trx-id'])assert.equal($(id),null,'Obsolete Bangladesh fields must be removed');
+    security.activePlanId='2m';$('manual-sender').value='01712345678';$('manual-transaction').value='TX-TEST-123';$('manual-account').value='player';security.updateWhatsAppLinks();
+    const link=new URL($('checkout-transfer-whatsapp').href),message=link.searchParams.get('text');
+    assert.equal(link.hostname,'wa.me');assert.ok(message.includes('149 TK'));assert.ok(message.includes('TX-TEST-123'));assert.ok(!message.includes('password'));
+    security.updateOrderModalUI('bd');assert.equal($('panel-intl-pay').style.display,'none');
+    security.updateOrderModalUI('intl');assert.equal($('panel-bd-pay').style.display,'none');
+    assert.equal($('polar-btn-price-display').textContent,'$5.99');
+    let submitted,navigated;
+    $('checkout-contact-email').value='player@example.com';$('order-checkout-password').value='long-secret-password';$('order-checkout-username').value='';
+    context.location.assign=value=>{navigated=value;};
+    const realApi=security.api;
+    security.api=async(path,body)=>{assert.equal(path,'checkout');submitted=body;return {url:'https://buy.polar.sh/checkout/test',orderId:'test-order',receipt:'opaque-receipt'};};
+    await security.startCheckout('polar');
+    assert.equal(submitted.username,'player@example.com');assert.equal(submitted.provider,'polar');assert.ok(!('address' in submitted));
+    assert.equal(navigated,'https://buy.polar.sh/checkout/test');assert.equal($('order-checkout-password').value,'');
+    assert.equal($('btn-start-polar-checkout').disabled,false);
+    context.location.protocol='https:';context.fetch=async()=>({ok:true,json:async()=>{throw new SyntaxError('HTML instead of JSON');}});
+    await assert.rejects(()=>realApi.call(security,'checkout',{}),error=>error.code==='API_NOT_DEPLOYED');
+    const timers=[],notices=[];let attempts=0;
+    context.setTimeout=fn=>{timers.push(fn);};security.paymentNotice=text=>notices.push(text);
+    security.api=async()=>{if(++attempts===1)throw Object.assign(new Error('Temporary outage'),{status:502});return {status:'paid',session:{role:'subscriber',userId:'player',displayName:'player',planTitle:'2 Months',expiresAt:Date.now()+86400000}};};
+    await security.pollPayment('test-order');assert.equal(timers.length,1,'Temporary failures must retry');await timers.shift()();
+    assert.equal(attempts,2);assert.ok(security.isAuthenticated());assert.ok(app.isGameStarted,'Verified purchase starts the game');
+    assert.ok(notices[0].includes('retrying'));
+  });
+  return ['Simple manual WhatsApp requests, email/password Polar checkout, HTML API error detection, verification retry and automatic login passed'];
+}

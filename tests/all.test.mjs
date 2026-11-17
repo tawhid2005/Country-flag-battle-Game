@@ -1,0 +1,15 @@
+import test from 'node:test';
+import {runStartupChecks} from './startup.mjs';
+import {runTimingChecks} from './arena-timing.mjs';
+import {runSecurityChecks} from './security.mjs';
+import {runClientAccessChecks} from './client-access.mjs';
+import {runCheckoutChecks} from './checkout.mjs';
+import {runTransitionChecks} from './transitions.mjs';
+test('Game startup, controls, rendering transforms and containment',async()=>{await runStartupChecks();});
+test('Complete rounds reach their deadlines in both arena modes',{timeout:120000},async()=>{await runTimingChecks();});
+test('Extended and marathon presets reach 9 and 13 minutes',{timeout:120000},async()=>{await runTimingChecks(['extended','marathon'],[40]);});
+test('Both arena modes finish with 195 countries',{timeout:120000},async()=>{await runTimingChecks(['blitz'],[195]);});
+test('Account, admin and payment security boundaries',async()=>{await runSecurityChecks();});
+test('Public login and activation never navigate to admin',async()=>{await runClientAccessChecks();});
+test('Manual WhatsApp and simplified Polar checkout',async()=>{await runCheckoutChecks();});
+test('Continuous hazard entry/exit and completed elimination animations',async()=>{await runTransitionChecks();});

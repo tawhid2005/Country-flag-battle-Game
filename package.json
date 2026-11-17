@@ -1,0 +1,7 @@
+{
+  "name": "country-flag-battle",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test tests/*.test.mjs" },
+  "engines": { "node": "22.x" }
+}

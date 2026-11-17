@@ -1,11 +1,11 @@
- 
+
  +   <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- Primary Google SEO Meta Tags -->
   <title>Country Flag Battle into the Circle (195 Flags) — Play Free Online</title>
   <meta name="title" content="Country Flag Battle into the Circle (195 Flags) — Play Free Online">
@@ -42,8 +42,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Country Flag Battle Game">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="Country Flag Battle into the Circle (195 Flags) — Play Free Online">>
-  <meta property="og:description" content="Play Country Flag Battle into the circle free online! 195 nations clash in an autonomous 2D physics battle royale marble race. Instant 30-minute free trial!">>
+  <meta property="og:title" content="Country Flag Battle into the Circle (195 Flags) — Play Free Online">
+  <meta property="og:description" content="Play Country Flag Battle into the circle free online! 195 nations clash in an autonomous 2D physics battle royale marble race. Instant 30-minute free trial!">
   <meta property="og:url" content="https://countryflagbattle.xyz/">
   <meta property="og:image" content="https://countryflagbattle.xyz/og-preview.png">
   <meta property="og:image:secure_url" content="https://countryflagbattle.xyz/og-preview.png">
@@ -54,8 +54,8 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Country Flag Battle into the Circle (195 Flags) — Play Free Online">>
-  <meta name="twitter:description" content="Play Country Flag Battle into the circle free online! 195 nations clash in an autonomous 2D physics battle royale marble race. Instant 30-minute free trial!">>
+  <meta name="twitter:title" content="Country Flag Battle into the Circle (195 Flags) — Play Free Online">
+  <meta name="twitter:description" content="Play Country Flag Battle into the circle free online! 195 nations clash in an autonomous 2D physics battle royale marble race. Instant 30-minute free trial!">
   <meta name="twitter:url" content="https://countryflagbattle.xyz/">
   <meta name="twitter:image" content="https://countryflagbattle.xyz/og-preview.png">
   <meta name="twitter:image:alt" content="Country Flag Battle Game Banner">
@@ -544,7 +544,7 @@
   <link rel="dns-prefetch" href="https://api.restful-api.dev">
 
   <!-- Matter.js Physics Engine CDN (Deferred for Maximum FCP/LCP Lighthouse Performance) -->
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <script defer src="./vendor/matter.min.js"></script>
 
   <!-- Google Fonts: Orbitron & Inter (Non-blocking with display=swap) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap">
@@ -4727,7 +4727,7 @@
     /* ==========================================================================
        AI HUMAN STREAMER SIMULATION ENGINE (ANTI-BOT BROADCAST OVERLAYS)
        ========================================================================== */
-    
+
     /* 1. Virtual Human Cursor & Target Tooltip */
     #human-cursor-container {
       position: absolute;
@@ -5148,6 +5148,7 @@
   </style>
   <!-- Gumroad Overlay Checkout Widget -->
   <script src="https://gumroad.com/js/gumroad.js"></script>
+  <link rel="stylesheet" href="./checkout.css">
 </head>
 
 <body>
@@ -5455,9 +5456,7 @@
 
       <!-- Prominent Master Admin Button at Top of Drawer -->
       <div style="padding: 12px 14px 6px 14px;">
-        <button class="drawer-btn" id="drawer-btn-admin-top" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin:0; background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), rgba(245, 158, 11, 0.65)); border: 2px solid #fbbf24; color: #fbbf24; font-weight: 900; font-size: 13px; padding: 12px; box-shadow: 0 0 20px rgba(251, 191, 36, 0.45); border-radius: 12px; cursor: pointer;">
-          👑 MASTER ADMIN CONTROL CENTER
-        </button>
+
       </div>
 
       <!-- Arena Template Selector (Hole vs Outer Ring) -->
@@ -5485,13 +5484,13 @@
       <div class="drawer-control-group">
         <label class="drawer-label">
           <span>⏱️ BATTLE DURATION (PACE)</span>
-          <span class="val" id="val-duration-mode">4-6 MIN</span>
+          <span class="val" id="val-duration-mode">05:00</span>
         </label>
         <select class="drawer-select" id="select-battle-duration">
-          <option value="standard" selected>⏱️ Standard Match (4 - 6 Min) [Default]</option>
-          <option value="blitz">⚡ Quick Blitz (2 - 3 Min)</option>
-          <option value="extended">🏆 Extended Stream (8 - 10 Min)</option>
-          <option value="marathon">👑 Streamer Marathon (12 - 15 Min)</option>
+          <option value="standard" selected>⏱️ Standard Match (5:00) [Default]</option>
+          <option value="blitz">⚡ Quick Blitz (2:20)</option>
+          <option value="extended">🏆 Extended Stream (9:00)</option>
+          <option value="marathon">👑 Streamer Marathon (13:00)</option>
           <option value="custom">⚙️ Custom Manual Mode</option>
         </select>
         <div class="drawer-hint" id="hint-battle-duration">
@@ -5600,14 +5599,12 @@
       <a href="#seo-game-guide" class="drawer-btn" style="text-decoration:none; text-align:center; display:block; border-color:rgba(0,229,255,0.4); color:#00e5ff; font-weight:800;">
         📖 GAME RULES &amp; COMPLETE GUIDE
       </a>
-    
+
       <!-- Security & License Status -->
       <div class="drawer-auth-badge" id="drawer-auth-status" style="cursor: pointer;" title="Account & Admin Status">
         <div class="drawer-auth-user">🔒 Initializing...</div>
       </div>
-      <button class="drawer-btn" id="drawer-btn-admin-panel" style="display:flex; align-items:center; justify-content:center; gap:8px; background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(245, 158, 11, 0.55)); border: 2px solid #fbbf24; color: #fbbf24; font-weight: 900; box-shadow: 0 0 20px rgba(251, 191, 36, 0.45);">
-        👑 MASTER ADMIN CONTROL CENTER
-      </button>
+
       <button class="drawer-btn" id="drawer-btn-pricing" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.45)); border: 1.5px solid #fbbf24; color: #fbbf24; font-weight: 900; box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);">
         💎 SUBSCRIPTION PLANS &amp; PASSES
       </button>
@@ -5718,7 +5715,7 @@
       </div>
     </div>
 
-    
+
     <!-- 1-Click Activation Celebration Banner / Toast -->
     <div id="cyber-celebration-toast" class="cyber-toast-celebration" role="alert" aria-live="polite">
       <div class="toast-icon">🎉</div>
@@ -5730,223 +5727,34 @@
     </div>
 
     <!-- Order Confirmation & Automated Checkout Terminal (True Fixed Center Popup) -->
-    <div id="cyber-order-modal" role="dialog" aria-modal="true">
-      <div class="order-modal-card">
-        <button class="order-modal-close" id="btn-close-order-modal">&times;</button>
-        
-        <div class="order-modal-header">
-          <span class="order-modal-badge">⚡ 24/7 INSTANT PASS ACTIVATION</span>
-          <div class="order-modal-title">SECURE PASS ACTIVATION</div>
+    <div id="cyber-order-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+      <div class="order-modal-card simple-checkout">
+        <button class="order-modal-close" id="btn-close-order-modal" aria-label="Close checkout">&times;</button>
+        <p class="checkout-eyebrow">COUNTRY FLAG BATTLE</p><h2 id="checkout-title">Get your game pass</h2>
+        <div class="checkout-summary"><div><strong id="order-card-plan-name">1 Month</strong><p id="order-card-plan-duration">30 days of access</p></div><strong id="order-card-plan-price">99 TK</strong></div>
+        <div class="order-gateway-tabs" id="order-tabs-wrapper"><button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">Bangladesh</button><button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">International</button></div>
+        <div class="order-gw-panel" id="panel-bd-pay">
+          <p class="checkout-help">bKash / Nagad / Rocket দিয়ে পেমেন্ট করতে WhatsApp-এ কথা বলুন। যাচাইয়ের পর আপনার pass চালু করা হবে।</p>
+          <a class="checkout-whatsapp" id="checkout-bd-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp-এ কিনুন →</a>
+          <details class="transfer-details"><summary>ইতিমধ্যে Send Money করেছেন?</summary><p class="checkout-help">Send Money: <strong id="order-bd-phone-number">01711729858</strong> <button id="btn-copy-bd-number" type="button">Copy</button></p>
+            <label>Sender number <input class="order-input" type="tel" id="manual-sender" autocomplete="tel" placeholder="01XXXXXXXXX"></label>
+            <label>Transaction ID <input class="order-input" id="manual-transaction" maxlength="40" placeholder="Your payment reference"></label>
+            <label>Game username or email (optional)<input class="order-input" id="manual-account" maxlength="80" autocomplete="username"></label>
+            <a class="checkout-whatsapp secondary" id="checkout-transfer-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp-এ যাচাইয়ের অনুরোধ পাঠান →</a>
+            <p class="checkout-footnote">TrxID লিখলে নিজে থেকে verified হবে না। Admin পেমেন্ট মিলিয়ে activation link দেবেন।</p>
+          </details>
         </div>
-
-        <div class="order-plan-highlight-box">
-          <div>
-            <div class="order-plan-name" id="order-card-plan-name">1 MONTH PASS</div>
-            <div class="order-plan-details" id="order-card-plan-duration">30 Days Unlimited Access</div>
-          </div>
-          <div class="order-plan-price-tag" id="order-card-plan-price">99 TK</div>
+        <div class="order-gw-panel" id="panel-intl-pay" style="display:none">
+          <p class="checkout-help">Pay on Polar with your card or supported wallet. After payment, return here and your verified pass opens automatically.</p>
+          <label>Email<input type="email" class="order-input" id="checkout-contact-email" autocomplete="email" maxlength="160" placeholder="you@example.com"></label>
+          <label>Game password<input type="password" class="order-input" id="order-checkout-password" autocomplete="new-password" minlength="10" maxlength="128" placeholder="At least 10 characters"></label>
+          <p class="checkout-footnote">Your email is your login ID. Already have an account? Use its username below and your existing password.</p>
+          <details class="transfer-details"><summary>Existing game username</summary><label>Username (optional)<input class="order-input" id="order-checkout-username" autocomplete="username" maxlength="80" placeholder="Leave blank to use your email"></label></details>
+          <button class="checkout-polar" id="btn-start-polar-checkout" type="button">Continue to Polar · <span id="polar-btn-price-display">$3.99 USD</span> →</button>
+          <div id="polar-gw-status" role="status" class="checkout-help" hidden></div>
+          <button id="checkout-retry-payment" class="checkout-link" type="button" hidden>I already paid — check my order</button>
+          <a id="checkout-intl-whatsapp" class="checkout-support" target="_blank" rel="noopener noreferrer">Need help? Contact us on WhatsApp</a>
         </div>
-
-        <!-- STEP 1: SET STREAMER USERNAME & PASSWORD BEFORE PAYMENT -->
-        <div class="order-creds-container" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(0, 229, 255, 0.45); border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-size: 11px; font-weight: 800; color: #00e5ff; display: flex; align-items: center; gap: 5px;">
-              <span>👤 1. SET STREAMER LOGIN (আইডি ও পাসওয়ার্ড)</span>
-            </span>
-            <span style="font-size: 9px; background: rgba(0, 229, 255, 0.2); color: #67e8f9; padding: 2px 6px; border-radius: 4px; font-weight: 800;">AUTO-ACTIVATED</span>
-          </div>
-          <div style="font-size: 10px; color: #94a3b8; line-height: 1.4; margin-bottom: 8px;">
-            Set your Streamer ID & Password below. Your pass will be automatically bound to this account so you can log in on PC and Mobile 24/7!
-          </div>
-          <div class="order-inputs-grid" style="gap: 8px;">
-            <div class="order-input-wrapper">
-              <label class="order-input-label">👤 STREAMER USER ID (ইউজার আইডি)</label>
-              <input type="text" id="order-checkout-username" class="order-input" placeholder="e.g. streamer_pro" maxlength="25">
-            </div>
-            <div class="order-input-wrapper">
-              <label class="order-input-label">🔑 CHOOSE PASSWORD (পাসওয়ার্ড)</label>
-              <div style="position: relative;">
-                <input type="password" id="order-checkout-password" class="order-input" placeholder="e.g. stream1234" maxlength="30" style="padding-right: 36px;">
-                <button type="button" id="btn-toggle-checkout-pass" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 13px;">👁️</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Gateway Selector Tabs (Shown for BD, cleanly hidden for pure International) -->
-        <div class="order-gateway-tabs" id="order-tabs-wrapper">
-          <button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">🇧🇩 bKash / Nagad / Rocket</button>
-          <button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">🌐 International (Cards / Apple Pay / USD)</button>
-        </div>
-
-        <!-- Panel 1: Bangladeshi Payment -->
-        <div class="order-gw-panel active" id="panel-bd-pay">
-          
-          <!-- METHOD 1: 1-CLICK WHATSAPP CHECKOUT (Fastest & Guaranteed) -->
-          <div style="background: rgba(37, 211, 102, 0.08); border: 1.5px solid rgba(37, 211, 102, 0.45); border-radius: 12px; padding: 12px; box-shadow: 0 0 20px rgba(37, 211, 102, 0.15);">
-            <div style="font-size: 11px; font-weight: 800; color: #4ade80; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-              <span>💬 ১-ক্লিকে WHATSAPP এ কিনুন (সবচেয়ে দ্রুত)</span>
-              <span style="font-size: 9px; background: #25D366; color: #020617; padding: 2px 7px; border-radius: 4px; font-weight: 900;">RECOMMENDED</span>
-            </div>
-            <div style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 8px;">
-              সরাসরি Tawhid ভাই এর WhatsApp ইনবক্সে মেসেজ পাঠিয়ে ১ মিনিটে বিকাশ/নগদে টাকা দিয়ে গেম আনলক করুন:
-            </div>
-            <button class="btn-order-whatsapp" id="btn-bd-whatsapp-checkout" type="button" style="width: 100%; padding: 12px; font-size: 12px;">
-              <span>💬 WHATSAPP এ কিনুন (<span class="bd-dyn-price-text">99 TK</span>) 📲</span>
-            </button>
-          </div>
-
-          <!-- METHOD 2: SEND MONEY TO PERSONAL NUMBER & INSTANT TRXID UNLOCK -->
-          <div class="order-account-box" style="margin-top: 2px;">
-            <div class="order-account-header">
-              <span class="order-account-label">📱 PERSONAL SEND MONEY (স্বয়ংক্রিয় আনলক):</span>
-              <div class="order-method-pills">
-                <span class="order-method-pill pill-bkash">bKash</span>
-                <span class="order-method-pill pill-nagad">Nagad</span>
-                <span class="order-method-pill pill-rocket">Rocket</span>
-              </div>
-            </div>
-
-            <div class="order-number-row">
-              <span class="order-number-display" id="order-bd-phone-number">01711729858</span>
-              <button class="order-btn-copy-num" id="btn-copy-bd-number" type="button">📋 COPY</button>
-            </div>
-
-            <div class="order-instructions">
-              <div>1. উপরে দেওয়া নম্বরে <b><span id="order-inst-amount">99</span> TK</b> Send Money করুন।</div>
-              <div>2. টাকা পাঠিয়ে নিচে আপনার প্রেরক নম্বর ও TrxID দিয়ে Verify চাপুন:</div>
-            </div>
-
-            <div class="order-inputs-grid" style="margin-top: 4px;">
-              <div class="order-input-wrapper">
-                <label class="order-input-label">📱 SENDER PHONE NUMBER (আপনার বিকাশ/নগদ নম্বর)</label>
-                <input type="tel" id="auto-pay-sender-phone" class="order-input" placeholder="017XXXXXXXX" maxlength="15">
-              </div>
-              <div class="order-input-wrapper">
-                <label class="order-input-label">⚡ TRANSACTION ID (TrxID)</label>
-                <input type="text" id="auto-pay-trx-id" class="order-input" placeholder="e.g. BGA78X912K" maxlength="25">
-              </div>
-            </div>
-
-            <button class="order-btn-verify" id="btn-verify-auto-order" type="button">
-              <span>⚡ VERIFY & UNLOCK ACCESS (যাচাই ও আনলক)</span>
-            </button>
-            <div id="auto-pay-alert-bd" class="order-status-alert" style="display: none;"></div>
-          </div>
-
-          <!-- Switch to International Card Option for BD users -->
-          <div style="text-align: center; margin-top: 6px; font-size: 11px; color: #94a3b8;">
-            আন্তর্জাতিক ক্রেডিট কার্ড / ডলার দিয়ে কিনতে চান? <a href="#" id="link-switch-to-intl" style="color: #00e5ff; font-weight: 700; text-decoration: underline;">Cards / Apple Pay (USD)</a>
-          </div>
-
-        </div>
-
-        <!-- Panel 2: International Payment (Clean, Global, Professional) -->
-        <div class="order-gw-panel" id="panel-intl-pay" style="display: none;">
-          
-          <!-- Polar.sh Official 1-Click Card / Apple Pay / Google Pay Checkout Box -->
-          <div style="background: linear-gradient(135deg, rgba(0, 110, 255, 0.1) 0%, rgba(138, 43, 226, 0.12) 100%); border: 1.5px solid rgba(0, 180, 255, 0.55); border-radius: 14px; padding: 14px; box-shadow: 0 0 25px rgba(0, 150, 255, 0.25);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 11px; font-weight: 900; color: #00e5ff; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
-                <span>⚡ SECURE GLOBAL CHECKOUT</span>
-              </span>
-              <div style="display: flex; gap: 4px;">
-                <span style="font-size: 9px; font-weight: 800; background: #00e5ff; color: #020617; padding: 2px 6px; border-radius: 4px;">POLAR.SH</span>
-                <span style="font-size: 9px; font-weight: 800; background: #10b981; color: #ffffff; padding: 2px 6px; border-radius: 4px;">INSTANT</span>
-              </div>
-            </div>
-
-            <!-- Supported Methods Badges -->
-            <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
-              <span class="order-method-pill" style="background: #1a1f71; color: #fff; font-weight: 900;">VISA</span>
-              <span class="order-method-pill" style="background: #eb001b; color: #fff; font-weight: 900;">MASTERCARD</span>
-              <span class="order-method-pill" style="background: #000000; color: #fff; border: 1px solid rgba(255,255,255,0.4); font-weight: 900;"> APPLE PAY</span>
-              <span class="order-method-pill" style="background: #ffffff; color: #3c4043; font-weight: 900;">G PAY</span>
-              <span class="order-method-pill" style="background: #002f6c; color: #fff; font-weight: 900;">AMEX</span>
-            </div>
-
-            <div style="font-size: 11px; color: #cbd5e1; line-height: 1.5; margin-bottom: 12px;">
-              Pay securely from any country worldwide using Credit/Debit Card, Apple Pay, or Google Pay via <b>Polar.sh</b>. Your game pass is <b>instantly unlocked 24/7</b> right after payment!
-            </div>
-
-            <div class="order-inputs-grid" style="gap: 8px; margin-bottom: 12px;">
-              <div class="order-input-wrapper">
-                <label class="order-input-label">👤 YOUR FULL NAME / STREAMER NAME</label>
-                <input type="text" id="polar-customer-name" class="order-input" placeholder="e.g. Alex Hunter" maxlength="35">
-              </div>
-              <div class="order-input-wrapper">
-                <label class="order-input-label">📧 YOUR EMAIL (RECEIPT & AUTO-ACTIVATION)</label>
-                <input type="email" id="polar-customer-email" class="order-input" placeholder="e.g. gamer@gmail.com" maxlength="45">
-              </div>
-            </div>
-
-            <!-- Main Polar Checkout CTA Button -->
-            <button class="order-btn-gateway-pay" id="btn-start-polar-checkout" type="button" style="background: linear-gradient(135deg, #0070f3 0%, #7928ca 100%); box-shadow: 0 0 30px rgba(0, 112, 243, 0.6); padding: 14px; margin-top: 0; font-size: 13px;">
-              <span>🚀 PAY NOW WITH CARD / WALLET (<span id="polar-btn-price-display">$3.99 USD</span>)</span>
-            </button>
-            <div id="polar-gw-status" style="display: none; font-size: 11px; text-align: center; color: #67e8f9; margin-top: 6px;"></div>
-          </div>
-
-          <!-- Secondary WhatsApp Fallback for International -->
-          <button type="button" class="btn-order-whatsapp" id="btn-intl-whatsapp-checkout" style="width: 100%; padding: 12px; font-size: 11px; background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.35); color: #4ade80; box-shadow: none; margin-top: 8px;">
-            <span>💬 Prefer WhatsApp / Custom Payment? Chat with Admin (+8801711729858)</span>
-          </button>
-
-          <!-- Discreet Switch to BD BDT for travelers/VPN users -->
-          <div style="text-align: center; margin-top: 10px; font-size: 11px; color: #94a3b8;">
-            Paying from Bangladesh? <a href="#" id="link-switch-to-bd" style="color: #00e5ff; font-weight: 700; text-decoration: underline;">Switch to bKash / Nagad / Rocket (BDT)</a>
-          </div>
-
-        </div>
-
-        <!-- Panel 3: Success Receipt (Shown when unlocked) -->
-        <div class="order-gw-panel" id="panel-pay-success" style="display: none;">
-          <div class="order-success-banner">
-            <div class="order-success-icon">🎉</div>
-            <div class="order-success-title">PAYMENT VERIFIED!</div>
-            <div class="order-success-sub">GAME PASS ACTIVATED 24/7</div>
-          </div>
-
-          <div class="order-receipt-details">
-            <div class="order-receipt-row">
-              <span>STATUS:</span>
-              <span style="color: #10b981; font-weight: 800;">🟢 ACTIVE</span>
-            </div>
-            <div class="order-receipt-row">
-              <span>STREAMER ID:</span>
-              <span id="order-success-userid" style="color: #00e5ff; font-weight: 800;">gamer</span>
-            </div>
-            <div class="order-receipt-row">
-              <span>PASSWORD:</span>
-              <span id="order-success-pass" style="color: #fbbf24; font-weight: 800;">••••••</span>
-            </div>
-            <div class="order-receipt-row">
-              <span>EXPIRES:</span>
-              <span id="order-success-expires" style="color: #fbbf24; font-weight: 700;">30 Days</span>
-            </div>
-            <div class="order-receipt-key-box">
-              <div style="font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 4px;">YOUR UNIVERSAL LICENSE KEY:</div>
-              <div id="order-success-key" class="order-success-key-text">CFB-1M-...</div>
-              <div style="display: flex; gap: 6px; margin-top: 6px;">
-                <button class="btn-order-copy" id="btn-copy-success-key" type="button" style="flex: 1;">
-                  <span>📋 COPY KEY</span>
-                </button>
-                <button class="btn-order-copy" id="btn-copy-success-link" type="button" style="flex: 1; background: rgba(0, 229, 255, 0.2); border-color: #00e5ff; color: #00e5ff;">
-                  <span>🚀 COPY 1-CLICK LINK</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button class="order-btn-play-now" id="btn-order-start-game" type="button">
-            <span>🎮 START PLAYING NOW (গেম শুরু করুন)</span>
-          </button>
-        </div>
-
-        <!-- WhatsApp Support Link -->
-        <button class="btn-order-whatsapp-mini" id="btn-order-wa-support" type="button">
-          <span>💬 Need help or manual activation? Chat on WhatsApp (+8801711729858)</span>
-        </button>
       </div>
     </div>
 
@@ -5954,7 +5762,7 @@
     <div id="cyber-fail-recovery-modal" role="dialog" aria-modal="true">
       <div class="order-modal-card" style="border-color: #f87171; box-shadow: 0 0 45px rgba(239, 68, 68, 0.45);">
         <button class="order-modal-close" id="btn-close-fail-modal">&times;</button>
-        
+
         <div style="text-align: center; margin-bottom: 4px;">
           <div style="font-size: 36px; margin-bottom: 2px;">⚠️</div>
           <div style="font-family: var(--font-display); font-size: 15px; font-weight: 900; color: #fca5a5;">
@@ -5997,208 +5805,7 @@
     <!-- ==========================================================================
          MASTER ADMIN LICENSE & SUBSCRIBER MANAGER MODAL (True Fixed Centered Popup)
          ========================================================================== -->
-    <div id="admin-license-modal" role="dialog" aria-modal="true">
-      <div class="admin-modal-dialog">
-        <div class="admin-modal-header">
-          <div class="admin-modal-title">
-            <span>👑 MASTER ADMIN CONTROL CENTER</span>
-          </div>
-          <button class="drawer-close" id="admin-modal-close-btn">&times;</button>
-        </div>
 
-        <!-- Master Admin Password Gate (Displayed if not yet authenticated) -->
-        <div id="admin-auth-gate" style="display: none; padding: 32px 18px; text-align: center;">
-          <div style="font-size: 42px; margin-bottom: 12px; filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.65));">👑</div>
-          <div style="font-size: 18px; font-weight: 900; color: #fbbf24; letter-spacing: 1px; margin-bottom: 8px;">MASTER ADMIN CONTROL PORTAL</div>
-          <div style="font-size: 12px; color: #94a3b8; max-width: 380px; margin: 0 auto 20px auto; line-height: 1.5;">Restricted Access: Enter Master Admin credentials to access live revenue, subscriber database, automated orders, and license tools.</div>
-          
-          <div style="max-width: 340px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; text-align: left;">
-            <div class="cyber-input-group" style="margin: 0;">
-              <label class="cyber-input-label">MASTER ADMIN ID</label>
-              <input type="text" id="admin-gate-user" class="cyber-input" value="tawhidh2005" placeholder="Enter admin username">
-            </div>
-            <div class="cyber-input-group" style="margin: 0;">
-              <label class="cyber-input-label">MASTER PASSWORD</label>
-              <input type="password" id="admin-gate-pass" class="cyber-input" placeholder="Enter master password">
-            </div>
-            <div id="admin-gate-alert" style="display: none; font-size: 11px; font-weight: 700; color: #f87171; text-align: center; padding: 8px; background: rgba(239, 68, 68, 0.12); border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.35);"></div>
-            <button id="btn-admin-gate-login" class="cyber-btn-primary" style="width: 100%; margin-top: 6px; padding: 12px;">
-              <span>⚡ UNLOCK ADMIN CONTROL CENTER</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Main Protected Admin Center Content -->
-        <div id="admin-main-content">
-        <!-- Realtime Global Cloud Sync Banner -->
-        <div id="admin-cloud-sync-banner" style="display: flex; align-items: center; justify-content: space-between; margin: 4px 14px 10px 14px; padding: 8px 12px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 8px; font-size: 11px;">
-          <span id="admin-cloud-sync-label" style="color: #67e8f9; font-weight: 700;">🌐 CLOUD DATABASE: ONLINE & SYNCED</span>
-          <button id="btn-admin-cloud-sync" style="background: #00e5ff; color: #020617; font-weight: 800; font-size: 10px; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">🔄 SYNC NOW</button>
-        </div>
-
-        <!-- Live KPI Summary Cards (Revenue, Subs, Orders, Failed) -->
-        <div class="admin-kpi-grid">
-          <div class="admin-kpi-card">
-            <div class="admin-kpi-label">💰 TOTAL REVENUE</div>
-            <div class="admin-kpi-val" id="admin-kpi-revenue" style="color: #fbbf24;">$0 / 0৳</div>
-          </div>
-          <div class="admin-kpi-card">
-            <div class="admin-kpi-label">👥 SUBSCRIBERS</div>
-            <div class="admin-kpi-val" id="admin-kpi-subs" style="color: #00e5ff;">0</div>
-          </div>
-          <div class="admin-kpi-card">
-            <div class="admin-kpi-label">📦 COMPLETED ORDERS</div>
-            <div class="admin-kpi-val" id="admin-kpi-orders" style="color: #10b981;">0</div>
-          </div>
-          <div class="admin-kpi-card">
-            <div class="admin-kpi-label">⚠️ FAILED ATTEMPTS</div>
-            <div class="admin-kpi-val" id="admin-kpi-failed" style="color: #f87171;">0</div>
-          </div>
-        </div>
-
-        <!-- Mobile & PC Responsive Navigation Tabs -->
-        <nav class="admin-nav-tabs">
-          <button class="admin-nav-tab active" id="admin-tab-btn-orders">📥 ORDERS (<span id="admin-orders-count">0</span>)</button>
-          <button class="admin-nav-tab" id="admin-tab-btn-list">👥 SUBSCRIBERS (<span id="admin-sub-count">0</span>)</button>
-          <button class="admin-nav-tab" id="admin-tab-btn-failed">⚠️ FAILED (<span id="admin-failed-count">0</span>)</button>
-          <button class="admin-nav-tab" id="admin-tab-btn-create">➕ GENERATE KEY</button>
-          <button class="admin-nav-tab" id="admin-tab-btn-backup">⚙️ SETTINGS & TOOLS</button>
-        </nav>
-
-        <!-- Admin Tab 1: Automated & Card Orders -->
-        <section class="admin-section active" id="admin-sec-orders">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <div style="font-size: 12px; font-weight: 800; color: #00e5ff;">📥 ALL ORDERS & LIVE TRANSACTIONS</div>
-            <button id="btn-clear-automated-orders" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🗑️ CLEAR ALL</button>
-          </div>
-          <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <input type="text" id="admin-search-orders" class="cyber-input" placeholder="🔍 Filter orders by name, trx, or plan..." style="font-size: 11px; padding: 8px 12px;">
-          </div>
-          <div class="admin-subscribers-list" id="admin-automated-orders-container"></div>
-        </section>
-
-        <!-- Admin Tab 2: Subscribers & Logged In Accounts -->
-        <section class="admin-section" id="admin-sec-list">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <div style="font-size: 12px; font-weight: 800; color: #00e5ff;">👥 ACTIVE STREAMER LICENSES</div>
-            <button class="drawer-btn" id="btn-refresh-subscribers" style="font-size: 10px; padding: 4px 8px;">🔄 REFRESH</button>
-          </div>
-          <div id="admin-subscribers-list-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
-        </section>
-
-        <!-- Admin Tab 3: Failed / Abandoned Payments & 1-Click WhatsApp Recovery -->
-        <section class="admin-section" id="admin-sec-failed">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <div>
-              <div style="font-size: 12px; font-weight: 800; color: #f87171;">⚠️ FAILED & ABANDONED ORDERS</div>
-              <div style="font-size: 10px; color: #94a3b8;">Recover customers directly via WhatsApp in 1-click!</div>
-            </div>
-            <button id="btn-clear-failed-orders" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🗑️ CLEAR LIST</button>
-          </div>
-          <div class="admin-subscribers-list" id="admin-failed-orders-container"></div>
-        </section>
-
-        <!-- Admin Tab 4: Create / Generate License Key -->
-        <section class="admin-section" id="admin-sec-create">
-          <div class="cyber-input-group">
-            <label class="cyber-input-label">STREAMER USER ID / USERNAME</label>
-            <div style="display: flex; gap: 6px;">
-              <input type="text" id="admin-new-user" class="cyber-input" placeholder="e.g. streamer_pro">
-              <button class="drawer-btn" id="btn-gen-userid" style="width: 80px; padding: 0;">🎲 AUTO</button>
-            </div>
-          </div>
-
-          <div class="cyber-input-group">
-            <label class="cyber-input-label">PASSWORD</label>
-            <div style="display: flex; gap: 6px;">
-              <input type="text" id="admin-new-pass" class="cyber-input" placeholder="e.g. pass1234">
-              <button class="drawer-btn" id="btn-gen-pass" style="width: 80px; padding: 0;">🎲 AUTO</button>
-            </div>
-          </div>
-
-          <div class="cyber-input-group">
-            <label class="cyber-input-label">SUBSCRIPTION PLAN</label>
-            <select id="admin-new-plan" class="drawer-select">
-              <option value="1m">1 Month — 99 TK / $3.99 (30 Days)</option>
-              <option value="2m" selected>2 Months — 149 TK / $5.99 (60 Days)</option>
-              <option value="4m">4 Months — 239 TK / $9.99 (120 Days)</option>
-              <option value="8m">8 Months — 399 TK / $15.99 (240 Days)</option>
-              <option value="12m">12 Months — 499 TK / $19.99 (365 Days)</option>
-              <option value="lifetime">👑 Lifetime Pass — 699 TK / $25.99 (Unlimited Access)</option>
-              <option value="custom">Custom Days...</option>
-            </select>
-          </div>
-
-          <div class="cyber-input-group" id="admin-custom-days-wrap" style="display: none;">
-            <label class="cyber-input-label">CUSTOM DURATION (DAYS)</label>
-            <input type="number" id="admin-custom-days" class="cyber-input" placeholder="e.g. 45" min="1">
-          </div>
-
-          <button class="cyber-btn-primary" id="btn-generate-license" style="background: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);">
-            <span>🚀 GENERATE & SAVE LICENSE</span>
-          </button>
-
-          <div id="admin-card-result-wrap" style="display: none; flex-direction: column; gap: 8px;">
-            <div style="font-size: 11px; font-weight: 800; color: #10b981;">✅ LICENSE CREATED! READY TO SEND:</div>
-            <div class="admin-license-card-result" id="admin-card-result-text"></div>
-            <div style="display: flex; gap: 6px;">
-              <button class="drawer-btn" id="btn-copy-card-result" style="flex: 1; border-color: #10b981; color: #10b981;">
-                📋 COPY FOR WHATSAPP
-              </button>
-              <a href="#" target="_blank" id="btn-share-card-wa" class="drawer-btn" style="flex: 1; border-color: #25D366; color: #25D366; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;">
-                💬 SEND ON WHATSAPP
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <!-- Admin Tab 5: Settings & Tools -->
-        <section class="admin-section" id="admin-sec-backup">
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 11px; font-weight: 800; color: #00e5ff;">💾 BACKUP & RESTORE LICENSES</div>
-            <button class="drawer-btn" id="btn-export-licenses">📥 EXPORT DATABASE (JSON)</button>
-            <div class="cyber-input-group" style="margin-top: 6px;">
-              <label class="cyber-input-label">RESTORE BACKUP (PASTE JSON)</label>
-              <textarea id="admin-import-json" class="cyber-input" rows="3" placeholder="Paste backup JSON here..."></textarea>
-            </div>
-            <button class="drawer-btn" id="btn-import-licenses" style="border-color: #10b981; color: #10b981;">📤 IMPORT DATABASE</button>
-            
-            <div style="font-size: 11px; font-weight: 800; color: #fbbf24; margin-top: 14px; margin-bottom: 4px;">⚙️ ADMIN CONTACT & GATEWAY SETTINGS</div>
-            
-            <div class="cyber-input-group">
-              <label class="cyber-input-label">ADMIN WHATSAPP NUMBER (WITH COUNTRY CODE)</label>
-              <input type="text" id="admin-setting-whatsapp" class="cyber-input" placeholder="e.g. 8801711729858">
-            </div>
-
-            <div class="cyber-input-group" style="margin-top: 6px;">
-              <label class="cyber-input-label">BKASH / NAGAD NUMBER (OPTIONAL)</label>
-              <input type="text" id="admin-setting-bkash" class="cyber-input" placeholder="e.g. 017XXXXXXXX">
-            </div>
-
-            <div class="cyber-input-group" style="margin-top: 6px;">
-              <label class="cyber-input-label">POLAR.SH ORGANIZATION ACCESS TOKEN</label>
-              <input type="text" id="admin-setting-polar-token" class="cyber-input" placeholder="polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi">
-            </div>
-
-            <div class="cyber-input-group" style="margin-top: 6px;">
-              <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY BASE URL</label>
-              <input type="text" id="admin-setting-gateway-url" class="cyber-input" placeholder="https://mdtalhahussaintawhid.paymently.io/api">
-            </div>
-
-            <div class="cyber-input-group" style="margin-top: 6px;">
-              <label class="cyber-input-label">PAYMENTLY / UDDOKTAPAY API KEY</label>
-              <input type="text" id="admin-setting-gateway-key" class="cyber-input" placeholder="pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn">
-            </div>
-
-            <button class="drawer-btn" id="btn-save-admin-settings" style="margin-top: 8px; border-color: #fbbf24; color: #fbbf24;">
-              💾 SAVE SETTINGS
-            </button>
-          </div>
-        </section>
-        </div><!-- /#admin-main-content -->
-
-      </div>
-    </div>
 
     <!-- PWA Installation Modal (iPhone / Android / PC Guide) -->
     <div id="pwa-install-modal" class="cyber-modal-backdrop" style="display: none;" role="dialog" aria-modal="true">
@@ -6238,7 +5845,7 @@
        GOOGLE SEO MASTER GAME GUIDE & ENCYCLOPEDIA (MAXIMUM SEARCH RANKING)
        ========================================================================== -->
   <article id="seo-game-guide" class="seo-guide-container" itemscope itemtype="https://schema.org/Article">
-    
+
     <!-- Top Hero Card -->
     <header class="seo-hero-card">
       <nav class="seo-breadcrumb-nav" aria-label="Breadcrumb">
@@ -6457,7 +6064,7 @@
       <p class="seo-text">
         Country Flag Battle Game is unblocked and playable directly inside any modern web browser without downloading or installing any software:
       </p>
-      
+
       <div class="seo-step-row">
         <div class="seo-step-num">1</div>
         <div class="seo-step-body">
@@ -6625,7 +6232,7 @@
       </div>
     </section>
 
-    
+
     <!-- Section: FlagsBattle & Algodoo Competitor Comparison & Search Hub -->
     <section id="flagsbattle-algodoo-comparison">
       <h2 class="seo-section-title">
@@ -7151,6 +6758,19 @@
        MAIN JAVASCRIPT APPLICATION CODE
        ========================================================================== -->
   <script>
+    function availableStorage(name) {
+      const memory = new Map();
+      let storage;
+      try { storage = window[name]; storage.setItem('__cfb_probe', '1'); storage.removeItem('__cfb_probe'); } catch (_) { storage = null; }
+      return {
+        getItem(key) { try { return storage ? storage.getItem(key) : (memory.get(key) ?? null); } catch (_) { return memory.get(key) ?? null; } },
+        setItem(key, value) { memory.set(key, String(value)); try { if (storage) storage.setItem(key, value); } catch (_) {} },
+        removeItem(key) { memory.delete(key); try { if (storage) storage.removeItem(key); } catch (_) {} }
+      };
+    }
+    const gameStorage = availableStorage('localStorage');
+    const gameSessionStorage = availableStorage('sessionStorage');
+
     /**
      * COUNTRY FLAG BATTLE ROYALE SIMULATOR (YouTube Live 9:16 Edition)
      * Features:
@@ -7162,18 +6782,7 @@
      * - Simulated Audience Live Chat Cheer Balloons
      */
 
-    // Automatic Cache Purge for New Release (Bypasses any stale service worker caches)
-    try {
-      if (typeof window !== 'undefined' && 'caches' in window) {
-        const CURRENT_RELEASE_VER = '5.0.0';
-        if (localStorage.getItem('cfb_client_release_ver') !== CURRENT_RELEASE_VER) {
-          caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))).then(() => {
-            localStorage.setItem('cfb_client_release_ver', CURRENT_RELEASE_VER);
-            console.log('[CFB] Cache storage purged to release ' + CURRENT_RELEASE_VER);
-          }).catch(() => {});
-        }
-      }
-    } catch(e) {}
+    // Service-worker activation owns cache versioning; do not purge the active offline cache here.
 
     // --- 1. COMPREHENSIVE COUNTRY DATABASE ---
     const COUNTRIES_DB = [
@@ -8246,41 +7855,9 @@
       return result;
     }
 
-    // Master Admin Hash: tawhidh2005:017TawhiD@@##
-    const MASTER_ADMIN_HASH = 'dd469e489b8fd5502678247141a05695a2ea89a8d1342300133d1e65782e5ffd';
-    const SECURITY_SALT = 'CFB_ROYALE_SECURE_SALT_v2026_99x#$!';
-    const MASTER_CLOUD_DB_ID = 'ff808181a09d98f701a1459b608874f8';
-    const MASTER_CLOUD_URL = 'https://api.restful-api.dev/objects/' + MASTER_CLOUD_DB_ID;
-
-    // Built-in verified offline licenses
-    const DEFAULT_LICENSES = {
-      'tawhid1': {
-        userId: 'tawhid1',
-        passHash: '4337b545d6141a4a4993132e650ef3da6b64d0d9f2e3be75eec25345759a229a',
-        planId: '2m',
-        planTitle: '2 Months (149 TK)',
-        price: 149,
-        currency: 'TK',
-        createdAt: 1792169172052,
-        expiresAt: 1797353172052,
-        signature: '1546c653',
-        licenseKey: 'CFB-2M-tawhid1-1797350474013-1546c653',
-        plainPassHint: 'tawhid1'
-      },
-      'tawhid': {
-        userId: 'tawhid',
-        passHash: 'f00e30ec028a38bbad25170d106646549a0ee44106ec9044cb3fce6ecfdfc0d6',
-        planId: '1m',
-        planTitle: '1 Month (99 TK)',
-        price: 99,
-        currency: 'TK',
-        createdAt: 1792169172052,
-        expiresAt: 1797353172052,
-        signature: '1546c653',
-        licenseKey: 'CFB-1M-tawhid-1797350474013-1546c653',
-        plainPassHint: 'tawhid'
-      }
-    };
+    // Public builds contain no administrator credentials.
+    // The former unauthenticated shared database is intentionally disconnected.
+    const DEFAULT_LICENSES = {};
 
     const SUBSCRIPTION_PLANS = {
       bdt: [
@@ -8316,11 +7893,11 @@
         this.trialDurationSec = 1800; // 30 Minutes Free Trial (Continuous active gameplay before pass wall)
         this.trialRemainingSec = 1800;
         this.trialInterval = null;
-        this.polarAccessToken = (typeof localStorage !== 'undefined' && localStorage.getItem('cfb_admin_polar_token')) || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
+        this.polarAccessToken = ''; // Secret tokens belong on a server.
         this.currentOrderMsg = '';
         this.loadDatabase();
         // Background live cloud sync
-        setTimeout(() => this.syncFromCloud(), 300);
+
       }
 
       loadDatabase() {
@@ -8329,9 +7906,9 @@
 
         // 2. Load from local stores
         let data = null;
-        try { data = localStorage.getItem('cfb_licenses_db'); } catch(e) {}
+        try { data = gameStorage.getItem('cfb_licenses_db'); } catch(e) {}
         if (!data) {
-          try { data = sessionStorage.getItem('cfb_licenses_db'); } catch(e) {}
+          try { data = gameSessionStorage.getItem('cfb_licenses_db'); } catch(e) {}
         }
         if (!data && typeof window !== 'undefined' && window.__cfb_persistent_db) {
           data = window.__cfb_persistent_db;
@@ -8350,8 +7927,8 @@
       saveDatabase(shouldPushCloud = true) {
         try {
           const str = JSON.stringify(this.licenses);
-          try { localStorage.setItem('cfb_licenses_db', str); } catch(e) {}
-          try { sessionStorage.setItem('cfb_licenses_db', str); } catch(e) {}
+          try { gameStorage.setItem('cfb_licenses_db', str); } catch(e) {}
+          try { gameSessionStorage.setItem('cfb_licenses_db', str); } catch(e) {}
           if (typeof window !== 'undefined') {
             window.__cfb_persistent_db = str;
           }
@@ -8376,220 +7953,12 @@
         }
       }
 
-      async syncFromCloud() {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 4500);
-          const res = await fetch(MASTER_CLOUD_URL, { signal: controller.signal });
-          clearTimeout(timeoutId);
-          if (res.ok) {
-            const json = await res.json();
-            if (json && json.data && json.data.licenses && typeof json.data.licenses === 'object') {
-              this.licenses = Object.assign({}, this.licenses, json.data.licenses);
-              this.saveDatabase(false);
-              this.cloudSyncStatus = 'connected';
-              this.updateCloudStatusBadge();
-              if (document.getElementById('admin-sub-count')) {
-                const countBadge = document.getElementById('admin-sub-count');
-                if (countBadge) countBadge.textContent = Object.keys(this.licenses).length;
-              }
-              return true;
-            }
-          }
-        } catch(e) {
-          console.warn('Cloud sync note:', e.message);
-        }
-        return false;
-      }
+      async syncFromCloud() { return false; }
 
-      async syncToCloud() {
-        try {
-          this.cloudSyncStatus = 'syncing';
-          this.updateCloudStatusBadge();
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 6500);
-          const res = await fetch(MASTER_CLOUD_URL, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: 'cfb_country_flag_battle_licenses_v1',
-              data: {
-                updatedAt: Date.now(),
-                licenses: this.licenses
-              }
-            }),
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-          if (res.ok) {
-            this.cloudSyncStatus = 'connected';
-            this.updateCloudStatusBadge();
-            return true;
-          }
-        } catch(e) {
-          console.warn('Cloud push note:', e.message);
-        }
-        this.cloudSyncStatus = 'local-only';
-        this.updateCloudStatusBadge();
-        return false;
-      }
+      async syncToCloud() { return false; }
 
-      createSignature(userId, expiresAt) {
-        return sha256Sync(userId + ':' + expiresAt + ':' + SECURITY_SALT);
-      }
-
-      createLicense(userId, password, planId, customDays = null) {
-        const cleanUser = String(userId).trim();
-        if (!cleanUser) return { success: false, message: 'User ID is required!' };
-        if (!password || String(password).trim().length < 3) {
-          return { success: false, message: 'Password must be at least 3 characters!' };
-        }
-
-        const plan = getPlanDef(planId, this.selectedCurrency);
-        let days = plan ? plan.days : 30;
-        let planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + (plan.currency || 'TK') + ')') : (days + ' Days Pass');
-
-        if (customDays && parseInt(customDays, 10) > 0) {
-          days = parseInt(customDays, 10);
-          planTitle = days + ' Days Custom Pass';
-        }
-
-        const now = Date.now();
-        const expiresAt = now + (days * 24 * 60 * 60 * 1000);
-        const passHash = sha256Sync(cleanUser.toLowerCase() + ':' + password.trim());
-        const signature = this.createSignature(cleanUser, expiresAt);
-
-        // Universal Self-Activating Cryptographic License Key (Works on ANY device in the world!)
-        const pTag = (planId || '1m').toLowerCase();
-        const keySig = sha256Sync(cleanUser.toLowerCase() + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
-        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + cleanUser.toLowerCase() + '-' + expiresAt + '-' + keySig;
-
-        const license = {
-          userId: cleanUser,
-          passHash: passHash,
-          planId: planId || 'custom',
-          planTitle: planTitle,
-          price: plan ? plan.price : 'Custom',
-          currency: plan ? (plan.currency || 'TK') : 'TK',
-          createdAt: now,
-          expiresAt: expiresAt,
-          signature: signature,
-          licenseKey: licenseKey,
-          plainPassHint: password.trim()
-        };
-
-        this.loadDatabase();
-        this.licenses[cleanUser.toLowerCase()] = license;
-        this.saveDatabase(true); // Saves locally and syncs to global cloud immediately!
-
-        let baseDomain = 'https://countryflagbattle.xyz/';
-        if (typeof window !== 'undefined' && window.location) {
-          if (window.location.hostname.includes('countryflagbattle.xyz')) {
-            baseDomain = window.location.origin + window.location.pathname.replace(/\/index\.html$/, '');
-            if (!baseDomain.endsWith('/')) baseDomain += '/';
-          }
-        }
-        const activationLink = baseDomain + '?key=' + encodeURIComponent(licenseKey);
-
-        const formattedCard = '🎮 COUNTRY FLAG BATTLE ROYALE — ACCESS LICENSE\n' +
-          '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-          '👤 USER ID      : ' + cleanUser + '\n' +
-          '🔑 PASSWORD     : ' + password.trim() + '\n' +
-          '⚡ LICENSE KEY  : ' + licenseKey + '\n' +
-          '💎 PACKAGE      : ' + planTitle + '\n' +
-          '⏳ VALIDITY     : ' + days + ' Days\n' +
-          '📅 EXPIRES ON   : ' + new Date(expiresAt).toLocaleDateString() + ' (' + new Date(expiresAt).toLocaleTimeString() + ')\n' +
-          '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-          (activationLink ? ('🚀 1-Click Activation Link (Auto-Unlock on Mobile/PC):\n' + activationLink + '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n') : '') +
-          '👉 Customer can login instantly by entering USER ID & PASSWORD into the Cyber Security Gate!';
-
-        return {
-          success: true,
-          license: license,
-          formattedCard: formattedCard,
-          activationLink: activationLink
-        };
-      }
-
-      // Validate and activate a cryptographic license key
-      activateKey(rawKey, targetUser = null) {
-        if (!rawKey) return { valid: false, message: 'Invalid key: empty' };
-        let key = String(rawKey).trim();
-        try { key = decodeURIComponent(key); } catch(e) {}
-        key = key.trim().replace(/^['"]|['"]$/g, '');
-        if (!key.toUpperCase().startsWith('CFB-')) return { valid: false, message: 'Invalid key format' };
-
-        const match = key.match(/^CFB-([a-zA-Z0-9]+)-(.+)-(\d{10,15})-([a-fA-F0-9]{8})$/i);
-        let planTag, keyUser, expStr, sig;
-        if (match) {
-          planTag = match[1].toLowerCase();
-          keyUser = match[2];
-          expStr = match[3];
-          sig = match[4].toLowerCase();
-        } else {
-          const parts = key.split('-');
-          if (parts.length < 5) return { valid: false, message: 'Corrupted license key' };
-          planTag = parts[1].toLowerCase();
-          sig = parts[parts.length - 1].toLowerCase();
-          expStr = parts[parts.length - 2];
-          keyUser = parts.slice(2, parts.length - 2).join('-');
-        }
-
-        const expiresAt = parseInt(expStr, 10);
-        if (isNaN(expiresAt)) return { valid: false, message: 'Corrupted expiration in key' };
-
-        const expectedSig = sha256Sync(keyUser.toLowerCase() + ':' + expiresAt + ':' + planTag.toLowerCase() + ':' + SECURITY_SALT).slice(0, 8).toLowerCase();
-
-        if (sig !== expectedSig) {
-          return { valid: false, message: 'Security Alert: Invalid or tampered License Key!' };
-        }
-
-        if (targetUser && targetUser.toLowerCase() !== keyUser.toLowerCase()) {
-          return { valid: false, message: 'This License Key belongs to user: ' + keyUser };
-        }
-
-        if (Date.now() > expiresAt) {
-          const expDate = new Date(expiresAt).toLocaleDateString();
-          return { valid: false, message: 'This License Key expired on ' + expDate + '!' };
-        }
-
-        // Register license in this device's storage without erasing existing accounts
-        const plan = getPlanDef(planTag.toLowerCase(), this.selectedCurrency);
-        const planTitle = plan ? (plan.name + ' (' + plan.price + ' ' + (plan.currency || 'TK') + ')') : (planTag.toUpperCase() + ' Pass');
-
-        this.loadDatabase();
-        const existing = this.licenses[keyUser.toLowerCase()];
-        const passHash = (existing && existing.passHash) ? existing.passHash : sha256Sync(keyUser.toLowerCase() + ':' + key);
-        const passHint = (existing && existing.plainPassHint) ? existing.plainPassHint : key;
-
-        const newLicense = {
-          userId: keyUser,
-          passHash: passHash,
-          planId: planTag.toLowerCase(),
-          planTitle: planTitle,
-          price: plan ? plan.price : 'Subscription',
-          currency: plan ? (plan.currency || 'TK') : 'TK',
-          createdAt: (existing && existing.createdAt) || Date.now(),
-          expiresAt: expiresAt,
-          signature: this.createSignature(keyUser, expiresAt),
-          licenseKey: key,
-          plainPassHint: passHint
-        };
-
-        this.licenses[keyUser.toLowerCase()] = newLicense;
-        this.saveDatabase(true);
-
-        this.session = {
-          role: 'subscriber',
-          userId: keyUser,
-          displayName: keyUser,
-          planTitle: planTitle,
-          expiresAt: expiresAt,
-          isPermanent: false
-        };
-        this.saveSession();
-        return { valid: true, session: this.session, key: key };
-      }
+      createLicense() { return {success:false,message:'Use the dedicated administrator workspace.'}; }
+      async activateKey() { return {valid:false,message:'Server access module unavailable.'}; }
 
       showActivationCelebrationToast(userId, planTitle) {
         const toast = document.getElementById('cyber-celebration-toast');
@@ -8614,149 +7983,9 @@
         }
       }
 
-      async login(username, password) {
-        const u = String(username).trim();
-        const p = String(password).trim();
-        if (!u && !p) return { success: false, message: 'Please enter User ID and Password!' };
-
-        // Quick check: If user pasted a full License Key into username or password field
-        if (u.startsWith('CFB-') || p.startsWith('CFB-')) {
-          const keyToUse = p.startsWith('CFB-') ? p : u;
-          const userToCheck = (p.startsWith('CFB-') && u) ? u : null;
-          const keyRes = this.activateKey(keyToUse, userToCheck);
-          if (keyRes.valid) {
-            return { success: true, role: 'subscriber', session: keyRes.session };
-          } else {
-            return { success: false, message: keyRes.message };
-          }
-        }
-
-        if (!u || !p) return { success: false, message: 'Please enter User ID and Password!' };
-
-        // 1. Check Master Admin Credentials
-        const adminCheckHash = sha256Sync(u.toLowerCase() + ':' + p);
-        const isMasterUser = (u.toLowerCase() === 'tawhidh2005' || u.toLowerCase() === 'tawhid2005' || u.toLowerCase() === 'admin');
-        const isMasterPass = (
-          adminCheckHash === MASTER_ADMIN_HASH ||
-          p === 'tawhid2005' ||
-          p === 'tawhidh2005' ||
-          p === 'admin' ||
-          p === 'admin123'
-        );
-        if ((isMasterUser && isMasterPass) || adminCheckHash === MASTER_ADMIN_HASH) {
-          this.session = {
-            role: 'admin',
-            userId: 'tawhidh2005',
-            displayName: 'Master Admin (tawhidh2005)',
-            planTitle: '👑 Lifetime Master Admin',
-            expiresAt: null,
-            isPermanent: true
-          };
-          this.saveSession();
-          return { success: true, role: 'admin', session: this.session };
-        }
-
-        // 2. Check Subscriber Account in database
-        this.loadDatabase();
-        const cleanKey = u.toLowerCase();
-        let license = this.licenses[cleanKey];
-        if (!license) {
-          license = Object.values(this.licenses).find(l => l && l.userId && l.userId.trim().toLowerCase() === cleanKey);
-        }
-
-        // If not found in local memory, sync from Cloud Database immediately!
-        if (!license) {
-          await this.syncFromCloud();
-          license = this.licenses[cleanKey];
-          if (!license) {
-            license = Object.values(this.licenses).find(l => l && l.userId && l.userId.trim().toLowerCase() === cleanKey);
-          }
-        }
-
-        if (!license) {
-          return { 
-            success: false, 
-            message: 'User "' + u + '" not found in system database! Please check spelling or create the user in Admin Portal.' 
-          };
-        }
-
-        const cleanPass = p.trim();
-        const expectedHash = sha256Sync(license.userId.trim().toLowerCase() + ':' + cleanPass);
-        const altExpectedHash = sha256Sync(license.userId.trim() + ':' + cleanPass);
-        const isPassMatch = (
-          license.passHash === expectedHash ||
-          license.passHash === altExpectedHash ||
-          license.plainPassHint === cleanPass ||
-          license.licenseKey === cleanPass ||
-          cleanPass.toLowerCase() === license.userId.trim().toLowerCase()
-        );
-
-        if (!isPassMatch) {
-          return { success: false, message: 'Invalid Password! Please check spelling.' };
-        }
-
-        // 3. Signature & Expiration Checks
-        const expectedSig = this.createSignature(license.userId, license.expiresAt);
-        if (!license.signature || license.signature !== expectedSig) {
-          license.signature = expectedSig;
-          this.saveDatabase(false);
-        }
-
-        const now = Date.now();
-        if (now > license.expiresAt) {
-          const expDate = new Date(license.expiresAt).toLocaleDateString();
-          return {
-            success: false,
-            message: 'Subscription expired on ' + expDate + '! Contact Admin @tawhidh2005 to renew.'
-          };
-        }
-
-        // Active Subscriber Session
-        this.session = {
-          role: 'subscriber',
-          userId: license.userId,
-          displayName: license.userId,
-          planTitle: license.planTitle,
-          expiresAt: license.expiresAt,
-          isPermanent: false
-        };
-        this.saveSession();
-        return { success: true, role: 'subscriber', session: this.session };
-      }
-
-      saveSession() {
-        if (this.session) {
-          localStorage.setItem('cfb_auth_session', JSON.stringify(this.session));
-        } else {
-          localStorage.removeItem('cfb_auth_session');
-        }
-      }
-
-      checkSession() {
-        try {
-          const data = localStorage.getItem('cfb_auth_session');
-          if (!data) return { valid: false };
-          const session = JSON.parse(data);
-
-          if (session.role === 'admin' && session.isPermanent) {
-            this.session = session;
-            return { valid: true, role: 'admin', session: session };
-          }
-
-          if (session.role === 'subscriber' && session.expiresAt) {
-            if (Date.now() > session.expiresAt) {
-              this.session = null;
-              this.saveSession();
-              return { valid: false, expired: true, message: 'Your subscription has expired!' };
-            }
-            this.session = session;
-            return { valid: true, role: 'subscriber', session: session };
-          }
-        } catch(e) {
-          return { valid: false };
-        }
-        return { valid: false };
-      }
+      async login() { return {success:false,message:'Server access module unavailable.'}; }
+      saveSession() { gameStorage.removeItem('cfb_auth_session'); }
+      checkSession() { return {valid:false}; }
 
       isAuthenticated() {
         return !!(this.session && (this.session.isPermanent || (this.session.expiresAt && Date.now() <= this.session.expiresAt)));
@@ -8779,22 +8008,8 @@
         this.updateDrawerStatus();
       }
 
-      async deleteLicense(userId) {
-        delete this.licenses[String(userId).toLowerCase()];
-        this.saveDatabase(true);
-        await this.syncToCloud();
-      }
-
-      async extendLicense(userId, days = 30) {
-        const l = this.licenses[String(userId).toLowerCase()];
-        if (!l) return false;
-        const base = Math.max(Date.now(), l.expiresAt);
-        l.expiresAt = base + (days * 24 * 60 * 60 * 1000);
-        l.signature = this.createSignature(l.userId, l.expiresAt);
-        this.saveDatabase(true);
-        await this.syncToCloud();
-        return true;
-      }
+      async deleteLicense() {return false;}
+      async extendLicense() {return false;}
 
       formatTimeRemaining(expiresAt) {
         if (!expiresAt) return 'Permanent';
@@ -8892,13 +8107,13 @@
         let trialData = null;
 
         try {
-          const raw = localStorage.getItem('cfb_trial_device_' + fp) || localStorage.getItem('cfb_trial_data');
+          const raw = gameStorage.getItem('cfb_trial_device_' + fp) || gameStorage.getItem('cfb_trial_data');
           if (raw) trialData = JSON.parse(raw);
         } catch(e) {}
 
         if (!trialData) {
           try {
-            const raw = sessionStorage.getItem('cfb_trial_data');
+            const raw = gameSessionStorage.getItem('cfb_trial_data');
             if (raw) trialData = JSON.parse(raw);
           } catch(e) {}
         }
@@ -8956,9 +8171,9 @@
       saveTrialData(data) {
         const fp = this.getDeviceFingerprint();
         const str = JSON.stringify(data);
-        try { localStorage.setItem('cfb_trial_device_' + fp, str); } catch(e) {}
-        try { localStorage.setItem('cfb_trial_data', str); } catch(e) {}
-        try { sessionStorage.setItem('cfb_trial_data', str); } catch(e) {}
+        try { gameStorage.setItem('cfb_trial_device_' + fp, str); } catch(e) {}
+        try { gameStorage.setItem('cfb_trial_data', str); } catch(e) {}
+        try { gameSessionStorage.setItem('cfb_trial_data', str); } catch(e) {}
         try {
           document.cookie = 'cfb_trial_exp=' + (data.isExpired ? 'true' : 'active') + '; max-age=31536000; path=/; SameSite=Lax';
         } catch(e) {}
@@ -9097,7 +8312,7 @@
       // Get all automated orders from storage
       getAutomatedOrders() {
         try {
-          const raw = localStorage.getItem('cfb_automated_orders');
+          const raw = gameStorage.getItem('cfb_automated_orders');
           return raw ? JSON.parse(raw) : [];
         } catch(e) {
           return [];
@@ -9109,12 +8324,12 @@
         try {
           const orders = this.getAutomatedOrders();
           orders.unshift(order);
-          localStorage.setItem('cfb_automated_orders', JSON.stringify(orders.slice(0, 100)));
+          gameStorage.setItem('cfb_automated_orders', JSON.stringify(orders.slice(0, 100)));
           if (document.getElementById('admin-orders-count')) {
             document.getElementById('admin-orders-count').textContent = orders.length;
           }
         } catch(e) {
-          console.warn('Failed to save order to localStorage:', e);
+          console.warn('Failed to save order to gameStorage:', e);
         }
       }
 
@@ -9293,107 +8508,15 @@
 
       // Start Real-Time 1-Click Automatic Gateway Checkout (Paymently / UddoktaPay)
       startPaymentlyCheckout() {
-        const nameInput = document.getElementById('auto-gw-name');
-        const contactInput = document.getElementById('auto-gw-contact');
-        const statusBox = document.getElementById('auto-gw-status');
-        const btnPay = document.getElementById('btn-start-auto-gateway');
-
-        const customerName = (nameInput && nameInput.value.trim()) || ('Player_' + Math.floor(Math.random() * 8999 + 1000));
-        let customerContact = (contactInput && contactInput.value.trim()) || 'player@cfb.com';
-        if (!customerContact.includes('@')) {
-          customerContact = customerContact.replace(/[^0-9]/g, '') + '@cfb.com';
-        }
-
-        const plan = this.activeBdtPlan || getPlanDef(this.activePlanId || '1m', 'bdt');
-        const baseUrl = this.paymentlyBaseUrl || 'https://mdtalhahussaintawhid.paymently.io/api';
-        const apiKey = this.paymentlyApiKey || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
-
-        if (btnPay) {
-          btnPay.disabled = true;
-          btnPay.innerHTML = '<span>⏳ CONNECTING TO SECURE GATEWAY...</span>';
-        }
-        if (statusBox) {
-          statusBox.textContent = '🚀 সিকিউর বিকাশ/নগদ গেটওয়েতে নেওয়া হচ্ছে...';
-          statusBox.style.color = '#67e8f9';
-          statusBox.style.display = 'block';
-        }
-
-        let baseSiteUrl = 'https://countryflagbattle.xyz/';
-        if (typeof window !== 'undefined' && window.location) {
-          const proto = window.location.protocol;
-          if (proto === 'http:' || proto === 'https:') {
-            baseSiteUrl = window.location.origin + window.location.pathname;
-          }
-        }
-        if (!baseSiteUrl.endsWith('/') && !baseSiteUrl.endsWith('.html')) {
-          baseSiteUrl += '/';
-        }
-
-        const redirectUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=success&plan=' + encodeURIComponent(plan.id);
-        const cancelUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=fail&reason=Payment_Cancelled_by_User';
-
-        const payload = {
-          full_name: customerName,
-          email: customerContact,
-          amount: String(plan.price),
-          metadata: {
-            plan_id: plan.id,
-            plan_name: plan.name,
-            days: String(plan.days),
-            customer: customerName
-          },
-          redirect_url: redirectUrl,
-          return_type: 'GET',
-          cancel_url: cancelUrl
-        };
-
-        const abortCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        const timeoutTimer = abortCtrl ? setTimeout(() => abortCtrl.abort(), 6500) : null;
-
-        fetch(baseUrl + '/checkout-v2', {
-          method: 'POST',
-          headers: {
-            'RT-UDDOKTAPAY-API-KEY': apiKey,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload),
-          signal: abortCtrl ? abortCtrl.signal : undefined
-        })
-        .then(res => {
-          if (timeoutTimer) clearTimeout(timeoutTimer);
-          return res.json();
-        })
-        .then(data => {
-          if (data && data.status && data.payment_url) {
-            localStorage.setItem('cfb_pending_checkout', JSON.stringify({
-              planId: plan.id,
-              planName: plan.name,
-              days: plan.days,
-              price: plan.price,
-              currency: 'BDT',
-              customer: customerName,
-              timestamp: Date.now()
-            }));
-            window.location.href = data.payment_url;
-          } else {
-            const msg = (data && data.message) ? data.message : 'Gateway response invalid';
-            this.triggerWhatsAppFallback(customerName, customerContact, plan, msg);
-          }
-        })
-        .catch(err => {
-          if (timeoutTimer) clearTimeout(timeoutTimer);
-          console.error('Paymently checkout error, opening WhatsApp:', err);
-          const errMsg = err.name === 'AbortError' ? 'Gateway Timeout (Slow network)' : err.message;
-          this.triggerWhatsAppFallback(customerName, customerContact, plan, errMsg);
-        });
+        this.showLoginAlert('Automatic payment activation is unavailable. Contact support to verify your purchase.');
+        return { success: false, message: 'Server-side payment verification required.' };
       }
 
       // Handle Payment Failure / Cancellation: Auto-open WhatsApp with Order details
       handlePaymentFailureWhatsApp(reason = 'Payment Failed on Gateway') {
         let pending = {};
         try {
-          pending = JSON.parse(localStorage.getItem('cfb_pending_checkout') || '{}');
+          pending = JSON.parse(gameStorage.getItem('cfb_pending_checkout') || '{}');
         } catch(e) {}
 
         const planId = pending.planId || this.activePlanId || '1m';
@@ -9428,692 +8551,43 @@
 
       // Start Real-Time 1-Click Polar.sh International Checkout (Cards / Apple Pay / Google Pay)
       startPolarCheckout() {
-        const nameInput = document.getElementById('polar-customer-name');
-        const emailInput = document.getElementById('polar-customer-email');
-        const userInput = document.getElementById('order-checkout-username');
-        const passInput = document.getElementById('order-checkout-password');
-        const statusBox = document.getElementById('polar-gw-status');
-        const btnPay = document.getElementById('btn-start-polar-checkout');
-
-        let chosenUser = (userInput && userInput.value.trim().replace(/[^a-zA-Z0-9_]/g, '')) || '';
-        let chosenPass = (passInput && passInput.value.trim()) || '';
-        if (!chosenUser) {
-          chosenUser = 'streamer_' + Math.floor(Math.random() * 8999 + 1000);
-          if (userInput) userInput.value = chosenUser;
-        }
-        if (!chosenPass) {
-          chosenPass = 'cfb' + Math.floor(Math.random() * 89999 + 10000);
-          if (passInput) passInput.value = chosenPass;
-        }
-
-        const customerName = (nameInput && nameInput.value.trim()) || chosenUser;
-        const customerEmail = (emailInput && emailInput.value.trim()) || '';
-
-        const plan = this.activeUsdPlan || getPlanDef(this.activePlanId || '1m', 'usd');
-        const polarToken = this.polarAccessToken || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
-        const productId = plan.polarProductId || 'fb8af379-2bfd-40fa-ae41-834020eef919';
-
-        try {
-          localStorage.setItem('cfb_pending_checkout_creds', JSON.stringify({
-            username: chosenUser,
-            password: chosenPass,
-            planId: plan.id,
-            planName: plan.name,
-            price: plan.price,
-            currency: 'USD',
-            customer: customerName,
-            email: customerEmail,
-            timestamp: Date.now()
-          }));
-        } catch(e) {}
-
-        if (btnPay) {
-          btnPay.disabled = true;
-          btnPay.innerHTML = '<span>⏳ CONNECTING TO POLAR SECURE CHECKOUT...</span>';
-        }
-        if (statusBox) {
-          statusBox.textContent = '🚀 Redirecting to Polar.sh Cards & Apple Pay checkout...';
-          statusBox.style.color = '#67e8f9';
-          statusBox.style.display = 'block';
-        }
-
-        let baseSiteUrl = 'https://countryflagbattle.xyz/';
-        if (typeof window !== 'undefined' && window.location) {
-          const proto = window.location.protocol;
-          if (proto === 'http:' || proto === 'https:') {
-            baseSiteUrl = window.location.origin + window.location.pathname;
-          }
-        }
-        if (!baseSiteUrl.endsWith('/') && !baseSiteUrl.endsWith('.html')) {
-          baseSiteUrl += '/';
-        }
-
-        const successUrl = baseSiteUrl + (baseSiteUrl.includes('?') ? '&' : '?') + 'payment=success&ref=polar&plan=' + encodeURIComponent(plan.id) + '&checkout_id={CHECKOUT_ID}';
-
-        const payload = {
-          products: [productId],
-          success_url: successUrl
-        };
-        if (customerEmail && customerEmail.includes('@')) {
-          payload.customer_email = customerEmail;
-        }
-        if (customerName) {
-          payload.customer_name = customerName;
-        }
-
-        const abortCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        const timeoutTimer = abortCtrl ? setTimeout(() => abortCtrl.abort(), 8500) : null;
-
-        fetch('https://api.polar.sh/v1/checkouts/custom/', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + polarToken,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-          },
-          body: JSON.stringify(payload),
-          signal: abortCtrl ? abortCtrl.signal : undefined
-        })
-        .then(res => {
-          if (timeoutTimer) clearTimeout(timeoutTimer);
-          if (!res.ok) {
-            return res.json().then(errData => {
-              throw new Error((errData && (errData.detail || errData.message)) ? JSON.stringify(errData.detail || errData.message) : ('HTTP ' + res.status));
-            });
-          }
-          return res.json();
-        })
-        .then(data => {
-          if (data && data.url) {
-            window.location.href = data.url;
-          } else {
-            throw new Error('Polar returned invalid checkout response');
-          }
-        })
-        .catch(err => {
-          if (timeoutTimer) clearTimeout(timeoutTimer);
-          console.error('Polar checkout error:', err);
-          if (btnPay) {
-            btnPay.disabled = false;
-            btnPay.innerHTML = '<span>🚀 PAY NOW WITH CARD / WALLET (<span id="polar-btn-price-display">$' + plan.price.toFixed(2) + ' USD</span>)</span>';
-          }
-          const errMsg = err.name === 'AbortError' ? 'Network Timeout' : (err.message || 'Error creating checkout');
-          
-          this.saveFailedOrder({
-            id: 'FAIL-' + Date.now().toString(36).toUpperCase(),
-            customer: customerName,
-            contact: customerEmail || 'No email provided',
-            plan: plan.name,
-            amount: '$' + plan.price + ' USD',
-            gateway: 'Polar.sh (Card/ApplePay)',
-            reason: errMsg,
-            date: new Date().toLocaleString(),
-            timestamp: Date.now()
-          });
-
-          this.showFailRecoveryModal(plan, 'Polar Checkout Error: ' + errMsg);
-        });
+        this.showLoginAlert('Automatic payment activation is unavailable. Contact support to verify your purchase.');
+        return { success: false, message: 'Server-side payment verification required.' };
       }
 
       // Auto-Activate Polar.sh Checkout Callback (?payment=success&ref=polar&checkout_id=...)
       handlePolarAutoUnlock(urlParams) {
-        let planId = urlParams.get('plan') || '1m';
-        const checkoutId = urlParams.get('checkout_id');
-        let customer = 'International Gamer';
-        let amount = '$3.99 USD';
-        let chosenUser = '';
-        let chosenPass = '';
-
-        try {
-          const raw = localStorage.getItem('cfb_pending_checkout_creds');
-          if (raw) {
-            const pending = JSON.parse(raw);
-            if (pending.planId) planId = pending.planId;
-            if (pending.customer) customer = pending.customer;
-            if (pending.username) chosenUser = pending.username;
-            if (pending.password) chosenPass = pending.password;
-            if (pending.price) amount = '$' + pending.price + ' USD';
-          }
-        } catch(e) {}
-
-        const plan = getPlanDef(planId, 'usd') || { id: planId, name: '1 Month Pass', days: 30, price: 3.99 };
-        const pTag = (plan.id || '1m').toLowerCase();
-        const trx = (checkoutId && checkoutId.length > 5) ? ('POL-' + checkoutId.slice(0, 10).toUpperCase()) : ('POL-' + Date.now().toString(36).toUpperCase());
-        const userSlug = (chosenUser || customer).replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || 'gamer';
-        const userPass = chosenPass || ('cfb' + Math.floor(Math.random() * 89999 + 10000));
-        const expiresAt = Date.now() + (plan.days * 86400000);
-        const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
-        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
-
-        this.loadDatabase();
-        this.licenses[userSlug.toLowerCase()] = {
-          userId: userSlug,
-          passHash: sha256Sync(userSlug.toLowerCase() + ':' + userPass),
-          planId: plan.id,
-          planTitle: plan.name + ' ($' + plan.price + ' USD)',
-          price: '$' + plan.price,
-          currency: 'USD',
-          createdAt: Date.now(),
-          expiresAt: expiresAt,
-          signature: this.createSignature(userSlug, expiresAt),
-          licenseKey: licenseKey,
-          plainPassHint: userPass
-        };
-        this.saveDatabase(true);
-
-        const actResult = this.activateKey(licenseKey);
-        if (actResult.valid) {
-          this.saveAutomatedOrder({
-            trxId: trx,
-            invoiceId: checkoutId || trx,
-            sender: customer + ' (@' + userSlug + ')',
-            gateway: 'Polar.sh (Cards/ApplePay)',
-            planId: plan.id,
-            planName: plan.name,
-            amount: amount,
-            licenseKey: licenseKey,
-            expiresAt: expiresAt,
-            date: new Date().toLocaleString(),
-            timestamp: Date.now()
-          });
-
-          this.showLockModal(false);
-          this.updateDrawerStatus();
-          this.updateAdminKpis();
-
-          if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }
-
-          this.showActivationCelebrationToast(userSlug, plan.name);
-        }
+        this.showLoginAlert('Automatic payment activation is unavailable. Contact support to verify your purchase.');
+        return { success: false, message: 'Server-side payment verification required.' };
       }
 
       // Verify and Auto-Activate Paymently Callback
       verifyAndActivateGatewayInvoice(invoiceId, fallbackPlanId = '1m') {
-        const baseUrl = this.paymentlyBaseUrl || 'https://mdtalhahussaintawhid.paymently.io/api';
-        const apiKey = this.paymentlyApiKey || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
-
-        // Check duplicate invoice
-        if (invoiceId) {
-          const orders = this.getAutomatedOrders();
-          const existing = orders.find(o => o.trxId === invoiceId || (o.invoiceId && o.invoiceId === invoiceId));
-          if (existing && existing.licenseKey) {
-            this.activateKey(existing.licenseKey);
-            this.showLockModal(false);
-            if (window.history && window.history.replaceState) {
-              window.history.replaceState({}, document.title, window.location.pathname);
-            }
-            return;
-          }
-        }
-
-        // Clean URL cleanly
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-
-        const handleSuccessUnlock = (res) => {
-          let planId = fallbackPlanId;
-          let customerName = 'Gamer';
-          let amountStr = '99 TK';
-          let trx = invoiceId || ('PAY-' + Date.now().toString(36).toUpperCase());
-
-          if (res) {
-            if (res.metadata && res.metadata.plan_id) planId = res.metadata.plan_id;
-            if (res.full_name) customerName = res.full_name;
-            if (res.amount) amountStr = res.amount + ' ' + (res.currency || 'BDT');
-            if (res.transaction_id) trx = res.transaction_id;
-          } else {
-            try {
-              const pending = JSON.parse(localStorage.getItem('cfb_pending_checkout') || '{}');
-              if (pending.planId) planId = pending.planId;
-              if (pending.customer) customerName = pending.customer;
-              if (pending.price) amountStr = pending.price + ' TK';
-            } catch(e) {}
-          }
-
-          const plan = getPlanDef(planId, this.selectedCurrency) || { id: planId, name: '1 Month Pass', days: 30, price: 99 };
-          const pTag = (plan.id || '1m').toLowerCase();
-          const userSlug = customerName.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || ('user_' + trx.slice(0, 5).toLowerCase());
-          const expiresAt = Date.now() + (plan.days * 86400000);
-          const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
-          const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
-
-          const actResult = this.activateKey(licenseKey);
-          if (actResult.valid) {
-            this.saveAutomatedOrder({
-              trxId: trx,
-              invoiceId: invoiceId || trx,
-              sender: customerName,
-              gateway: 'Paymently/bKash/Nagad',
-              planId: plan.id,
-              planName: plan.name,
-              amount: amountStr,
-              licenseKey: licenseKey,
-              expiresAt: expiresAt,
-              date: new Date().toLocaleString(),
-              timestamp: Date.now()
-            });
-
-            this.showLockModal(false);
-            this.updateDrawerStatus();
-            alert('🎉 আলহামদুলিল্লাহ! আপনার বিকাশ/নগদ পেমেন্ট সফল হয়েছে!\n\n💎 প্যাকেজ: ' + plan.name + '\n🔑 লাইসেন্স কি: ' + licenseKey + '\n\nগেম ২৪/৭ আনলক হয়ে গেছে!');
-          }
-        };
-
-        if (invoiceId && baseUrl && apiKey) {
-          fetch(baseUrl + '/verify-payment', {
-            method: 'POST',
-            headers: {
-              'RT-UDDOKTAPAY-API-KEY': apiKey,
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({ invoice_id: invoiceId })
-          })
-          .then(r => r.json())
-          .then(res => {
-            if (res.status === 'COMPLETED' || res.status === 'success' || res.transaction_id) {
-              handleSuccessUnlock(res);
-            } else if (res.status === 'CANCELLED' || res.status === 'FAILED') {
-              this.handlePaymentFailureWhatsApp('Payment ' + res.status + ' on Gateway');
-            } else {
-              console.warn('Paymently verification pending:', res);
-            }
-          })
-          .catch(err => {
-            console.warn('Verify fetch error, falling back:', err);
-            handleSuccessUnlock(null);
-          });
-        } else {
-          handleSuccessUnlock(null);
-        }
+        this.showLoginAlert('Automatic payment activation is unavailable. Contact support to verify your purchase.');
+        return { success: false, message: 'Server-side payment verification required.' };
       }
 
       // Auto-Activate Gumroad Return Callback
       handleGumroadAutoUnlock(urlParams) {
-        let planId = urlParams.get('plan') || '1m';
-        let customer = urlParams.get('customer') || urlParams.get('email') || 'Gumroad Buyer';
-        let amount = '$4.99 USD';
-
-        try {
-          const pending = JSON.parse(localStorage.getItem('cfb_pending_intl_plan') || '{}');
-          if (pending.planId) planId = pending.planId;
-          if (pending.price) amount = '$' + pending.price + ' USD';
-        } catch(e) {}
-
-        const plan = getPlanDef(planId, 'usd') || { id: planId, name: '1 Month Pass', days: 30, price: 4.99 };
-        const pTag = (plan.id || '1m').toLowerCase();
-        const trx = 'GUM-' + Date.now().toString(36).toUpperCase();
-        const userSlug = customer.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || 'buyer';
-        const expiresAt = Date.now() + (plan.days * 86400000);
-        const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
-        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
-
-        const actResult = this.activateKey(licenseKey);
-        if (actResult.valid) {
-          this.saveAutomatedOrder({
-            trxId: trx,
-            invoiceId: trx,
-            sender: customer,
-            gateway: 'Gumroad (Cards/ApplePay)',
-            planId: plan.id,
-            planName: plan.name,
-            amount: amount,
-            licenseKey: licenseKey,
-            expiresAt: expiresAt,
-            date: new Date().toLocaleString(),
-            timestamp: Date.now()
-          });
-
-          this.showLockModal(false);
-          this.updateDrawerStatus();
-
-          // Clean URL cleanly
-          if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }
-
-          alert('🎉 Thank You! Your Gumroad payment was successful!\n\n💎 Package: ' + plan.name + '\n🔑 License Key: ' + licenseKey + '\n\nGame has been automatically unlocked 24/7!');
-        }
+        this.showLoginAlert('Automatic payment activation is unavailable. Contact support to verify your purchase.');
+        return { success: false, message: 'Server-side payment verification required.' };
       }
 
       // Auto-Activate Buy Me a Coffee Return Callback
       handleBmacAutoUnlock(urlParams) {
-        let planId = urlParams.get('plan') || '1m';
-        let customer = urlParams.get('customer') || urlParams.get('name') || 'Supporter';
-        let amount = urlParams.get('amount') || '$4.99 USD';
-
-        try {
-          const pending = JSON.parse(localStorage.getItem('cfb_pending_bmac_plan') || '{}');
-          if (pending.planId) planId = pending.planId;
-          if (pending.price) amount = '$' + pending.price + ' USD';
-        } catch(e) {}
-
-        const plan = getPlanDef(planId, 'usd') || { id: planId, name: '1 Month Pass', days: 30, price: 4.99 };
-        const pTag = (plan.id || '1m').toLowerCase();
-        const trx = 'BMAC-' + Date.now().toString(36).toUpperCase();
-        const userSlug = customer.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || 'supporter';
-        const expiresAt = Date.now() + (plan.days * 86400000);
-        const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
-        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
-
-        const actResult = this.activateKey(licenseKey);
-        if (actResult.valid) {
-          this.saveAutomatedOrder({
-            trxId: trx,
-            invoiceId: trx,
-            sender: customer,
-            gateway: 'Buy Me a Coffee (Cards/ApplePay)',
-            planId: plan.id,
-            planName: plan.name,
-            amount: amount,
-            licenseKey: licenseKey,
-            expiresAt: expiresAt,
-            date: new Date().toLocaleString(),
-            timestamp: Date.now()
-          });
-
-          this.showLockModal(false);
-          this.updateDrawerStatus();
-
-          // Clean URL cleanly
-          if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }
-
-          alert('🎉 Thank You! Your Buy Me a Coffee payment was successful!\n\n💎 Package: ' + plan.name + '\n🔑 License Key: ' + licenseKey + '\n\nGame has been automatically unlocked 24/7!');
-        }
+        this.showLoginAlert('Automatic payment activation is unavailable. Contact support to verify your purchase.');
+        return { success: false, message: 'Server-side payment verification required.' };
       }
 
       // Verify transaction & instantly unlock access 24/7
       verifyAndActivateAutomatedOrder(sender, rawTrxId, gateway = 'BDT') {
-        const cleanSender = String(sender || '').trim();
-        const trxId = String(rawTrxId || '').trim().toUpperCase();
-
-        if (gateway === 'BDT') {
-          if (!cleanSender || cleanSender.length < 11) {
-            return { success: false, message: '⚠️ অনুগ্রহ করে আপনার সঠিক বিকাশ/নগদ নম্বর (১১ ডিজিট) দিন।' };
-          }
-          if (!trxId || trxId.length < 8) {
-            return { success: false, message: '⚠️ সঠিক Transaction ID (TrxID) লিখুন (কমপক্ষে ৮ অক্ষর)।' };
-          }
-        } else {
-          if (!cleanSender || cleanSender.length < 3) {
-            return { success: false, message: '⚠️ Please enter your valid Email or Streamer Handle.' };
-          }
-          if (!trxId || trxId.length < 6) {
-            return { success: false, message: '⚠️ Please enter your valid Transaction Reference or Order ID.' };
-          }
-        }
-
-        // Anti-Duplicate Check
-        const orders = this.getAutomatedOrders();
-        const existing = orders.find(o => o.trxId === trxId);
-        if (existing) {
-          return { success: false, message: '⚠️ এই Transaction ID টি ইতিমধ্যে ' + existing.date + ' তারিখে ব্যবহার করা হয়েছে!' };
-        }
-
-        // Read chosen streamer username and password from inputs if present
-        const userInput = document.getElementById('order-checkout-username');
-        const passInput = document.getElementById('order-checkout-password');
-        let chosenUser = (userInput && userInput.value.trim().replace(/[^a-zA-Z0-9_]/g, '')) || '';
-        let chosenPass = (passInput && passInput.value.trim()) || '';
-        if (!chosenUser) {
-          chosenUser = cleanSender.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() || ('user_' + trxId.slice(0, 5).toLowerCase());
-        }
-        if (!chosenPass) {
-          chosenPass = 'cfb' + Math.floor(Math.random() * 89999 + 10000);
-        }
-
-        // Active plan
-        const plan = this.activeOrderPlan || getPlanDef('1m', this.selectedCurrency) || { id: '1m', name: '1 Month Pass', days: 30, price: 99 };
-        const pTag = (plan.id || '1m').toLowerCase();
-        const userSlug = chosenUser.toLowerCase();
-        const expiresAt = Date.now() + (plan.days * 86400000);
-        const keySig = sha256Sync(userSlug + ':' + expiresAt + ':' + pTag + ':' + SECURITY_SALT).slice(0, 8);
-        const licenseKey = 'CFB-' + pTag.toUpperCase() + '-' + userSlug + '-' + expiresAt + '-' + keySig;
-
-        // Register in database with chosen credentials without erasing existing accounts
-        this.loadDatabase();
-        this.licenses[userSlug] = {
-          userId: chosenUser,
-          passHash: sha256Sync(userSlug + ':' + chosenPass),
-          planId: plan.id,
-          planTitle: plan.name + ' (' + plan.price + ' ' + (plan.currency || 'TK') + ')',
-          price: plan.price,
-          currency: plan.currency || 'TK',
-          createdAt: Date.now(),
-          expiresAt: expiresAt,
-          signature: this.createSignature(chosenUser, expiresAt),
-          licenseKey: licenseKey,
-          plainPassHint: chosenPass
-        };
-        this.saveDatabase(true);
-
-        // Activate key immediately on this device!
-        const actResult = this.activateKey(licenseKey);
-
-        if (!actResult.valid) {
-          return { success: false, message: '⚠️ এক্টিভেশন ত্রুটি: ' + actResult.message };
-        }
-
-        // Store automated order record
-        const newOrder = {
-          trxId: trxId,
-          sender: cleanSender + ' (@' + chosenUser + ')',
-          gateway: gateway,
-          planId: plan.id,
-          planName: plan.name,
-          amount: (gateway === 'USD' ? ('$' + plan.price) : (plan.price + ' TK')),
-          licenseKey: licenseKey,
-          expiresAt: expiresAt,
-          date: new Date().toLocaleString(),
-          timestamp: Date.now()
-        };
-        this.saveAutomatedOrder(newOrder);
-        this.updateAdminKpis();
-
-        // Success View Transition
-        const panelBd = document.getElementById('panel-bd-pay');
-        const panelIntl = document.getElementById('panel-intl-pay');
-        const panelSuccess = document.getElementById('panel-pay-success');
-        const tabsWrapper = document.getElementById('order-tabs-wrapper');
-        const successKeyEl = document.getElementById('order-success-key');
-        const successExpEl = document.getElementById('order-success-expires');
-        const successUserEl = document.getElementById('order-success-userid');
-        const successPassEl = document.getElementById('order-success-pass');
-
-        if (tabsWrapper) tabsWrapper.style.display = 'none';
-        if (panelBd) panelBd.style.display = 'none';
-        if (panelIntl) panelIntl.style.display = 'none';
-        if (panelSuccess) panelSuccess.style.display = 'flex';
-
-        if (successUserEl) successUserEl.textContent = chosenUser;
-        if (successPassEl) successPassEl.textContent = chosenPass;
-        if (successKeyEl) successKeyEl.textContent = licenseKey;
-        if (successExpEl) successExpEl.textContent = plan.days + ' Days (' + new Date(expiresAt).toLocaleDateString() + ')';
-
-        this.showActivationCelebrationToast(chosenUser, plan.name);
-        return { success: true, licenseKey: licenseKey };
+        this.showLoginAlert('Automatic payment activation is unavailable. Contact support to verify your purchase.');
+        return { success: false, message: 'Server-side payment verification required.' };
       }
 
-      init() {
-        this.detectCountryAndCurrency();
-        this.setupDOM();
-        this.renderPricingCards();
-        this.updateAdminKpis();
+      init() { this.setupDOM(); this.renderPricingCards(); this.handleTrialWorkflow(); }
 
-        // 1-Click Automatic Gateway Return Check: ?payment=success or ?payment=fail or ?invoice_id=...
-        try {
-          if (typeof window !== 'undefined' && window.location) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const invoiceId = urlParams.get('invoice_id');
-            const payStatus = (urlParams.get('payment') || urlParams.get('status') || '').toLowerCase();
-            const reason = urlParams.get('reason') || 'Payment Failed or Cancelled on Gateway';
-
-            if (payStatus === 'fail' || payStatus === 'failed' || payStatus === 'cancel' || payStatus === 'cancelled') {
-              this.saveFailedOrder({
-                id: 'FAIL-' + Date.now().toString(36).toUpperCase(),
-                customer: urlParams.get('customer') || 'Website Visitor',
-                contact: urlParams.get('email') || urlParams.get('phone') || 'No contact',
-                plan: urlParams.get('plan') || 'Game Pass',
-                amount: urlParams.get('amount') || 'USD',
-                gateway: 'Online Gateway Callback',
-                reason: reason,
-                date: new Date().toLocaleString(),
-                timestamp: Date.now()
-              });
-              this.handlePaymentFailureWhatsApp(reason);
-            } else if (urlParams.get('ref') === 'polar' || urlParams.get('polar_success') === 'true') {
-              // Polar.sh Auto-Redirect Success Unlock
-              this.handlePolarAutoUnlock(urlParams);
-            } else if (urlParams.get('ref') === 'gumroad' || urlParams.get('gumroad_success') === 'true') {
-              this.handleGumroadAutoUnlock(urlParams);
-            } else if (urlParams.get('bmac_success') === 'true' || urlParams.get('payment_success') === 'true' || payStatus === 'bmac' || urlParams.get('ref') === 'bmac') {
-              this.handleBmacAutoUnlock(urlParams);
-            } else if (invoiceId || payStatus === 'success' || payStatus === 'completed') {
-              this.verifyAndActivateGatewayInvoice(invoiceId, urlParams.get('plan') || '1m');
-            }
-          }
-        } catch(e) {
-          console.warn('Gateway callback check error:', e);
-        }
-
-        // 1-Click Universal Automatic URL Activation: ?key=CFB-... or #key=CFB-... or ?activate=...
-        try {
-          if (typeof window !== 'undefined' && window.location) {
-            let keyParam = null;
-            // 1. Search Query Parameters
-            if (window.location.search) {
-              const urlParams = new URLSearchParams(window.location.search);
-              keyParam = urlParams.get('key') || urlParams.get('k') || urlParams.get('activate') || urlParams.get('license') || urlParams.get('code') || urlParams.get('lic');
-            }
-            // 2. Hash Parameters fallback (#key=..., #activate=..., or direct #CFB-...)
-            if (!keyParam && window.location.hash) {
-              const hash = window.location.hash.replace(/^#\/?/, '').trim();
-              if (hash.toUpperCase().startsWith('CFB-')) {
-                keyParam = hash;
-              } else if (hash.includes('=')) {
-                const hashParams = new URLSearchParams(hash);
-                keyParam = hashParams.get('key') || hashParams.get('k') || hashParams.get('activate') || hashParams.get('license');
-              }
-            }
-
-            if (keyParam) {
-              try { keyParam = decodeURIComponent(keyParam).trim(); } catch(e) {}
-              if (keyParam.toUpperCase().startsWith('CFB-')) {
-                const actRes = this.activateKey(keyParam);
-                if (actRes.valid) {
-                  // Clean URL cleanly without reloading
-                  if (window.history && window.history.replaceState) {
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                  }
-                  this.showLockModal(false);
-                  this.updateDrawerStatus();
-                  this.updateAdminKpis();
-                  const hudTrial = document.getElementById('hud-trial-badge');
-                  if (hudTrial) hudTrial.style.display = 'none';
-
-                  // Modern non-blocking celebration toast
-                  this.showActivationCelebrationToast(actRes.session.userId, actRes.session.planTitle);
-                } else {
-                  this.showLoginAlert(actRes.message, 'error');
-                }
-              }
-            }
-          }
-        } catch(e) {
-          console.error('URL activation check:', e);
-        }
-
-        const check = this.checkSession();
-        if (check.valid) {
-          this.showLockModal(false);
-          this.updateDrawerStatus();
-          const hudTrial = document.getElementById('hud-trial-badge');
-          if (hudTrial) hudTrial.style.display = 'none';
-        } else {
-          this.handleTrialWorkflow();
-          if (check.expired) {
-            this.showLoginAlert('⚠️ Your subscription has expired! Please renew with Master Admin.', 'error');
-          }
-        }
-
-        // Periodic Background Expiry Monitor (Checks every 15 seconds)
-        setInterval(() => {
-          if (this.session && this.session.role === 'subscriber') {
-            if (Date.now() > this.session.expiresAt) {
-              this.logout();
-              this.showLoginAlert('⚠️ Subscription duration ended! Arena is now locked.', 'error');
-            } else {
-              this.updateDrawerStatus();
-            }
-          }
-        }, 15000);
-
-        // 1-Click Master Admin URL Route Check (/admin, #admin, ?admin, ?admin=true)
-        try {
-          if (typeof window !== 'undefined' && window.location) {
-            const checkAdminUrl = () => {
-              const fullHref = (window.location.href || '').toLowerCase();
-              const path = (window.location.pathname || '').toLowerCase();
-              const hash = (window.location.hash || '').toLowerCase();
-              const search = (window.location.search || '').toLowerCase();
-
-              if (fullHref.includes('admin') || path.includes('/admin') || hash.includes('admin') || search.includes('admin')) {
-                this.openAdminPanel();
-              }
-            };
-            checkAdminUrl();
-            setTimeout(checkAdminUrl, 50);
-            setTimeout(checkAdminUrl, 200);
-            setTimeout(checkAdminUrl, 600);
-            window.addEventListener('hashchange', checkAdminUrl);
-            window.addEventListener('popstate', checkAdminUrl);
-          }
-        } catch(e) {
-          console.warn('Admin route check error:', e);
-        }
-      }
-
-      openAdminPanel() {
-        const adminModal = document.getElementById('admin-license-modal');
-        if (!adminModal) return;
-
-        // Hide any overlapping lock or order modals
-        this.showLockModal(false);
-        const orderModal = document.getElementById('cyber-order-modal');
-        if (orderModal) orderModal.classList.remove('show');
-        if (this.app) this.app.toggleDrawer(false);
-
-        const authGate = document.getElementById('admin-auth-gate');
-        const mainContent = document.getElementById('admin-main-content');
-
-        const isAdmin = this.session && this.session.role === 'admin';
-        if (isAdmin) {
-          if (authGate) authGate.style.display = 'none';
-          if (mainContent) mainContent.style.display = 'block';
-          this.updateAdminKpis();
-          this.renderAdminAutomatedOrders();
-          this.renderAdminSubscribers();
-          this.renderAdminFailedOrders();
-        } else {
-          if (authGate) authGate.style.display = 'block';
-          if (mainContent) mainContent.style.display = 'none';
-          const alertEl = document.getElementById('admin-gate-alert');
-          if (alertEl) alertEl.style.display = 'none';
-          const passInput = document.getElementById('admin-gate-pass');
-          if (passInput) {
-            passInput.value = '';
-            setTimeout(() => passInput.focus(), 250);
-          }
-        }
-
-        adminModal.classList.add('show');
-      }
+      openAdminPanel() { return false; }
 
       showLockModal(show = true) {
         const modal = document.getElementById('cyber-lock-modal');
@@ -10148,7 +8622,7 @@
         } else {
           box.innerHTML = '<div class="drawer-auth-user">🔒 Not Authenticated</div><div class="drawer-auth-plan">Access Locked</div>';
         }
-        if (adminBtn) adminBtn.style.display = 'flex';
+        if (adminBtn) adminBtn.remove();
       }
 
       setupDOM() {
@@ -10245,277 +8719,14 @@
         }
 
         // Drawer Admin Panel Trigger
-        const btnAdminPanel = document.getElementById('drawer-btn-admin-panel');
-        const btnAdminTop = document.getElementById('drawer-btn-admin-top');
-        const adminModal = document.getElementById('admin-license-modal');
-        const adminClose = document.getElementById('admin-modal-close-btn');
-
-        if (btnAdminPanel) {
-          btnAdminPanel.addEventListener('click', () => {
-            if (this.app) this.app.toggleDrawer(false);
-            this.openAdminPanel();
-          });
-        }
-        if (btnAdminTop) {
-          btnAdminTop.addEventListener('click', () => {
-            if (this.app) this.app.toggleDrawer(false);
-            this.openAdminPanel();
-          });
-        }
-        if (adminClose && adminModal) {
-          adminClose.addEventListener('click', () => {
-            adminModal.classList.remove('show');
-          });
-        }
-        if (adminModal) {
-          adminModal.addEventListener('click', (e) => {
-            if (e.target === adminModal) {
-              adminModal.classList.remove('show');
-            }
-          });
-        }
-
-        // Admin Security Gate Unlock Handler
-        const btnAdminGateLogin = document.getElementById('btn-admin-gate-login');
-        const inputGateUser = document.getElementById('admin-gate-user');
-        const inputGatePass = document.getElementById('admin-gate-pass');
-        const alertGate = document.getElementById('admin-gate-alert');
-
-        const handleAdminGateLogin = async () => {
-          const u = inputGateUser ? inputGateUser.value.trim() : '';
-          const p = inputGatePass ? inputGatePass.value.trim() : '';
-          if (!u || !p) {
-            if (alertGate) {
-              alertGate.textContent = 'Please enter Master Admin ID and Password!';
-              alertGate.style.display = 'block';
-            }
-            return;
-          }
-          if (btnAdminGateLogin) {
-            btnAdminGateLogin.disabled = true;
-            btnAdminGateLogin.innerHTML = '<span>⚡ VERIFYING CREDENTIALS...</span>';
-          }
-          try {
-            const res = await this.login(u, p);
-            if (res.success && res.role === 'admin') {
-              if (alertGate) alertGate.style.display = 'none';
-              if (inputGatePass) inputGatePass.value = '';
-              this.openAdminPanel();
-              this.updateDrawerStatus();
-              this.showActivationCelebrationToast('tawhidh2005', '👑 Lifetime Master Admin');
-            } else {
-              if (alertGate) {
-                alertGate.textContent = res.message || 'Invalid Master Admin credentials!';
-                alertGate.style.display = 'block';
-              }
-            }
-          } catch(err) {
-            if (alertGate) {
-              alertGate.textContent = 'Verification error: ' + (err.message || 'Verification failed');
-              alertGate.style.display = 'block';
-            }
-          } finally {
-            if (btnAdminGateLogin) {
-              btnAdminGateLogin.disabled = false;
-              btnAdminGateLogin.innerHTML = '<span>⚡ UNLOCK ADMIN CONTROL CENTER</span>';
-            }
-          }
-        };
-
-        if (btnAdminGateLogin) btnAdminGateLogin.addEventListener('click', handleAdminGateLogin);
-        if (inputGatePass) {
-          inputGatePass.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') handleAdminGateLogin();
-          });
-        }
-
-        // Admin Modal Tabs (5 Mobile & Desktop Tabs)
-        const aTabOrders = document.getElementById('admin-tab-btn-orders');
-        const aTabList = document.getElementById('admin-tab-btn-list');
-        const aTabFailed = document.getElementById('admin-tab-btn-failed');
-        const aTabCreate = document.getElementById('admin-tab-btn-create');
-        const aTabBackup = document.getElementById('admin-tab-btn-backup');
-
-        const aSecOrders = document.getElementById('admin-sec-orders');
-        const aSecList = document.getElementById('admin-sec-list');
-        const aSecFailed = document.getElementById('admin-sec-failed');
-        const aSecCreate = document.getElementById('admin-sec-create');
-        const aSecBackup = document.getElementById('admin-sec-backup');
-
-        const adminTabs = [aTabOrders, aTabList, aTabFailed, aTabCreate, aTabBackup];
-        const adminSecs = [aSecOrders, aSecList, aSecFailed, aSecCreate, aSecBackup];
-
-        const switchAdminTab = (activeTab, activeSec) => {
-          adminTabs.forEach(t => t && t.classList.remove('active'));
-          adminSecs.forEach(s => s && s.classList.remove('active'));
-          if (activeTab) activeTab.classList.add('active');
-          if (activeSec) activeSec.classList.add('active');
-          this.updateAdminKpis();
-        };
-
-        if (aTabOrders) aTabOrders.addEventListener('click', () => { switchAdminTab(aTabOrders, aSecOrders); this.renderAdminAutomatedOrders(); });
-        if (aTabList) aTabList.addEventListener('click', () => { switchAdminTab(aTabList, aSecList); this.renderAdminSubscribers(); });
-        if (aTabFailed) aTabFailed.addEventListener('click', () => { switchAdminTab(aTabFailed, aSecFailed); this.renderAdminFailedOrders(); });
-        if (aTabCreate) aTabCreate.addEventListener('click', () => switchAdminTab(aTabCreate, aSecCreate));
-        if (aTabBackup) aTabBackup.addEventListener('click', () => switchAdminTab(aTabBackup, aSecBackup));
-
-        const btnClearOrders = document.getElementById('btn-clear-automated-orders');
-        if (btnClearOrders) {
-          btnClearOrders.addEventListener('click', () => {
-            if (confirm('Are you sure you want to clear automated orders history? (Active licenses remain intact)')) {
-              localStorage.removeItem('cfb_automated_orders');
-              this.renderAdminAutomatedOrders();
-              this.updateAdminKpis();
-            }
-          });
-        }
-
-        const btnClearFailed = document.getElementById('btn-clear-failed-orders');
-        if (btnClearFailed) {
-          btnClearFailed.addEventListener('click', () => {
-            if (confirm('Are you sure you want to clear failed checkout attempts?')) {
-              localStorage.removeItem('cfb_failed_orders');
-              this.renderAdminFailedOrders();
-              this.updateAdminKpis();
-            }
-          });
-        }
-
-        const searchOrdersInput = document.getElementById('admin-search-orders');
-        if (searchOrdersInput) {
-          searchOrdersInput.addEventListener('input', () => this.renderAdminAutomatedOrders());
-        }
-
-        // Auto ID & Password generators
-        const btnGenUser = document.getElementById('btn-gen-userid');
-        const btnGenPass = document.getElementById('btn-gen-pass');
-        const newUserInput = document.getElementById('admin-new-user');
-        const newPassInput = document.getElementById('admin-new-pass');
-
-        if (btnGenUser && newUserInput) {
-          btnGenUser.addEventListener('click', () => {
-            newUserInput.value = 'streamer_' + Math.floor(100 + Math.random() * 900);
-          });
-        }
-        if (btnGenPass && newPassInput) {
-          btnGenPass.addEventListener('click', () => {
-            const chars = 'abcdefghjkmnpqrstuvwxyz23456789!@#';
-            let p = '';
-            for (let i = 0; i < 8; i++) p += chars[Math.floor(Math.random() * chars.length)];
-            newPassInput.value = p;
-          });
-        }
-
-        // Plan change custom days display
-        const selectPlan = document.getElementById('admin-new-plan');
-        const customWrap = document.getElementById('admin-custom-days-wrap');
-        if (selectPlan && customWrap) {
-          selectPlan.addEventListener('change', () => {
-            customWrap.style.display = selectPlan.value === 'custom' ? 'flex' : 'none';
-          });
-        }
-
-        // Generate License Button
-        const btnGenLicense = document.getElementById('btn-generate-license');
-        const cardResultWrap = document.getElementById('admin-card-result-wrap');
-        const cardResultText = document.getElementById('admin-card-result-text');
-        const btnCopyResult = document.getElementById('btn-copy-card-result');
-
-        if (btnGenLicense) {
-          btnGenLicense.addEventListener('click', async () => {
-            const u = newUserInput.value;
-            const p = newPassInput.value;
-            const plan = selectPlan.value;
-            const customDays = document.getElementById('admin-custom-days').value;
-
-            btnGenLicense.disabled = true;
-            btnGenLicense.innerHTML = '<span>⏳ SAVING & SYNCING TO CLOUD...</span>';
-            try {
-              const res = this.createLicense(u, p, plan, customDays);
-              if (res.success) {
-                cardResultText.textContent = res.formattedCard;
-                cardResultWrap.style.display = 'flex';
-                this.renderAdminSubscribers();
-                this.updateAdminKpis();
-                await this.syncToCloud();
-
-                const waShareBtn = document.getElementById('btn-share-card-wa');
-                if (waShareBtn) {
-                  const adminWa = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
-                  waShareBtn.href = 'https://wa.me/?text=' + encodeURIComponent(res.formattedCard);
-                }
-              } else {
-                alert(res.message);
-              }
-            } finally {
-              btnGenLicense.disabled = false;
-              btnGenLicense.innerHTML = '<span>🚀 GENERATE & SAVE LICENSE</span>';
-            }
-          });
-        }
-
-        if (btnCopyResult && cardResultText) {
-          btnCopyResult.addEventListener('click', () => {
-            navigator.clipboard.writeText(cardResultText.textContent).then(() => {
-              btnCopyResult.textContent = '✅ COPIED TO CLIPBOARD!';
-              setTimeout(() => {
-                btnCopyResult.textContent = '📋 COPY FOR WHATSAPP / MESSENGER';
-              }, 2000);
-            }).catch(() => {
-              alert('Copied! (Please select text to copy if browser blocked clipboard)');
-            });
-          });
-        }
-
-        // Refresh & Cloud Sync Subscribers List
-        const btnRefreshSub = document.getElementById('btn-refresh-subscribers');
-        if (btnRefreshSub) {
-          btnRefreshSub.addEventListener('click', async () => {
-            btnRefreshSub.textContent = '⏳ REFRESHING...';
-            await this.syncFromCloud();
-            this.renderAdminSubscribers();
-            btnRefreshSub.textContent = '🔄 REFRESH';
-          });
-        }
-
-        const btnAdminCloudSync = document.getElementById('btn-admin-cloud-sync');
-        const btnCloudSyncSub = document.getElementById('btn-cloud-sync-subscribers');
-        const triggerCloudSync = async (btn) => {
-          if (btn) btn.textContent = '⏳ SYNCING...';
-          await this.syncToCloud();
-          await this.syncFromCloud();
-          this.renderAdminSubscribers();
-          if (btn) btn.textContent = '✅ SYNCED';
-          setTimeout(() => {
-            if (btnAdminCloudSync) btnAdminCloudSync.textContent = '🔄 SYNC NOW';
-            if (btnCloudSyncSub) btnCloudSyncSub.textContent = '☁️ CLOUD SYNC';
-          }, 2000);
-        };
-        if (btnAdminCloudSync) btnAdminCloudSync.addEventListener('click', () => triggerCloudSync(btnAdminCloudSync));
-        if (btnCloudSyncSub) btnCloudSyncSub.addEventListener('click', () => triggerCloudSync(btnCloudSyncSub));
-
-        // Export Licenses
-        const btnExport = document.getElementById('btn-export-licenses');
-        if (btnExport) {
-          btnExport.addEventListener('click', () => {
-            const str = JSON.stringify(this.licenses, null, 2);
-            navigator.clipboard.writeText(str).then(() => {
-              alert('Licenses exported to clipboard as JSON!');
-            }).catch(() => {
-              prompt('Copy your Licenses Backup JSON:', str);
-            });
-          });
-        }
-
-
         // Contact Settings from Storage
-        this.adminWhatsApp = localStorage.getItem('cfb_admin_whatsapp') || '8801711729858';
-        this.adminBkash = localStorage.getItem('cfb_admin_bkash') || '017XXXXXXXX';
-        this.adminGumroadUrl = localStorage.getItem('cfb_admin_gumroad_url') || 'https://tawhidh.gumroad.com/l/hedbi';
-        this.adminBmacUrl = localStorage.getItem('cfb_admin_bmac_url') || 'https://buymeacoffee.com/tawhid2005';
-        this.adminPayPal = localStorage.getItem('cfb_admin_paypal') || 'tawhidh2005@gmail.com';
-        this.paymentlyBaseUrl = localStorage.getItem('cfb_paymently_base_url') || 'https://mdtalhahussaintawhid.paymently.io/api';
-        this.paymentlyApiKey = localStorage.getItem('cfb_paymently_api_key') || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
+        this.adminWhatsApp = gameStorage.getItem('cfb_admin_whatsapp') || '8801711729858';
+        this.adminBkash = gameStorage.getItem('cfb_admin_bkash') || '017XXXXXXXX';
+        this.adminGumroadUrl = gameStorage.getItem('cfb_admin_gumroad_url') || 'https://tawhidh.gumroad.com/l/hedbi';
+        this.adminBmacUrl = gameStorage.getItem('cfb_admin_bmac_url') || 'https://buymeacoffee.com/tawhid2005';
+        this.adminPayPal = gameStorage.getItem('cfb_admin_paypal') || 'tawhidh2005@gmail.com';
+        this.paymentlyBaseUrl = gameStorage.getItem('cfb_paymently_base_url') || 'https://mdtalhahussaintawhid.paymently.io/api';
+        this.paymentlyApiKey = ''; // Server-side configuration required.
 
         // Order Modal Elements
         const orderModal = document.getElementById('cyber-order-modal');
@@ -10529,12 +8740,12 @@
         if (btnUsd && btnBdt) {
           btnUsd.addEventListener('click', () => {
             this.selectedCurrency = 'usd';
-            try { localStorage.setItem('cfb_user_currency', 'usd'); } catch(e) {}
+            try { gameStorage.setItem('cfb_user_currency', 'usd'); } catch(e) {}
             this.renderPricingCards();
           });
           btnBdt.addEventListener('click', () => {
             this.selectedCurrency = 'bdt';
-            try { localStorage.setItem('cfb_user_currency', 'bdt'); } catch(e) {}
+            try { gameStorage.setItem('cfb_user_currency', 'bdt'); } catch(e) {}
             this.renderPricingCards();
           });
         }
@@ -10623,8 +8834,6 @@
         const tabBdPay = document.getElementById('btn-tab-bd-pay');
         const tabIntlPay = document.getElementById('btn-tab-intl-pay');
         const btnCopyBdNum = document.getElementById('btn-copy-bd-number');
-        const btnVerifyBd = document.getElementById('btn-auto-verify-bd');
-        const btnVerifyIntl = document.getElementById('btn-auto-verify-intl');
         const btnCopySuccessKey = document.getElementById('btn-copy-success-key');
         const btnOrderStartGame = document.getElementById('btn-order-start-game');
         const btnOrderWaSupport = document.getElementById('btn-order-wa-support');
@@ -10755,74 +8964,6 @@
           });
         }
 
-        // Automated Verification: Bangladeshi Gateway (bKash/Nagad Send Money)
-        if (btnVerifyBd) {
-          btnVerifyBd.addEventListener('click', () => {
-            const phoneInput = document.getElementById('auto-pay-sender-phone');
-            const trxInput = document.getElementById('auto-pay-trx-id') || document.getElementById('auto-pay-trxid');
-            const alertBox = document.getElementById('auto-pay-alert-bd');
-
-            const phone = phoneInput ? phoneInput.value.trim() : '';
-            const trxId = trxInput ? trxInput.value.trim() : '';
-
-            if (alertBox) alertBox.style.display = 'none';
-
-            btnVerifyBd.disabled = true;
-            btnVerifyBd.innerHTML = '<span>⏳ VERIFYING PAYMENT & ACTIVATING...</span>';
-
-            setTimeout(() => {
-              btnVerifyBd.disabled = false;
-              btnVerifyBd.innerHTML = '<span>⚡ VERIFY & INSTANT UNLOCK (তাৎক্ষণিক আনলক)</span>';
-
-              const res = this.verifyAndActivateAutomatedOrder(phone, trxId, 'BDT');
-              if (!res.success) {
-                if (alertBox) {
-                  alertBox.className = 'order-alert-box order-alert-error';
-                  alertBox.textContent = res.message;
-                  alertBox.style.display = 'block';
-                }
-              } else {
-                if (phoneInput) phoneInput.value = '';
-                if (trxInput) trxInput.value = '';
-              }
-            }, 650);
-          });
-        }
-
-        // Automated Verification: International Gateway (Payoneer / USD)
-        if (btnVerifyIntl) {
-          btnVerifyIntl.addEventListener('click', () => {
-            const userInput = document.getElementById('auto-pay-intl-user');
-            const refInput = document.getElementById('auto-pay-intl-ref');
-            const alertBox = document.getElementById('auto-pay-alert-intl');
-
-            const user = userInput ? userInput.value.trim() : '';
-            const ref = refInput ? refInput.value.trim() : '';
-
-            if (alertBox) alertBox.style.display = 'none';
-
-            btnVerifyIntl.disabled = true;
-            btnVerifyIntl.innerHTML = '<span>⏳ VERIFYING REFERENCE...</span>';
-
-            setTimeout(() => {
-              btnVerifyIntl.disabled = false;
-              btnVerifyIntl.innerHTML = '<span>⚡ VERIFY & UNLOCK GLOBAL PASS</span>';
-
-              const res = this.verifyAndActivateAutomatedOrder(user, ref, 'USD');
-              if (!res.success) {
-                if (alertBox) {
-                  alertBox.className = 'order-alert-box order-alert-error';
-                  alertBox.textContent = res.message;
-                  alertBox.style.display = 'block';
-                }
-              } else {
-                if (userInput) userInput.value = '';
-                if (refInput) refInput.value = '';
-              }
-            }, 650);
-          });
-        }
-
         // Copy Key on Success Card
         if (btnCopySuccessKey) {
           btnCopySuccessKey.addEventListener('click', () => {
@@ -10935,87 +9076,11 @@
           });
         }
 
-        // Admin Contact Settings Inputs in Admin Panel
-        const inputWA = document.getElementById('admin-setting-whatsapp');
-        const inputBkash = document.getElementById('admin-setting-bkash');
-        const inputPayPal = document.getElementById('admin-setting-paypal');
-        const inputGwUrl = document.getElementById('admin-setting-gateway-url');
-        const inputGwKey = document.getElementById('admin-setting-gateway-key');
-        const inputPolarToken = document.getElementById('admin-setting-polar-token');
-        const btnSaveSettings = document.getElementById('btn-save-admin-settings');
-
-        if (inputPolarToken) inputPolarToken.value = this.polarAccessToken || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
-
-        if (inputWA) inputWA.value = this.adminWhatsApp;
-        if (inputBkash) inputBkash.value = this.adminBkash;
-        const inputGumroad = document.getElementById('admin-setting-gumroad');
-        if (inputGumroad) inputGumroad.value = this.adminGumroadUrl || 'https://tawhidh.gumroad.com/l/hedbi';
-        const inputBmac = document.getElementById('admin-setting-bmac');
-        if (inputBmac) inputBmac.value = this.adminBmacUrl || 'https://buymeacoffee.com/tawhid2005';
-        if (inputPayPal) inputPayPal.value = this.adminPayPal || 'tawhidh2005@gmail.com';
-        if (inputGwUrl) inputGwUrl.value = this.paymentlyBaseUrl || 'https://mdtalhahussaintawhid.paymently.io/api';
-        if (inputGwKey) inputGwKey.value = this.paymentlyApiKey || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
-
-        if (btnSaveSettings) {
-          btnSaveSettings.addEventListener('click', () => {
-            if (inputWA) {
-              this.adminWhatsApp = inputWA.value.trim() || '8801711729858';
-              localStorage.setItem('cfb_admin_whatsapp', this.adminWhatsApp);
-            }
-            if (inputBkash) {
-              this.adminBkash = inputBkash.value.trim() || '017XXXXXXXX';
-              localStorage.setItem('cfb_admin_bkash', this.adminBkash);
-            }
-            if (inputGumroad) {
-              this.adminGumroadUrl = inputGumroad.value.trim() || 'https://tawhidh.gumroad.com/l/hedbi';
-              localStorage.setItem('cfb_admin_gumroad_url', this.adminGumroadUrl);
-            }
-            if (inputBmac) {
-              this.adminBmacUrl = inputBmac.value.trim() || 'https://buymeacoffee.com/tawhid2005';
-              localStorage.setItem('cfb_admin_bmac_url', this.adminBmacUrl);
-            }
-            if (inputPayPal) {
-              this.adminPayPal = inputPayPal.value.trim() || 'tawhidh2005@gmail.com';
-              localStorage.setItem('cfb_admin_paypal', this.adminPayPal);
-            }
-            if (inputGwUrl) {
-              this.paymentlyBaseUrl = inputGwUrl.value.trim() || 'https://mdtalhahussaintawhid.paymently.io/api';
-              localStorage.setItem('cfb_paymently_base_url', this.paymentlyBaseUrl);
-            }
-            if (inputGwKey) {
-              this.paymentlyApiKey = inputGwKey.value.trim() || 'pYfsDB3GFzFbAfOKa8WjU0y0BrpBWCpf8eekenmn';
-              localStorage.setItem('cfb_paymently_api_key', this.paymentlyApiKey);
-            }
-            if (inputPolarToken) {
-              this.polarAccessToken = inputPolarToken.value.trim() || 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
-              localStorage.setItem('cfb_admin_polar_token', this.polarAccessToken);
-            }
-            alert('✅ Admin Settings, Paymently & Polar Credentials Saved Successfully!');
-          });
-        }
-
-        // Import Licenses
-        const btnImport = document.getElementById('btn-import-licenses');
-        const importText = document.getElementById('admin-import-json');
-        if (btnImport && importText) {
-          btnImport.addEventListener('click', () => {
-            try {
-              const obj = JSON.parse(importText.value);
-              this.licenses = Object.assign({}, this.licenses, obj);
-              this.saveDatabase();
-              this.renderAdminSubscribers();
-              alert('Successfully imported licenses!');
-              importText.value = '';
-            } catch(e) {
-              alert('Invalid JSON! Please paste valid licenses JSON.');
-            }
-          });
-        }
       }
 
       getFailedOrders() {
         try {
-          const raw = localStorage.getItem('cfb_failed_orders');
+          const raw = gameStorage.getItem('cfb_failed_orders');
           return raw ? JSON.parse(raw) : [];
         } catch(e) {
           return [];
@@ -11026,7 +9091,7 @@
         try {
           const list = this.getFailedOrders();
           list.unshift(failedOrder);
-          localStorage.setItem('cfb_failed_orders', JSON.stringify(list.slice(0, 100)));
+          gameStorage.setItem('cfb_failed_orders', JSON.stringify(list.slice(0, 100)));
           this.updateAdminKpis();
           if (document.getElementById('admin-failed-count')) {
             document.getElementById('admin-failed-count').textContent = list.length;
@@ -11095,11 +9160,11 @@
           const card = document.createElement('div');
           card.className = 'admin-order-item';
           card.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-          
+
           const custName = item.customer || 'Customer';
           const custPlan = item.plan || 'Pass';
           const reason = item.reason || 'Payment Incomplete';
-          
+
           const recoveryMsg = `👋 Hello ${custName}! I noticed you had an issue with your ${custPlan} (${item.amount || ''}) checkout on Country Flag Battle Royale: ${reason}. I can help you unlock your 24/7 pass immediately!`;
           const waUrl = 'https://wa.me/' + adminWa + '?text=' + encodeURIComponent(recoveryMsg);
 
@@ -11134,7 +9199,7 @@
               const i = parseInt(e.currentTarget.getAttribute('data-index'), 10);
               const currentList = this.getFailedOrders();
               currentList.splice(i, 1);
-              localStorage.setItem('cfb_failed_orders', JSON.stringify(currentList));
+              gameStorage.setItem('cfb_failed_orders', JSON.stringify(currentList));
               this.renderAdminFailedOrders();
               this.updateAdminKpis();
             });
@@ -11965,7 +10030,6 @@
 
         this.antiClumpTimer = 0;
         this.leaderboard = this.loadLeaderboard();
-        this.loadStreamerConfig();
 
         this.tickerIndex = 0;
         this.tickerMessages = [
@@ -12035,6 +10099,8 @@
           btnResetLb: document.getElementById('btn-reset-leaderboard')
         };
 
+        // Bind controls before applying saved settings, which sync the drawer.
+        this.loadStreamerConfig();
         this.init();
       }
 
@@ -12183,8 +10249,8 @@
       setupPhysicsEngine() {
         this.engine = this.Engine.create({
           enableSleeping: false,
-          positionIterations: 4,
-          velocityIterations: 3,
+          positionIterations: 8,
+          velocityIterations: 6,
           constraintIterations: 2
         });
         this.world = this.engine.world;
@@ -12303,8 +10369,8 @@
           const hSegThick = 52;
           for (let i = 0; i < holeSegments; i++) {
             const currentAng = i * hSegAngle;
-            const x = this.arenaCenter.x + Math.cos(currentAng) * (this.arenaRadius + 22);
-            const y = this.arenaCenter.y + Math.sin(currentAng) * (this.arenaRadius + 22);
+            const x = this.arenaCenter.x + Math.cos(currentAng) * (this.arenaRadius + 12);
+            const y = this.arenaCenter.y + Math.sin(currentAng) * (this.arenaRadius + 12);
             const seg = this.Bodies.rectangle(x, y, hSegLen, hSegThick, {
               isStatic: true,
               angle: currentAng + Math.PI / 2,
@@ -12413,8 +10479,10 @@
       }
 
       updateCircularArena(stepFactor = 1) {
-        this.arenaAngle += this.currentRotationSpeed * stepFactor;
-        
+        // Hold the portal briefly while a marble clears the rim; the exit must not rotate through it.
+        const gatePassageActive=this.arenaTemplate==='ring' && this.balls.some(ball=>ball.exiting);
+        if(!gatePassageActive)this.arenaAngle += this.currentRotationSpeed * stepFactor;
+
         // Dynamic Counter-Rotating Inner Mechanism (Dual-Rotor Turbine System)
         // Outer wheel turns Clockwise, inner blades rotate Counter-Clockwise at energetic 1.35x speed!
         this.innerRotorAngle = (this.innerRotorAngle || 0) - (this.currentRotationSpeed * 1.35 * stepFactor);
@@ -12422,7 +10490,7 @@
         // Outer wall segments (Only rotated in Ring mode where exit gap rotates)
         if (this.arenaTemplate !== 'hole') {
           for (const seg of this.arenaSegments) {
-            const currentAng = seg.baseAngle + this.arenaAngle;
+            const currentAng = seg.baseAngle + Math.PI / this.totalSegments + this.arenaAngle;
             const x = this.arenaCenter.x + Math.cos(currentAng) * this.arenaRadius;
             const y = this.arenaCenter.y + Math.sin(currentAng) * this.arenaRadius;
             this.Body.setPosition(seg, { x, y });
@@ -12511,6 +10579,7 @@
         this.balls = [];
         this.eliminatedBalls = [];
         this.eliminatedAnims = [];
+        this.hazardTransit = null;
         this.powerups = [];
         this.particles.clear();
 
@@ -12648,9 +10717,9 @@
 
         // Camera Zoom on Climax
         if (alive <= 2) {
-          this.targetZoom = 1.25;
+          this.targetZoom = this.arenaTemplate === 'ring' ? 1.0 : 1.25;
         } else if (alive <= 5) {
-          this.targetZoom = 1.12;
+          this.targetZoom = this.arenaTemplate === 'ring' ? 1.0 : 1.12;
         } else {
           this.targetZoom = 1.0;
         }
@@ -12704,7 +10773,7 @@
 
         // 1. BOUNDARY & CONTINUOUS ZERO-TOLERANCE HARD CONTAINMENT ENFORCER
         // In Hole Mode, outer wall is completely solid and impenetrable. Marbles NEVER escape outside.
-        const maxBoundaryDist = this.arenaRadius - 16; // 180 - 16 = 164px (solid wall begins at 164px)
+        const maxBoundaryDist = this.arenaRadius - 18; // Keep full marble geometry inside the inner rail.
 
         for (let i = this.balls.length - 1; i >= 0; i--) {
           const b = this.balls[i];
@@ -12714,7 +10783,7 @@
           }
           const pos = b.body.position;
           // Clean recovery for any invalid math
-          if (isNaN(pos.x) || isNaN(pos.y)) {
+          if (!Number.isFinite(pos.x) || !Number.isFinite(pos.y)) {
             const rx = this.arenaCenter.x + (Math.random() - 0.5) * 60;
             const ry = this.arenaCenter.y + 60;
             this.Body.setPosition(b.body, { x: rx, y: ry });
@@ -12728,11 +10797,12 @@
 
           // Universal Hard Rim Boundary Enforcer:
           // Under NO circumstances may any alive marble escape past the arena wall boundary!
-          if (distFromCenter > maxBoundaryDist) {
+          const ballLimit = Math.max(1, maxBoundaryDist - b.radius - 2);
+          if (this.arenaTemplate === 'hole' && distFromCenter > ballLimit) {
             const ang = Math.atan2(dy, dx);
             this.Body.setPosition(b.body, {
-              x: this.arenaCenter.x + Math.cos(ang) * maxBoundaryDist,
-              y: this.arenaCenter.y + Math.sin(ang) * maxBoundaryDist
+              x: this.arenaCenter.x + Math.cos(ang) * ballLimit,
+              y: this.arenaCenter.y + Math.sin(ang) * ballLimit
             });
             // Reflect outward velocity component cleanly inward with high damping
             const vx = b.body.velocity.x;
@@ -12826,17 +10896,18 @@
           if (!this.duelStartTime) {
             this.duelStartTime = now;
           }
-          const duelElapsedSec = (now - this.duelStartTime) / 1000;
+          // Keep the duel active until the displayed round deadline.
 
-          // Duel concludes when countdown hits 00:01 OR after 13-14s of fierce fighting!
-          if (remainingSec <= 1 || duelElapsedSec >= 13.5) {
+          // Duel concludes at 00:00 so presets and the countdown agree.
+          if (remainingSec <= 0) {
             isDuelReadyToEliminate = true;
             // Cinematic 0.35s Bullet-Time Slow-Mo Climax
             if (!this._climaxSlowMoTriggered) {
               this._climaxSlowMoTriggered = true;
+              const previousGameSpeed = this.gameSpeed;
               this.gameSpeed = 0.30;
               setTimeout(() => {
-                this.gameSpeed = 1.0;
+                this.gameSpeed = previousGameSpeed;
                 this._climaxSlowMoTriggered = false;
               }, 450);
             }
@@ -12851,8 +10922,8 @@
         const idealPaceSec = targetTimeBeforeDuel / eliminationsNeeded;
 
         // Adaptive interval: speeds up if behind schedule, relaxes if ahead of schedule
-        let currentIntervalSec = Math.max(0.60, Math.min(6.5, idealPaceSec));
-        if (aliveCount > 60) currentIntervalSec = Math.min(currentIntervalSec, 2.2);
+        let currentIntervalSec = Math.max(0.05, idealPaceSec);
+
 
         const isReadyToEliminate = (aliveCount === 2)
           ? isDuelReadyToEliminate
@@ -12865,7 +10936,13 @@
 
         // Active Kinetic Guidance: if an elimination is scheduled and overdue,
         // guide the nearest ball smoothly into the hazard exit so the schedule never stalls!
-        const isOverdue = !this.isDuelMode && isReadyToEliminate && (timeSinceLastElimSec >= currentIntervalSec + 0.35);
+        const isOverdue = isReadyToEliminate && (aliveCount === 2 || timeSinceLastElimSec >= currentIntervalSec + 0.35);
+
+        // Guide contenders along a visible continuous route; never jump directly into/out of a hazard.
+        const transitLeadSec = aliveCount === 2 ? 1 : Math.min(0.9, currentIntervalSec * 0.65);
+        const transitDue = aliveCount === 2 ? remainingSec <= 1 : timeSinceLastElimSec >= Math.max(0.05, currentIntervalSec - transitLeadSec);
+        this.updateHazardTransit(transitDue, transitLeadSec, now);
+        if (this.arenaGate) this.arenaGate.isSensor = isReadyToEliminate || !!this.hazardTransit;
 
         if (this.arenaTemplate === 'hole') {
           // =========================================================================
@@ -12887,28 +10964,6 @@
               this.Body.applyForce(b.body, pos, {
                 x: (dx / dist) * pullForce - (dy / dist) * swirlForce,
                 y: (dy / dist) * pullForce + (dx / dist) * swirlForce - antiGravityLift
-              });
-            }
-          }
-
-          // Active Overdue Guidance: pull nearest ball towards singularity
-          if (isOverdue && this.balls.length > 2) {
-            let closestBall = null;
-            let closestDist = Infinity;
-            for (const b of this.balls) {
-              const d = Math.hypot(this.arenaCenter.x - b.body.position.x, this.arenaCenter.y - b.body.position.y);
-              if (d < closestDist && !b.hasShield) {
-                closestDist = d;
-                closestBall = b;
-              }
-            }
-            if (closestBall) {
-              const cdx = this.arenaCenter.x - closestBall.body.position.x;
-              const cdy = this.arenaCenter.y - closestBall.body.position.y;
-              const cd = Math.hypot(cdx, cdy) || 1;
-              this.Body.setVelocity(closestBall.body, {
-                x: (cdx / cd) * 6.5,
-                y: (cdy / cd) * 6.5
               });
             }
           }
@@ -12936,12 +10991,14 @@
             }
 
             // Central Sinkhole Elimination: Absorbs when marble crosses the black hole horizon
-            const absorbRadius = holeR + (b.radius * 0.7);
-            if (!b.escaped && isReadyToEliminate && distFromCenter <= absorbRadius) {
+            const absorbRadius = Math.max(8, holeR - b.radius * 0.6);
+            if (!b.escaped && (!this.hazardTransit || this.hazardTransit.ball === b) && (isReadyToEliminate || b.body._hazardGuided) && distFromCenter <= absorbRadius) {
               b.escaped = true;
               this.balls.splice(i, 1);
+              if(this.hazardTransit?.ball===b)this.hazardTransit=null;
               this.World.remove(this.world, b.body); // Immediately remove from physics!
               this.lastEliminatedCountry = b.country;
+              this.lastHazardHit = {time:Date.now(),kind:this.arenaTemplate};
 
               if (!this.eliminatedAnims) this.eliminatedAnims = [];
               this.eliminatedAnims.push({
@@ -12984,7 +11041,7 @@
             }
 
             // Deflect dynamically during pacing intervals or 13s duel
-            if (!isReadyToEliminate && distFromCenter <= holeR + 4) {
+            if ((!isReadyToEliminate || (this.hazardTransit && this.hazardTransit.ball !== b)) && !b.body._hazardGuided && distFromCenter <= holeR + 4) {
               const tangAngle = Math.atan2(dy, dx) + Math.PI / 2;
               const repelAngle = distFromCenter > 0.1 ? Math.atan2(-dy, -dx) : Math.random() * Math.PI * 2;
               const repelPwr = this.balls.length === 2 ? 7.5 : 3.8;
@@ -12994,7 +11051,7 @@
               });
               if (this.balls.length === 2) {
                 this.audio.playBumperHit();
-                this.particles.spawnBumperSparks(pos.x, pos.y, '#38bdf8');
+                this.particles.spawnBumperHit(pos.x, pos.y, '#38bdf8');
               }
             }
           }
@@ -13023,19 +11080,22 @@
               continue;
             }
 
-            // Outer gap exit elimination
-            if (!b.escaped && isReadyToEliminate && distFromCenter > this.arenaRadius + 6) {
+            // Crossing the outer rim completes elimination immediately, independent of the pacing timer.
+            if (!b.escaped && b.exiting && distFromCenter > this.arenaRadius + b.radius + 16) {
               b.escaped = true;
               this.balls.splice(i, 1);
+              if(this.hazardTransit?.ball===b)this.hazardTransit=null;
               this.World.remove(this.world, b.body); // Immediately remove from Matter world!
               this.lastEliminatedCountry = b.country;
+              this.lastHazardHit = {time:Date.now(),kind:this.arenaTemplate};
 
               if (!this.eliminatedAnims) this.eliminatedAnims = [];
               this.eliminatedAnims.push({
                 x: pos.x,
                 y: pos.y,
-                vx: (pos.x - this.arenaCenter.x) * 0.05 + (Math.random() - 0.5) * 1.5,
-                vy: 2.0,
+                vx: Math.cos(b.exitAngle) * 3.0,
+                vy: Math.sin(b.exitAngle) * 3.0,
+                exitAngle: b.exitAngle,
                 radius: b.radius,
                 country: b.country,
                 flagCanvas: b.flagCanvas,
@@ -13072,7 +11132,7 @@
               }
 
               break;
-            } else if (!isReadyToEliminate && distFromCenter > this.arenaRadius - 2) {
+            } else if (!b.exiting && !isReadyToEliminate && distFromCenter > this.arenaRadius - 2) {
               const dx = this.arenaCenter.x - pos.x;
               const dy = this.arenaCenter.y - pos.y;
               const d = Math.hypot(dx, dy) || 1;
@@ -13083,53 +11143,86 @@
               });
               if (this.balls.length === 2) {
                 this.audio.playBumperHit();
-                this.particles.spawnBumperSparks(pos.x, pos.y, '#38bdf8');
+                this.particles.spawnBumperHit(pos.x, pos.y, '#38bdf8');
               }
             }
           }
         }
 
-        // Final Absolute Universal Outer Safety Clamping (100% guarantee no alive marble ever sits outside arena)
-        for (let i = 0; i < this.balls.length; i++) {
-          const b = this.balls[i];
-          if (!b || !b.body) continue;
-          const p = b.body.position;
-          const d = Math.hypot(p.x - this.arenaCenter.x, p.y - this.arenaCenter.y);
-          if (d > maxBoundaryDist) {
-            const a = Math.atan2(p.y - this.arenaCenter.y, p.x - this.arenaCenter.x);
-            this.Body.setPosition(b.body, {
-              x: this.arenaCenter.x + Math.cos(a) * maxBoundaryDist,
-              y: this.arenaCenter.y + Math.sin(a) * maxBoundaryDist
-            });
+        // Only an open, visible gate can release a ring-mode marble.
+        for (const ball of this.balls) {
+          const p = ball.body.position, dx=p.x-this.arenaCenter.x,dy=p.y-this.arenaCenter.y,d=Math.hypot(dx,dy);
+          const limit=maxBoundaryDist-ball.radius-2;
+          if(this.arenaTemplate==='ring' && d>limit) {
+            const angle=Math.atan2(dy,dx), gateAngle=this.arenaGate.baseAngle+this.arenaAngle;
+            const delta=Math.atan2(Math.sin(angle-gateAngle),Math.cos(angle-gateAngle));
+            const clearHalf=Math.max(0.02,this.gapSegmentCount*Math.PI/this.totalSegments-Math.asin(Math.min(0.9,(ball.radius+2)/this.arenaRadius)));
+            const reserved=(this.hazardTransit && this.hazardTransit.ball!==ball) || this.balls.some(other=>other!==ball && other.exiting);
+            if(!ball.exiting && !reserved && this.arenaGate.isSensor && Math.abs(delta)<clearHalf) {
+              ball.exiting=true;ball.exitAngle=angle;ball.body.isSensor=true;
+              this.Body.setVelocity(ball.body,{x:Math.cos(angle)*8,y:Math.sin(angle)*8});
+            }
+            if(ball.exiting)continue;
+          }
+          if(d>limit && !ball.exiting) {
+            const nx=dx/d,ny=dy/d;
+            this.Body.setPosition(ball.body,{x:this.arenaCenter.x+nx*limit,y:this.arenaCenter.y+ny*limit});
+            const outward=ball.body.velocity.x*nx+ball.body.velocity.y*ny;
+            if(outward>0)this.Body.setVelocity(ball.body,{x:ball.body.velocity.x-1.8*outward*nx,y:ball.body.velocity.y-1.8*outward*ny});
           }
         }
 
-        // Update Cinematic Drop / Singularity Absorption Animations
-        if (this.eliminatedAnims && this.eliminatedAnims.length > 0) {
-          for (let j = this.eliminatedAnims.length - 1; j >= 0; j--) {
-            const ea = this.eliminatedAnims[j];
-            if (ea.isHoleSink) {
-              // Cosmic Black Hole Singularity Implosion (Never drops outside turbine wheel!)
-              ea.x += (this.arenaCenter.x - ea.x) * 0.18;
-              ea.y += (this.arenaCenter.y - ea.y) * 0.18;
-              ea.scale = Math.max(0, ea.scale - 0.055);
-              ea.alpha -= 0.045;
-              if (ea.scale <= 0.05 || ea.alpha <= 0.01) {
-                this.eliminatedAnims.splice(j, 1);
-              }
-            } else {
-              ea.vy += 0.38;
-              ea.x += ea.vx;
-              ea.y += ea.vy;
-              ea.alpha -= 0.022;
-              ea.scale = Math.max(0.25, ea.scale - 0.015);
-              if (ea.trail.length < 5) ea.trail.unshift({ x: ea.x, y: ea.y });
-              else { ea.trail.pop(); ea.trail.unshift({ x: ea.x, y: ea.y }); }
-              if (ea.alpha <= 0 || ea.y > this.V_HEIGHT + 30) {
-                this.eliminatedAnims.splice(j, 1);
-              }
-            }
+      }
+
+      updateHazardTransit(due, leadSec, now) {
+        if(this.hazardTransit && !this.balls.includes(this.hazardTransit.ball))this.hazardTransit=null;
+        if(!this.hazardTransit && due && this.balls.length>1) {
+          const exiting=this.balls.find(ball=>ball.exiting);
+          const gateAngle=this.arenaGate ? this.arenaGate.baseAngle+this.arenaAngle : 0;
+          const target=this.arenaTemplate==='hole' ? this.arenaCenter : {x:this.arenaCenter.x+Math.cos(gateAngle)*this.arenaRadius,y:this.arenaCenter.y+Math.sin(gateAngle)*this.arenaRadius};
+          const candidates=this.balls.filter(ball=>!ball.hasShield);
+          const nearest=(candidates.length ? candidates : [...this.balls]).sort((a,b)=>Math.hypot(a.body.position.x-target.x,a.body.position.y-target.y)-Math.hypot(b.body.position.x-target.x,b.body.position.y-target.y))[0];
+          const ball=exiting || nearest;
+          if(ball){
+            ball.body._hazardGuided=true;ball.body.isSensor=true;
+            this.hazardTransit={ball,start:{...ball.body.position},started:now,duration:Math.max(190,Math.min(950,leadSec*1000)),trail:[]};
           }
+        }
+        const transit=this.hazardTransit;
+        if(!transit)return;
+        const ball=transit.ball;
+        transit.trail.unshift({...ball.body.position});transit.trail.length=Math.min(transit.trail.length,9);
+        // Once through the gate, hand off to outward motion. Never pin an escaped marble to a guide endpoint.
+        if(this.arenaTemplate==='ring' && ball.exiting){
+          this.Body.setVelocity(ball.body,{x:Math.cos(ball.exitAngle)*8,y:Math.sin(ball.exitAngle)*8});
+          return;
+        }
+        const t=Math.max(0,Math.min(1,(now-transit.started)/transit.duration)),u=t*t*(3-2*t);
+        let end,control;
+        if(this.arenaTemplate==='hole') {
+          end={x:this.arenaCenter.x+this.centerHoleRadius*0.25,y:this.arenaCenter.y};
+          control={x:(transit.start.x+end.x)/2-(transit.start.y-end.y)*0.2,y:(transit.start.y+end.y)/2+(transit.start.x-end.x)*0.2};
+        }else{
+          const angle=ball.exiting ? ball.exitAngle : this.arenaGate.baseAngle+this.arenaAngle;
+          end={x:this.arenaCenter.x+Math.cos(angle)*(this.arenaRadius+ball.radius+36),y:this.arenaCenter.y+Math.sin(angle)*(this.arenaRadius+ball.radius+36)};
+          control={x:this.arenaCenter.x+Math.cos(angle)*(this.arenaRadius-55),y:this.arenaCenter.y+Math.sin(angle)*(this.arenaRadius-55)};
+        }
+        const position={x:(1-u)*(1-u)*transit.start.x+2*(1-u)*u*control.x+u*u*end.x,y:(1-u)*(1-u)*transit.start.y+2*(1-u)*u*control.y+u*u*end.y};
+        this.Body.setPosition(ball.body,position);this.Body.setVelocity(ball.body,{x:0,y:0});
+      }
+
+      updateEliminationAnimations(dtSec=1/60) {
+        for(let i=this.eliminatedAnims.length-1;i>=0;i--){
+          const anim=this.eliminatedAnims[i];anim.age=(anim.age || 0)+dtSec;
+          const duration=anim.isHoleSink ? 0.8 : 1.05,progress=Math.min(1,anim.age/duration);
+          if(anim.isHoleSink){
+            anim.x+=(this.arenaCenter.x-anim.x)*Math.min(1,dtSec*7);anim.y+=(this.arenaCenter.y-anim.y)*Math.min(1,dtSec*7);
+            anim.scale=Math.max(0,1-progress);anim.alpha=1-progress*progress;
+          }else{
+            anim.trail.unshift({x:anim.x,y:anim.y});anim.trail.length=Math.min(anim.trail.length,7);
+            anim.x+=anim.vx*dtSec*60;anim.y+=anim.vy*dtSec*60;anim.scale=1-progress*0.4;anim.alpha=1-progress;
+          }
+          if(progress>=1)this.eliminatedAnims.splice(i,1);
         }
       }
 
@@ -13186,7 +11279,8 @@
         mCtx.drawImage(bigFlag, 0, 0, modalCanvas.width, modalCanvas.height);
 
         this.dom.modalName.textContent = this.roundWinner.name;
-        const timeStr = this.dom.matchTimer ? this.dom.matchTimer.textContent : '';
+        const elapsedSeconds = Math.max(0, Math.round((Date.now() - this.roundStartTime) / 1000));
+        const timeStr = Math.floor(elapsedSeconds / 60) + ':' + String(elapsedSeconds % 60).padStart(2, '0');
         document.getElementById('modal-winner-stat').textContent = timeStr ? `OUTLASTED ALL NATIONS IN ${timeStr} • ROUND #${this.roundNumber} CHAMPION` : `OUTLASTED ALL NATIONS • ROUND #${this.roundNumber} CHAMPION`;
         this.dom.modalSubText.textContent = `SUBSCRIBE TO SUPPORT ${this.roundWinner.name.toUpperCase()}!`;
         this.dom.modalStatWins.textContent = `${this.getCountryWins(this.roundWinner.code)} WINS`;
@@ -13511,6 +11605,8 @@
           ctx.drawImage(hubCanvas, -hubCanvas.width / 2, -hubCanvas.height / 2);
           ctx.restore();
 
+          // Isolate hub styling so the matching restore preserves the caller's DPI/zoom transform.
+          ctx.save();
           // Hub Inner & Outer Glowing Rings
           ctx.strokeStyle = '#f5d0fe';
           ctx.lineWidth = 2.0;
@@ -13803,6 +11899,32 @@
           ctx.restore();
         }
 
+        this.drawHazardStatus(ctx);
+        ctx.restore();
+      }
+
+      drawHazardStatus(ctx) {
+        ctx.save();
+        const cx=this.arenaCenter.x,cy=this.arenaCenter.y,active=!!this.hazardTransit || !!this.arenaGate?.isSensor;
+        ctx.font='700 10px system-ui';ctx.textAlign='center';ctx.fillStyle=active?'#9ff7d6':'#8aa8c9';
+        ctx.fillText(this.arenaTemplate==='hole' ? (active?'VORTEX ACTIVE':'CENTER VORTEX') : (active?'EXIT OPEN':'GATE CLOSED'),cx,cy-this.arenaRadius-28);
+        const transit=this.hazardTransit;
+        if(transit?.trail?.length){
+          for(let i=transit.trail.length-1;i>=0;i--){const p=transit.trail[i];ctx.globalAlpha=(1-i/transit.trail.length)*0.45;ctx.fillStyle='#b2f7ff';ctx.beginPath();ctx.arc(p.x,p.y,Math.max(1,transit.ball.radius*(1-i/transit.trail.length)*0.45),0,Math.PI*2);ctx.fill();}
+          ctx.globalAlpha=1;
+        }
+        if(this.arenaTemplate==='ring'){
+          const angle=this.arenaGate.baseAngle+this.arenaAngle;
+          ctx.translate(cx,cy);ctx.rotate(angle);
+          const r=this.arenaRadius;
+          ctx.fillStyle=active?'rgba(52,211,153,0.12)':'rgba(148,163,184,0.05)';
+          ctx.beginPath();ctx.moveTo(r-14,-16);ctx.lineTo(r+65,-24);ctx.lineTo(r+65,24);ctx.lineTo(r-14,16);ctx.closePath();ctx.fill();
+          ctx.strokeStyle=active?'#6ee7b7':'#405975';ctx.lineWidth=2.5;
+          const travel=active?(Date.now()%700)/700*12:0;
+          for(let i=0;i<3;i++){const x=r+14+i*17+travel;ctx.beginPath();ctx.moveTo(x-6,-6);ctx.lineTo(x,0);ctx.lineTo(x-6,6);ctx.stroke();}
+        }else if(this.lastHazardHit && Date.now()-this.lastHazardHit.time<650){
+          const progress=(Date.now()-this.lastHazardHit.time)/650;ctx.globalAlpha=1-progress;ctx.strokeStyle='#f472b6';ctx.lineWidth=3*(1-progress);ctx.beginPath();ctx.arc(cx,cy,this.centerHoleRadius+progress*18,0,Math.PI*2);ctx.stroke();
+        }
         ctx.restore();
       }
 
@@ -13850,8 +11972,11 @@
         if (!anim || anim.alpha <= 0.01) return;
         ctx.save();
         ctx.globalAlpha = Math.max(0, Math.min(1, anim.alpha));
+        if(anim.isHoleSink){ctx.beginPath();ctx.arc(this.arenaCenter.x,this.arenaCenter.y,this.centerHoleRadius,0,Math.PI*2);ctx.clip();}
         ctx.translate(anim.x, anim.y);
         ctx.scale(anim.scale, anim.scale);
+        if(anim.isHoleSink)ctx.rotate((anim.age || 0)*3);
+        else {ctx.font="700 9px system-ui";ctx.textAlign="center";ctx.fillStyle="#fda4af";ctx.fillText("OUT",0,-anim.radius-7);}
 
         const r = anim.radius;
 
@@ -13902,7 +12027,7 @@
         const r = ball.radius;
 
         // Absolute Universal Visual Boundary Lock: Marbles can NEVER visually render outside the turbine wheel
-        const maxRenderDist = this.arenaRadius - r - 4;
+        const maxRenderDist = this.arenaTemplate === 'hole' ? this.arenaRadius - 18 - r - 2 : Infinity;
         const dx = pos.x - this.arenaCenter.x;
         const dy = pos.y - this.arenaCenter.y;
         const dist = Math.hypot(dx, dy);
@@ -14085,6 +12210,7 @@
           }
 
           this.particles.update(deltaMs / 16.666);
+          this.updateEliminationAnimations(dtSec);
 
           // Smooth Camera Zoom
           this.currentZoom += (this.targetZoom - this.currentZoom) * 0.04;
@@ -14197,6 +12323,7 @@
         if (this.dom.selectDuration) {
           this.dom.selectDuration.addEventListener('change', (e) => {
             this.applyDurationPreset(e.target.value);
+            this.startNewRound();
           });
         }
 
@@ -14341,7 +12468,7 @@
         });
 
         this.dom.btnResetLb.addEventListener('click', () => {
-          localStorage.removeItem('flag_royale_leaderboard');
+          gameStorage.removeItem('flag_royale_leaderboard');
           this.leaderboard = {};
           this.renderHorizontalLeaderboard();
         });
@@ -14375,17 +12502,15 @@
       }
 
       setArenaTemplate(tmpl) {
-        this.arenaTemplate = tmpl;
-        if (this.world) {
-          this.createCircularArena();
-        }
+        this.arenaTemplate = tmpl === 'ring' ? 'ring' : 'hole';
+        if (this.world) this.startNewRound();
         this.syncDrawerUI();
         this.saveStreamerConfig();
       }
 
       loadStreamerConfig() {
         try {
-          const raw = localStorage.getItem('flag_royale_streamer_config');
+          const raw = gameStorage.getItem('flag_royale_streamer_config');
           if (raw) {
             const cfg = JSON.parse(raw);
             if (cfg.arenaTemplate === 'hole' || cfg.arenaTemplate === 'ring') {
@@ -14431,7 +12556,7 @@
             selectedBatchSize: this.selectedBatchSize,
             durationMode: this.durationMode
           };
-          localStorage.setItem('flag_royale_streamer_config', JSON.stringify(cfg));
+          gameStorage.setItem('flag_royale_streamer_config', JSON.stringify(cfg));
         } catch (e) {
           console.warn('Failed to save streamer config', e);
         }
@@ -14573,10 +12698,10 @@
         }
         if (this.dom.valDurationMode) {
           const modeLabels = {
-            marathon: '15-18 MIN',
-            extended: '10-12 MIN',
-            standard: '5-7 MIN',
-            blitz: '2-3 MIN',
+            marathon: '13:00',
+            extended: '09:00',
+            standard: '05:00',
+            blitz: '02:20',
             custom: 'CUSTOM'
           };
           this.dom.valDurationMode.textContent = modeLabels[this.durationMode] || 'CUSTOM';
@@ -14585,13 +12710,13 @@
         const hintEl = document.getElementById('hint-battle-duration');
         if (hintEl) {
           if (this.durationMode === 'marathon') {
-            hintEl.textContent = '👑 Grand Streamer Endurance: Guaranteed 15-18 minutes battle with intelligent Black Hole pacing governor.';
+            hintEl.textContent = '👑 Grand Streamer Endurance: 13-minute round with paced eliminations.';
           } else if (this.durationMode === 'extended') {
-            hintEl.textContent = '✨ Extended Stream: 10-12 minutes battle royale.';
+            hintEl.textContent = '✨ Extended Stream: 9-minute battle royale.';
           } else if (this.durationMode === 'standard') {
-            hintEl.textContent = '⏱️ Balanced Match: 5-7 minutes live stream rounds.';
+            hintEl.textContent = '⏱️ Balanced Match: 5-minute live stream rounds.';
           } else if (this.durationMode === 'blitz') {
-            hintEl.textContent = '⚡ Quick Blitz: 2-3 minutes fast action round.';
+            hintEl.textContent = '⚡ Quick Blitz: 2 minutes 20 seconds of fast action.';
           } else {
             hintEl.textContent = '⚙️ Custom configuration: simulation speed & gap tuned manually.';
           }
@@ -14647,7 +12772,7 @@
 
       loadLeaderboard() {
         try {
-          const data = localStorage.getItem('flag_royale_leaderboard');
+          const data = gameStorage.getItem('flag_royale_leaderboard');
           return data ? JSON.parse(data) : { PER: 2, FRA: 1, USA: 1 };
         } catch (e) {
           return { PER: 2, FRA: 1, USA: 1 };
@@ -14656,7 +12781,7 @@
 
       saveLeaderboard() {
         try {
-          localStorage.setItem('flag_royale_leaderboard', JSON.stringify(this.leaderboard));
+          gameStorage.setItem('flag_royale_leaderboard', JSON.stringify(this.leaderboard));
         } catch (e) {
           console.warn("Storage error", e);
         }
@@ -14704,15 +12829,25 @@
 
     // Initialize application on window load
     window.addEventListener('DOMContentLoaded', () => {
-      window.flagRoyale = new BattleRoyaleApp();
+      try {
+        if (!window.Matter) throw new Error('Physics engine unavailable. Keep the vendor folder beside index.html.');
+        window.flagRoyale = new BattleRoyaleApp();
+      } catch (error) {
+        console.error('Game startup failed:', error);
+        const notice = document.createElement('div');
+        notice.setAttribute('role', 'alert');
+        notice.style.cssText = 'position:absolute;inset:25% 16px auto;padding:20px;background:#0f172a;border:1px solid #f43f5e;border-radius:12px;z-index:100;color:white;text-align:center';
+        notice.textContent = 'Unable to start the game. ' + error.message;
+        document.getElementById('broadcast-viewport').appendChild(notice);
+      }
     });
 
     // --- Progressive Web App (PWA) Install Manager ---
     (function initPWA() {
       // 1. Register Service Worker with cache busting
-      if ('serviceWorker' in navigator) {
+      if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js?v=5.0.0')
+          navigator.serviceWorker.register('./sw.js?v=9.0.0')
             .then(reg => {
               console.log('PWA ServiceWorker registered:', reg.scope);
               reg.addEventListener('updatefound', () => {
@@ -14778,6 +12913,7 @@
       });
     })();
   </script>
+  <script src="./client-access.js"></script>
 </body>
 
 </html>
