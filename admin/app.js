@@ -2,6 +2,7 @@
   'use strict';
   const $=id=>document.getElementById(id);
   let data={}, view='overview', page=0, loading=false;
+  const onboarding=new Map();
   async function api(path,body) {
     if (!/^https?:$/.test(location.protocol)) throw new Error('Open /admin on your hosted website; local files cannot access the server.');
     const response=await fetch('/api/'+path,{method:body === undefined ? 'GET':'POST',credentials:'same-origin',cache:'no-store',headers:body === undefined ? {}:{'Content-Type':'application/json'},body:body === undefined ? undefined:JSON.stringify(body)});
@@ -16,9 +17,18 @@
   function pill(row,status){const cell=td(row,'');const badge=document.createElement('span');badge.className='status '+status;badge.textContent=status.replaceAll('_',' ');cell.appendChild(badge);}
   function action(cell,label,fn){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=async()=>{button.disabled=true;message('');try{await fn();}catch(error){message(error.message);}finally{button.disabled=false;}};cell.appendChild(button);}
   function account(id){return data.accounts?.find(item=>item.id===id);}
+  async function deliverAccess(item,plan,result){
+    const draft=onboarding.get(item.id);
+    if(!draft)return message(result.reused?'This grant was already processed; duplicate order prevented.':'Access granted. Copy the activation link from Orders & payments.');
+    const text=['🎮 Country Flag Battle access is ready','',`Username: ${item.username}`,`Email: ${item.email}`,`Password: ${draft.password}`,`Plan: ${plan}`,'',`One-click activation: ${result.link}`,'','Keep these details private.'].join('\n');
+    let copied=false;try{await navigator.clipboard.writeText(text);copied=true;}catch(_){}
+    if(draft.phone){window.open('https://wa.me/'+draft.phone+'?text='+encodeURIComponent(text),'_blank','noopener');message(copied?'Access message copied and WhatsApp opened.':'WhatsApp message prepared for the player.');}
+    else{message(copied?'Player access message copied.':'Access granted. Copy the activation link from Orders & payments.');}
+    onboarding.delete(item.id);
+  }
   function render(){
     const isAccounts=view==='accounts',isEvents=view==='events';
-    $('create-panel').hidden=!isAccounts;$('summary-panel').hidden=view!=='overview';
+    $('create-panel').hidden=!isAccounts;$('summary-panel').hidden=view!=='overview';$('clear-events').hidden=!isEvents;
     const titles={overview:'Overview',orders:'Orders & payments',accounts:'Player access',events:'Activity log'};
     $('page-title').textContent=titles[view];$('table-title').textContent=isAccounts?'Player accounts':isEvents?'Recent activity':'Payment orders';
     const columns=isAccounts?['Player / account','Email','Access until (Dhaka)','Status','Actions']:isEvents?['Time (Dhaka)','Event','Order','Detail']:['Order','Player','Plan','Amount','Status','Created (Dhaka)','Actions'];
@@ -32,8 +42,9 @@
         td(row,item.username,item.id);td(row,item.email);td(row,date(entitlement?.expires_at));pill(row,active?'active':entitlement?.revoked?'revoked':'inactive');
         const cell=td(row,'');const select=document.createElement('select');select.setAttribute('aria-label','Plan for '+item.username);
         for(const [id,plan] of Object.entries(data.plans||{})){const option=document.createElement('option');option.value=id;option.textContent=plan.name;select.appendChild(option);}cell.appendChild(select);
-        action(cell,'Grant / extend',async()=>{if(!confirm('Grant '+select.selectedOptions[0].textContent+' to '+item.username+'? Confirm their payment independently first.'))return;await api('admin/grant',{accountId:item.id,planId:select.value});await refresh();});
+        action(cell,'Grant / extend',async()=>{const plan=select.selectedOptions[0].textContent;if(!confirm('Grant '+plan+' to '+item.username+'? Confirm their payment independently first.'))return;const result=await api('admin/grant',{accountId:item.id,planId:select.value});await deliverAccess(item,plan,result);await refresh();});
         if(active)action(cell,'Revoke',async()=>{if(!confirm('Revoke access for '+item.username+'?'))return;await api('admin/revoke',{accountId:item.id});await refresh();});
+        action(cell,'Delete player',async()=>{const typed=prompt('This permanently deletes the player and their orders. Type the username to continue:');if(typed===null)return;await api('admin/delete-account',{accountId:item.id,confirmUsername:typed});onboarding.delete(item.id);message('Player and related records deleted.');await refresh();});
       }else if(isEvents){td(row,date(item.created_at));td(row,item.kind);td(row,item.order_id);td(row,item.detail);}
       else{td(row,item.id.slice(0,8),item.provider);td(row,account(item.account_id)?.username || item.account_id);td(row,data.plans?.[item.plan_id]?.name || item.plan_id);td(row,money(item.amount_minor,item.currency));pill(row,item.status);td(row,date(item.created_at));const cell=td(row,'');
         if(item.provider!=='manual')action(cell,'Verify again',async()=>{await api('admin/reconcile',{orderId:item.id});message('Gateway verification completed.');await refresh();});
@@ -70,7 +81,8 @@
   $('refresh').onclick=refresh;$('search').oninput=render;
   document.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>{view=button.dataset.view;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('selected',b===button));render();});
   $('previous').onclick=()=>{if(page>0){page--;refresh();}};$('next').onclick=()=>{page++;refresh();};
-  $('create-form').onsubmit=async event=>{event.preventDefault();const button=event.target.querySelector('button');button.disabled=true;try{await api('admin/account',{username:$('new-username').value,email:$('new-email').value,password:$('new-password').value});$('new-password').value='';message('Account created. Verify payment, then grant a plan.');await refresh();}catch(error){message(error.message);}finally{button.disabled=false;}};
+  $('create-form').onsubmit=async event=>{event.preventDefault();const button=event.target.querySelector('button'),password=$('new-password').value,phone=$('new-phone').value.replace(/[^0-9]/g,'').replace(/^0/,'88');button.disabled=true;try{if(phone&&!/^8801[3-9][0-9]{8}$/.test(phone))throw new Error('Enter a valid WhatsApp number or leave it blank.');const result=await api('admin/account',{username:$('new-username').value,email:$('new-email').value,password});onboarding.set(result.accountId,{password,phone});$('new-password').value='';$('new-phone').value='';message('Account created. Grant its verified plan to prepare the WhatsApp access message.');await refresh();}catch(error){message(error.message);}finally{button.disabled=false;}};
+  $('clear-events').onclick=async()=>{const typed=prompt('Type CLEAR ACTIVITY LOG to permanently clear the activity log:');if(typed===null)return;try{await api('admin/clear-events',{confirm:typed});message('Activity log cleared.');await refresh();}catch(error){message(error.message);}};
   async function bootstrap(){
     if(window.__cfbActivationRedirect)return;
     try {

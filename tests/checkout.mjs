@@ -12,6 +12,9 @@ export async function runCheckoutChecks(){
     security.updateOrderModalUI('bd');assert.equal($('panel-intl-pay').style.display,'none');
     security.updateOrderModalUI('intl');assert.equal($('panel-bd-pay').style.display,'none');
     assert.equal($('polar-btn-price-display').textContent,'$5.99');
+    security.manualPaymentMethod='Nagad';security.updateWhatsAppLinks();assert.ok(new URL($('checkout-transfer-whatsapp').href).searchParams.get('text').includes('Method: Nagad'));
+    security.isInternational=true;security.updateOrderModalUI('bd');assert.equal($('panel-bd-pay').style.display,'none');assert.equal($('order-tabs-wrapper').style.display,'none');
+    security.isInternational=false;security.updateOrderModalUI('intl');
     let submitted,navigated;
     $('checkout-contact-email').value='player@example.com';$('order-checkout-password').value='long-secret-password';$('order-checkout-username').value='';
     context.location.assign=value=>{navigated=value;};

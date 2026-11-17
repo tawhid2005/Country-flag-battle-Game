@@ -174,8 +174,31 @@ export function createHandler(env, fetcher = fetch) {
           await event(null,'admin_revoked',body.accountId); return json(200,{success:true});
         }
         if (route === 'admin/grant' && req.method === 'POST' && uuid(body.accountId) && PLANS[body.planId]) {
-          const id=randomUUID(); await db('cfb_orders','POST',{id,account_id:body.accountId,provider:'manual',plan_id:body.planId,amount_minor:PLANS[body.planId].bdt,currency:'bdt'});
-          await complete({id,plan_id:body.planId},'manual:'+id); return json(200,{success:true,orderId:id});
+          const bucket=Math.floor(Date.now()/300000),checkoutId=`admin:${body.accountId}:${body.planId}:${bucket}`;
+          const existing=await one('cfb_orders?checkout_id=eq.'+enc(checkoutId));
+          if(existing)return json(200,{success:true,orderId:existing.id,reused:true,link:origin()+'/#activate='+activationKey(existing,secret())});
+          const id=randomUUID();
+          await db('cfb_orders','POST',{id,account_id:body.accountId,provider:'manual',plan_id:body.planId,amount_minor:PLANS[body.planId].bdt,currency:'bdt',checkout_id:checkoutId});
+          await complete({id,plan_id:body.planId},'manual:'+id);
+          const paid=await orderBy(id);
+          return json(200,{success:true,orderId:id,reused:false,link:origin()+'/#activate='+activationKey(paid,secret())});
+        }
+        if (route === 'admin/delete-account' && req.method === 'POST' && uuid(body.accountId)) {
+          const account=await one('cfb_accounts?id=eq.'+body.accountId);
+          if(!account)fail(404,'Player account not found');
+          if(String(body.confirmUsername || '').trim().toLowerCase()!==account.username)fail(400,'Type the exact username to delete this player');
+          const orders=await db('cfb_orders?account_id=eq.'+body.accountId+'&select=id&limit=1000');
+          for(const order of orders)await db('cfb_events?order_id=eq.'+order.id,'DELETE');
+          await db('cfb_events?detail=eq.'+enc(body.accountId),'DELETE');
+          await db('cfb_entitlements?account_id=eq.'+body.accountId,'DELETE');
+          await db('cfb_orders?account_id=eq.'+body.accountId,'DELETE');
+          await db('cfb_accounts?id=eq.'+body.accountId,'DELETE');
+          return json(200,{success:true});
+        }
+        if (route === 'admin/clear-events' && req.method === 'POST') {
+          if(body.confirm!=='CLEAR ACTIVITY LOG')fail(400,'Confirmation phrase does not match');
+          await db('cfb_events?id=not.is.null','DELETE');
+          return json(200,{success:true});
         }
         fail(404,'Admin operation not found');
       }

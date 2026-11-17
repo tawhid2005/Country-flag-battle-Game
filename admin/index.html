@@ -7,6 +7,7 @@
   <script src="/activation-links.js"></script>
   <script src="/admin/activation-redirect.js"></script>
   <link rel="stylesheet" href="/admin/style.css">
+  <link rel="stylesheet" href="./overrides.css">
   <script defer src="/admin/app.js"></script>
 </head>
 <body>
@@ -36,11 +37,11 @@
       <section id="integration-status" class="integration-row" aria-label="Integration configuration"></section>
       <section class="kpis" aria-label="Current page metrics"><article><p>Paid orders</p><strong id="kpi-paid">—</strong><small>Verified and fulfilled</small></article><article><p>Awaiting verification</p><strong id="kpi-pending">—</strong><small>Pending & checkout issues</small></article><article><p>Active player passes</p><strong id="kpi-active">—</strong><small>Active on this data page</small></article><article><p>Verified revenue</p><strong id="kpi-revenue">—</strong><small>USD / BDT shown separately</small></article></section>
       <section class="panel" id="summary-panel"><div><p class="eyebrow">PAYMENT OPERATIONS</p><h2>Verify. Activate. Monitor.</h2><p class="muted">Payments grant access only after the gateway confirms the matching order, amount and currency. Repeated notifications grant a plan once.</p></div><div class="summary-note"><span class="dot"></span><b>Recovery built in</b><p>Retry verification for a paid order whose notification was delayed. Use manual grants only after independently checking a bank transfer.</p></div></section>
-      <section class="panel data-panel"><div class="table-toolbar"><div><h2 id="table-title">Recent orders</h2><p class="muted" id="data-scope">Up to 200 records per page. Metrics describe this page, not lifetime totals.</p></div><label class="search-label">Search loaded records<input id="search" type="search" placeholder="Username, email, order ID…"></label></div>
+      <section class="panel data-panel"><div class="table-toolbar"><div><h2 id="table-title">Recent orders</h2><p class="muted" id="data-scope">Up to 200 records per page. Metrics describe this page, not lifetime totals.</p></div><div class="toolbar-actions"><button id="clear-events" class="danger" type="button" hidden>Clear activity log</button><label class="search-label">Search loaded records<input id="search" type="search" placeholder="Username, email, order ID…"></label></div></div>
         <div class="table-wrap"><table><thead id="table-head"></thead><tbody id="table-body"></tbody></table></div><p id="empty-state" class="empty" hidden>No matching records on this page.</p>
         <div class="pagination"><button id="previous">← Previous</button><span id="page-number">Page 1</span><button id="next">Next →</button></div>
       </section>
-      <section class="panel" id="create-panel" hidden><div><p class="eyebrow">MANUAL ONBOARDING</p><h2>Create a player account</h2><p class="muted">Create the account, then grant a verified plan from its row above. Credentials are stored as salted password hashes.</p></div><form id="create-form" class="create-form"><label>Username<input id="new-username" required minlength="3" maxlength="80"></label><label>Email<input id="new-email" type="email" required></label><label>Initial password<input id="new-password" type="password" required minlength="10" maxlength="128" autocomplete="new-password"></label><button class="primary">Create account</button></form></section>
+      <section class="panel" id="create-panel" hidden><div><p class="eyebrow">MANUAL ONBOARDING</p><h2>Create a player account</h2><p class="muted">Create the account, then grant a verified plan. If WhatsApp is supplied, the dashboard prepares a complete message after granting access.</p></div><form id="create-form" class="create-form"><label>Username<input id="new-username" required minlength="3" maxlength="80"></label><label>Email<input id="new-email" type="email" required></label><label>WhatsApp number<input id="new-phone" type="tel" maxlength="16" placeholder="8801XXXXXXXXX"></label><label>Initial password<input id="new-password" type="password" required minlength="10" maxlength="128" autocomplete="new-password"></label><button class="primary">Create account</button></form></section>
     </main>
   </div>
 </body></html>

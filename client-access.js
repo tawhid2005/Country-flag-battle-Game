@@ -106,6 +106,7 @@
     } catch(error) {
       const message=error.status===503 ? 'Online checkout is temporarily unavailable. Contact us on WhatsApp for help.' : error.name==='TypeError' ? 'Cannot reach checkout. Check your connection or contact us on WhatsApp.' : error.message;
       if(status){status.hidden=false;status.textContent=message;}else this.paymentNotice(message);
+      if(provider==='sslcommerz' && error.status===503){const manual=$('manual-transfer-panel');if(manual)manual.open=true;}
     }
     finally {if(button)button.disabled=false;}
   };
@@ -139,10 +140,11 @@
     const bd=getPlanDef(this.activePlanId || '1m','bdt'),intl=getPlanDef(this.activePlanId || '1m','usd');
     const set=(id,lines)=>{const link=$(id);if(link)link.href='https://wa.me/8801711729858?text='+encodeURIComponent(lines.filter(Boolean).join('\n'));};
     set('checkout-bd-whatsapp',['আসসালামু আলাইকুম, Country Flag Battle-এর pass কিনতে চাই।','Plan: '+bd.name,'Amount: '+bd.price+' TK','Payment: bKash / Nagad / Rocket','পেমেন্ট ও activation-এর নিয়ম জানাবেন।']);
-    set('checkout-transfer-whatsapp',['Country Flag Battle — payment review request','Plan: '+bd.name+' · '+bd.price+' TK','Sender: '+($('manual-sender')?.value || 'not provided'),'TrxID: '+($('manual-transaction')?.value || 'not provided'),'Account: '+($('manual-account')?.value || 'not provided'),'পেমেন্টটি যাচাই করে activation link দিন।']);
+    set('checkout-transfer-whatsapp',['Country Flag Battle — payment review request','Method: '+(this.manualPaymentMethod || 'bKash'),'Plan: '+bd.name+' · '+bd.price+' TK','Sender: '+($('manual-sender')?.value || 'not provided'),'TrxID: '+($('manual-transaction')?.value || 'not provided'),'Account: '+($('manual-account')?.value || 'not provided'),'পেমেন্টটি যাচাই করে activation link দিন।']);
     set('checkout-intl-whatsapp',['Country Flag Battle — Polar payment support','Plan: '+intl.name+' · $'+intl.price.toFixed(2), 'Order: '+(gameStorage.getItem('cfb_pending_order') || 'checkout not started')]);
   };
   proto.updateOrderModalUI = function(tab='bd') {
+    if(this.isInternational)tab='intl';
     this.activeTab=tab;this.activeOrderPlan=getPlanDef(this.activePlanId || '1m',tab==='intl'?'usd':'bdt');
     const plan=this.activeOrderPlan;
     for(const [name,id] of [['bd','panel-bd-pay'],['intl','panel-intl-pay']]){const panel=$(id);if(panel)panel.style.display=name===tab?'block':'none';}
@@ -153,6 +155,7 @@
     if($('polar-btn-price-display'))$('polar-btn-price-display').textContent='$'+getPlanDef(this.activePlanId || '1m','usd').price.toFixed(2);
     if($('bd-btn-price-display'))$('bd-btn-price-display').textContent=getPlanDef(this.activePlanId || '1m','bdt').price+' TK';
     const status=$('polar-gw-status');if(status){status.hidden=true;status.textContent='';}
+    const tabs=$('order-tabs-wrapper');if(tabs)tabs.style.display=this.isInternational?'none':'grid';
     if($('checkout-retry-payment'))$('checkout-retry-payment').hidden=!gameStorage.getItem('cfb_pending_order');
     this.updateWhatsAppLinks();
   };
@@ -163,6 +166,13 @@
   proto.init = function() {
     this.detectCountryAndCurrency();this.setupDOM();this.renderPricingCards();this.handleTrialWorkflow();this.updateDrawerStatus();
     for(const id of ['manual-sender','manual-transaction','manual-account'])$(id)?.addEventListener('input',()=>this.updateWhatsAppLinks());
+    this.manualPaymentMethod='bKash';
+    document.querySelectorAll('[data-manual-method]').forEach(button=>button.addEventListener('click',()=>{
+      this.manualPaymentMethod=button.dataset.manualMethod;
+      document.querySelectorAll('[data-manual-method]').forEach(item=>item.classList.toggle('selected',item===button));
+      const instruction=$('manual-payment-instruction');if(instruction){instruction.replaceChildren();const strong=document.createElement('strong');strong.textContent=this.manualPaymentMethod;instruction.append(strong,document.createTextNode(' app থেকে এই personal number-এ Send Money করুন:'));}
+      this.updateWhatsAppLinks();
+    }));
     $('checkout-retry-payment')?.addEventListener('click',()=>{const id=gameStorage.getItem('cfb_pending_order');if(id)this.pollPayment(id);});
     if($('btn-start-polar-checkout'))$('btn-start-polar-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('polar');};
     if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('sslcommerz');};

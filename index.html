@@ -5741,7 +5741,10 @@
           <button class="checkout-polar checkout-bd-auto" id="btn-start-bd-checkout" type="button">Pay securely · <span id="bd-btn-price-display">99 TK</span> →</button>
           <div id="bd-gw-status" role="status" class="checkout-help" hidden></div>
           <a class="checkout-whatsapp" id="checkout-bd-whatsapp" target="_blank" rel="noopener noreferrer">Gateway কাজ না করলে WhatsApp করুন →</a>
-          <details class="transfer-details"><summary>ইতিমধ্যে Send Money করেছেন?</summary><p class="checkout-help">Send Money: <strong id="order-bd-phone-number">01711729858</strong> <button id="btn-copy-bd-number" type="button">Copy</button></p>
+          <details class="transfer-details" id="manual-transfer-panel"><summary>Send Money / manual verification</summary>
+            <div class="payment-brand-grid" role="group" aria-label="Payment method"><button class="payment-brand bkash selected" type="button" data-manual-method="bKash">bKash</button><button class="payment-brand nagad" type="button" data-manual-method="Nagad">Nagad</button><button class="payment-brand rocket" type="button" data-manual-method="Rocket">Rocket</button></div>
+            <p class="checkout-help" id="manual-payment-instruction"><strong>bKash</strong> app থেকে এই personal number-এ Send Money করুন:</p>
+            <p class="payment-number"><strong id="order-bd-phone-number">01711729858</strong> <button id="btn-copy-bd-number" type="button">Copy number</button></p>
             <label>Sender number <input class="order-input" type="tel" id="manual-sender" autocomplete="tel" placeholder="01XXXXXXXXX"></label>
             <label>Transaction ID <input class="order-input" id="manual-transaction" maxlength="40" placeholder="Your payment reference"></label>
             <label>Game username or email (optional)<input class="order-input" id="manual-account" maxlength="80" autocomplete="username"></label>
@@ -8261,6 +8264,9 @@
         const btnBdt = document.getElementById('btn-currency-bdt');
 
         if (btnUsd && btnBdt) {
+          btnBdt.hidden=!!this.isInternational;
+          btnUsd.hidden=!!this.isInternational;
+          if(this.isInternational)this.selectedCurrency='usd';
           btnUsd.classList.toggle('active', this.selectedCurrency === 'usd');
           btnBdt.classList.toggle('active', this.selectedCurrency === 'bdt');
         }
@@ -12850,7 +12856,7 @@
       // 1. Register Service Worker with cache busting
       if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=11.0.0')
+          navigator.serviceWorker.register('./sw.js?v=12.0.0')
             .then(reg => {
               console.log('PWA ServiceWorker registered:', reg.scope);
               reg.addEventListener('updatefound', () => {
