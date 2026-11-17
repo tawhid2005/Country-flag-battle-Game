@@ -1,5 +1,12 @@
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from 'node:crypto';
 
+export function supabaseServerKey(env) {
+  const preferred=String(env.SUPABASE_SECRET_KEY || '').trim();
+  const key=preferred || String(env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  if(!key || key.startsWith('sb_publishable_') || (preferred && !key.startsWith('sb_secret_'))) return '';
+  return key;
+}
+
 // Only setting names are returned; credential values never leave the server.
 export function adminSetupStatus(env) {
   const missing=[];
@@ -9,7 +16,7 @@ export function adminSetupStatus(env) {
   if(!String(env.ADMIN_USERNAME || '').trim())missing.push('ADMIN_USERNAME');
   if(!/^scrypt\$[a-f0-9]{32}\$[a-f0-9]{128}$/.test(env.ADMIN_PASSWORD_HASH || ''))missing.push('ADMIN_PASSWORD_HASH');
   if(!https(env.SUPABASE_URL))missing.push('SUPABASE_URL');
-  if(!env.SUPABASE_SERVICE_ROLE_KEY)missing.push('SUPABASE_SERVICE_ROLE_KEY');
+  if(!supabaseServerKey(env))missing.push('SUPABASE_SECRET_KEY');
   return {ready:missing.length===0,missing};
 }
 

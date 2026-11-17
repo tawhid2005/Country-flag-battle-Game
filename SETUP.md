@@ -16,7 +16,9 @@ Use the existing Vercel project with Node 22, Framework Preset **Other**, root d
 
 Copy variable **names** from [.env.example](.env.example) into Vercel's server environment settings. Do not put real values in Git, HTML, JavaScript served to the browser, chat, screenshots, or URLs. `APP_ORIGIN` must be the exact final HTTPS origin, e.g. `https://www.countryflagbattle.xyz`. Redirect the other domain to that canonical origin. Cookies are host-only and webhooks must point directly to the final domain.
 
-Set the Supabase project URL and service-role key. The database is still required for verified Polar purchases and persistent manual grants. Set `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, and a random `SESSION_SECRET` of at least 32 bytes. Generate the password hash locally with Node using the exported `hashPassword` helper; enter the password through hidden stdin, not command arguments. One option in PowerShell with Node installed:
+Set `SUPABASE_URL` to the HTTPS project URL from Supabase's Connect dialog and `SUPABASE_SECRET_KEY` to a server-only `sb_secret_...` key from Settings → API Keys. The backend sends new secret keys only in the `apikey` header, because they are not JWTs. Existing `SUPABASE_SERVICE_ROLE_KEY` remains a legacy fallback; a nonempty `SUPABASE_SECRET_KEY` takes precedence. Publishable keys cannot configure this backend. Never copy an exposed key into deployment settings: revoke it and generate a replacement directly in Supabase. See [Supabase API keys](https://supabase.com/docs/guides/getting-started/api-keys).
+
+The database is still required for verified Polar purchases and persistent manual grants. Set `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, and a random `SESSION_SECRET` of at least 32 bytes. Generate the password hash locally with Node using the exported `hashPassword` helper; enter the password through hidden stdin, not command arguments. One option in PowerShell with Node installed:
 
 ```powershell
 $secureAdminPassword = Read-Host 'New administrator password' -AsSecureString

@@ -11,7 +11,7 @@
 | `ADMIN_PASSWORD_HASH` | নতুন শক্তিশালী password থেকে তৈরি `scrypt$…` hash; এখানে সরাসরি password দেওয়া যাবে না |
 | `SESSION_SECRET` | আলাদাভাবে তৈরি random secret; কমপক্ষে 32 bytes ব্যবহার করুন |
 | `SUPABASE_URL` | আপনার Supabase project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase-এর server-only service-role key |
+| `SUPABASE_SECRET_KEY` | Supabase Settings → API Keys-এর নতুন server-only `sb_secret_…` key; publishable key নয় |
 
 2. Password hash তৈরি করার command [SETUP.md](SETUP.md)-এর **Hosting environment** অংশে আছে। সেখানে password লুকিয়ে input দেওয়ার ব্যবস্থা আছে। এই কাজে Node.js লাগে। কোনো password বা secret chat, GitHub, screenshot বা public HTML-এ দেবেন না।
 3. Supabase project-এ [database/schema.sql](database/schema.sql) চালিয়ে tables/functions তৈরি করুন। তারপর Vercel deployment **Redeploy** করুন। নতুন environment variables কেবল redeploy-এর পর কার্যকর হবে।

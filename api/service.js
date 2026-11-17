@@ -1,5 +1,5 @@
 import { randomUUID, createHmac } from 'node:crypto';
-import { PLANS, hashPassword, verifyPassword, equal, sign, verify, activationKey, validatePolar, validateSSL, verifyPolarWebhook, sslTransactionId, sslOrderId, adminSetupStatus } from '../server/security.js';
+import { PLANS, hashPassword, verifyPassword, equal, sign, verify, activationKey, validatePolar, validateSSL, verifyPolarWebhook, sslTransactionId, sslOrderId, adminSetupStatus, supabaseServerKey } from '../server/security.js';
 
 export const config = {api: {bodyParser: false}};
 const uuid = value => /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value || '');
@@ -21,9 +21,11 @@ export function createHandler(env, fetcher = fetch) {
     return response.status === 204 ? null : response.json();
   }
   async function db(path, method = 'GET', body) {
-    if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) fail(503, 'Database setup incomplete');
+    const key=supabaseServerKey(env);
+    if (!env.SUPABASE_URL || !key) fail(503, 'Database setup incomplete');
     return request(env.SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/' + path, {
-      method, headers: {apikey:env.SUPABASE_SERVICE_ROLE_KEY, Authorization:'Bearer '+env.SUPABASE_SERVICE_ROLE_KEY,
+      // New secret keys are not JWTs; send them only through the apikey header.
+      method, headers: {apikey:key, ...(key.startsWith('sb_secret_') ? {} : {Authorization:'Bearer '+key}),
         'Content-Type':'application/json', Prefer:'return=representation'},
       ...(body === undefined ? {} : {body:JSON.stringify(body)})
     });
@@ -130,7 +132,7 @@ export function createHandler(env, fetcher = fetch) {
       }
       if (route === 'health' && req.method === 'GET') {
         const setup=adminSetupStatus(env);
-        return json(200,{database:!!(env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY),
+        return json(200,{database:!!(env.SUPABASE_URL && supabaseServerKey(env)),
         admin:setup.ready,adminReady:setup.ready,adminMissing:setup.missing,
         adminOrigin:setup.missing.includes('APP_ORIGIN') ? null : new URL(env.APP_ORIGIN).origin,
         polar:!!(env.POLAR_ACCESS_TOKEN && env.POLAR_WEBHOOK_SECRET), sslcommerz:!!(env.SSLCOMMERZ_STORE_ID && env.SSLCOMMERZ_STORE_PASSWORD),

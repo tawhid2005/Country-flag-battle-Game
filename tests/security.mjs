@@ -30,9 +30,16 @@ export async function runSecurityChecks() {
   let grants=0,allowRate=true,providerPaid=true;
   const account={id:accountId,username:'player',email:'player@example.com',password_hash:password};
   const env={APP_ORIGIN:'https://game.example',SESSION_SECRET:secret,SUPABASE_URL:'https://db.example',SUPABASE_SERVICE_ROLE_KEY:'test-service',ADMIN_USERNAME:'owner',ADMIN_PASSWORD_HASH:password,POLAR_ENV:'sandbox',POLAR_ACCESS_TOKEN:'test-polar',POLAR_WEBHOOK_SECRET:webhookSecret,POLAR_PRODUCTS:JSON.stringify({'1m':'product-1'}),SSLCOMMERZ_STORE_ID:'test-store',SSLCOMMERZ_STORE_PASSWORD:'test-password'};
+  let expectedDbKey='test-service',dbRequests=0;
   function response(value){return {ok:true,status:200,json:async()=>value};}
   const fetcher=async(url,options={})=>{
     const u=new URL(url),p=u.pathname.replace('/rest/v1/','');
+    if(u.hostname==='db.example') {
+      dbRequests++;
+      assert.equal(options.headers.apikey,expectedDbKey);
+      if(expectedDbKey.startsWith('sb_secret_'))assert.equal(options.headers.Authorization,undefined,'Secret API keys must not be sent as bearer JWTs');
+      else assert.equal(options.headers.Authorization,'Bearer '+expectedDbKey);
+    }
     if(u.hostname==='sandbox-api.polar.sh' && u.pathname==='/v1/checkouts/' && options.method==='POST') {
       const submitted=JSON.parse(options.body);assert.equal(submitted.products[0],'product-1');assert.equal(submitted.allow_discount_codes,false);assert.ok(!submitted.success_url.includes('admin'));
       return response({id:'new-polar-checkout',url:'https://buy.polar.sh/checkout/test'});
@@ -110,7 +117,32 @@ export async function runSecurityChecks() {
   env.APP_ORIGIN='https://';
   const invalidOrigin=await call('health');assert.equal(invalidOrigin.statusCode,200);assert.equal(invalidOrigin.body.adminOrigin,null);
   env.APP_ORIGIN='https://game.example';
+  env.SUPABASE_SECRET_KEY='  sb_secret_fixture_only_not_a_real_key  ';
+  expectedDbKey=env.SUPABASE_SECRET_KEY.trim();
+  const newKeyHealth=await call('health');assert.equal(newKeyHealth.body.adminReady,true);
+  assert.ok(!JSON.stringify(newKeyHealth.body).includes(expectedDbKey),'Health must not reveal the Supabase key');
+  const newKeyLogin=await call('admin/login',{username:'owner',password:'a-long-test-password'});
+  assert.equal(newKeyLogin.statusCode,200,'New secret key takes precedence over the legacy setting');
+  const newKeyCookie=newKeyLogin.headers['set-cookie'].split(';')[0];
+  assert.equal((await call('admin/monitor',undefined,{cookie:newKeyCookie})).statusCode,200);
+  delete env.SUPABASE_SERVICE_ROLE_KEY;
+  assert.equal((await call('admin/login',{username:'owner',password:'wrong'})).statusCode,401,'New database key must not bypass the administrator password');
+  assert.equal((await call('admin/login',{username:'owner',password:'a-long-test-password'})).statusCode,200,'A legacy key is not required');
+  const requestsBeforeInvalidKey=dbRequests;
+  for(const invalid of ['', 'sb_publishable_fixture_only', 'invalid-secret-key']) {
+    env.SUPABASE_SECRET_KEY=invalid;
+    const invalidKeyHealth=await call('health');assert.equal(invalidKeyHealth.body.database,false);
+    assert.ok(invalidKeyHealth.body.adminMissing.includes('SUPABASE_SECRET_KEY'));
+    assert.equal((await call('admin/login',{username:'owner',password:'a-long-test-password'})).statusCode,503);
+  }
+  assert.equal(dbRequests,requestsBeforeInvalidKey,'Invalid database configuration must not reach Supabase');
+  delete env.SUPABASE_SECRET_KEY;
+  env.SUPABASE_SERVICE_ROLE_KEY='sb_secret_fixture_in_legacy_setting';expectedDbKey=env.SUPABASE_SERVICE_ROLE_KEY;
+  assert.equal((await call('admin/login',{username:'owner',password:'a-long-test-password'})).statusCode,200,'New-format keys also work under the previous variable name');
+  env.SUPABASE_SERVICE_ROLE_KEY='test-service';expectedDbKey=env.SUPABASE_SERVICE_ROLE_KEY;
+  assert.equal((await call('admin/login',{username:'owner',password:'a-long-test-password'})).statusCode,200,'Legacy key compatibility is preserved');
   return ['Password hashing, role-separated sessions, expiry, CSRF and login rate limits passed',
+    'New Supabase secret-key headers, login, monitoring, invalid-key rejection and legacy fallback passed',
     'Polar and Bangladesh amount/currency/order validation; signed webhooks and replay rejection passed',
     'Mocked API fulfilment, duplicate notification handling, forged callback rejection and game-only activation passed'];
 }
