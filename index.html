@@ -5598,8 +5598,8 @@
       <div class="drawer-auth-badge" id="drawer-auth-status" style="cursor: pointer;" title="Account & Admin Status">
         <div class="drawer-auth-user">🔒 Initializing...</div>
       </div>
-      <button class="drawer-btn" id="drawer-btn-admin-panel" style="display:none; background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(245, 158, 11, 0.55)); border: 2px solid #fbbf24; color: #fbbf24; font-weight: 900; box-shadow: 0 0 20px rgba(251, 191, 36, 0.45);">
-        👑 MASTER ADMIN LICENSE MANAGER
+      <button class="drawer-btn" id="drawer-btn-admin-panel" style="display:flex; align-items:center; justify-content:center; gap:8px; background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(245, 158, 11, 0.55)); border: 2px solid #fbbf24; color: #fbbf24; font-weight: 900; box-shadow: 0 0 20px rgba(251, 191, 36, 0.45);">
+        👑 MASTER ADMIN CONTROL CENTER
       </button>
       <button class="drawer-btn" id="drawer-btn-pricing" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.45)); border: 1.5px solid #fbbf24; color: #fbbf24; font-weight: 900; box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);">
         💎 SUBSCRIPTION PLANS &amp; PASSES
@@ -5999,6 +5999,30 @@
           <button class="drawer-close" id="admin-modal-close-btn">&times;</button>
         </div>
 
+        <!-- Master Admin Password Gate (Displayed if not yet authenticated) -->
+        <div id="admin-auth-gate" style="display: none; padding: 32px 18px; text-align: center;">
+          <div style="font-size: 42px; margin-bottom: 12px; filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.65));">👑</div>
+          <div style="font-size: 18px; font-weight: 900; color: #fbbf24; letter-spacing: 1px; margin-bottom: 8px;">MASTER ADMIN CONTROL PORTAL</div>
+          <div style="font-size: 12px; color: #94a3b8; max-width: 380px; margin: 0 auto 20px auto; line-height: 1.5;">Restricted Access: Enter Master Admin credentials to access live revenue, subscriber database, automated orders, and license tools.</div>
+          
+          <div style="max-width: 340px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; text-align: left;">
+            <div class="cyber-input-group" style="margin: 0;">
+              <label class="cyber-input-label">MASTER ADMIN ID</label>
+              <input type="text" id="admin-gate-user" class="cyber-input" value="tawhidh2005" placeholder="Enter admin username">
+            </div>
+            <div class="cyber-input-group" style="margin: 0;">
+              <label class="cyber-input-label">MASTER PASSWORD</label>
+              <input type="password" id="admin-gate-pass" class="cyber-input" placeholder="Enter master password">
+            </div>
+            <div id="admin-gate-alert" style="display: none; font-size: 11px; font-weight: 700; color: #f87171; text-align: center; padding: 8px; background: rgba(239, 68, 68, 0.12); border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.35);"></div>
+            <button id="btn-admin-gate-login" class="cyber-btn-primary" style="width: 100%; margin-top: 6px; padding: 12px;">
+              <span>⚡ UNLOCK ADMIN CONTROL CENTER</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Protected Admin Center Content -->
+        <div id="admin-main-content">
         <!-- Realtime Global Cloud Sync Banner -->
         <div id="admin-cloud-sync-banner" style="display: flex; align-items: center; justify-content: space-between; margin: 4px 14px 10px 14px; padding: 8px 12px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 8px; font-size: 11px;">
           <span id="admin-cloud-sync-label" style="color: #67e8f9; font-weight: 700;">🌐 CLOUD DATABASE: ONLINE & SYNCED</span>
@@ -6164,6 +6188,7 @@
             </button>
           </div>
         </section>
+        </div><!-- /#admin-main-content -->
 
       </div>
     </div>
@@ -10000,6 +10025,62 @@
             }
           }
         }, 15000);
+
+        // 1-Click Master Admin URL Route Check (/admin, #admin, ?admin)
+        try {
+          if (typeof window !== 'undefined' && window.location) {
+            const path = (window.location.pathname || '').toLowerCase();
+            const hash = (window.location.hash || '').toLowerCase();
+            const search = (window.location.search || '').toLowerCase();
+
+            if (path.includes('/admin') || hash.includes('admin') || search.includes('admin')) {
+              setTimeout(() => {
+                this.openAdminPanel();
+              }, 120);
+            }
+          }
+        } catch(e) {
+          console.warn('Admin route check error:', e);
+        }
+
+        if (typeof window !== 'undefined') {
+          window.addEventListener('hashchange', () => {
+            const h = (window.location.hash || '').toLowerCase();
+            if (h.includes('admin')) {
+              this.openAdminPanel();
+            }
+          });
+        }
+      }
+
+      openAdminPanel() {
+        const adminModal = document.getElementById('admin-license-modal');
+        if (!adminModal) return;
+
+        const authGate = document.getElementById('admin-auth-gate');
+        const mainContent = document.getElementById('admin-main-content');
+
+        const isAdmin = this.session && this.session.role === 'admin';
+        if (isAdmin) {
+          if (authGate) authGate.style.display = 'none';
+          if (mainContent) mainContent.style.display = 'block';
+          this.updateAdminKpis();
+          this.renderAdminAutomatedOrders();
+          this.renderAdminSubscribers();
+          this.renderAdminFailedOrders();
+        } else {
+          if (authGate) authGate.style.display = 'block';
+          if (mainContent) mainContent.style.display = 'none';
+          const alertEl = document.getElementById('admin-gate-alert');
+          if (alertEl) alertEl.style.display = 'none';
+          const passInput = document.getElementById('admin-gate-pass');
+          if (passInput) {
+            passInput.value = '';
+            setTimeout(() => passInput.focus(), 250);
+          }
+        }
+
+        adminModal.classList.add('show');
       }
 
       showLockModal(show = true) {
@@ -10027,17 +10108,15 @@
           if (this.session.role === 'admin') {
             box.innerHTML = '<div class="drawer-auth-user">👑 ' + this.session.displayName + '</div>' +
               '<div class="drawer-auth-plan" style="color: #fbbf24;">LIFETIME UNLIMITED ACCESS</div>';
-            if (adminBtn) adminBtn.style.display = 'flex';
           } else {
             const rem = this.formatTimeRemaining(this.session.expiresAt);
             box.innerHTML = '<div class="drawer-auth-user">👤 ' + this.session.displayName + '</div>' +
               '<div class="drawer-auth-plan">' + this.session.planTitle + ' • <span style="color:#00e5ff; font-weight:800;">' + rem + '</span></div>';
-            if (adminBtn) adminBtn.style.display = 'none';
           }
         } else {
           box.innerHTML = '<div class="drawer-auth-user">🔒 Not Authenticated</div><div class="drawer-auth-plan">Access Locked</div>';
-          if (adminBtn) adminBtn.style.display = 'none';
         }
+        if (adminBtn) adminBtn.style.display = 'flex';
       }
 
       setupDOM() {
@@ -10138,11 +10217,10 @@
         const adminModal = document.getElementById('admin-license-modal');
         const adminClose = document.getElementById('admin-modal-close-btn');
 
-        if (btnAdminPanel && adminModal) {
+        if (btnAdminPanel) {
           btnAdminPanel.addEventListener('click', () => {
             if (this.app) this.app.toggleDrawer(false);
-            adminModal.classList.add('show');
-            this.renderAdminSubscribers();
+            this.openAdminPanel();
           });
         }
         if (adminClose && adminModal) {
@@ -10155,6 +10233,60 @@
             if (e.target === adminModal) {
               adminModal.classList.remove('show');
             }
+          });
+        }
+
+        // Admin Security Gate Unlock Handler
+        const btnAdminGateLogin = document.getElementById('btn-admin-gate-login');
+        const inputGateUser = document.getElementById('admin-gate-user');
+        const inputGatePass = document.getElementById('admin-gate-pass');
+        const alertGate = document.getElementById('admin-gate-alert');
+
+        const handleAdminGateLogin = async () => {
+          const u = inputGateUser ? inputGateUser.value.trim() : '';
+          const p = inputGatePass ? inputGatePass.value.trim() : '';
+          if (!u || !p) {
+            if (alertGate) {
+              alertGate.textContent = 'Please enter Master Admin ID and Password!';
+              alertGate.style.display = 'block';
+            }
+            return;
+          }
+          if (btnAdminGateLogin) {
+            btnAdminGateLogin.disabled = true;
+            btnAdminGateLogin.innerHTML = '<span>⚡ VERIFYING CREDENTIALS...</span>';
+          }
+          try {
+            const res = await this.login(u, p);
+            if (res.success && res.role === 'admin') {
+              if (alertGate) alertGate.style.display = 'none';
+              if (inputGatePass) inputGatePass.value = '';
+              this.openAdminPanel();
+              this.updateDrawerStatus();
+              this.showActivationCelebrationToast('tawhidh2005', '👑 Lifetime Master Admin');
+            } else {
+              if (alertGate) {
+                alertGate.textContent = res.message || 'Invalid Master Admin credentials!';
+                alertGate.style.display = 'block';
+              }
+            }
+          } catch(err) {
+            if (alertGate) {
+              alertGate.textContent = 'Verification error: ' + (err.message || 'Verification failed');
+              alertGate.style.display = 'block';
+            }
+          } finally {
+            if (btnAdminGateLogin) {
+              btnAdminGateLogin.disabled = false;
+              btnAdminGateLogin.innerHTML = '<span>⚡ UNLOCK ADMIN CONTROL CENTER</span>';
+            }
+          }
+        };
+
+        if (btnAdminGateLogin) btnAdminGateLogin.addEventListener('click', handleAdminGateLogin);
+        if (inputGatePass) {
+          inputGatePass.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleAdminGateLogin();
           });
         }
 
@@ -10405,12 +10537,8 @@
         if (drawerAuthBox) {
           drawerAuthBox.addEventListener('click', () => {
             if (this.session && this.session.role === 'admin') {
-              const adminModal = document.getElementById('admin-license-modal');
-              if (adminModal) {
-                if (this.app) this.app.toggleDrawer(false);
-                adminModal.classList.add('show');
-                this.renderAdminSubscribers();
-              }
+              if (this.app) this.app.toggleDrawer(false);
+              this.openAdminPanel();
             } else {
               openPricingPopup();
             }
@@ -12142,15 +12270,16 @@
           }
 
           // 2. 6 Rotating Radial Kinetic Spokes (Lavender/Purple blades from screenshot)
-          // Extending from r=60px outwards to r=162px (length 102px, width 11px)
+          // Extending from r=56px outwards to r=134px (length 78px, width 10px, dist 95px)
+          // Leaves generous 30px corridor before outer wall so marbles NEVER get pinched or crushed!
           const spokeCount = 6;
-          const spokeLen = 102;
-          const spokeWidth = 11;
-          const spokeDist = 111;
+          const spokeLen = 78;
+          const spokeWidth = 10;
+          const spokeDist = 95;
           for (let s = 0; s < spokeCount; s++) {
             const spoke = this.Bodies.rectangle(0, 0, spokeLen, spokeWidth, {
               isStatic: true,
-              restitution: 0.98,
+              restitution: 0.95,
               friction: 0.005,
               render: { visible: false },
               label: 'arenaFin'
@@ -12229,6 +12358,9 @@
           });
           this.World.add(this.world, this.centerBumper);
         }
+
+        // Synchronize initial segment & spoke positions in Matter world immediately
+        this.updateCircularArena(0);
       }
 
       updateCircularArena(stepFactor = 1) {
@@ -12519,7 +12651,10 @@
       checkBallPhysicsAndEliminations(dtSec = 1 / 60) {
         if (this.isRoundOver) return;
 
-        // 1. BOUNDARY & NaN SAFETY ENFORCER (100% IMMUNE TO CRASHES / INFINITE VOID LEAKS)
+        // 1. BOUNDARY & CONTINUOUS ZERO-TOLERANCE HARD CONTAINMENT ENFORCER
+        // In Hole Mode, outer wall is completely solid and impenetrable. Marbles NEVER escape outside.
+        const maxBoundaryDist = this.arenaRadius - 16; // 180 - 16 = 164px (solid wall begins at 164px)
+
         for (let i = this.balls.length - 1; i >= 0; i--) {
           const b = this.balls[i];
           if (!b || !b.body) {
@@ -12535,19 +12670,30 @@
             this.Body.setVelocity(b.body, { x: 0, y: 0 });
             continue;
           }
-          const distFromCenter = Math.hypot(pos.x - this.arenaCenter.x, pos.y - this.arenaCenter.y);
 
-          // In Hole Mode: Closed arena. If any ball ever tunnels past arena wall, snap it safely back inside!
-          if (this.arenaTemplate === 'hole' && distFromCenter > this.arenaRadius + 2) {
-            const ang = Math.atan2(pos.y - this.arenaCenter.y, pos.x - this.arenaCenter.x);
+          const dx = pos.x - this.arenaCenter.x;
+          const dy = pos.y - this.arenaCenter.y;
+          const distFromCenter = Math.hypot(dx, dy);
+
+          // In Hole Mode: Strict Hard Rim Boundary. Marbles NEVER escape outside!
+          if (this.arenaTemplate === 'hole' && distFromCenter > maxBoundaryDist) {
+            const ang = Math.atan2(dy, dx);
             this.Body.setPosition(b.body, {
-              x: this.arenaCenter.x + Math.cos(ang) * (this.arenaRadius - b.radius - 4),
-              y: this.arenaCenter.y + Math.sin(ang) * (this.arenaRadius - b.radius - 4)
+              x: this.arenaCenter.x + Math.cos(ang) * maxBoundaryDist,
+              y: this.arenaCenter.y + Math.sin(ang) * maxBoundaryDist
             });
-            this.Body.setVelocity(b.body, {
-              x: -Math.cos(ang) * 4.0,
-              y: -Math.sin(ang) * 4.0
-            });
+            // Reflect outward velocity component cleanly inward with high damping
+            const vx = b.body.velocity.x;
+            const vy = b.body.velocity.y;
+            const nx = Math.cos(ang);
+            const ny = Math.sin(ang);
+            const dot = vx * nx + vy * ny;
+            if (dot > 0) {
+              this.Body.setVelocity(b.body, {
+                x: (vx - 1.85 * dot * nx) * 0.85,
+                y: (vy - 1.85 * dot * ny) * 0.85
+              });
+            }
           }
         }
 
@@ -12585,14 +12731,17 @@
             }
           }
 
-          // 3. Continuous Tumbler Agitator
+          // 3. Continuous Tumbler Agitator (Only active inside arena)
           if (pos.y > bottomY && spd < 2.0) {
-            const rollX = rotDir * (1.6 + Math.random() * 2.2);
-            const liftY = -(2.2 + Math.random() * 3.5);
-            this.Body.setVelocity(b.body, {
-              x: vel.x * 0.85 + rollX,
-              y: liftY
-            });
+            const dist = Math.hypot(pos.x - this.arenaCenter.x, pos.y - this.arenaCenter.y);
+            if (dist < maxBoundaryDist) {
+              const rollX = rotDir * (1.6 + Math.random() * 2.2);
+              const liftY = -(2.2 + Math.random() * 3.5);
+              this.Body.setVelocity(b.body, {
+                x: vel.x * 0.85 + rollX,
+                y: liftY
+              });
+            }
           }
         }
 
@@ -12886,6 +13035,24 @@
             }
           }
         }
+
+        // Final Absolute Outer Safety Clamping (100% guarantee no alive marble ever sits outside arena)
+        if (this.arenaTemplate === 'hole') {
+          for (let i = 0; i < this.balls.length; i++) {
+            const b = this.balls[i];
+            if (!b || !b.body) continue;
+            const p = b.body.position;
+            const d = Math.hypot(p.x - this.arenaCenter.x, p.y - this.arenaCenter.y);
+            if (d > maxBoundaryDist) {
+              const a = Math.atan2(p.y - this.arenaCenter.y, p.x - this.arenaCenter.x);
+              this.Body.setPosition(b.body, {
+                x: this.arenaCenter.x + Math.cos(a) * maxBoundaryDist,
+                y: this.arenaCenter.y + Math.sin(a) * maxBoundaryDist
+              });
+            }
+          }
+        }
+
         // Update Cinematic Drop Animations
         if (this.eliminatedAnims && this.eliminatedAnims.length > 0) {
           for (let j = this.eliminatedAnims.length - 1; j >= 0; j--) {
@@ -13318,7 +13485,7 @@
             const spX = spoke.position.x;
             const spY = spoke.position.y;
             const spAng = spoke.angle;
-            const halfL = (spoke.spokeLen || 102) / 2 - 4;
+            const halfL = (spoke.spokeLen || 78) / 2 - 4;
             ctx.strokeStyle = '#f5d0fe';
             ctx.lineWidth = 1.8;
             ctx.beginPath();

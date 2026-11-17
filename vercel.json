@@ -7,6 +7,14 @@
       "destination": "/$1"
     },
     {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/index.html"
+    },
+    {
       "source": "/((?!googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*).*)",
       "destination": "/index.html"
     }
