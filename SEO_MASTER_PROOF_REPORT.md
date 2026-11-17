@@ -4,13 +4,13 @@ Audit date: 18 November 2026 (Asia/Dhaka)
 
 ## Outcome
 
-The technical SEO layer now uses `https://www.countryflagbattle.xyz/` as its single canonical origin. The Vercel alias is configured to redirect permanently, nonexistent paths are no longer rewritten to the homepage, private admin/API routes retain `noindex`, and the sitemap, robots file, social metadata and structured data agree on the canonical URL.
+The technical SEO layer now uses `https://www.countryflagbattle.xyz/` as its single canonical origin. The Vercel alias has a configured server redirect and an immediate browser fallback to the canonical host. Nonexistent paths are no longer rewritten to the homepage, private admin/API routes retain `noindex`, and the sitemap, robots file, social metadata and structured data agree on the canonical URL.
 
 ## Live baseline observed before deployment
 
 - Apex domain: `308` to `www`.
 - Canonical `www` homepage: `200`.
-- Vercel alias: duplicate indexable `200` homepage.
+- Vercel alias before the change: duplicate indexable `200` homepage. Vercel continued to return HTTP `200` after its conditional redirect rule was deployed, so the canonical tag and immediate browser redirect are the active fallback signals; configuring the custom-domain redirect in Vercel project Domains remains the preferred server-side solution.
 - Random nonexistent URL: homepage with `200` (soft-404).
 - `/admin` and `/api/health`: `noindex` present.
 

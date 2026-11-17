@@ -11,7 +11,7 @@
   },
   "implemented": [
     "Canonical, Open Graph, schema, sitemap and robots aligned to www",
-    "Vercel preview hostname permanently redirects to canonical origin",
+    "Vercel preview hostname has a configured server redirect plus an immediate browser redirect fallback to the canonical origin",
     "Catch-all homepage rewrite removed so missing URLs return 404",
     "Custom noindex 404 page added",
     "Global X-Robots-Tag removed; private admin and API noindex retained",
