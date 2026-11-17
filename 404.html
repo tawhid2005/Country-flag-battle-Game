@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Country Flag Battle Royale</title>
+  <script>
+    // Universal SPA Routing Fallback
+    var pathname = window.location.pathname.toLowerCase();
+    var search = window.location.search || '';
+    var hash = window.location.hash || '';
+
+    if (pathname.indexOf('/admin') !== -1 || search.indexOf('admin') !== -1 || hash.indexOf('admin') !== -1) {
+      window.location.replace('/index.html?admin=true' + (hash ? hash : ''));
+    } else {
+      window.location.replace('/index.html' + search + hash);
+    }
+  </script>
+  <meta http-equiv="refresh" content="0; url=/index.html">
+  <style>
+    body {
+      margin: 0;
+      background: #030712;
+      color: #38bdf8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <p>Loading Country Flag Battle Royale...</p>
+</body>
+</html>

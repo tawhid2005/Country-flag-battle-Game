@@ -1,5 +1,5 @@
-// Country Flag Battle Royale - PWA Service Worker (v4.0.0 Force Cache Purge)
-const CACHE_NAME = 'cfb-cache-v4';
+// Country Flag Battle Royale - PWA Service Worker (v5.0.0 Force Cache Purge)
+const CACHE_NAME = 'cfb-cache-v5';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

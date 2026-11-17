@@ -3,19 +3,23 @@
   "cleanUrls": false,
   "rewrites": [
     {
-      "source": "/(sitemap\\.xml|robots\\.txt|googlee59d340a4eeb0771\\.html|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|apple-touch-icon\\.png|favicon\\.png|favicon\\.ico|og-preview\\.png|og-preview\\.jpg)",
+      "source": "/(sitemap\\.xml|robots\\.txt|googlee59d340a4eeb0771\\.html|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|apple-touch-icon\\.png|favicon\\.png|favicon\\.ico|og-preview\\.png|og-preview\\.jpg|404\\.html)",
       "destination": "/$1"
     },
     {
       "source": "/admin",
-      "destination": "/index.html"
+      "destination": "/index.html?admin=true"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/index.html?admin=true"
     },
     {
       "source": "/admin/(.*)",
-      "destination": "/index.html"
+      "destination": "/index.html?admin=true"
     },
     {
-      "source": "/((?!googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*).*)",
+      "source": "/((?!googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*|404\\.html).*)",
       "destination": "/index.html"
     }
   ],
@@ -130,4 +134,3 @@
     }
   ]
 }
-
