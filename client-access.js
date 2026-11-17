@@ -80,24 +80,28 @@
   proto.startCheckout = async function(provider) {
     const button=$(provider === 'polar' ? 'btn-start-polar-checkout':'btn-start-bd-checkout');
     if (button) button.disabled=true;
-    const status=$('polar-gw-status');
-    if(status){status.hidden=false;status.textContent='Opening secure Polar checkout…';}
+    const status=$(provider === 'polar' ? 'polar-gw-status':'bd-gw-status');
+    if(status){status.hidden=false;status.textContent=provider === 'polar' ? 'Opening secure Polar checkout…':'নিরাপদ payment gateway খোলা হচ্ছে…';}
     try {
-      if(provider!=='polar')return this.updateWhatsAppLinks();
-      const email=$('checkout-contact-email').value.trim();
-      const password=$('order-checkout-password').value;
+      const isBd=provider==='sslcommerz';
+      const email=$(isBd ? 'checkout-bd-email':'checkout-contact-email').value.trim();
+      const password=$(isBd ? 'checkout-bd-password':'order-checkout-password').value;
+      const phone=isBd ? $('checkout-bd-phone').value.trim().replace(/[\s-]/g,'') : '';
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('Enter your email to continue.');
       if(password.length<10)throw new Error('Use a password of at least 10 characters.');
+      if(isBd && !/^(?:\+?880|0)1[3-9][0-9]{8}$/.test(phone))throw new Error('সঠিক Bangladesh mobile number দিন।');
       const result=await this.api('checkout',{
-        provider,planId:this.activePlanId || '1m',username:$('order-checkout-username').value.trim() || email,password,email
+        provider,planId:this.activePlanId || '1m',username:isBd ? email : ($('order-checkout-username').value.trim() || email),password,email,
+        ...(isBd ? {phone,address:'Digital game pass',city:'Dhaka',postcode:'1000'} : {})
       });
       let destination;
       try {destination=new URL(result.url);}catch(_){throw new Error('Checkout could not be opened. Please retry or contact WhatsApp support.');}
-      if(destination.protocol!=='https:' || !['buy.polar.sh','checkout.polar.sh','sandbox.polar.sh','polar.sh'].includes(destination.hostname) || !result.orderId)throw new Error('Checkout could not be opened. Please retry or contact WhatsApp support.');
+      const allowedHosts=isBd ? ['securepay.sslcommerz.com','sandbox.sslcommerz.com'] : ['buy.polar.sh','checkout.polar.sh','sandbox.polar.sh','polar.sh'];
+      if(destination.protocol!=='https:' || !allowedHosts.includes(destination.hostname) || !result.orderId)throw new Error('Checkout could not be opened. Please retry or contact WhatsApp support.');
       // Store only an order reference; never passwords, activation keys or API secrets.
       gameStorage.setItem('cfb_pending_order',result.orderId);
       if(result.receipt)gameSessionStorage.setItem('cfb_receipt_'+result.orderId,result.receipt);
-      $('order-checkout-password').value='';
+      $(isBd ? 'checkout-bd-password':'order-checkout-password').value='';
       location.assign(destination.href);
     } catch(error) {
       const message=error.status===503 ? 'Online checkout is temporarily unavailable. Contact us on WhatsApp for help.' : error.name==='TypeError' ? 'Cannot reach checkout. Check your connection or contact us on WhatsApp.' : error.message;
@@ -147,6 +151,7 @@
     if($('order-card-plan-duration'))$('order-card-plan-duration').textContent=plan.id==='lifetime'?'Lifetime access':plan.days+' days of access';
     if($('order-card-plan-price'))$('order-card-plan-price').textContent=tab==='intl'?'$'+plan.price.toFixed(2)+' USD':plan.price+' TK';
     if($('polar-btn-price-display'))$('polar-btn-price-display').textContent='$'+getPlanDef(this.activePlanId || '1m','usd').price.toFixed(2);
+    if($('bd-btn-price-display'))$('bd-btn-price-display').textContent=getPlanDef(this.activePlanId || '1m','bdt').price+' TK';
     const status=$('polar-gw-status');if(status){status.hidden=true;status.textContent='';}
     if($('checkout-retry-payment'))$('checkout-retry-payment').hidden=!gameStorage.getItem('cfb_pending_order');
     this.updateWhatsAppLinks();
@@ -159,6 +164,8 @@
     this.detectCountryAndCurrency();this.setupDOM();this.renderPricingCards();this.handleTrialWorkflow();this.updateDrawerStatus();
     for(const id of ['manual-sender','manual-transaction','manual-account'])$(id)?.addEventListener('input',()=>this.updateWhatsAppLinks());
     $('checkout-retry-payment')?.addEventListener('click',()=>{const id=gameStorage.getItem('cfb_pending_order');if(id)this.pollPayment(id);});
+    if($('btn-start-polar-checkout'))$('btn-start-polar-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('polar');};
+    if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('sslcommerz');};
     this.updateWhatsAppLinks();
     // Remove credentials saved by previous releases.
     for (const key of ['cfb_pending_checkout_creds','cfb_admin_polar_token','cfb_paymently_api_key','cfb_auth_session']) gameStorage.removeItem(key);

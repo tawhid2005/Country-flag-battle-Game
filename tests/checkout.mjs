@@ -4,7 +4,8 @@ export async function runCheckoutChecks(){
   await runStartupChecks(async(app,context,mode)=>{
     if(mode!=='fresh')return;
     const $=id=>context.document.getElementById(id),security=app.security;
-    for(const id of ['checkout-address','checkout-city','checkout-postcode','btn-start-bd-checkout','auto-pay-trx-id'])assert.equal($(id),null,'Obsolete Bangladesh fields must be removed');
+    for(const id of ['checkout-address','checkout-city','checkout-postcode','auto-pay-trx-id'])assert.equal($(id),null,'Obsolete Bangladesh fields must be removed');
+    for(const id of ['checkout-bd-email','checkout-bd-phone','checkout-bd-password','btn-start-bd-checkout'])assert.ok($(id),'Three-field Bangladesh checkout must be present');
     security.activePlanId='2m';$('manual-sender').value='01712345678';$('manual-transaction').value='TX-TEST-123';$('manual-account').value='player';security.updateWhatsAppLinks();
     const link=new URL($('checkout-transfer-whatsapp').href),message=link.searchParams.get('text');
     assert.equal(link.hostname,'wa.me');assert.ok(message.includes('149 TK'));assert.ok(message.includes('TX-TEST-123'));assert.ok(!message.includes('password'));
@@ -20,6 +21,12 @@ export async function runCheckoutChecks(){
     assert.equal(submitted.username,'player@example.com');assert.equal(submitted.provider,'polar');assert.ok(!('address' in submitted));
     assert.equal(navigated,'https://buy.polar.sh/checkout/test');assert.equal($('order-checkout-password').value,'');
     assert.equal($('btn-start-polar-checkout').disabled,false);
+    $('checkout-bd-email').value='bd-player@example.com';$('checkout-bd-phone').value='01712345678';$('checkout-bd-password').value='another-long-password';
+    security.api=async(path,body)=>{assert.equal(path,'checkout');submitted=body;return {url:'https://securepay.sslcommerz.com/gwprocess/test',orderId:'bd-order',receipt:'bd-receipt'};};
+    await security.startCheckout('sslcommerz');
+    assert.equal(submitted.username,'bd-player@example.com');assert.equal(submitted.provider,'sslcommerz');assert.equal(submitted.phone,'01712345678');
+    assert.equal(navigated,'https://securepay.sslcommerz.com/gwprocess/test');assert.equal($('checkout-bd-password').value,'');
+    assert.equal($('btn-start-bd-checkout').disabled,false);
     context.location.protocol='https:';context.fetch=async()=>({ok:true,json:async()=>{throw new SyntaxError('HTML instead of JSON');}});
     await assert.rejects(()=>realApi.call(security,'checkout',{}),error=>error.code==='API_NOT_DEPLOYED');
     const timers=[],notices=[];let attempts=0;

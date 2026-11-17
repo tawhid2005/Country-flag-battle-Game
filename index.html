@@ -5734,14 +5734,19 @@
         <div class="checkout-summary"><div><strong id="order-card-plan-name">1 Month</strong><p id="order-card-plan-duration">30 days of access</p></div><strong id="order-card-plan-price">99 TK</strong></div>
         <div class="order-gateway-tabs" id="order-tabs-wrapper"><button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">Bangladesh</button><button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">International</button></div>
         <div class="order-gw-panel" id="panel-bd-pay">
-          <p class="checkout-help">bKash / Nagad / Rocket দিয়ে পেমেন্ট করতে WhatsApp-এ কথা বলুন। যাচাইয়ের পর আপনার pass চালু করা হবে।</p>
-          <a class="checkout-whatsapp" id="checkout-bd-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp-এ কিনুন →</a>
+          <p class="checkout-help">তিনটি তথ্য দিন। Account তৈরি হওয়ার পর নিরাপদ Bangladesh gateway-তে payment করুন। Verified payment হলে pass নিজে থেকে চালু হবে।</p>
+          <label>Email<input type="email" class="order-input" id="checkout-bd-email" autocomplete="email" maxlength="160" placeholder="you@example.com"></label>
+          <label>Mobile number<input type="tel" class="order-input" id="checkout-bd-phone" autocomplete="tel" maxlength="15" placeholder="01XXXXXXXXX"></label>
+          <label>Game password<input type="password" class="order-input" id="checkout-bd-password" autocomplete="new-password" minlength="10" maxlength="128" placeholder="কমপক্ষে ১০ অক্ষর"></label>
+          <button class="checkout-polar checkout-bd-auto" id="btn-start-bd-checkout" type="button">Pay securely · <span id="bd-btn-price-display">99 TK</span> →</button>
+          <div id="bd-gw-status" role="status" class="checkout-help" hidden></div>
+          <a class="checkout-whatsapp" id="checkout-bd-whatsapp" target="_blank" rel="noopener noreferrer">Gateway কাজ না করলে WhatsApp করুন →</a>
           <details class="transfer-details"><summary>ইতিমধ্যে Send Money করেছেন?</summary><p class="checkout-help">Send Money: <strong id="order-bd-phone-number">01711729858</strong> <button id="btn-copy-bd-number" type="button">Copy</button></p>
             <label>Sender number <input class="order-input" type="tel" id="manual-sender" autocomplete="tel" placeholder="01XXXXXXXXX"></label>
             <label>Transaction ID <input class="order-input" id="manual-transaction" maxlength="40" placeholder="Your payment reference"></label>
             <label>Game username or email (optional)<input class="order-input" id="manual-account" maxlength="80" autocomplete="username"></label>
             <a class="checkout-whatsapp secondary" id="checkout-transfer-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp-এ যাচাইয়ের অনুরোধ পাঠান →</a>
-            <p class="checkout-footnote">TrxID লিখলে নিজে থেকে verified হবে না। Admin পেমেন্ট মিলিয়ে activation link দেবেন।</p>
+            <p class="checkout-footnote">Personal Send Money স্বয়ংক্রিয়ভাবে যাচাই করা যায় না। Admin পেমেন্ট মিলিয়ে activation link দেবেন।</p>
           </details>
         </div>
         <div class="order-gw-panel" id="panel-intl-pay" style="display:none">
@@ -8898,6 +8903,7 @@
         const btnStartPolar = document.getElementById('btn-start-polar-checkout');
         if (btnStartPolar) {
           btnStartPolar.addEventListener('click', () => {
+            if (btnStartPolar.onclick) return;
             this.startPolarCheckout();
           });
         }
@@ -10213,7 +10219,8 @@
       }
       setupCanvasDPI() {
         const isMobile = this.isMobileDevice;
-        const maxDpr = isMobile ? Math.min(window.devicePixelRatio || 1, 1.25) : Math.min(window.devicePixelRatio || 1, 1.5);
+        const lowPower = isMobile || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+        const maxDpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1 : 1.25);
         const rect = this.viewport.getBoundingClientRect();
 
         const newW = Math.round(rect.width * maxDpr);
@@ -12047,6 +12054,17 @@
         // Draw Official Flag
         ctx.drawImage(ball.flagCanvas, -r, -r, r * 2, r * 2);
 
+        // Keep the crowded opening smooth on mobile and lower-power PCs.
+        if (this.balls.length > 100 || (this.isMobileDevice && this.balls.length > 60)) {
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, Math.PI * 2);
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = '#ffffff';
+          ctx.stroke();
+          ctx.restore();
+          return;
+        }
+
         // Refined Dual-Tone Metallic Championship Bevel
         ctx.beginPath();
         ctx.arc(0, 0, r, 0, Math.PI * 2);
@@ -12832,7 +12850,7 @@
       // 1. Register Service Worker with cache busting
       if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=10.0.0')
+          navigator.serviceWorker.register('./sw.js?v=11.0.0')
             .then(reg => {
               console.log('PWA ServiceWorker registered:', reg.scope);
               reg.addEventListener('updatefound', () => {
