@@ -5149,7 +5149,7 @@
   <!-- Gumroad Overlay Checkout Widget -->
   <script src="https://gumroad.com/js/gumroad.js"></script>
   <link rel="stylesheet" href="./checkout.css">
-  <link rel="stylesheet" href="./checkout-themes.css">
+  <link rel="stylesheet" href="./checkout-themes.css?v=18.0.0">
 </head>
 
 <body>
@@ -12887,7 +12887,7 @@
       // 1. Register Service Worker with cache busting
       if (/^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=17.0.0')
+          navigator.serviceWorker.register('./sw.js?v=18.0.0')
             .then(reg => {
               console.log('PWA ServiceWorker registered:', reg.scope);
               reg.addEventListener('updatefound', () => {
