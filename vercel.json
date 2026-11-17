@@ -7,7 +7,7 @@
       "destination": "/api/service?endpoint=:endpoint*"
     },
     {
-      "source": "/(server|database|tests|scripts)/:path*",
+      "source": "/(server|database|tests|scripts|_seo_live_lab|live_seo_workspace)/:path*",
       "destination": "/404.html"
     },
     {
@@ -25,20 +25,12 @@
     {
       "source": "/(sitemap\\.xml|robots\\.txt|googlee59d340a4eeb0771\\.html|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|apple-touch-icon\\.png|favicon\\.png|favicon\\.ico|og-preview\\.png|og-preview\\.jpg|404\\.html)",
       "destination": "/$1"
-    },
-    {
-      "source": "/((?!api(?:/|$)|admin(?:/|$)|server(?:/|$)|database(?:/|$)|tests(?:/|$)|client-access\\.js|activation-links\\.js|checkout\\.css|vendor/|googlee59d340a4eeb0771\\.html|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|icon-.*|apple-touch-icon\\.png|favicon\\..*|og-preview\\..*|404\\.html).*)",
-      "destination": "/index.html"
     }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-        },
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
@@ -185,6 +177,17 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "countryflagbattlegame.vercel.app"
+        }
+      ],
+      "destination": "https://www.countryflagbattle.xyz/:path*",
+      "permanent": true
+    },
     {
       "source": "/admin",
       "has": [

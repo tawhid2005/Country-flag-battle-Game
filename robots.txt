@@ -1,12 +1,13 @@
 # ==============================================================================
-# ROBOTS.TXT FOR COUNTRY FLAG BATTLE GAME (https://countryflagbattle.xyz/)
-# Optimized for Googlebot, Bingbot, Applebot, and AI Search Overviews
+# Robots policy for Country Flag Battle Game
 # ==============================================================================
 
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api/
+Disallow: /_seo_live_lab/
+Disallow: /live_seo_workspace/
 
 # Googlebot & Search Engines
 User-agent: Googlebot
@@ -66,4 +67,4 @@ Disallow: /admin
 Disallow: /api/
 
 # Canonical Sitemap Declaration
-Sitemap: https://countryflagbattle.xyz/sitemap.xml
+Sitemap: https://www.countryflagbattle.xyz/sitemap.xml

@@ -1,0 +1,13 @@
+{
+  "researched_at": "2026-11-18",
+  "observed_results": [
+    {"name":"Flag Battle: Random Marbles","url":"https://play.google.com/store/apps/details?id=com.alexjkl.flagbattle","strength":"clear mode list and concise value proposition"},
+    {"name":"Country Marble Race","url":"https://nub.games/games/country-marble-race-406406","strength":"browser, mobile and no-download intent coverage"},
+    {"name":"Plynox Country Marble Race","url":"https://plynox.app/country-marble-race","strength":"clear how-it-works and honest product limits"}
+  ],
+  "applied_lessons": [
+    "Keep one clear playable page and explain modes in visible content",
+    "Preserve mobile, browser and streamer intent without doorway pages",
+    "State product capabilities and limitations factually"
+  ]
+}

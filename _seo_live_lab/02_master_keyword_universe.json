@@ -1,0 +1,23 @@
+{
+  "source": "Google autocomplete live endpoint",
+  "collected_at": "2026-11-18",
+  "primary": [
+    "country flag battle game",
+    "country flag battle into the circle",
+    "country flag battle game online",
+    "country flag battle game online free"
+  ],
+  "secondary": [
+    "country marble race",
+    "country marble race game online",
+    "country marble race stream run",
+    "flag battle random marbles"
+  ],
+  "long_tail": [
+    "country flag battle into the circle online",
+    "country flag battle into the circle free",
+    "country marble race game online free no download",
+    "country marble race game online unblocked"
+  ],
+  "strategy": "Use the primary phrase in the title and H1, then answer secondary intents naturally in visible game-mode and FAQ content. Do not repeat phrases mechanically."
+}
