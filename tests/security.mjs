@@ -95,6 +95,18 @@ export async function runSecurityChecks() {
   assert.equal((await call('admin/login',{username:'owner',password:'a-long-test-password'},{headers:{origin:'https://www.game.example'}})).statusCode,403,'Admin remains canonical-origin only');
   const returned=await call('payment/return',{tran_id:transactionId,status:'FAILED'});
   assert.equal(returned.statusCode,303);assert.equal(returned.headers.location,'https://game.example/?payment_return='+orderId);
+  env.SESSION_SECRET='';
+  const missingSecret=await call('admin/login',{username:'owner',password:'a-long-test-password'});
+  assert.equal(missingSecret.statusCode,503);assert.match(missingSecret.body.message,/SESSION_SECRET/);
+  const health=await call('health');assert.equal(health.statusCode,200);assert.ok(health.body.adminMissing.includes('SESSION_SECRET'));
+  assert.ok(!JSON.stringify(health.body).includes(password),'Health must never reveal the configured password hash');
+  env.SESSION_SECRET=secret;
+  env.ADMIN_PASSWORD_HASH='plain-text-not-allowed';
+  assert.match((await call('admin/login',{username:'owner',password:'a-long-test-password'})).body.message,/ADMIN_PASSWORD_HASH/);
+  env.ADMIN_PASSWORD_HASH=password;
+  env.APP_ORIGIN='https://';
+  const invalidOrigin=await call('health');assert.equal(invalidOrigin.statusCode,200);assert.equal(invalidOrigin.body.adminOrigin,null);
+  env.APP_ORIGIN='https://game.example';
   return ['Password hashing, role-separated sessions, expiry, CSRF and login rate limits passed',
     'Polar and Bangladesh amount/currency/order validation; signed webhooks and replay rejection passed',
     'Mocked API fulfilment, duplicate notification handling, forged callback rejection and game-only activation passed'];

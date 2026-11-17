@@ -1,5 +1,18 @@
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from 'node:crypto';
 
+// Only setting names are returned; credential values never leave the server.
+export function adminSetupStatus(env) {
+  const missing=[];
+  const https=value=>{try {return new URL(value).protocol==='https:';}catch{return false;}};
+  if(!https(env.APP_ORIGIN))missing.push('APP_ORIGIN');
+  if(typeof env.SESSION_SECRET!=='string' || env.SESSION_SECRET.length<32)missing.push('SESSION_SECRET');
+  if(!String(env.ADMIN_USERNAME || '').trim())missing.push('ADMIN_USERNAME');
+  if(!/^scrypt\$[a-f0-9]{32}\$[a-f0-9]{128}$/.test(env.ADMIN_PASSWORD_HASH || ''))missing.push('ADMIN_PASSWORD_HASH');
+  if(!https(env.SUPABASE_URL))missing.push('SUPABASE_URL');
+  if(!env.SUPABASE_SERVICE_ROLE_KEY)missing.push('SUPABASE_SERVICE_ROLE_KEY');
+  return {ready:missing.length===0,missing};
+}
+
 export function hashPassword(password, salt = randomBytes(16).toString('hex')) {
   return `scrypt$${salt}$${scryptSync(password, salt, 64).toString('hex')}`;
 }

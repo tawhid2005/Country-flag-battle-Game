@@ -1,5 +1,5 @@
 import { randomUUID, createHmac } from 'node:crypto';
-import { PLANS, hashPassword, verifyPassword, equal, sign, verify, activationKey, validatePolar, validateSSL, verifyPolarWebhook, sslTransactionId, sslOrderId } from '../server/security.js';
+import { PLANS, hashPassword, verifyPassword, equal, sign, verify, activationKey, validatePolar, validateSSL, verifyPolarWebhook, sslTransactionId, sslOrderId, adminSetupStatus } from '../server/security.js';
 
 export const config = {api: {bodyParser: false}};
 const uuid = value => /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value || '');
@@ -115,6 +115,10 @@ export function createHandler(env, fetcher = fetch) {
     try {
       if (!['GET','POST'].includes(req.method)) fail(405,'Method not allowed');
       const {raw,body} = req.method === 'POST' ? await bodyOf(req) : {body:{},raw:''};
+      if(route==='admin/login' && req.method==='POST') {
+        const setup=adminSetupStatus(env);
+        if(!setup.ready)fail(503,'Administrator setup incomplete. Configure these hosting environment variables and redeploy: '+setup.missing.join(', '));
+      }
       if (req.method === 'POST' && !route.startsWith('webhooks/') && route !== 'payment/return') {
         let publicAlias=false;
         try {
@@ -124,10 +128,14 @@ export function createHandler(env, fetcher = fetch) {
         if (req.headers.origin !== origin() && !publicAlias) fail(403,'Request origin rejected');
         if (!(req.headers['content-type'] || '').includes('application/json')) fail(415,'JSON required');
       }
-      if (route === 'health' && req.method === 'GET') return json(200,{database:!!(env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY),
-        admin:!!(env.ADMIN_USERNAME && env.ADMIN_PASSWORD_HASH && env.SESSION_SECRET?.length>=32),
+      if (route === 'health' && req.method === 'GET') {
+        const setup=adminSetupStatus(env);
+        return json(200,{database:!!(env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY),
+        admin:setup.ready,adminReady:setup.ready,adminMissing:setup.missing,
+        adminOrigin:setup.missing.includes('APP_ORIGIN') ? null : new URL(env.APP_ORIGIN).origin,
         polar:!!(env.POLAR_ACCESS_TOKEN && env.POLAR_WEBHOOK_SECRET), sslcommerz:!!(env.SSLCOMMERZ_STORE_ID && env.SSLCOMMERZ_STORE_PASSWORD),
         polarEnvironment:env.POLAR_ENV === 'live' ? 'live':'sandbox', sslEnvironment:env.SSLCOMMERZ_ENV === 'live' ? 'live':'sandbox'});
+      }
       if (route === 'admin/login' && req.method === 'POST') {
         await limited(req,'admin-login',5,900);
         if (!env.ADMIN_USERNAME || !env.ADMIN_PASSWORD_HASH || !equal(body.username,env.ADMIN_USERNAME) || !verifyPassword(body.password,env.ADMIN_PASSWORD_HASH)) fail(401,'Invalid administrator credentials');

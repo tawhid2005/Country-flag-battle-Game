@@ -12,12 +12,13 @@
     <section class="login-card">
       <div class="brand-mark">CF<span>B</span></div><p class="eyebrow">COUNTRY FLAG BATTLE · OPERATIONS</p>
       <h1>Welcome to<br>the control room.</h1><p class="muted">Administrator access only. Your game account cannot open this workspace.</p>
-      <form id="login-form">
-        <label>Admin username<input id="username" autocomplete="username" required maxlength="80"></label>
-        <label>Password<input id="password" type="password" autocomplete="current-password" required maxlength="128"></label>
-        <button class="primary" id="login-button">Sign in securely <span>→</span></button>
+      <form id="login-form" action="/api/admin/login" method="post" autocomplete="on" aria-describedby="login-status">
+        <label for="username">Admin username<input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="80"></label>
+        <label for="password">Password<input id="password" name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
+        <button class="primary" id="login-button" type="submit">Sign in securely <span>→</span></button>
       </form>
-      <p id="login-status" role="status" class="message"></p><a class="back" href="/">← Return to game</a>
+      <p class="muted">Your browser can offer to save this login after a successful sign-in.</p>
+      <p id="login-status" role="status" aria-live="polite" class="message"></p><a class="back" href="/">← Return to game</a>
       <div class="login-foot"><span class="dot"></span> Private workspace · Server verified access</div>
     </section>
     <aside class="login-art" aria-hidden="true"><div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div><div class="core">195<br><small>NATIONS. ONE ARENA.</small></div><p>Every order.<br>Every player.<br>One clear view.</p></aside>

@@ -53,11 +53,36 @@
     }
     $('updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Dhaka'})+' · Asia/Dhaka';render();
   }catch(error){if(!$('dashboard').hidden)message(error.message);else if(error.status!==401)$('login-status').textContent=error.message;}finally{loading=false;$('refresh').disabled=false;}}
-  $('login-form').onsubmit=async event=>{event.preventDefault();$('login-button').disabled=true;$('login-status').textContent='';try{await api('admin/login',{username:$('username').value,password:$('password').value});$('password').value='';await refresh();}catch(error){$('login-status').textContent=error.message;}finally{$('login-button').disabled=false;}};
+  $('login-form').onsubmit=async event=>{event.preventDefault();$('login-button').disabled=true;$('login-status').textContent='';try{
+    await api('admin/login',{username:$('username').value,password:$('password').value});
+    // Let a supporting browser offer secure password-manager storage only after authentication.
+    // Browser preferences and its own save/consent UI decide whether anything is stored.
+    try {
+      if(window.PasswordCredential && navigator.credentials?.store) {
+        const credential=new window.PasswordCredential($('login-form'));
+        Promise.resolve(navigator.credentials.store(credential)).catch(()=>{});
+      }
+    } catch (_) {}
+    await refresh();
+    if(!$('dashboard').hidden)$('password').value='';
+  }catch(error){$('login-status').textContent=error.message;}finally{$('login-button').disabled=false;}};
   $('logout').onclick=async()=>{try{await api('admin/logout',{});showLogin();}catch(error){message(error.message);}};
   $('refresh').onclick=refresh;$('search').oninput=render;
   document.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>{view=button.dataset.view;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('selected',b===button));render();});
   $('previous').onclick=()=>{if(page>0){page--;refresh();}};$('next').onclick=()=>{page++;refresh();};
   $('create-form').onsubmit=async event=>{event.preventDefault();const button=event.target.querySelector('button');button.disabled=true;try{await api('admin/account',{username:$('new-username').value,email:$('new-email').value,password:$('new-password').value});$('new-password').value='';message('Account created. Verify payment, then grant a plan.');await refresh();}catch(error){message(error.message);}finally{button.disabled=false;}};
-  refresh();setInterval(()=>{if(!$('dashboard').hidden && !document.hidden)refresh();},30000);
+  async function bootstrap(){
+    try {
+      const health=await api('health');
+      if(health.adminOrigin && location.protocol==='https:' && location.origin!==health.adminOrigin){location.replace(health.adminOrigin+'/admin');return;}
+      if(health.admin===false || health.database===false){
+        showLogin();
+        const names=health.adminMissing?.length ? ' Missing or invalid: '+health.adminMissing.join(', ')+'.' : '';
+        $('login-status').textContent='Server setup incomplete. Configure the database and administrator credentials in hosting settings, then redeploy.'+names+' This is not a password error.';
+        $('login-button').disabled=true;return;
+      }
+      await refresh();
+    }catch(error){$('login-status').textContent=error.message;}
+  }
+  bootstrap();setInterval(()=>{if(!$('dashboard').hidden && !document.hidden)refresh();},30000);
 })();

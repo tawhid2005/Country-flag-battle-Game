@@ -1,5 +1,7 @@
 # Server setup and release checklist
 
+Admin login troubleshooting in Bengali: [ADMIN_SETUP_BN.md](ADMIN_SETUP_BN.md).
+
 The local `index.html` remains a game preview. Account login, `/admin`, paid plans and gateway callbacks require the deployed HTTPS site and the database below. No real payment has been made or tested by this code change.
 
 ## 1. Database
