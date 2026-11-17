@@ -182,7 +182,9 @@
       "has": [
         {
           "type": "host",
-          "value": "countryflagbattlegame.vercel.app"
+          "value": {
+            "eq": "countryflagbattlegame.vercel.app"
+          }
         }
       ],
       "destination": "https://www.countryflagbattle.xyz/:path*",
