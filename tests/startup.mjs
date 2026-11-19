@@ -58,7 +58,7 @@ export async function runStartupChecks(onApp) {
     vm.runInContext(await fs.readFile(new URL('../activation-links.js', import.meta.url), 'utf8'), context);
     vm.runInContext(await fs.readFile(new URL('../client-access.js', import.meta.url), 'utf8'), context);
     const app = new context.TestApp();
-    assert.equal(app.balls.length, mode === 'high-count' ? 120 : mode === 'saved' ? 40 : 60);
+    assert.equal(app.balls.length, mode === 'saved' ? 40 : 120);
     assert.equal(app.dom.sliderSpeed, elements.get('slider-speed'));
     assert.equal(app.dom.sliderGapSize, elements.get('slider-gap-size'));
     assert.equal(app.dom.sliderSpeed.value, app.baseRotationSpeed.toFixed(3));

@@ -5459,14 +5459,12 @@
     .vu-bar:nth-child(n+5) { background: #fbbf24; }
     .vu-bar:nth-child(n+7) { background: #f43f5e; }
 
-    /* 5. Audience Live Chat Cheer Bubbles */
+    /* 5. Audience Live Chat Cheer Bubbles (Turned off per user preference) */
     .streamer-chat-cheer-box {
+      display: none !important;
       position: absolute;
       left: 14px;
       bottom: 126px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
       pointer-events: none;
       z-index: 35;
       max-width: 220px;
@@ -6034,11 +6032,11 @@
       <div class="drawer-control-group">
         <label class="drawer-label">
           <span>GRAVITY (Y)</span>
-          <span class="val" id="val-gravity">0.42</span>
+          <span class="val" id="val-gravity">0.46</span>
         </label>
         <div class="drawer-stepper-row">
           <button type="button" class="drawer-step-btn" id="btn-grav-minus" title="Decrease Gravity" aria-label="Decrease Gravity">−</button>
-          <input type="range" class="drawer-slider" id="slider-gravity" min="0.10" max="1.50" step="0.05" value="0.42">
+          <input type="range" class="drawer-slider" id="slider-gravity" min="0.10" max="1.50" step="0.05" value="0.46">
           <button type="button" class="drawer-step-btn" id="btn-grav-plus" title="Increase Gravity" aria-label="Increase Gravity">+</button>
         </div>
       </div>
@@ -6047,9 +6045,9 @@
         <label class="drawer-label">COUNTRY COUNT</label>
         <select class="drawer-select" id="select-country-count">
           <option value="25">25 Countries (Huge Balls)</option>
-          <option value="50" selected>50 Countries (Standard Live)</option>
+          <option value="50">50 Countries (Standard Live)</option>
           <option value="80">80 Countries (Extended Royale)</option>
-          <option value="120">120 Countries (Grand Royale - 8-15 Min)</option>
+          <option value="120" selected>120 Countries (Grand Royale - 8-15 Min)</option>
         </select>
       </div>
 
@@ -6060,16 +6058,16 @@
       <!-- AI Human Streamer Simulation Controls -->
       <div style="margin: 12px 0 6px; padding-top: 10px; border-top: 1px solid rgba(0, 229, 255, 0.25); font-family: var(--font-display); font-size: 11px; font-weight: 900; color: #00e5ff; display: flex; align-items: center; justify-content: space-between;">
         <span>🎮 HUMAN STREAMER MODE</span>
-        <span id="badge-human-status" style="font-size: 9px; color: #94a3b8; font-weight: 800;">OFF</span>
+        <span id="badge-human-status" style="font-size: 9px; color: #10b981; font-weight: 800;">ACTIVE</span>
       </div>
-      <button class="drawer-btn" id="btn-toggle-human-mode" style="background: rgba(255, 255, 255, 0.05); border: 1.5px solid #64748b; color: #94a3b8; font-weight: 800;">
-        🧑‍💻 HUMAN MODE: OFF (CLICK TO ENABLE)
+      <button class="drawer-btn" id="btn-toggle-human-mode" style="background: rgba(255, 255, 255, 0.05); border: 1.5px solid #00e5ff; color: #00e5ff; font-weight: 800;">
+        🧑‍💻 HUMAN MODE: ENABLED
       </button>
       <button class="drawer-btn" id="btn-toggle-webcam">👤 WEBCAM AVATAR: OFF</button>
-      <button class="drawer-btn" id="btn-toggle-cursor">🖱️ VIRTUAL CURSOR: OFF</button>
-      <button class="drawer-btn" id="btn-toggle-keys">⌨️ KEYPRESS HUD: OFF</button>
-      <button class="drawer-btn" id="btn-toggle-bpm">💓 EKG HEART RATE: OFF</button>
-      <button class="drawer-btn" id="btn-toggle-clicksfx">🎧 MECHANICAL CLICKS: OFF</button>
+      <button class="drawer-btn" id="btn-toggle-cursor">🖱️ VIRTUAL CURSOR: ON</button>
+      <button class="drawer-btn" id="btn-toggle-keys">⌨️ KEYPRESS HUD: ON</button>
+      <button class="drawer-btn" id="btn-toggle-bpm">💓 EKG HEART RATE: ON</button>
+      <button class="drawer-btn" id="btn-toggle-clicksfx">🎧 MECHANICAL CLICKS: ON</button>
       <button class="drawer-btn" id="btn-trigger-tilt" style="border-color: #fbbf24; color: #fbbf24; font-weight: 800;">
         ⚡ MANUAL TILT SHAKE (SPACE)
       </button>
@@ -9952,13 +9950,13 @@
     class HumanStreamerEngine {
       constructor(app) {
         this.app = app;
-        // Disabled by default so arena loads 100% fresh, clean, and uncluttered!
-        this.enabled = false;
+        // Default configuration matching user's requested streamer settings:
+        this.enabled = true;
         this.showWebcam = false;
-        this.showCursor = false;
-        this.showKeyOverlay = false;
-        this.showBpm = false;
-        this.enableMechanicalSfx = false;
+        this.showCursor = true;
+        this.showKeyOverlay = true;
+        this.showBpm = true;
+        this.enableMechanicalSfx = true;
 
         this.cursorX = 270;
         this.cursorY = 475;
@@ -9992,31 +9990,48 @@
         this.isBlinking = false;
         this.emotionTimer = 0;
 
-        // Simulated Audience Live Chat Comments
-        this.chatComments = [
-          { user: 'Tawhid_Stream', text: 'BANGLADESH WIN CHAI! 🇧🇩', code: 'BAN' },
-          { user: 'GamerLeo', text: 'VAMOS ARGENTINA! 🇦🇷', code: 'ARG' },
-          { user: 'NeymarFan', text: 'BRASIL CAMPEÃO! 🇧🇷', code: 'BRA' },
-          { user: 'Alex_USA', text: 'USA CLUTCH PLEASE! 🇺🇸', code: 'USA' },
-          { user: 'Kenji99', text: 'NIPPON GANBARE! 🇯🇵', code: 'JPN' },
-          { user: 'Hans_Pro', text: 'DEUTSCHLAND VOR! 🇩🇪', code: 'GER' },
-          { user: 'Sultan_KSA', text: 'SAUDI ARABIA YALLAH! 🇸🇦', code: 'KSA' },
-          { user: 'Fahim_Dhaka', text: 'BANGLADESH OP! 🇧🇩🔥', code: 'BAN' },
-          { user: 'Maria_Madrid', text: 'VIVA ESPAÑA! 🇪🇸', code: 'ESP' },
-          { user: 'Luca_Roma', text: 'FORZA ITALIA! 🇮🇹', code: 'ITA' },
-          { user: 'Zaid_Morocco', text: 'DIMA MAGHRIB! 🇲🇦', code: 'MAR' },
-          { user: 'Liam_UK', text: 'COME ON ENGLAND! 🇬🇧', code: 'GBR' }
-        ];
+        // Simulated Audience Live Chat Comments (Turned off per user request)
+        this.chatComments = [];
         this.chatCheerTimer = 0;
-        this.nextChatCheerTime = 6.0;
+        this.nextChatCheerTime = 999999;
 
         this.dom = {};
       }
 
       init() {
         this.cacheDom();
+        this.loadConfig();
         this.bindEvents();
         this.updateDrawerButtons();
+      }
+
+      loadConfig() {
+        try {
+          const raw = gameStorage.getItem('cfb_human_streamer_config');
+          if (raw) {
+            const cfg = JSON.parse(raw);
+            if (typeof cfg.enabled === 'boolean') this.enabled = cfg.enabled;
+            if (typeof cfg.showWebcam === 'boolean') this.showWebcam = cfg.showWebcam;
+            if (typeof cfg.showCursor === 'boolean') this.showCursor = cfg.showCursor;
+            if (typeof cfg.showKeyOverlay === 'boolean') this.showKeyOverlay = cfg.showKeyOverlay;
+            if (typeof cfg.showBpm === 'boolean') this.showBpm = cfg.showBpm;
+            if (typeof cfg.enableMechanicalSfx === 'boolean') this.enableMechanicalSfx = cfg.enableMechanicalSfx;
+          }
+        } catch (_) {}
+      }
+
+      saveConfig() {
+        try {
+          const cfg = {
+            enabled: this.enabled,
+            showWebcam: this.showWebcam,
+            showCursor: this.showCursor,
+            showKeyOverlay: this.showKeyOverlay,
+            showBpm: this.showBpm,
+            enableMechanicalSfx: this.enableMechanicalSfx
+          };
+          gameStorage.setItem('cfb_human_streamer_config', JSON.stringify(cfg));
+        } catch (_) {}
       }
 
       cacheDom() {
@@ -10096,42 +10111,48 @@
         if (this.dom.btnHumanMode) {
           this.dom.btnHumanMode.addEventListener('click', () => {
             this.enabled = !this.enabled;
-            this.showWebcam = this.enabled;
+            this.showWebcam = false;
             this.showCursor = this.enabled;
             this.showKeyOverlay = this.enabled;
             this.showBpm = this.enabled;
             this.enableMechanicalSfx = this.enabled;
             this.updateDrawerButtons();
+            this.saveConfig();
           });
         }
         if (this.dom.btnWebcam) {
           this.dom.btnWebcam.addEventListener('click', () => {
             this.showWebcam = !this.showWebcam;
             this.updateDrawerButtons();
+            this.saveConfig();
           });
         }
         if (this.dom.btnCursor) {
           this.dom.btnCursor.addEventListener('click', () => {
             this.showCursor = !this.showCursor;
             this.updateDrawerButtons();
+            this.saveConfig();
           });
         }
         if (this.dom.btnKeys) {
           this.dom.btnKeys.addEventListener('click', () => {
             this.showKeyOverlay = !this.showKeyOverlay;
             this.updateDrawerButtons();
+            this.saveConfig();
           });
         }
         if (this.dom.btnBpm) {
           this.dom.btnBpm.addEventListener('click', () => {
             this.showBpm = !this.showBpm;
             this.updateDrawerButtons();
+            this.saveConfig();
           });
         }
         if (this.dom.btnClickSfx) {
           this.dom.btnClickSfx.addEventListener('click', () => {
             this.enableMechanicalSfx = !this.enableMechanicalSfx;
             this.updateDrawerButtons();
+            this.saveConfig();
           });
         }
         if (this.dom.btnManualTilt) {
@@ -10164,9 +10185,6 @@
       }
 
       update(dt) {
-        // Live Audience Cheer Stream is always active to keep 100% viewer retention!
-        this.updateChatCheer(dt);
-
         if (!this.enabled) return;
 
         this.updateCursor(dt);
@@ -10444,32 +10462,9 @@
         }
       }
 
-      // --- 5. AUDIENCE LIVE CHAT CHEER BALLOONS ---
+      // --- 5. AUDIENCE LIVE CHAT CHEER BALLOONS (Permanently disabled per user request) ---
       updateChatCheer(dt) {
-        if (!this.dom.chatBox) return;
-
-        this.chatCheerTimer += dt;
-        if (this.chatCheerTimer > this.nextChatCheerTime) {
-          this.chatCheerTimer = 0;
-          this.nextChatCheerTime = 3.6 + Math.random() * 3.8;
-
-          const comment = this.chatComments[Math.floor(Math.random() * this.chatComments.length)];
-          const bubble = document.createElement('div');
-          bubble.className = 'cheer-bubble-item';
-          bubble.innerHTML = `<span>💬</span><strong>${comment.user}:</strong><span>${comment.text}</span>`;
-          this.dom.chatBox.appendChild(bubble);
-
-          // Remove after animation completes
-          setTimeout(() => bubble.remove(), 4000);
-
-          // If the cheered country is currently living, move cursor towards it!
-          if (this.app.balls) {
-            const cheeredBall = this.app.balls.find(b => b.country && b.country.code === comment.code);
-            if (cheeredBall) {
-              this.targetBall = cheeredBall;
-            }
-          }
-        }
+        return;
       }
 
       // Event hooks from game lifecycle
@@ -10570,10 +10565,10 @@
         this.isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 640);
 
         this.roundNumber = 1;
-        this.selectedBatchSize = this.isMobileDevice ? 40 : 60;
+        this.selectedBatchSize = 120;
         this.baseRotationSpeed = 0.022;
         this.currentRotationSpeed = 0.022;
-        this.gravityY = 0.42;
+        this.gravityY = 0.46;
         this.ballRestitution = 0.98;
         this.isGameStarted = false;
         this.isRoundOver = false;
@@ -13224,8 +13219,16 @@
               this.applyDurationPreset('standard');
             }
           } else {
-            // Default preset is standard (4-6 min) for smooth continuous stream action
+            // Default preset matching user's Screenshot 3:
+            this.arenaTemplate = 'hole';
+            this.selectedBatchSize = 120;
             this.applyDurationPreset('standard');
+            this.gameSpeed = 1.00;
+            this.baseRotationSpeed = 0.022;
+            this.currentRotationSpeed = 0.022;
+            this.gapSegmentCount = 2;
+            this.gravityY = 0.46;
+            if (this.audio) this.audio.aiVoiceEnabled = true;
           }
         } catch (e) {
           console.warn('Failed to load streamer config', e);
@@ -13418,6 +13421,11 @@
             custom: 'CUSTOM'
           };
           this.dom.valDurationMode.textContent = modeLabels[this.durationMode] || 'CUSTOM';
+        }
+
+        // Country Count Selection Sync
+        if (this.dom.selectCount) {
+          this.dom.selectCount.value = String(this.selectedBatchSize || 120);
         }
 
         const hintEl = document.getElementById('hint-battle-duration');
