@@ -171,7 +171,7 @@
     return ready;
   };
   proto.syncInterfacePause = function() {
-    const paused=!!document.querySelector('#cyber-order-modal.show,#cyber-lock-modal.show,#cyber-fail-recovery-modal.show,#streamer-drawer.open');
+    const paused=!!document.querySelector('#cyber-order-modal.show,#cyber-lock-modal.show,#cyber-fail-recovery-modal.show,#streamer-drawer.open,#game-mode-modal.show');
     this.app?.setInterfacePaused?.(paused);
   };
   proto.init = function() {
@@ -198,7 +198,7 @@
     $('checkout-retry-payment')?.addEventListener('click',()=>{const id=gameStorage.getItem('cfb_pending_order');if(id)this.pollPayment(id);});
     if($('btn-start-polar-checkout'))$('btn-start-polar-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('polar');};
     if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();if(!this.updateBangladeshPaymentGate())return;const panel=$('manual-transfer-panel');panel.open=true;panel.scrollIntoView?.({behavior:'smooth',block:'start'});};
-    const pauseObserver=new MutationObserver(()=>this.syncInterfacePause());for(const id of ['cyber-order-modal','cyber-lock-modal','cyber-fail-recovery-modal','streamer-drawer']){const el=$(id);if(el)pauseObserver.observe(el,{attributes:true,attributeFilter:['class']});}this.interfacePauseObserver=pauseObserver;this.updateBangladeshPaymentGate();this.syncInterfacePause();
+    const pauseObserver=new MutationObserver(()=>this.syncInterfacePause());for(const id of ['cyber-order-modal','cyber-lock-modal','cyber-fail-recovery-modal','streamer-drawer','game-mode-modal']){const el=$(id);if(el)pauseObserver.observe(el,{attributes:true,attributeFilter:['class']});}this.interfacePauseObserver=pauseObserver;this.updateBangladeshPaymentGate();this.syncInterfacePause();
     this.updateWhatsAppLinks();
     // Remove credentials saved by previous releases.
     for (const key of ['cfb_pending_checkout_creds','cfb_admin_polar_token','cfb_paymently_api_key','cfb_auth_session']) gameStorage.removeItem(key);

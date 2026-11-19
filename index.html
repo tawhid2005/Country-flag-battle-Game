@@ -2820,6 +2820,137 @@
       line-height: 1.5;
     }
 
+    .launch-mode-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 440px;
+      margin: 14px 0 6px 0;
+    }
+    @media (max-width: 480px) {
+      .launch-mode-cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        max-width: 320px;
+      }
+    }
+    .launch-mode-btn {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: 14px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+      user-select: none;
+      backdrop-filter: blur(10px);
+    }
+    .launch-mode-btn:hover {
+      transform: translateY(-4px) scale(1.02);
+    }
+    .launch-mode-btn.launch-hole {
+      border-color: rgba(236, 72, 153, 0.5);
+      background: linear-gradient(145deg, rgba(88, 28, 135, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+    }
+    .launch-mode-btn.launch-hole:hover {
+      border-color: #f43f5e;
+      box-shadow: 0 0 35px rgba(236, 72, 153, 0.6);
+    }
+    .launch-mode-btn.launch-ring {
+      border-color: rgba(0, 229, 255, 0.5);
+      background: linear-gradient(145deg, rgba(14, 116, 144, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+    }
+    .launch-mode-btn.launch-ring:hover {
+      border-color: #00e5ff;
+      box-shadow: 0 0 35px rgba(0, 229, 255, 0.6);
+    }
+    .launch-badge {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(236, 72, 153, 0.25);
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.4);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .launch-badge.classic {
+      background: rgba(0, 229, 255, 0.2);
+      color: #00e5ff;
+      border-color: rgba(0, 229, 255, 0.4);
+    }
+    .launch-icon {
+      font-size: 26px;
+      line-height: 1;
+      margin: 2px 0;
+    }
+    .launch-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+    .launch-sub {
+      font-size: 10px;
+      color: #94a3b8;
+      line-height: 1.3;
+    }
+    .launch-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .launch-hole .launch-cta {
+      background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+      box-shadow: 0 3px 12px rgba(236, 72, 153, 0.45);
+    }
+    .launch-ring .launch-cta {
+      background: linear-gradient(135deg, #0284c7 0%, #00e5ff 100%);
+      color: #020617;
+      box-shadow: 0 3px 12px rgba(0, 229, 255, 0.45);
+    }
+
+    .hud-mode-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1.5px solid rgba(0, 229, 255, 0.55);
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
+    }
+    .hud-mode-pill-btn:hover {
+      background: rgba(0, 229, 255, 0.25);
+      border-color: #00e5ff;
+      box-shadow: 0 0 22px rgba(0, 229, 255, 0.6);
+      transform: scale(1.05);
+    }
+
     #streamer-drawer {
       position: absolute;
       top: 0;
@@ -3043,40 +3174,88 @@
     .template-selector-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
+      gap: 8px;
       width: 100%;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .template-pill {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(15, 23, 42, 0.7);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
       color: #94a3b8;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 9px 6px;
-      border-radius: 8px;
+      padding: 10px 8px;
+      border-radius: 12px;
       cursor: pointer;
-      text-align: center;
-      transition: all 0.2s ease;
+      text-align: left;
+      transition: all 0.22s ease;
       user-select: none;
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 3px;
+      position: relative;
     }
 
     .template-pill:hover {
-      background: rgba(168, 85, 247, 0.18);
-      border-color: rgba(168, 85, 247, 0.5);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(0, 229, 255, 0.4);
       color: #f1f5f9;
+      transform: translateY(-2px);
     }
 
     .template-pill.active {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(236, 72, 153, 0.3));
+      border-color: #00e5ff;
+      background: linear-gradient(135deg, rgba(14, 116, 144, 0.35) 0%, rgba(15, 23, 42, 0.95) 100%);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
+    }
+
+    #btn-tmpl-hole.active {
       border-color: #ec4899;
-      color: #fdf2f8;
-      box-shadow: 0 0 14px rgba(236, 72, 153, 0.45);
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.35) 0%, rgba(15, 23, 42, 0.95) 100%);
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.45);
+    }
+
+    .tmpl-pill-badge {
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      align-self: flex-start;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+    }
+    .tmpl-pill-badge.vortex {
+      background: rgba(236, 72, 153, 0.25);
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.4);
+    }
+    .tmpl-pill-badge.ring {
+      background: rgba(0, 229, 255, 0.2);
+      color: #00e5ff;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+    }
+    .tmpl-pill-header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tmpl-pill-icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+    .tmpl-pill-name {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+    .tmpl-pill-sub {
+      font-size: 9px;
+      color: #94a3b8;
+      margin-top: 2px;
+      line-height: 1.25;
     }
 
     .drawer-btn {
@@ -4117,6 +4296,235 @@
     }
     .cyber-plan-card:hover::after {
       opacity: 1;
+    }
+
+    /* ==========================================================================
+       ARENA BATTLE MODE SELECTION MODAL
+       ========================================================================== */
+    #game-mode-modal {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 6, 23, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100005;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    }
+    #game-mode-modal.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .game-mode-card-wrapper {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(10, 15, 30, 0.98) 100%);
+      border: 1.5px solid rgba(0, 229, 255, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 229, 255, 0.25);
+      padding: 24px;
+      max-width: 480px;
+      width: 95%;
+      text-align: center;
+      position: relative;
+      animation: modeModalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modeModalPop {
+      0% { transform: scale(0.92) translateY(20px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .mode-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .mode-modal-close:hover {
+      background: rgba(244, 63, 94, 0.25);
+      color: #ffffff;
+      border-color: #f43f5e;
+    }
+    .mode-modal-eyebrow {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #00e5ff;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .mode-modal-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .mode-modal-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+    .mode-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 480px) {
+      .mode-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+    .mode-choice-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 16px 12px;
+      cursor: pointer;
+      text-align: left;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .mode-choice-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    .mode-choice-card.card-hole {
+      border-color: rgba(192, 132, 252, 0.4);
+    }
+    .mode-choice-card.card-hole:hover, .mode-choice-card.card-hole.active {
+      border-color: #c084fc;
+      background: linear-gradient(145deg, rgba(88, 28, 135, 0.3) 0%, rgba(15, 23, 42, 0.8) 100%);
+      box-shadow: 0 0 25px rgba(192, 132, 252, 0.35);
+    }
+    .mode-choice-card.card-ring {
+      border-color: rgba(0, 229, 255, 0.4);
+    }
+    .mode-choice-card.card-ring:hover, .mode-choice-card.card-ring.active {
+      border-color: #00e5ff;
+      background: linear-gradient(145deg, rgba(14, 116, 144, 0.3) 0%, rgba(15, 23, 42, 0.8) 100%);
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
+    }
+    .mode-card-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      align-self: flex-start;
+      text-transform: uppercase;
+    }
+    .badge-vortex {
+      background: rgba(236, 72, 153, 0.2);
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.4);
+    }
+    .badge-ring {
+      background: rgba(0, 229, 255, 0.2);
+      color: #00e5ff;
+      border: 1px solid rgba(0, 229, 255, 0.4);
+    }
+    .mode-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .mode-card-icon {
+      font-size: 24px;
+    }
+    .mode-card-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+    .mode-card-summary {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+    .mode-card-specs {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 12px 0;
+      font-size: 10px;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mode-card-specs li {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .mode-play-btn {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-play-hole {
+      background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+    }
+    .btn-play-hole:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(236, 72, 153, 0.6);
+    }
+    .btn-play-ring {
+      background: linear-gradient(135deg, #0284c7 0%, #00e5ff 100%);
+      color: #020617;
+      box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4);
+    }
+    .btn-play-ring:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(0, 229, 255, 0.6);
+    }
+    .mode-modal-footer {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 10px;
     }
 
     /* Order Confirmation True Overlay Popup Modal */
@@ -5308,6 +5716,10 @@
             <div class="badge-alive" id="hud-alive-badge">
               ALIVE: <span id="hud-alive-count">50</span>/<span id="hud-total-count">50</span>
             </div>
+            <button id="hud-btn-mode-toggle" class="hud-mode-pill-btn" type="button" title="Switch Arena Battle Mode">
+              <span id="hud-mode-pill-icon">🌀</span>
+              <span id="hud-mode-pill-name">HOLE</span>
+            </button>
             <button id="hud-quick-sound" class="hud-icon-btn" title="Toggle Sound (M)">🔊</button>
             <button id="streamer-drawer-toggle" class="hud-icon-btn" title="Settings & Streamer Controls (H)">⚙️</button>
           </div>
@@ -5473,10 +5885,29 @@
     <!-- Interactive Start / Unmute Game Overlay -->
     <div id="audio-overlay" role="button" tabindex="0">
       <div class="audio-icon-pulse" style="background: linear-gradient(135deg, #10b981, #00e5ff); box-shadow: 0 0 50px rgba(0, 229, 255, 0.8);">▶️</div>
-      <div class="audio-overlay-title" style="font-size: 24px; font-weight: 900; letter-spacing: 1.5px; background: linear-gradient(135deg, #ffffff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CLICK TO START GAME</div>
-      <p class="audio-overlay-desc" style="max-width: 380px; font-size: 13px; color: #94a3b8; margin: 10px 0 16px 0;">Starts 195 Country Flag Battle Royale with real-time 60 FPS physics &amp; live commentary audio.</p>
-      <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; padding: 12px 28px; border-radius: 999px; font-weight: 900; font-size: 14px; letter-spacing: 1px; box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); display: inline-flex; align-items: center; gap: 8px;">
-        <span>🚀 START BATTLE ROYALE</span>
+      <div class="audio-overlay-title" style="font-size: 22px; font-weight: 900; letter-spacing: 1.5px; background: linear-gradient(135deg, #ffffff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CHOOSE ARENA MODE TO PLAY</div>
+      <p class="audio-overlay-desc" style="max-width: 380px; font-size: 13px; color: #94a3b8; margin: 8px 0 16px 0;">Select your preferred 2D physics battle royale game mode to start:</p>
+
+      <!-- 2 Game Mode Quick Select Cards on Launch -->
+      <div class="launch-mode-cards">
+        <button type="button" class="launch-mode-btn launch-hole" id="btn-launch-hole" title="Play Center Vortex Hole Mode">
+          <span class="launch-badge">🔥 MOST POPULAR</span>
+          <span class="launch-icon">🌀</span>
+          <span class="launch-name">Center Vortex Hole</span>
+          <span class="launch-sub">Cosmic Singularity &amp; 6 Laser Spokes</span>
+          <span class="launch-cta">▶️ PLAY VORTEX</span>
+        </button>
+        <button type="button" class="launch-mode-btn launch-ring" id="btn-launch-ring" title="Play Outer Ring Escape Mode">
+          <span class="launch-badge classic">⚡ CLASSIC ESPORTS</span>
+          <span class="launch-icon">⭕</span>
+          <span class="launch-name">Outer Ring Escape</span>
+          <span class="launch-sub">Segmented Turbine &amp; Timed Exit Gate</span>
+          <span class="launch-cta">▶️ PLAY RING</span>
+        </button>
+      </div>
+
+      <div style="font-size: 11px; color: #64748b; margin-top: 14px;">
+        💡 You can switch modes anytime during the match via <b>🎮 MODE</b> or <b>Settings ⚙️</b>
       </div>
     </div>
 
@@ -5493,19 +5924,27 @@
       </div>
 
       <!-- Arena Template Selector (Hole vs Outer Ring) -->
-      <div class="drawer-control-group">
+      <div class="drawer-control-group arena-mode-control-group">
         <label class="drawer-label">
           <span>🏟️ ARENA TEMPLATE</span>
-          <span class="val" id="val-arena-template">🌀 CENTER VORTEX HOLE</span>
+          <span class="val mode-val-glow" id="val-arena-template">🌀 CENTER VORTEX HOLE</span>
         </label>
         <div class="template-selector-grid">
           <button type="button" class="template-pill active" id="btn-tmpl-hole" data-tmpl="hole">
-            <span style="font-size: 15px;">🌀</span>
-            <span>Center Vortex Hole</span>
+            <span class="tmpl-pill-badge vortex">POPULAR</span>
+            <div class="tmpl-pill-header">
+              <span class="tmpl-pill-icon">🌀</span>
+              <span class="tmpl-pill-name">Vortex Hole</span>
+            </div>
+            <span class="tmpl-pill-sub">Cosmic Singularity &amp; 6 Laser Spokes</span>
           </button>
           <button type="button" class="template-pill" id="btn-tmpl-ring" data-tmpl="ring">
-            <span style="font-size: 15px;">⭕</span>
-            <span>Outer Ring Escape</span>
+            <span class="tmpl-pill-badge ring">CLASSIC</span>
+            <div class="tmpl-pill-header">
+              <span class="tmpl-pill-icon">⭕</span>
+              <span class="tmpl-pill-name">Ring Escape</span>
+            </div>
+            <span class="tmpl-pill-sub">Turbine &amp; Timed Outer Gate</span>
           </button>
         </div>
         <div class="drawer-hint" id="hint-arena-template">
@@ -5850,10 +6289,57 @@
       </div>
     </div>
 
-    <!-- ==========================================================================
-         MASTER ADMIN LICENSE & SUBSCRIBER MANAGER MODAL (True Fixed Centered Popup)
-         ========================================================================== -->
+    <!-- Dedicated Arena Game Mode Selection Modal (PC & Mobile Friendly) -->
+    <div id="game-mode-modal" role="dialog" aria-modal="true" aria-labelledby="mode-modal-title">
+      <div class="game-mode-card-wrapper">
+        <button class="mode-modal-close" id="btn-close-mode-modal" type="button" aria-label="Close modal">&times;</button>
+        <p class="mode-modal-eyebrow">COUNTRY FLAG BATTLE ROYALE</p>
+        <h2 id="mode-modal-title" class="mode-modal-title">SELECT ARENA GAME MODE</h2>
+        <p class="mode-modal-subtitle">Choose which physics battle royale arena you want to play:</p>
 
+        <div class="mode-cards-grid">
+          <!-- Card 1: Hole Mode -->
+          <div class="mode-choice-card card-hole" id="card-choice-hole" data-select-tmpl="hole" role="button" tabindex="0">
+            <span class="mode-card-badge badge-vortex">🔥 MOST POPULAR</span>
+            <div class="mode-card-header">
+              <span class="mode-card-icon">🌀</span>
+              <div class="mode-card-name">Center Vortex Hole</div>
+            </div>
+            <p class="mode-card-summary">Cosmic Singularity with 6 kinetic laser spokes and central black hole.</p>
+            <ul class="mode-card-specs">
+              <li>✨ 6 Rotating Kinetic Laser Spokes</li>
+              <li>🌀 Gravitational Black Hole Horizon</li>
+              <li>🛡️ Sealed 48-Block Impenetrable Vault</li>
+            </ul>
+            <button type="button" class="mode-play-btn btn-play-hole" id="btn-modal-select-hole">
+              ▶️ PLAY VORTEX HOLE
+            </button>
+          </div>
+
+          <!-- Card 2: Ring Mode -->
+          <div class="mode-choice-card card-ring" id="card-choice-ring" data-select-tmpl="ring" role="button" tabindex="0">
+            <span class="mode-card-badge badge-ring">⚡ CLASSIC ESPORTS</span>
+            <div class="mode-card-header">
+              <span class="mode-card-icon">⭕</span>
+              <div class="mode-card-name">Outer Ring Escape</div>
+            </div>
+            <p class="mode-card-summary">Segmented cyber turbine with timed exit gate portal and pinball bumper.</p>
+            <ul class="mode-card-specs">
+              <li>⚙️ Dual-Rail Segmented Rotating Turbine</li>
+              <li>🚪 Timed Holographic Outer Exit Gate</li>
+              <li>⚡ Central Pinball Bumper &amp; Paddles</li>
+            </ul>
+            <button type="button" class="mode-play-btn btn-play-ring" id="btn-modal-select-ring">
+              ▶️ PLAY RING ESCAPE
+            </button>
+          </div>
+        </div>
+
+        <p class="mode-modal-footer">
+          💡 You can change modes anytime from <b>Streamer Settings ⚙️</b> or the top <b>🎮 MODE</b> button!
+        </p>
+      </div>
+    </div>
 
     <!-- PWA Installation Modal (iPhone / Android / PC Guide) -->
     <div id="pwa-install-modal" class="cyber-modal-backdrop" style="display: none;" role="dialog" aria-modal="true">
@@ -12354,18 +12840,75 @@
 
       // --- 10. EVENT LISTENERS & STREAMER DRAWER ---
       setupEventListeners() {
-        const startGameAndAudio = () => {
+        const startGameAndAudio = (tmpl = null) => {
+          if (tmpl && (tmpl === 'hole' || tmpl === 'ring') && tmpl !== this.arenaTemplate) {
+            this.setArenaTemplate(tmpl);
+          }
           if (!this.isGameStarted) {
             this.isGameStarted = true;
             this.roundStartTime = Date.now();
           }
           this.audio.init();
           if (this.dom.audioOverlay) this.dom.audioOverlay.classList.add('hidden');
+          this.closeGameModeModal();
         };
-        this.dom.audioOverlay.addEventListener('click', startGameAndAudio);
+
+        // Launch mode cards on initial overlay
+        const btnLaunchHole = document.getElementById('btn-launch-hole');
+        const btnLaunchRing = document.getElementById('btn-launch-ring');
+        if (btnLaunchHole) {
+          btnLaunchHole.addEventListener('click', (e) => {
+            e.stopPropagation();
+            startGameAndAudio('hole');
+          });
+        }
+        if (btnLaunchRing) {
+          btnLaunchRing.addEventListener('click', (e) => {
+            e.stopPropagation();
+            startGameAndAudio('ring');
+          });
+        }
+
+        // Top HUD Arena Mode button
+        const btnHudMode = document.getElementById('hud-btn-mode-toggle');
+        if (btnHudMode) {
+          btnHudMode.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.openGameModeModal();
+          });
+        }
+
+        // Dedicated Mode Selection Modal controls
+        const btnCloseModeModal = document.getElementById('btn-close-mode-modal');
+        if (btnCloseModeModal) {
+          btnCloseModeModal.addEventListener('click', () => this.closeGameModeModal());
+        }
+        const cardHole = document.getElementById('card-choice-hole');
+        const btnModalHole = document.getElementById('btn-modal-select-hole');
+        const cardRing = document.getElementById('card-choice-ring');
+        const btnModalRing = document.getElementById('btn-modal-select-ring');
+
+        const onSelectHole = (e) => {
+          e?.stopPropagation?.();
+          startGameAndAudio('hole');
+        };
+        const onSelectRing = (e) => {
+          e?.stopPropagation?.();
+          startGameAndAudio('ring');
+        };
+
+        if (cardHole) cardHole.addEventListener('click', onSelectHole);
+        if (btnModalHole) btnModalHole.addEventListener('click', onSelectHole);
+        if (cardRing) cardRing.addEventListener('click', onSelectRing);
+        if (btnModalRing) btnModalRing.addEventListener('click', onSelectRing);
+
+        this.dom.audioOverlay.addEventListener('click', (e) => {
+          if (e.target.closest('#btn-launch-hole') || e.target.closest('#btn-launch-ring')) return;
+          startGameAndAudio();
+        });
         document.addEventListener('pointerdown', (e) => {
           // If clicked on drawer, modal, or links, don't trigger start
-          if (e.target.closest('#streamer-drawer') || e.target.closest('#cyber-order-modal') || e.target.closest('#admin-license-modal')) return;
+          if (e.target.closest('#streamer-drawer') || e.target.closest('#cyber-order-modal') || e.target.closest('#admin-license-modal') || e.target.closest('#game-mode-modal')) return;
           startGameAndAudio();
         }, { once: false });
         window.addEventListener('keydown', (e) => {
@@ -12699,6 +13242,21 @@
         this.saveStreamerConfig();
       }
 
+      openGameModeModal() {
+        const modal = document.getElementById('game-mode-modal');
+        if (!modal) return;
+        modal.classList.add('show');
+        const cardHole = document.getElementById('card-choice-hole');
+        const cardRing = document.getElementById('card-choice-ring');
+        if (cardHole) cardHole.classList.toggle('active', this.arenaTemplate === 'hole');
+        if (cardRing) cardRing.classList.toggle('active', this.arenaTemplate === 'ring');
+      }
+
+      closeGameModeModal() {
+        const modal = document.getElementById('game-mode-modal');
+        if (modal) modal.classList.remove('show');
+      }
+
       syncDrawerUI() {
         if (!this.dom.sliderGameSpeed) return;
 
@@ -12717,6 +13275,16 @@
             ? '🌀 Hole Mode: Closed perimeter with 6 rotating spokes. Marbles get pulled into central black hole!'
             : '⭕ Ring Mode: Open gap on outer perimeter with 4 kinetic paddles and central pinball bumper.';
         }
+
+        const hudModeIcon = document.getElementById('hud-mode-pill-icon');
+        const hudModeName = document.getElementById('hud-mode-pill-name');
+        if (hudModeIcon) hudModeIcon.textContent = this.arenaTemplate === 'hole' ? '🌀' : '⭕';
+        if (hudModeName) hudModeName.textContent = this.arenaTemplate === 'hole' ? 'HOLE' : 'RING';
+
+        const cardHole = document.getElementById('card-choice-hole');
+        const cardRing = document.getElementById('card-choice-ring');
+        if (cardHole) cardHole.classList.toggle('active', this.arenaTemplate === 'hole');
+        if (cardRing) cardRing.classList.toggle('active', this.arenaTemplate === 'ring');
 
         // AI Voice Button Sync
         const btnVoice = document.getElementById('btn-toggle-voice');
