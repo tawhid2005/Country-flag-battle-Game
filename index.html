@@ -3877,6 +3877,45 @@
       cursor: pointer;
       padding: 4px;
     }
+    .toast-whatsapp-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      align-self: flex-start;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+      color: #ffffff !important;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .toast-whatsapp-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+    }
+    .drawer-wa-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: rgba(37, 211, 102, 0.12);
+      border: 1px solid rgba(37, 211, 102, 0.5);
+      border-radius: 8px;
+      color: #4ade80 !important;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .drawer-wa-link:hover {
+      background: rgba(37, 211, 102, 0.25);
+      transform: translateY(-1px);
+    }
 
     .admin-modal-header {
       display: flex;
@@ -5716,6 +5755,7 @@
       <div class="toast-body">
         <div class="toast-title" id="toast-title-text">PASS ACTIVATED 24/7!</div>
         <div class="toast-sub" id="toast-sub-text">Welcome to Country Flag Battle Royale. Arena is unlocked!</div>
+        <a id="toast-whatsapp-btn" class="toast-whatsapp-btn" target="_blank" rel="noopener noreferrer" href="https://wa.me/8801711729858?text=Hello%20Tawhid!%20My%20Country%20Flag%20Battle%20pass%20is%20activated.">💬 Chat with Owner on WhatsApp</a>
       </div>
       <button class="toast-close-btn" id="btn-close-toast" type="button">&times;</button>
     </div>
@@ -7973,9 +8013,14 @@
         const titleEl = document.getElementById('toast-title-text');
         const subEl = document.getElementById('toast-sub-text');
         const btnClose = document.getElementById('btn-close-toast');
+        const waBtn = document.getElementById('toast-whatsapp-btn');
 
         if (titleEl) titleEl.textContent = '🎉 PASS ACTIVATED: ' + (userId || 'Streamer').toUpperCase();
         if (subEl) subEl.textContent = 'Unlocked ' + (planTitle || 'Subscription') + ' • 24/7 Unlimited Access!';
+        if (waBtn) {
+          const msg = 'Hello Tawhid! My pass (' + (planTitle || 'Game Pass') + ') for user ' + (userId || 'gamer') + ' is successfully activated. I wanted to connect with you!';
+          waBtn.href = 'https://wa.me/8801711729858?text=' + encodeURIComponent(msg);
+        }
 
         if (toast) {
           toast.classList.add('show');
@@ -7987,7 +8032,7 @@
           }
           setTimeout(() => {
             if (toast) toast.classList.remove('show');
-          }, 6000);
+          }, 10000);
         }
       }
 
@@ -8624,14 +8669,18 @@
         if (this.session) {
           if (this.session.role === 'admin') {
             box.innerHTML = '<div class="drawer-auth-user">👑 ' + this.session.displayName + '</div>' +
-              '<div class="drawer-auth-plan" style="color: #fbbf24;">LIFETIME UNLIMITED ACCESS</div>';
+              '<div class="drawer-auth-plan" style="color: #fbbf24;">LIFETIME UNLIMITED ACCESS</div>' +
+              '<a href="https://wa.me/8801711729858?text=Hello%20Tawhid!%20Admin%20session%20active." target="_blank" rel="noopener noreferrer" class="drawer-wa-link">💬 Chat on WhatsApp</a>';
           } else {
             const rem = this.formatTimeRemaining(this.session.expiresAt);
+            const waMsg = 'Hello Tawhid! My pass (' + (this.session.planTitle || 'Game Pass') + ') for user ' + (this.session.displayName || 'gamer') + ' is active. I would like to connect with you!';
             box.innerHTML = '<div class="drawer-auth-user">👤 ' + this.session.displayName + '</div>' +
-              '<div class="drawer-auth-plan">' + this.session.planTitle + ' • <span style="color:#00e5ff; font-weight:800;">' + rem + '</span></div>';
+              '<div class="drawer-auth-plan">' + this.session.planTitle + ' • <span style="color:#00e5ff; font-weight:800;">' + rem + '</span></div>' +
+              '<a href="https://wa.me/8801711729858?text=' + encodeURIComponent(waMsg) + '" target="_blank" rel="noopener noreferrer" class="drawer-wa-link">💬 Chat with Owner on WhatsApp</a>';
           }
         } else {
-          box.innerHTML = '<div class="drawer-auth-user">🔒 Not Authenticated</div><div class="drawer-auth-plan">Access Locked</div>';
+          box.innerHTML = '<div class="drawer-auth-user">🔒 Not Authenticated</div><div class="drawer-auth-plan">Access Locked</div>' +
+            '<a href="https://wa.me/8801711729858?text=Hello%20Tawhid!%20I%20have%20a%20question%20about%20Country%20Flag%20Battle%20pass." target="_blank" rel="noopener noreferrer" class="drawer-wa-link">💬 Need Help? WhatsApp Support</a>';
         }
         if (adminBtn) adminBtn.remove();
       }
