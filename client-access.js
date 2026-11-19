@@ -18,8 +18,11 @@
   proto.api = async function(path, body) {
     if (!/^https?:$/.test(location.protocol)) throw new Error('Account and payment services require the hosted website. Local files run the game preview only.');
     let response;
+    const headers = body === undefined ? {} : {'Content-Type':'application/json'};
+    const token = this.authToken || (typeof gameStorage !== 'undefined' ? gameStorage.getItem('cfb_auth_token') : null);
+    if (token) headers['Authorization'] = 'Bearer ' + token;
     try {response = await fetch('/api/' + path, {method:body === undefined ? 'GET':'POST', credentials:'same-origin', cache:'no-store', signal:globalThis.AbortSignal?.timeout?.(15000),
-      headers:body === undefined ? {} : {'Content-Type':'application/json'}, body:body === undefined ? undefined : JSON.stringify(body)});
+      headers, body:body === undefined ? undefined : JSON.stringify(body)});
     } catch(error) {if(['AbortError','TimeoutError'].includes(error.name))throw Object.assign(new Error('The payment service took too long to respond. Please try again.'),{status:408});throw error;}
     let result;
     try {result = await response.json();} catch (_) {throw Object.assign(new Error('Online payments are temporarily unavailable. Please use WhatsApp support.'),{code:'API_NOT_DEPLOYED'});}
@@ -40,23 +43,49 @@
     link.href='https://wa.me/8801711729858?text='+encodeURIComponent(detail);notice.appendChild(link);
     const close=document.createElement('button');close.type='button';close.textContent='Dismiss';close.style.cssText='padding:6px 10px';close.onclick=()=>notice.remove();notice.appendChild(close);
   };
-  proto.acceptServerSession = function(session, keepPaymentModal=false) {
+  proto.acceptServerSession = function(session, keepPaymentModal=false, token=null) {
     if (!session || session.role !== 'subscriber' || session.expiresAt <= Date.now()) return false;
-    this.session=session; this.serverVerifiedUntil=Date.now()+90000;
-    gameStorage.removeItem('cfb_auth_session');
-    if (this.trialInterval) clearInterval(this.trialInterval);
-    this.showLockModal(false);this.updateDrawerStatus();
-    if(!keepPaymentModal)$('cyber-order-modal')?.classList.remove('show');this.syncInterfacePause?.();
-    if (this.app) {
-      if (this.app.isRoundOver) this.app.startNewRound();
-      if (!this.app.isGameStarted) {this.app.isGameStarted=true;this.app.roundStartTime=Date.now();}
-      this.app.dom?.audioOverlay?.classList.add('hidden');
+    this.session = session;
+    this.serverVerifiedUntil = session.expiresAt;
+    if (token) {
+      this.authToken = token;
+      try { gameStorage.setItem('cfb_auth_token', token); } catch (_) {}
     }
-    const badge=$('hud-trial-badge');if(badge)badge.style.display='none';
+    try { gameStorage.setItem('cfb_user_session', JSON.stringify(session)); } catch (_) {}
+    if (this.trialInterval) clearInterval(this.trialInterval);
+    this.showLockModal(false);
+    const lockEl = $('cyber-lock-modal'); if (lockEl) lockEl.classList.remove('show');
+    this.updateDrawerStatus();
+    if (!keepPaymentModal) $('cyber-order-modal')?.classList.remove('show');
+    this.syncInterfacePause?.();
+    const badge = $('hud-trial-badge'); if (badge) badge.style.display = 'none';
     return true;
   };
+  proto.restoreCachedSession = function() {
+    try {
+      this.authToken = gameStorage.getItem('cfb_auth_token') || null;
+      const raw = gameStorage.getItem('cfb_user_session');
+      if (raw) {
+        const cached = JSON.parse(raw);
+        if (cached && cached.role === 'subscriber' && cached.expiresAt > Date.now()) {
+          this.session = cached;
+          this.serverVerifiedUntil = cached.expiresAt;
+          this.showLockModal(false);
+          const lockEl = $('cyber-lock-modal'); if (lockEl) lockEl.classList.remove('show');
+          return true;
+        }
+      }
+    } catch (_) {}
+    return false;
+  };
   proto.isAuthenticated = function() {return !!(this.session?.role === 'subscriber' && this.session.expiresAt > Date.now() && this.serverVerifiedUntil > Date.now());};
-  proto.saveSession = function() {gameStorage.removeItem('cfb_auth_session');};
+  proto.saveSession = function() {
+    if (this.session && this.session.role === 'subscriber' && this.session.expiresAt > Date.now()) {
+      try { gameStorage.setItem('cfb_user_session', JSON.stringify(this.session)); } catch (_) {}
+    } else {
+      try { gameStorage.removeItem('cfb_user_session'); gameStorage.removeItem('cfb_auth_token'); } catch (_) {}
+    }
+  };
   proto.checkSession = function() {return {valid:this.isAuthenticated(),session:this.session};};
   proto.login = async function(username,password) {
     if (/^CFB/.test(username) || /^CFB/.test(password)) {
@@ -64,17 +93,19 @@
       return {success:result.valid,role:'subscriber',...result};
     }
     const result=await this.api('account/login',{username,password});
-    if (result.success) this.acceptServerSession(result.session);
+    if (result.success) this.acceptServerSession(result.session, false, result.token);
     return result;
   };
   proto.activateKey = async function(key) {
     if(/^CFB-/i.test(String(key || '')))throw Object.assign(new Error('This activation link was issued by an older version. Contact WhatsApp support to verify your purchase and get a new activation link.'),{code:'LEGACY_ACTIVATION_KEY'});
     const result=await this.api('activate',{key});
-    if (result.valid) this.acceptServerSession(result.session);
+    if (result.valid) this.acceptServerSession(result.session, false, result.token);
     return result;
   };
   proto.logout = function() {
-    this.session=null;this.serverVerifiedUntil=0;this.saveSession();this.handleTrialWorkflow();this.updateDrawerStatus();
+    this.session=null;this.authToken=null;this.serverVerifiedUntil=0;
+    try { gameStorage.removeItem('cfb_user_session'); gameStorage.removeItem('cfb_auth_token'); gameStorage.removeItem('cfb_auth_session'); } catch (_) {}
+    this.handleTrialWorkflow();this.updateDrawerStatus();
     this.api('account/logout',{}).catch(()=>{});
   };
   proto.startCheckout = async function(provider) {
@@ -171,11 +202,21 @@
     return ready;
   };
   proto.syncInterfacePause = function() {
-    const paused=!!document.querySelector('#cyber-order-modal.show,#cyber-lock-modal.show,#cyber-fail-recovery-modal.show,#streamer-drawer.open,#game-mode-modal.show');
+    const paused = typeof document?.querySelector === 'function' ? !!document.querySelector('#cyber-order-modal.show,#cyber-lock-modal.show,#cyber-fail-recovery-modal.show,#streamer-drawer.open,#game-mode-modal.show') : false;
     this.app?.setInterfacePaused?.(paused);
   };
   proto.init = function() {
-    this.detectCountryAndCurrency();this.setupDOM();this.renderPricingCards();this.handleTrialWorkflow();this.updateDrawerStatus();
+    const hasCached = this.restoreCachedSession();
+    this.detectCountryAndCurrency();
+    this.setupDOM();
+    this.renderPricingCards();
+    if (!hasCached && !this.isAuthenticated()) {
+      this.handleTrialWorkflow();
+    } else {
+      this.showLockModal(false);
+      const lockEl = $('cyber-lock-modal'); if (lockEl) lockEl.classList.remove('show');
+    }
+    this.updateDrawerStatus();
     for(const id of ['checkout-bd-email','checkout-bd-phone','checkout-bd-password'])$(id)?.addEventListener('input',()=>this.updateBangladeshPaymentGate());
     for(const id of ['manual-sender','manual-transaction'])$(id)?.addEventListener('input',()=>this.updateWhatsAppLinks());
     this.manualPaymentMethod='bKash';
@@ -192,16 +233,27 @@
       status.className='checkout-help claim-status';
       try{
         const result=await this.api('manual/claim',{planId:this.activePlanId || '1m',method:this.manualPaymentMethod,email:$('checkout-bd-email').value.trim(),phone:$('checkout-bd-phone').value.trim(),password:$('checkout-bd-password').value,sender:$('manual-sender').value.trim(),trxId:$('manual-transaction').value.trim(),confirmed:$('manual-confirm').checked});
-        if(!this.acceptServerSession(result.session,true))throw new Error('Access was created but the login session could not be opened. Please sign in with your email and password.');const remaining=650-(Date.now()-animationStarted);if(remaining>0)await new Promise(resolve=>setTimeout(resolve,remaining));$('checkout-bd-password').value='';button.classList.remove('processing');button.classList.add('confirmed');label.textContent='Payment confirmed — access active';status.classList.add('success');status.textContent='✓ Payment information accepted. Access is active—opening the game…';this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);this.updateDrawerStatus();setTimeout(()=>{$('cyber-order-modal')?.classList.remove('show');this.syncInterfacePause();if(!this.isGameStarted)this.startGame();},1000);
+        if(!this.acceptServerSession(result.session,true,result.token))throw new Error('Access was created but the login session could not be opened. Please sign in with your email and password.');const remaining=650-(Date.now()-animationStarted);if(remaining>0)await new Promise(resolve=>setTimeout(resolve,remaining));$('checkout-bd-password').value='';button.classList.remove('processing');button.classList.add('confirmed');label.textContent='Payment confirmed — access active';status.classList.add('success');status.textContent='✓ Payment information accepted. Access is active—opening the game…';this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);this.updateDrawerStatus();setTimeout(()=>{$('cyber-order-modal')?.classList.remove('show');this.syncInterfacePause();if(!this.isGameStarted)this.startGame();},1000);
       }catch(error){button.classList.remove('processing');label.textContent='Confirm payment & activate';status.classList.add('failed');status.textContent='Payment confirmation failed: '+error.message;this.updateWhatsAppLinks();}finally{button.setAttribute('aria-busy','false');button.disabled=false;}
     });
-    $('checkout-retry-payment')?.addEventListener('click',()=>{const id=gameStorage.getItem('cfb_pending_order');if(id)this.pollPayment(id);});
+    $('checkout-retry-payment')?.addEventListener('click',()=>{const id=typeof gameStorage !== 'undefined' ? gameStorage.getItem('cfb_pending_order') : null;if(id)this.pollPayment(id);});
     if($('btn-start-polar-checkout'))$('btn-start-polar-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('polar');};
     if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();if(!this.updateBangladeshPaymentGate())return;const panel=$('manual-transfer-panel');panel.open=true;panel.scrollIntoView?.({behavior:'smooth',block:'start'});};
-    const pauseObserver=new MutationObserver(()=>this.syncInterfacePause());for(const id of ['cyber-order-modal','cyber-lock-modal','cyber-fail-recovery-modal','streamer-drawer','game-mode-modal']){const el=$(id);if(el)pauseObserver.observe(el,{attributes:true,attributeFilter:['class']});}this.interfacePauseObserver=pauseObserver;this.updateBangladeshPaymentGate();this.syncInterfacePause();
+    const MutationObserverClass = typeof MutationObserver !== 'undefined' ? MutationObserver : (typeof window !== 'undefined' ? window.MutationObserver : null);
+    if (MutationObserverClass) {
+      const pauseObserver=new MutationObserverClass(()=>this.syncInterfacePause());
+      for(const id of ['cyber-order-modal','cyber-lock-modal','cyber-fail-recovery-modal','streamer-drawer','game-mode-modal']){
+        const el=$(id);if(el)pauseObserver.observe(el,{attributes:true,attributeFilter:['class']});
+      }
+      this.interfacePauseObserver=pauseObserver;
+    }
+    this.updateBangladeshPaymentGate();
+    this.syncInterfacePause();
     this.updateWhatsAppLinks();
     // Remove credentials saved by previous releases.
-    for (const key of ['cfb_pending_checkout_creds','cfb_admin_polar_token','cfb_paymently_api_key','cfb_auth_session']) gameStorage.removeItem(key);
+    for (const key of ['cfb_pending_checkout_creds','cfb_admin_polar_token','cfb_paymently_api_key','cfb_auth_session']) {
+      try { gameStorage.removeItem(key); } catch(_) {}
+    }
     this.bootServerAccess();
   };
   proto.bootServerAccess = async function() {
@@ -211,14 +263,20 @@
       try {const result=await this.activateKey(activation);if(result.valid)this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);}
       catch(error){this.paymentNotice(error.message);}
     } else if (/^https?:$/.test(location.protocol)) {
-      try {const result=await this.api('account/session');this.acceptServerSession(result.session);}catch(_){}
+      try {const result=await this.api('account/session');this.acceptServerSession(result.session);}catch(err){
+        if([401,403].includes(err.status)){
+          this.session=null;this.authToken=null;this.serverVerifiedUntil=0;
+          try { gameStorage.removeItem('cfb_user_session'); gameStorage.removeItem('cfb_auth_token'); } catch(_) {}
+          this.handleTrialWorkflow();this.updateDrawerStatus();
+        }
+      }
     }
-    const pendingOrder=returningOrder || gameStorage.getItem('cfb_pending_order');
+    const pendingOrder=returningOrder || (typeof gameStorage !== 'undefined' ? gameStorage.getItem('cfb_pending_order') : null);
     if (pendingOrder && /^https?:$/.test(location.protocol)) this.pollPayment(pendingOrder);
     if (/^https?:$/.test(location.protocol)) setInterval(async()=>{
       if (!this.session) return;
       try {const result=await this.api('account/session');if(!this.acceptServerSession(result.session))this.logout();}
-      catch(error){if([401,403].includes(error.status)){this.session=null;this.serverVerifiedUntil=0;this.handleTrialWorkflow();this.updateDrawerStatus();}}
+      catch(error){if([401,403].includes(error.status)){this.session=null;this.authToken=null;this.serverVerifiedUntil=0;try { gameStorage.removeItem('cfb_user_session'); gameStorage.removeItem('cfb_auth_token'); } catch(_) {} this.handleTrialWorkflow();this.updateDrawerStatus();}}
     },60000);
   };
 })();

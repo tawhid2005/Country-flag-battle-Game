@@ -51,19 +51,26 @@ export function createHandler(env, fetcher = fetch) {
     if (!await db('rpc/cfb_rate_limit','POST',{p_key:key,p_max:max,p_seconds:seconds})) fail(429,'Too many attempts. Try again later.');
   }
   function session(req, role) {
-    const pair = String(req.headers.cookie || '').split(';').map(s=>s.trim()).find(s=>s.startsWith(cookieName(role)+'='));
+    const authHeader = req.headers?.authorization;
+    if (authHeader && typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+      const parsed = verify(authHeader.slice(7).trim(), secret(), role);
+      if (parsed) return parsed;
+    }
+    const pair = String(req.headers?.cookie || '').split(';').map(s=>s.trim()).find(s=>s.startsWith(cookieName(role)+'='));
     return verify(pair?.slice(pair.indexOf('=')+1),secret(),role);
   }
-  function setSession(res, role, sub, seconds=86400) {
+  function setSession(res, role, sub, seconds=(role==='admin'?86400:2592000)) {
     const token = sign({role,sub,exp:Date.now()+seconds*1000},secret());
-    res.setHeader('Set-Cookie', `${cookieName(role)}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${seconds}`);
+    const sameSite = role === 'admin' ? 'Strict' : 'Lax';
+    res.setHeader('Set-Cookie', `${cookieName(role)}=${token}; Path=/; HttpOnly; Secure; SameSite=${sameSite}; Max-Age=${seconds}`);
+    return token;
   }
   async function accountSession(req, active=true) {
     const auth = session(req,'subscriber');
     if (!auth || !uuid(auth.sub)) fail(401,'Please log in to your game account');
     const account = await one('cfb_accounts?id=eq.'+auth.sub+'&select=id,username,email');
     if (!account) fail(401,'Account unavailable');
-    const entitlement = await one('cfb_entitlements?account_id=eq.'+auth.sub);
+    const entitlement = await one('cfb_entitlements?account_id=eq.'+auth.sub+'&revoked=eq.false&order=expires_at.desc');
     const valid = entitlement && !entitlement.revoked && Date.parse(entitlement.expires_at) > Date.now();
     if (active && !valid) fail(403,'No active game plan. Please purchase or renew your pass.');
     return {account, entitlement:valid ? entitlement : null};
@@ -220,13 +227,16 @@ export function createHandler(env, fetcher = fetch) {
       if (route === 'account/login' && req.method === 'POST') {
         await limited(req,'login',10,600);
         const username=String(body.username || '').trim().toLowerCase();
-        const account=await one('cfb_accounts?username=eq.'+enc(username));
+        let account=await one('cfb_accounts?username=eq.'+enc(username));
+        if (!account && username.includes('@')) {
+          account=await one('cfb_accounts?email=eq.'+enc(username));
+        }
         const dummy='scrypt$00000000000000000000000000000000$'+'0'.repeat(128);
         if (!verifyPassword(body.password,account?.password_hash || dummy) || !account) fail(401,'Invalid username or password');
-        setSession(res,'subscriber',account.id);
-        const entitlement=await one('cfb_entitlements?account_id=eq.'+account.id+'&revoked=eq.false');
+        const token = setSession(res,'subscriber',account.id,2592000);
+        const entitlement=await one('cfb_entitlements?account_id=eq.'+account.id+'&revoked=eq.false&order=expires_at.desc');
         if (!entitlement || Date.parse(entitlement.expires_at)<=Date.now()) return json(200,{success:false,message:'Account found. Purchase or renew your plan.'});
-        return json(200,{success:true,session:publicSession(account,entitlement),role:'subscriber'});
+        return json(200,{success:true,token,session:publicSession(account,entitlement),role:'subscriber'});
       }
       if (route === 'account/session' && req.method === 'GET') {
         const {account,entitlement}=await accountSession(req); return json(200,{session:publicSession(account,entitlement)});
@@ -250,9 +260,9 @@ export function createHandler(env, fetcher = fetch) {
         if(order && order.account_id!==account.id)fail(409,'This transaction ID has already been used');
         if(!order){order={id:randomUUID(),account_id:account.id,provider:'manual',plan_id:body.planId,amount_minor:plan.bdt,currency:'bdt',checkout_id:checkoutId};await db('cfb_orders','POST',order);}
         if(order.status!=='paid'){await complete(order,'claim:'+method+':'+trxId);await event(order.id,'customer_claim_activated',methods[method]);order=await orderBy(order.id);}
-        setSession(res,'subscriber',account.id);
-        const entitlement=await one('cfb_entitlements?account_id=eq.'+account.id+'&revoked=eq.false');
-        return json(200,{success:true,orderId:order.id,link:origin()+'/#activate='+activationKey(order,secret()),session:publicSession(account,entitlement)});
+        const token = setSession(res,'subscriber',account.id,2592000);
+        const entitlement=await one('cfb_entitlements?account_id=eq.'+account.id+'&revoked=eq.false&order=expires_at.desc');
+        return json(200,{success:true,token,orderId:order.id,link:origin()+'/#activate='+activationKey(order,secret()),session:publicSession(account,entitlement)});
       }
       if (route === 'activate' && req.method === 'POST') {
         if(/^CFB-/i.test(String(body.key || '')))fail(410,'This older activation key needs reissuing after purchase verification. Contact support for a new activation link.');
@@ -261,9 +271,9 @@ export function createHandler(env, fetcher = fetch) {
         const order = prefix === 'CFB2' ? await orderBy(id) : null;
         if (!order || order.status !== 'paid' || !equal(body.key,activationKey(order,secret()))) fail(403,'Invalid activation link. Contact support to reissue older keys.');
         const account=await one('cfb_accounts?id=eq.'+order.account_id+'&select=id,username,email');
-        const entitlement=await one('cfb_entitlements?account_id=eq.'+order.account_id+'&revoked=eq.false');
+        const entitlement=await one('cfb_entitlements?account_id=eq.'+order.account_id+'&revoked=eq.false&order=expires_at.desc');
         if (!entitlement || Date.parse(entitlement.expires_at)<=Date.now()) fail(403,'Plan expired or revoked');
-        setSession(res,'subscriber',account.id);return json(200,{valid:true,session:publicSession(account,entitlement)});
+        const token = setSession(res,'subscriber',account.id,2592000);return json(200,{valid:true,token,session:publicSession(account,entitlement)});
       }
       if (route === 'checkout' && req.method === 'POST') {
         await limited(req,'checkout',10,600);
@@ -318,8 +328,8 @@ export function createHandler(env, fetcher = fetch) {
         const account=await one('cfb_accounts?id=eq.'+order.account_id+'&select=id,username,email');
         if(!account)fail(404,'Account unavailable');
         const fresh=await reconcile(order);
-        const entitlement=await one('cfb_entitlements?account_id=eq.'+account.id+'&revoked=eq.false');
-        if(fresh.status==='paid' && entitlement && Date.parse(entitlement.expires_at)>Date.now())setSession(res,'subscriber',account.id);
+        const entitlement=await one('cfb_entitlements?account_id=eq.'+account.id+'&revoked=eq.false&order=expires_at.desc');
+        if(fresh.status==='paid' && entitlement && Date.parse(entitlement.expires_at)>Date.now())setSession(res,'subscriber',account.id,2592000);
         return json(200,{status:fresh.status,session:fresh.status==='paid' ? publicSession(account,entitlement) : null});
       }
       if (route === 'webhooks/polar' && req.method === 'POST') {

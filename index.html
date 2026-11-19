@@ -2850,6 +2850,10 @@
       position: relative;
       user-select: none;
       backdrop-filter: blur(10px);
+      touch-action: manipulation;
+    }
+    .launch-mode-btn * {
+      pointer-events: none;
     }
     .launch-mode-btn:hover {
       transform: translateY(-4px) scale(1.02);
@@ -4409,6 +4413,13 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      touch-action: manipulation;
+    }
+    .mode-choice-card * {
+      pointer-events: none;
+    }
+    .mode-choice-card button {
+      pointer-events: auto;
     }
     .mode-choice-card:hover {
       transform: translateY(-3px);
@@ -8728,6 +8739,16 @@
       }
 
       handleTrialWorkflow() {
+        if (this.isAuthenticated() || (this.session && this.session.expiresAt > Date.now())) {
+          this.showLockModal(false);
+          const modal = document.getElementById('cyber-lock-modal');
+          if (modal) modal.classList.remove('show');
+          const banner = document.getElementById('cyber-trial-banner');
+          if (banner) banner.style.display = 'none';
+          const hudTrial = document.getElementById('hud-trial-badge');
+          if (hudTrial) hudTrial.style.display = 'none';
+          return;
+        }
         const trial = this.getTrialStatus();
         const banner = document.getElementById('cyber-trial-banner');
         const hudTrial = document.getElementById('hud-trial-badge');
@@ -12841,7 +12862,7 @@
       // --- 10. EVENT LISTENERS & STREAMER DRAWER ---
       setupEventListeners() {
         const startGameAndAudio = (tmpl = null) => {
-          if (tmpl && (tmpl === 'hole' || tmpl === 'ring') && tmpl !== this.arenaTemplate) {
+          if (tmpl && (tmpl === 'hole' || tmpl === 'ring')) {
             this.setArenaTemplate(tmpl);
           }
           if (!this.isGameStarted) {
@@ -12856,17 +12877,31 @@
         // Launch mode cards on initial overlay
         const btnLaunchHole = document.getElementById('btn-launch-hole');
         const btnLaunchRing = document.getElementById('btn-launch-ring');
-        if (btnLaunchHole) {
-          btnLaunchHole.addEventListener('click', (e) => {
+
+        const triggerLaunchHole = (e) => {
+          if (e) {
+            e.preventDefault();
             e.stopPropagation();
-            startGameAndAudio('hole');
-          });
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+          }
+          startGameAndAudio('hole');
+        };
+        const triggerLaunchRing = (e) => {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+          }
+          startGameAndAudio('ring');
+        };
+
+        if (btnLaunchHole) {
+          btnLaunchHole.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+          btnLaunchHole.addEventListener('click', triggerLaunchHole);
         }
         if (btnLaunchRing) {
-          btnLaunchRing.addEventListener('click', (e) => {
-            e.stopPropagation();
-            startGameAndAudio('ring');
-          });
+          btnLaunchRing.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+          btnLaunchRing.addEventListener('click', triggerLaunchRing);
         }
 
         // Top HUD Arena Mode button
@@ -12881,7 +12916,10 @@
         // Dedicated Mode Selection Modal controls
         const btnCloseModeModal = document.getElementById('btn-close-mode-modal');
         if (btnCloseModeModal) {
-          btnCloseModeModal.addEventListener('click', () => this.closeGameModeModal());
+          btnCloseModeModal.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.closeGameModeModal();
+          });
         }
         const cardHole = document.getElementById('card-choice-hole');
         const btnModalHole = document.getElementById('btn-modal-select-hole');
@@ -12889,28 +12927,59 @@
         const btnModalRing = document.getElementById('btn-modal-select-ring');
 
         const onSelectHole = (e) => {
-          e?.stopPropagation?.();
-          startGameAndAudio('hole');
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+          }
+          this.setArenaTemplate('hole');
+          this.closeGameModeModal();
+          if (!this.isGameStarted) {
+            this.isGameStarted = true;
+            this.roundStartTime = Date.now();
+          }
+          this.audio.init();
+          if (this.dom.audioOverlay) this.dom.audioOverlay.classList.add('hidden');
         };
         const onSelectRing = (e) => {
-          e?.stopPropagation?.();
-          startGameAndAudio('ring');
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+          }
+          this.setArenaTemplate('ring');
+          this.closeGameModeModal();
+          if (!this.isGameStarted) {
+            this.isGameStarted = true;
+            this.roundStartTime = Date.now();
+          }
+          this.audio.init();
+          if (this.dom.audioOverlay) this.dom.audioOverlay.classList.add('hidden');
         };
 
-        if (cardHole) cardHole.addEventListener('click', onSelectHole);
-        if (btnModalHole) btnModalHole.addEventListener('click', onSelectHole);
-        if (cardRing) cardRing.addEventListener('click', onSelectRing);
-        if (btnModalRing) btnModalRing.addEventListener('click', onSelectRing);
+        if (cardHole) {
+          cardHole.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+          cardHole.addEventListener('click', onSelectHole);
+        }
+        if (btnModalHole) {
+          btnModalHole.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+          btnModalHole.addEventListener('click', onSelectHole);
+        }
+        if (cardRing) {
+          cardRing.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+          cardRing.addEventListener('click', onSelectRing);
+        }
+        if (btnModalRing) {
+          btnModalRing.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+          btnModalRing.addEventListener('click', onSelectRing);
+        }
 
-        this.dom.audioOverlay.addEventListener('click', (e) => {
-          if (e.target.closest('#btn-launch-hole') || e.target.closest('#btn-launch-ring')) return;
-          startGameAndAudio();
-        });
-        document.addEventListener('pointerdown', (e) => {
-          // If clicked on drawer, modal, or links, don't trigger start
-          if (e.target.closest('#streamer-drawer') || e.target.closest('#cyber-order-modal') || e.target.closest('#admin-license-modal') || e.target.closest('#game-mode-modal')) return;
-          startGameAndAudio();
-        }, { once: false });
+        if (this.dom.audioOverlay) {
+          this.dom.audioOverlay.addEventListener('click', (e) => {
+            if (e.target.closest('#btn-launch-hole') || e.target.closest('#btn-launch-ring')) return;
+            startGameAndAudio(this.arenaTemplate || 'hole');
+          });
+        }
         window.addEventListener('keydown', (e) => {
           if (e.key === ' ' || e.key === 'Enter') startGameAndAudio();
         }, { once: false });
