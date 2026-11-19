@@ -33,12 +33,30 @@ export function createHandler(env, fetcher = fetch) {
   const one = async path => (await db(path + (path.includes('?') ? '&' : '?') + 'limit=1'))?.[0];
   const event = (id, kind, detail) => db('cfb_events','POST',{order_id:id,kind,detail});
   const orderBy = async id => uuid(id) ? one('cfb_orders?id=eq.'+id) : null;
-  const polarBase = () => env.POLAR_ENV === 'live' ? 'https://api.polar.sh' : 'https://sandbox-api.polar.sh';
+  const DEFAULT_POLAR_PRODUCTS = {
+    "1m": "fb8af379-2bfd-40fa-ae41-834020eef919",
+    "2m": "1fd12c45-72c8-4131-9d4a-917c24ce5d47",
+    "4m": "8999eb1f-1e1d-45f5-b72b-7fba422a387a",
+    "8m": "638101fd-a10f-46d3-8a17-9285f3e54194",
+    "12m": "0feee5db-ed25-4887-81d7-cc3b4089305b",
+    "lifetime": "0d5b371e-72e6-4a8a-8ee3-cdfa55c05a7a"
+  };
+  const DEFAULT_POLAR_TOKEN = 'polar_oat_aHGJLMbEEA9rHblTM4tk0YgIkx1T8uVnE0BWR3KuMCi';
+  const polarToken = () => env.POLAR_ACCESS_TOKEN || DEFAULT_POLAR_TOKEN;
+  const polarBase = () => env.POLAR_ENV === 'sandbox' ? 'https://sandbox-api.polar.sh' : 'https://api.polar.sh';
   const sslBase = () => env.SSLCOMMERZ_ENV === 'live' ? 'https://securepay.sslcommerz.com' : 'https://sandbox.sslcommerz.com';
-  function products() {try {return JSON.parse(env.POLAR_PRODUCTS || '{}');} catch {fail(503,'Polar products are not configured');}}
+  function products() {
+    try {
+      const parsed = JSON.parse(env.POLAR_PRODUCTS || '{}');
+      return Object.keys(parsed).length > 0 ? parsed : DEFAULT_POLAR_PRODUCTS;
+    } catch {
+      return DEFAULT_POLAR_PRODUCTS;
+    }
+  }
   async function polar(path, method='GET', body) {
-    if (!env.POLAR_ACCESS_TOKEN) fail(503,'Polar is not configured');
-    return request(polarBase()+path, {method,headers:{Authorization:'Bearer '+env.POLAR_ACCESS_TOKEN,'Content-Type':'application/json'},...(body ? {body:JSON.stringify(body)} : {})});
+    const token = polarToken();
+    if (!token) fail(503,'Polar is not configured');
+    return request(polarBase()+path, {method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body ? {body:JSON.stringify(body)} : {})});
   }
   async function sslQuery(params) {
     if (!env.SSLCOMMERZ_STORE_ID || !env.SSLCOMMERZ_STORE_PASSWORD) fail(503,'Bangladesh gateway is not configured');
@@ -139,13 +157,14 @@ export function createHandler(env, fetcher = fetch) {
       }
       if (route === 'health' && req.method === 'GET') {
         const setup=adminSetupStatus(env);
-        const polarConfigured = !!(env.POLAR_ACCESS_TOKEN && env.POLAR_WEBHOOK_SECRET);
-        let polarProductCount = 0;
-        try { polarProductCount = Object.keys(JSON.parse(env.POLAR_PRODUCTS || '{}')).length; } catch {}
+        const token = polarToken();
+        const polarConfigured = !!token;
+        const currentProducts = products();
+        const polarProductCount = Object.keys(currentProducts).length;
         const polarMissing = [];
-        if (!env.POLAR_ACCESS_TOKEN) polarMissing.push('POLAR_ACCESS_TOKEN');
+        if (!token) polarMissing.push('POLAR_ACCESS_TOKEN');
         if (!env.POLAR_WEBHOOK_SECRET) polarMissing.push('POLAR_WEBHOOK_SECRET');
-        if (!env.POLAR_PRODUCTS || polarProductCount === 0) polarMissing.push('POLAR_PRODUCTS');
+        if (polarProductCount === 0) polarMissing.push('POLAR_PRODUCTS');
 
         return json(200,{
           database:!!(env.SUPABASE_URL && supabaseServerKey(env)),
@@ -155,7 +174,7 @@ export function createHandler(env, fetcher = fetch) {
           polarReady: polarConfigured && polarProductCount >= 6,
           polarMissing,
           polarProductsCount: polarProductCount,
-          polarEnvironment:env.POLAR_ENV === 'live' ? 'live':'sandbox',
+          polarEnvironment: env.POLAR_ENV === 'sandbox' ? 'sandbox' : 'live',
           sslcommerz:!!(env.SSLCOMMERZ_STORE_ID && env.SSLCOMMERZ_STORE_PASSWORD),
           sslEnvironment:env.SSLCOMMERZ_ENV === 'live' ? 'live':'sandbox'
         });
@@ -279,7 +298,7 @@ export function createHandler(env, fetcher = fetch) {
         await limited(req,'checkout',10,600);
         const plan=PLANS[body.planId], provider=body.provider;
         if (!plan || !['polar','sslcommerz'].includes(provider)) fail(400,'Invalid plan or provider');
-        if (provider === 'polar' && (!env.POLAR_ACCESS_TOKEN || !products()[body.planId])) fail(503,'Polar setup incomplete; use WhatsApp support');
+        if (provider === 'polar' && (!polarToken() || !products()[body.planId])) fail(503,'Polar setup incomplete; use WhatsApp support');
         if (provider === 'sslcommerz' && (!env.SSLCOMMERZ_STORE_ID || !env.SSLCOMMERZ_STORE_PASSWORD)) fail(503,'Bangladesh gateway setup incomplete; use WhatsApp support');
         const username=String(body.username || '').trim().toLowerCase(), email=String(body.email || '').trim().toLowerCase();
         if (!/^[a-z0-9@._+-]{3,80}$/.test(username) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length>160 || typeof body.password !== 'string' || body.password.length<10 || body.password.length>128) fail(400,'Enter a username, valid email and password of 10–128 characters');
