@@ -8755,6 +8755,15 @@
         const timerText = document.getElementById('hud-trial-timer');
 
         if (trial.isExpired) {
+          // Keep arena mode selection overlay front and center on initial load!
+          const overlay = document.getElementById('audio-overlay');
+          const isAwaitingModeLaunch = (!this.app || !this.app.isGameStarted) && (!overlay || !overlay.classList.contains('hidden'));
+          if (isAwaitingModeLaunch) {
+            this.showLockModal(false);
+            if (banner) banner.style.display = 'none';
+            if (hudTrial) hudTrial.style.display = 'none';
+            return;
+          }
           this.showLockModal(true);
           if (banner) banner.style.display = 'block';
           if (hudTrial) hudTrial.style.display = 'none';
@@ -9317,15 +9326,11 @@
           });
         }
 
-        // Modal Close Button (Allows closing when trial or session is active)
+        // Modal Close Button (Allows closing anytime)
         const closeLockBtn = document.getElementById('btn-close-cyber-lock');
         if (closeLockBtn) {
           closeLockBtn.addEventListener('click', () => {
-            if (this.isAccessAllowed()) {
-              this.showLockModal(false);
-            } else {
-              this.showLoginAlert('⏱️ Your 30-Minute Free Trial has ended! Choose a streamer pass below or login to continue.', 'error');
-            }
+            this.showLockModal(false);
           });
         }
 
@@ -9378,7 +9383,7 @@
         const cyberLockModalEl = document.getElementById('cyber-lock-modal');
         if (cyberLockModalEl) {
           cyberLockModalEl.addEventListener('click', (e) => {
-            if (e.target === cyberLockModalEl && this.isAccessAllowed()) {
+            if (e.target === cyberLockModalEl) {
               this.showLockModal(false);
             }
           });
@@ -9391,7 +9396,7 @@
               adminModal.classList.remove('show');
             } else if (orderModal && orderModal.classList.contains('show')) {
               orderModal.classList.remove('show');
-            } else if (cyberLockModalEl && cyberLockModalEl.classList.contains('show') && this.isAccessAllowed()) {
+            } else if (cyberLockModalEl && cyberLockModalEl.classList.contains('show')) {
               this.showLockModal(false);
             }
           }
@@ -10741,7 +10746,7 @@
       }
 
       runBackgroundCatchup(totalElapsedMs) {
-        if (this.isRoundOver || this._interfacePaused) return;
+        if (!this.isGameStarted || this.isRoundOver || this._interfacePaused) return;
         const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
         let remainingMs = Math.min(180, Math.max(16.666, totalElapsedMs * simSpeed));
         const fixedStepMs = 16.666;
@@ -12865,6 +12870,13 @@
           if (tmpl && (tmpl === 'hole' || tmpl === 'ring')) {
             this.setArenaTemplate(tmpl);
           }
+          if (!this.security.isAccessAllowed()) {
+            this.security.showLockModal(true);
+            this.security.showLoginAlert('⏱️ Your 30-Minute Free Trial has ended! Please log in with your email & password or choose an affordable pass below to continue.', 'error');
+            const tabPricing = document.getElementById('tab-btn-pricing');
+            if (tabPricing) tabPricing.click();
+            return;
+          }
           if (!this.isGameStarted) {
             this.isGameStarted = true;
             this.roundStartTime = Date.now();
@@ -12932,14 +12944,7 @@
             e.stopPropagation();
             if (e.stopImmediatePropagation) e.stopImmediatePropagation();
           }
-          this.setArenaTemplate('hole');
-          this.closeGameModeModal();
-          if (!this.isGameStarted) {
-            this.isGameStarted = true;
-            this.roundStartTime = Date.now();
-          }
-          this.audio.init();
-          if (this.dom.audioOverlay) this.dom.audioOverlay.classList.add('hidden');
+          startGameAndAudio('hole');
         };
         const onSelectRing = (e) => {
           if (e) {
@@ -12947,14 +12952,7 @@
             e.stopPropagation();
             if (e.stopImmediatePropagation) e.stopImmediatePropagation();
           }
-          this.setArenaTemplate('ring');
-          this.closeGameModeModal();
-          if (!this.isGameStarted) {
-            this.isGameStarted = true;
-            this.roundStartTime = Date.now();
-          }
-          this.audio.init();
-          if (this.dom.audioOverlay) this.dom.audioOverlay.classList.add('hidden');
+          startGameAndAudio('ring');
         };
 
         if (cardHole) {
@@ -12976,12 +12974,25 @@
 
         if (this.dom.audioOverlay) {
           this.dom.audioOverlay.addEventListener('click', (e) => {
+            // Keep mode selection strictly intentional: do NOT auto-start on blank background clicks
             if (e.target.closest('#btn-launch-hole') || e.target.closest('#btn-launch-ring')) return;
-            startGameAndAudio(this.arenaTemplate || 'hole');
           });
         }
         window.addEventListener('keydown', (e) => {
-          if (e.key === ' ' || e.key === 'Enter') startGameAndAudio();
+          if (e.key === ' ' || e.key === 'Enter') {
+            if (e.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+            const cyberLock = document.getElementById('cyber-lock-modal');
+            const orderModal = document.getElementById('cyber-order-modal');
+            const modeModal = document.getElementById('game-mode-modal');
+            if ((cyberLock && cyberLock.classList.contains('show')) ||
+                (orderModal && orderModal.classList.contains('show')) ||
+                (modeModal && modeModal.classList.contains('show'))) {
+              return;
+            }
+            if (!this.isGameStarted) {
+              startGameAndAudio(this.arenaTemplate || 'hole');
+            }
+          }
         }, { once: false });
         window.addEventListener('keydown', (e) => {
           if (e.key.toLowerCase() === 'h' || e.key.toLowerCase() === 's') {

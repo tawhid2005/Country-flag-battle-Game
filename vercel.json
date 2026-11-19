@@ -183,6 +183,19 @@
         {
           "type": "host",
           "value": {
+            "eq": "countryflagbattle.xyz"
+          }
+        }
+      ],
+      "destination": "https://www.countryflagbattle.xyz/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": {
             "eq": "countryflagbattlegame.vercel.app"
           }
         }
