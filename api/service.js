@@ -132,11 +132,26 @@ export function createHandler(env, fetcher = fetch) {
       }
       if (route === 'health' && req.method === 'GET') {
         const setup=adminSetupStatus(env);
-        return json(200,{database:!!(env.SUPABASE_URL && supabaseServerKey(env)),
-        admin:setup.ready,adminReady:setup.ready,adminMissing:setup.missing,
-        adminOrigin:setup.missing.includes('APP_ORIGIN') ? null : new URL(env.APP_ORIGIN).origin,
-        polar:!!(env.POLAR_ACCESS_TOKEN && env.POLAR_WEBHOOK_SECRET), sslcommerz:!!(env.SSLCOMMERZ_STORE_ID && env.SSLCOMMERZ_STORE_PASSWORD),
-        polarEnvironment:env.POLAR_ENV === 'live' ? 'live':'sandbox', sslEnvironment:env.SSLCOMMERZ_ENV === 'live' ? 'live':'sandbox'});
+        const polarConfigured = !!(env.POLAR_ACCESS_TOKEN && env.POLAR_WEBHOOK_SECRET);
+        let polarProductCount = 0;
+        try { polarProductCount = Object.keys(JSON.parse(env.POLAR_PRODUCTS || '{}')).length; } catch {}
+        const polarMissing = [];
+        if (!env.POLAR_ACCESS_TOKEN) polarMissing.push('POLAR_ACCESS_TOKEN');
+        if (!env.POLAR_WEBHOOK_SECRET) polarMissing.push('POLAR_WEBHOOK_SECRET');
+        if (!env.POLAR_PRODUCTS || polarProductCount === 0) polarMissing.push('POLAR_PRODUCTS');
+
+        return json(200,{
+          database:!!(env.SUPABASE_URL && supabaseServerKey(env)),
+          admin:setup.ready,adminReady:setup.ready,adminMissing:setup.missing,
+          adminOrigin:setup.missing.includes('APP_ORIGIN') ? null : new URL(env.APP_ORIGIN).origin,
+          polar: polarConfigured && polarProductCount > 0,
+          polarReady: polarConfigured && polarProductCount >= 6,
+          polarMissing,
+          polarProductsCount: polarProductCount,
+          polarEnvironment:env.POLAR_ENV === 'live' ? 'live':'sandbox',
+          sslcommerz:!!(env.SSLCOMMERZ_STORE_ID && env.SSLCOMMERZ_STORE_PASSWORD),
+          sslEnvironment:env.SSLCOMMERZ_ENV === 'live' ? 'live':'sandbox'
+        });
       }
       if (route === 'admin/login' && req.method === 'POST') {
         await limited(req,'admin-login',5,900);
