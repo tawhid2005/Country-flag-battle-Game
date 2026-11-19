@@ -2755,14 +2755,14 @@
       height: 100%;
       background: rgba(4, 8, 20, 0.95);
       backdrop-filter: blur(18px);
-      z-index: 60;
+      z-index: 95;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 24px;
       text-align: center;
-      cursor: pointer;
+      cursor: default;
       transition: opacity 0.5s ease, visibility 0.5s ease;
     }
 
@@ -10178,13 +10178,15 @@
         if (this.dom.btnBpm) this.dom.btnBpm.textContent = `💓 EKG HEART RATE: ${this.showBpm ? 'ON' : 'OFF'}`;
         if (this.dom.btnClickSfx) this.dom.btnClickSfx.textContent = `🎧 MECHANICAL CLICKS: ${this.enableMechanicalSfx ? 'ON' : 'OFF'}`;
 
-        if (this.dom.webcamCard) this.dom.webcamCard.classList.toggle('hidden', !this.enabled || !this.showWebcam);
-        if (this.dom.cursorContainer) this.dom.cursorContainer.classList.toggle('hidden', !this.enabled || !this.showCursor);
-        if (this.dom.keyOverlay) this.dom.keyOverlay.classList.toggle('hidden', !this.enabled || !this.showKeyOverlay);
-        if (this.dom.bpmBadge) this.dom.bpmBadge.style.display = (this.enabled && this.showBpm) ? 'flex' : 'none';
+        const isLive = Boolean(this.app && this.app.isGameStarted);
+        if (this.dom.webcamCard) this.dom.webcamCard.classList.toggle('hidden', !isLive || !this.enabled || !this.showWebcam);
+        if (this.dom.cursorContainer) this.dom.cursorContainer.classList.toggle('hidden', !isLive || !this.enabled || !this.showCursor);
+        if (this.dom.keyOverlay) this.dom.keyOverlay.classList.toggle('hidden', !isLive || !this.enabled || !this.showKeyOverlay);
+        if (this.dom.bpmBadge) this.dom.bpmBadge.style.display = (isLive && this.enabled && this.showBpm) ? 'flex' : 'none';
       }
 
       update(dt) {
+        if (!this.app || !this.app.isGameStarted) return;
         if (!this.enabled) return;
 
         this.updateCursor(dt);
@@ -12879,6 +12881,9 @@
           this.audio.init();
           if (this.dom.audioOverlay) this.dom.audioOverlay.classList.add('hidden');
           this.closeGameModeModal();
+          if (this.humanStreamer) {
+            this.humanStreamer.updateDrawerButtons();
+          }
         };
 
         // Launch mode cards on initial overlay
