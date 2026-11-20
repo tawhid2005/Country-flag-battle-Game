@@ -164,7 +164,10 @@
     } catch(error) {
       const retryable=!error.code && (!error.status || error.status===408 || error.status===429 || error.status>=500);
       if(retryable && attempt<17){this.paymentNotice('Payment verification is taking a little longer. Do not pay again; we are retrying.',orderId);setTimeout(()=>this.pollPayment(orderId,attempt+1),5000);}
-      else this.paymentNotice(error.message,orderId);
+      else {
+        gameStorage.removeItem('cfb_pending_order');
+        if (returningOrder || this._explicitPoll) this.paymentNotice(error.message,orderId);
+      }
     }
   };
   proto.updateWhatsAppLinks = function() {
@@ -236,7 +239,7 @@
         if(!this.acceptServerSession(result.session,true,result.token))throw new Error('Access was created but the login session could not be opened. Please sign in with your email and password.');const remaining=650-(Date.now()-animationStarted);if(remaining>0)await new Promise(resolve=>setTimeout(resolve,remaining));$('checkout-bd-password').value='';button.classList.remove('processing');button.classList.add('confirmed');label.textContent='Payment confirmed — access active';status.classList.add('success');status.textContent='✓ Payment information accepted. Access is active—opening the game…';this.showActivationCelebrationToast(result.session.userId,result.session.planTitle);this.updateDrawerStatus();setTimeout(()=>{$('cyber-order-modal')?.classList.remove('show');this.syncInterfacePause();if(!this.isGameStarted)this.startGame();},1000);
       }catch(error){button.classList.remove('processing');label.textContent='Confirm payment & activate';status.classList.add('failed');status.textContent='Payment confirmation failed: '+error.message;this.updateWhatsAppLinks();}finally{button.setAttribute('aria-busy','false');button.disabled=false;}
     });
-    $('checkout-retry-payment')?.addEventListener('click',()=>{const id=typeof gameStorage !== 'undefined' ? gameStorage.getItem('cfb_pending_order') : null;if(id)this.pollPayment(id);});
+    $('checkout-retry-payment')?.addEventListener('click',()=>{const id=typeof gameStorage !== 'undefined' ? gameStorage.getItem('cfb_pending_order') : null;if(id){this._explicitPoll=true;this.pollPayment(id);}});
     if($('btn-start-polar-checkout'))$('btn-start-polar-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();this.startCheckout('polar');};
     if($('btn-start-bd-checkout'))$('btn-start-bd-checkout').onclick=event=>{event.preventDefault();event.stopImmediatePropagation();if(!this.updateBangladeshPaymentGate())return;const panel=$('manual-transfer-panel');panel.open=true;panel.scrollIntoView?.({behavior:'smooth',block:'start'});};
     const MutationObserverClass = typeof MutationObserver !== 'undefined' ? MutationObserver : (typeof window !== 'undefined' ? window.MutationObserver : null);
@@ -251,9 +254,10 @@
     this.syncInterfacePause();
     this.updateWhatsAppLinks();
     // Remove credentials saved by previous releases.
-    for (const key of ['cfb_pending_checkout_creds','cfb_admin_polar_token','cfb_paymently_api_key','cfb_auth_session']) {
+    for (const key of ['cfb_pending_checkout_creds','cfb_admin_polar_token','cfb_paymently_api_key','cfb_auth_session', !returningOrder ? 'cfb_pending_order' : null].filter(Boolean)) {
       try { gameStorage.removeItem(key); } catch(_) {}
     }
+    if (!returningOrder) $('payment-notice')?.remove();
     this.bootServerAccess();
   };
   proto.bootServerAccess = async function() {
@@ -271,8 +275,11 @@
         }
       }
     }
-    const pendingOrder=returningOrder || (typeof gameStorage !== 'undefined' ? gameStorage.getItem('cfb_pending_order') : null);
+    const pendingOrder=returningOrder;
     if (pendingOrder && /^https?:$/.test(location.protocol)) this.pollPayment(pendingOrder);
+    else if (typeof gameStorage !== 'undefined') {
+      try { gameStorage.removeItem('cfb_pending_order'); } catch(_) {}
+    }
     if (/^https?:$/.test(location.protocol)) setInterval(async()=>{
       if (!this.session) return;
       try {const result=await this.api('account/session');if(!this.acceptServerSession(result.session))this.logout();}
