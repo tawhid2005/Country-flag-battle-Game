@@ -3019,6 +3019,79 @@
       transform: scale(1.05);
     }
 
+    .hud-pass-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(234, 88, 12, 0.32));
+      border: 1.5px solid #f59e0b;
+      color: #fbbf24;
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+    }
+    .hud-pass-pill-btn:hover {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.45), rgba(234, 88, 12, 0.55));
+      border-color: #fbbf24;
+      box-shadow: 0 0 22px rgba(245, 158, 11, 0.75);
+      transform: scale(1.05);
+      color: #ffffff;
+    }
+    .mode-modal-pass-banner {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(15, 23, 42, 0.9));
+      border: 1.5px solid rgba(245, 158, 11, 0.45);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    }
+    .mode-modal-pass-banner:hover {
+      border-color: #f59e0b;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(15, 23, 42, 0.98));
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+    }
+    .mode-modal-pass-left {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      gap: 3px;
+    }
+    .mode-modal-pass-tag {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #fbbf24;
+      letter-spacing: 0.5px;
+    }
+    .mode-modal-pass-desc {
+      font-size: 10px;
+      color: #cbd5e1;
+    }
+    .mode-modal-pass-action {
+      padding: 6px 12px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      font-size: 10px;
+      font-weight: 800;
+      border: none;
+      border-radius: 6px;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+    }
+
     #streamer-drawer {
       position: absolute;
       top: 0;
@@ -5789,6 +5862,10 @@
             <div class="badge-alive" id="hud-alive-badge">
               ALIVE: <span id="hud-alive-count">50</span>/<span id="hud-total-count">50</span>
             </div>
+            <button id="hud-btn-pass-pricing" class="hud-pass-pill-btn" type="button" title="Get 24/7 Streamer Pass & VIP Features">
+              <span>💎</span>
+              <span>PASS</span>
+            </button>
             <button id="hud-btn-mode-toggle" class="hud-mode-pill-btn" type="button" title="Switch Arena Battle Mode">
               <span id="hud-mode-pill-icon">🌀</span>
               <span id="hud-mode-pill-name">HOLE</span>
@@ -5979,6 +6056,15 @@
         </button>
       </div>
 
+      <!-- Streamer Pass CTA Banner on Launch Overlay -->
+      <div class="mode-modal-pass-banner" id="btn-launch-pass-pricing" role="button" tabindex="0">
+        <div class="mode-modal-pass-left">
+          <span class="mode-modal-pass-tag">💎 STREAMER PASS · 24/7 UNLIMITED ACCESS</span>
+          <span class="mode-modal-pass-desc">OBS &amp; TikTok Live Ready • 100% No-Copyright Audio Guarantee</span>
+        </div>
+        <button type="button" class="mode-modal-pass-action">Pricing (99 TK / $3.99) →</button>
+      </div>
+
       <div style="font-size: 11px; color: #64748b; margin-top: 14px;">
         💡 You can switch modes anytime during the match via <b>🎮 MODE</b> or <b>Settings ⚙️</b>
       </div>
@@ -5991,9 +6077,12 @@
         <button class="drawer-close" id="drawer-close-btn">&times;</button>
       </div>
 
-      <!-- Prominent Master Admin Button at Top of Drawer -->
-      <div style="padding: 12px 14px 6px 14px;">
-
+      <!-- Prominent Master Streamer Pass Button at Top of Drawer -->
+      <div style="padding: 10px 14px 4px 14px;">
+        <button id="drawer-btn-view-pass" type="button" style="width: 100%; padding: 10px 14px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #0f172a; font-family: var(--font-display); font-size: 11px; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4); transition: transform 0.2s;">
+          <span>💎</span>
+          <span>GET STREAMER PASS · UNLIMITED 24/7</span>
+        </button>
       </div>
 
       <!-- Arena Template Selector (Hole vs Outer Ring) -->
@@ -6406,6 +6495,15 @@
               ▶️ PLAY RING ESCAPE
             </button>
           </div>
+        </div>
+
+        <!-- Streamer Pass CTA Banner inside Mode Modal -->
+        <div class="mode-modal-pass-banner" id="btn-mode-modal-pricing" role="button" tabindex="0">
+          <div class="mode-modal-pass-left">
+            <span class="mode-modal-pass-tag">💎 STREAMER PASS · 24/7 UNLIMITED ACCESS</span>
+            <span class="mode-modal-pass-desc">OBS / TikTok Live Ready • 100% No-Copyright Audio Guarantee</span>
+          </div>
+          <button type="button" class="mode-modal-pass-action">Pricing (99 TK / $3.99) →</button>
         </div>
 
         <p class="mode-modal-footer">
@@ -10624,7 +10722,7 @@
         this.isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 640);
 
         this.roundNumber = 1;
-        this.selectedBatchSize = 120;
+        this.selectedBatchSize = this.isMobileDevice ? 50 : 120;
         this.baseRotationSpeed = 0.022;
         this.currentRotationSpeed = 0.022;
         this.gravityY = 0.46;
@@ -12973,6 +13071,43 @@
           btnLaunchRing.addEventListener('click', triggerLaunchRing);
         }
 
+        // Streamer Pass / VIP Pricing trigger helper
+        const triggerOpenPricing = (e) => {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+          }
+          if (window.securityEngine) {
+            window.securityEngine.showLockModal(true);
+            const tabPricing = document.getElementById('tab-btn-pricing');
+            if (tabPricing) tabPricing.click();
+          } else {
+            const cyberLock = document.getElementById('cyber-lock-modal');
+            if (cyberLock) cyberLock.classList.add('show');
+            const tabPricing = document.getElementById('tab-btn-pricing');
+            if (tabPricing) tabPricing.click();
+          }
+        };
+
+        const btnHudPass = document.getElementById('hud-btn-pass-pricing');
+        if (btnHudPass) btnHudPass.addEventListener('click', triggerOpenPricing);
+
+        const btnLaunchPass = document.getElementById('btn-launch-pass-pricing');
+        if (btnLaunchPass) {
+          btnLaunchPass.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+          btnLaunchPass.addEventListener('click', triggerOpenPricing);
+        }
+
+        const btnModeModalPass = document.getElementById('btn-mode-modal-pricing');
+        if (btnModeModalPass) {
+          btnModeModalPass.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
+          btnModeModalPass.addEventListener('click', triggerOpenPricing);
+        }
+
+        const btnDrawerViewPass = document.getElementById('drawer-btn-view-pass');
+        if (btnDrawerViewPass) btnDrawerViewPass.addEventListener('click', triggerOpenPricing);
+
         // Top HUD Arena Mode button
         const btnHudMode = document.getElementById('hud-btn-mode-toggle');
         if (btnHudMode) {
@@ -13032,7 +13167,7 @@
         if (this.dom.audioOverlay) {
           this.dom.audioOverlay.addEventListener('click', (e) => {
             // Keep mode selection strictly intentional: do NOT auto-start on blank background clicks
-            if (e.target.closest('#btn-launch-hole') || e.target.closest('#btn-launch-ring')) return;
+            if (e.target.closest('#btn-launch-hole') || e.target.closest('#btn-launch-ring') || e.target.closest('#btn-launch-pass-pricing')) return;
           });
         }
         window.addEventListener('keydown', (e) => {
@@ -13283,7 +13418,7 @@
           } else {
             // Default preset matching user's Screenshot 3:
             this.arenaTemplate = 'hole';
-            this.selectedBatchSize = 120;
+            this.selectedBatchSize = this.isMobileDevice ? 50 : 120;
             this.applyDurationPreset('standard');
             this.gameSpeed = 1.00;
             this.baseRotationSpeed = 0.022;

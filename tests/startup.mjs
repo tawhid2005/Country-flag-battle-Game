@@ -29,7 +29,7 @@ export async function runStartupChecks(onApp) {
     }
     function element(id = '') {
       const canvas = canvasContext();
-      return {id, style: {}, dataset: {}, value: '', textContent: '', innerHTML: '', children: [], listeners: {},
+      return {id, hidden: false, style: {}, dataset: {}, value: '', textContent: '', innerHTML: '', children: [], listeners: {},
         classList: {add() {}, remove() {}, toggle() {}, contains() {return false;}},
         addEventListener(type, fn) {this.listeners[type] = fn;}, setAttribute() {},
         click() {this.listeners.click?.({target:this});},
