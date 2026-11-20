@@ -100,7 +100,7 @@
       "@type": "Article",
       "@id": "https://www.countryflagbattle.xyz/#article",
       "headline": "Country Flag Battle Game — Play 195 Countries Flag Battle Into The Circle Free Online",
-      "description": "Play Country Flag Battle Game free online! 195 nations clash into the circle with realistic Matter.js physics. Enjoy multiple game modes: Center Hole Drop, Multi-Ring Arena, Country Marble Race, World Cup Tournaments & 24/7 TikTok/YouTube live streamer bot. Instant 30-minute free trial!",
+      "description": "Play Country Flag Battle Game free online! 195 nations clash into the circle with realistic Matter.js physics. Enjoy multiple game modes: Center Hole Drop, Multi-Ring Arena, Country Marble Race, World Cup Tournaments & 24/7 TikTok/YouTube live streamer bot. Instant 5-minute free trial!",
       "url": "https://www.countryflagbattle.xyz/",
       "datePublished": "2025-01-01T00:00:00+06:00",
       "dateModified": "2026-11-18T00:00:00+06:00",
@@ -158,7 +158,7 @@
         "World Cup 32 Countries Flag Drop",
         "1v1 Sudden Death Country Showdown",
         "24/7 AI Human Streamer Physics Arena",
-        "30-Minute Free Trial Flag Battle",
+        "5-Minute Free Trial Flag Battle",
         "Country Flag Elimination Simulator",
         "Country Marble Race Stream Run",
         "Run For Country TikTok Live Game",
@@ -167,7 +167,7 @@
       ],
       "keywords": "country flag battle game, 195 country flag battle, country flag battle into the circle, country marble race, flag battle random marbles, country wars marble race, marble run countries, world cup country flag drop, flag battle royale online free, flag battle game unblocked, tiktok live flag battle game, run for country tiktok live, flagsbattle, country elimination game, algodoo flag battle",
       "softwareVersion": "3.7.0",
-      "description": "Play Country Flag Battle Game free online! 195 nations clash into the circle in an autonomous 2D physics battle royale arena with kinetic flippers, bouncers, 1v1 showdowns, multi-ring arena, marble racing, and live spectator scoreboard. Built for PC, mobile, YouTube Live & TikTok with instant 30-minute free trial.",
+      "description": "Play Country Flag Battle Game free online! 195 nations clash into the circle in an autonomous 2D physics battle royale arena with kinetic flippers, bouncers, 1v1 showdowns, multi-ring arena, marble racing, and live spectator scoreboard. Built for PC, mobile, YouTube Live & TikTok with instant 5-minute free trial.",
       "url": "https://www.countryflagbattle.xyz/",
       "applicationCategory": "GameApplication",
       "gamePlatform": [
@@ -482,15 +482,15 @@
           "name": "What game modes can I play in Country Flag Battle Game?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Country Flag Battle Game offers multiple exciting modes: (1) Center Hole Elimination Mode where countries battle centrifugal spin around a bottomless center void; (2) Concentric Multi-Ring Flag Royale with multi-layered revolving walls and escape gaps; (3) 195 Country Marble Race with high-speed obstacle collisions; (4) World Cup Tournament Mode for 32, 64, or 195 country brackets; (5) 1v1 Sudden Death Final Duel with EKG heart-rate tracking; (6) 24/7 AI Human Streamer Mode for OBS, YouTube Live, and TikTok; and (7) an instant 30-Minute Free Trial mode."
+            "text": "Country Flag Battle Game offers multiple exciting modes: (1) Center Hole Elimination Mode where countries battle centrifugal spin around a bottomless center void; (2) Concentric Multi-Ring Flag Royale with multi-layered revolving walls and escape gaps; (3) 195 Country Marble Race with high-speed obstacle collisions; (4) World Cup Tournament Mode for 32, 64, or 195 country brackets; (5) 1v1 Sudden Death Final Duel with EKG heart-rate tracking; (6) 24/7 AI Human Streamer Mode for OBS, YouTube Live, and TikTok; and (7) an instant 5-Minute Free Trial mode."
           }
         },
         {
           "@type": "Question",
-          "name": "How does the 30-Minute Free Trial work?",
+          "name": "How does the 5-Minute Free Trial work?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Every new visitor receives an instant 30-Minute Free Trial with zero registration, zero credit card, and zero software downloads required. You get full access to 60 FPS rigid-body physics, all 195 sovereign nation flags, sound effects, streamer controls, and both arena templates. Once the 30 minutes expire, you can unlock 24/7 continuous access with an affordable streamer pass."
+            "text": "Every new visitor receives an instant 5-Minute Free Trial with zero registration, zero credit card, and zero software downloads required. You get full access to 60 FPS rigid-body physics, all 195 sovereign nation flags, sound effects, streamer controls, and both arena templates. Once the 5 minutes expire, you can unlock 24/7 continuous access with an affordable streamer pass."
           }
         },
         {
@@ -557,8 +557,8 @@
         {
           "@type": "ListItem",
           "position": 7,
-          "name": "30-Minute Free Trial Arena (Zero Download Unblocked)",
-          "description": "Instant 30-minute free trial on any browser (Chrome, Safari, Edge) and Chromebooks with zero downloads, zero registration, and zero ads."
+          "name": "5-Minute Free Trial Arena (Zero Download Unblocked)",
+          "description": "Instant 5-minute free trial on any browser (Chrome, Safari, Edge) and Chromebooks with zero downloads, zero registration, and zero ads."
         }
       ]
     },
@@ -3420,10 +3420,92 @@
       border-color: var(--accent-cyan);
     }
 
+    /* 1-Click Activation Celebration Toast */
+    .cyber-toast-celebration {
+      display: none;
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000000;
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.95), rgba(15, 23, 42, 0.98));
+      border: 1.5px solid #10b981;
+      border-radius: 12px;
+      padding: 12px 18px;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.4);
+      backdrop-filter: blur(12px);
+      max-width: 90vw;
+      width: 440px;
+    }
+    .cyber-toast-celebration.show {
+      display: flex !important;
+      animation: celebrationSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes celebrationSlideDown {
+      0% { opacity: 0; transform: translateX(-50%) translateY(-25px) scale(0.96); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    }
+    .toast-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .toast-body {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
+    }
+    .toast-title {
+      font-family: var(--font-display, sans-serif);
+      font-size: 13px;
+      font-weight: 900;
+      color: #34d399;
+      letter-spacing: 0.5px;
+    }
+    .toast-sub {
+      font-size: 11px;
+      color: #e2e8f0;
+      line-height: 1.35;
+    }
+    .toast-whatsapp-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #ffffff;
+      background: #25d366;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 4px;
+      width: fit-content;
+      transition: background 0.2s ease;
+    }
+    .toast-whatsapp-btn:hover {
+      background: #1eb854;
+    }
+    .toast-close-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+    .toast-close-btn:hover {
+      color: #ffffff;
+    }
+
     /* ==========================================================================
        CYBER SECURITY ACCESS GATE & SUBSCRIPTION LOCK MODAL
        ========================================================================== */
-    /* 30-Minute Free Trial Badge in HUD */
+    /* 5-Minute Free Trial Badge in HUD */
     .badge-trial {
       display: inline-flex;
       align-items: center;
@@ -3551,7 +3633,7 @@
       line-height: 1.4;
     }
 
-    /* 30-Minute Trial Expired Banner */
+    /* 5-Minute Trial Expired Banner */
     .cyber-trial-banner {
       background: linear-gradient(135deg, rgba(220, 38, 38, 0.25) 0%, rgba(185, 28, 28, 0.4) 100%);
       border: 1px solid #ef4444;
@@ -6054,7 +6136,7 @@
 
 
     <!-- 1-Click Activation Celebration Banner / Toast -->
-    <div id="cyber-celebration-toast" class="cyber-toast-celebration" role="alert" aria-live="polite">
+    <div id="cyber-celebration-toast" class="cyber-toast-celebration" style="display: none;" role="alert" aria-live="polite">
       <div class="toast-icon">🎉</div>
       <div class="toast-body">
         <div class="toast-title" id="toast-title-text">PASS ACTIVATED 24/7!</div>
@@ -6275,7 +6357,7 @@
       </p>
 
       <div class="seo-badge-strip">
-        <span class="seo-badge green">⏱️ 30-Minute Free Trial Active</span>
+        <span class="seo-badge green">⏱️ 5-Minute Free Trial Active</span>
         <span class="seo-badge gold">🎮 Multiple Game Modes (Hole, Ring, Race, Cup)</span>
         <span class="seo-badge green">✓ 100% Free Online</span>
         <span class="seo-badge">🎮 No Download Required</span>
@@ -6625,17 +6707,17 @@
         </div>
       </div>
 
-      <!-- Feature Highlight Card: 30-Minute Free Trial -->
+      <!-- Feature Highlight Card: 5-Minute Free Trial -->
       <div class="seo-card" style="margin-top: 20px; border-color: rgba(16, 185, 129, 0.4); background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.8) 100%);">
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
           <div style="font-size: 32px;">⏱️</div>
           <div>
-            <h3 style="color: #10b981; font-size: 18px; font-weight: 800; margin: 0;">Instant 30-Minute Free Trial — Play Free Online</h3>
+            <h3 style="color: #10b981; font-size: 18px; font-weight: 800; margin: 0;">Instant 5-Minute Free Trial — Play Free Online</h3>
             <span style="color: #94a3b8; font-size: 13px;">No credit card, no registration, no installation required</span>
           </div>
         </div>
         <p class="seo-card-desc" style="font-size: 14px; line-height: 1.7; color: #cbd5e1;">
-          Every visitor receives an unrestricted <strong>30-Minute Free Trial</strong> to enjoy all game modes, customize physics parameters, switch arena templates, test AI streamer features, and explore the complete 195-nation roster. Perfect for school Chromebooks, library workstations, mobile devices, and streamers testing their OBS canvas setup.
+          Every visitor receives an unrestricted <strong>5-Minute Free Trial</strong> to enjoy all game modes, customize physics parameters, switch arena templates, test AI streamer features, and explore the complete 195-nation roster. Perfect for school Chromebooks, library workstations, mobile devices, and streamers testing their OBS canvas setup.
         </p>
       </div>
     </section>
@@ -6661,9 +6743,9 @@
 
         <div class="seo-card">
           <div class="seo-card-icon">🆓</div>
-          <h3 class="seo-card-title">Instant 30-Minute Free Trial vs Paywalls</h3>
+          <h3 class="seo-card-title">Instant 5-Minute Free Trial vs Paywalls</h3>
           <p class="seo-card-desc">
-            Unlike closed software charging $10–$30 monthly fees before you can test live broadcasting, every creator and player on <strong>countryflagbattle.xyz</strong> gets an unrestricted 30-minute free trial with full physics parameters, all 195 nations, and both arena templates included.
+            Unlike closed software charging $10–$30 monthly fees before you can test live broadcasting, every creator and player on <strong>countryflagbattle.xyz</strong> gets an unrestricted 5-minute free trial with full physics parameters, all 195 nations, and both arena templates included.
           </p>
         </div>
 
@@ -6880,7 +6962,7 @@
             <li><strong>World Cup Tournament Flag Drop:</strong> Customizable bracket drop supporting 25, 50, 80, or 120+ sovereign nations.</li>
             <li><strong>1v1 Sudden Death Final Duel:</strong> Cinematic zoom camera, procedural heartbeat, and live EKG monitor for the final 2 nations.</li>
             <li><strong>24/7 AI Human Streamer Mode:</strong> Autonomous OBS 9:16 vertical broadcast bot with virtual mouse, keyboard clicks, and reactive facecam.</li>
-            <li><strong>30-Minute Free Trial Arena:</strong> Unrestricted free trial for all devices with zero registration.</li>
+            <li><strong>5-Minute Free Trial Arena:</strong> Unrestricted free trial for all devices with zero registration.</li>
           </ul>
         </div>
       </details>
@@ -8508,7 +8590,7 @@
         } catch(e) {}
       }
 
-      // Check multi-storage 30-minute trial status
+      // Check multi-storage 5-minute trial status
       getTrialStatus() {
         const fp = this.getDeviceFingerprint();
         let trialData = null;
