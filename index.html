@@ -2886,18 +2886,31 @@
 
     .launch-mode-cards {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
       width: 100%;
-      max-width: 440px;
+      max-width: 620px;
       margin: 14px 0 6px 0;
     }
-    @media (max-width: 480px) {
+    @media (max-width: 580px) {
       .launch-mode-cards {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 8px;
         max-width: 320px;
       }
+    }
+    .launch-mode-btn.launch-laser {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: linear-gradient(145deg, rgba(180, 83, 9, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+    }
+    .launch-mode-btn.launch-laser:hover {
+      border-color: #fbbf24;
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.6);
+    }
+    .launch-badge.laser {
+      background: rgba(245, 158, 11, 0.25);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.45);
     }
     .launch-mode-btn {
       background: rgba(15, 23, 42, 0.88);
@@ -3314,10 +3327,20 @@
 
     .template-selector-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
       width: 100%;
       margin-top: 6px;
+    }
+    #btn-tmpl-laser.active {
+      border-color: #fbbf24;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.35) 0%, rgba(15, 23, 42, 0.95) 100%);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.45);
+    }
+    .tmpl-pill-badge.laser {
+      background: rgba(245, 158, 11, 0.25);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
     }
 
     .template-pill {
@@ -4238,7 +4261,7 @@
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 229, 255, 0.25);
       padding: 24px;
-      max-width: 480px;
+      max-width: 760px;
       width: 95%;
       text-align: center;
       position: relative;
@@ -4294,15 +4317,37 @@
     }
     .mode-cards-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin-bottom: 16px;
     }
-    @media (max-width: 480px) {
+    @media (max-width: 640px) {
       .mode-cards-grid {
         grid-template-columns: 1fr;
         gap: 10px;
       }
+    }
+    .mode-choice-card.card-laser {
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    .mode-choice-card.card-laser:hover, .mode-choice-card.card-laser.active {
+      border-color: #fbbf24;
+      background: linear-gradient(145deg, rgba(180, 83, 9, 0.3) 0%, rgba(15, 23, 42, 0.8) 100%);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
+    }
+    .badge-laser {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .btn-play-laser {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    }
+    .btn-play-laser:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
     }
     .mode-choice-card {
       background: rgba(15, 23, 42, 0.7);
@@ -5814,11 +5859,18 @@
           <span class="launch-cta">▶️ PLAY VORTEX</span>
         </button>
         <button type="button" class="launch-mode-btn launch-ring" id="btn-launch-ring" title="Play Outer Ring Escape Mode">
-          <span class="launch-badge classic">⚡ CLASSIC ESPORTS</span>
+          <span class="launch-badge classic">ESPORTS</span>
           <span class="launch-icon">⭕</span>
           <span class="launch-name">Outer Ring Escape</span>
-          <span class="launch-sub">Segmented Turbine &amp; Timed Exit Gate</span>
+          <span class="launch-sub">Segmented Turbine &amp; Timed Gate</span>
           <span class="launch-cta">▶️ PLAY RING</span>
+        </button>
+        <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Play Laser Web Royale Mode">
+          <span class="launch-badge laser">⚡ NEW · VIRAL</span>
+          <span class="launch-icon">⚡</span>
+          <span class="launch-name">Laser Web Royale</span>
+          <span class="launch-sub">6 Nations · Strand Slicing Combat</span>
+          <span class="launch-cta">▶️ PLAY LASER</span>
         </button>
       </div>
 
@@ -5873,6 +5925,14 @@
               <span class="tmpl-pill-name">Ring Escape</span>
             </div>
             <span class="tmpl-pill-sub">Turbine &amp; Timed Outer Gate</span>
+          </button>
+          <button type="button" class="template-pill" id="btn-tmpl-laser" data-tmpl="laser">
+            <span class="tmpl-pill-badge laser">⚡ VIRAL</span>
+            <div class="tmpl-pill-header">
+              <span class="tmpl-pill-icon">⚡</span>
+              <span class="tmpl-pill-name">Laser Web</span>
+            </div>
+            <span class="tmpl-pill-sub">Tethered Links &amp; Slicing</span>
           </button>
         </div>
         <div class="drawer-hint" id="hint-arena-template">
@@ -6278,6 +6338,24 @@
             </ul>
             <button type="button" class="mode-play-btn btn-play-ring" id="btn-modal-select-ring">
               ▶️ PLAY RING ESCAPE
+            </button>
+          </div>
+
+          <!-- Card 3: Laser Web Mode -->
+          <div class="mode-choice-card card-laser" id="card-choice-laser" data-select-tmpl="laser" role="button" tabindex="0">
+            <span class="mode-card-badge badge-laser">⚡ YOUTUBE VIRAL</span>
+            <div class="mode-card-header">
+              <span class="mode-card-icon">⚡</span>
+              <div class="mode-card-name">Laser Web Royale</div>
+            </div>
+            <p class="mode-card-summary">6 country marbles tethered to perimeter laser links. Slicing collision physics.</p>
+            <ul class="mode-card-specs">
+              <li>⚡ 50 Perimeter Laser Links Per Country</li>
+              <li>✂️ Slice Opponent Strands with Spark Bursts</li>
+              <li>🛡️ Regenerate 3 Defense Links on Wall Bounce</li>
+            </ul>
+            <button type="button" class="mode-play-btn btn-play-laser" id="btn-modal-select-laser">
+              ▶️ PLAY LASER WEB
             </button>
           </div>
         </div>
@@ -7892,6 +7970,42 @@
 
         osc.start(now);
         osc.stop(now + 0.36);
+      }
+
+      playLaserCut() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        if (now - (this._lastLaserCutTime || 0) < 0.035) return;
+        this._lastLaserCutTime = now;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(1400, now);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.045);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+
+      playLaserBounce() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        if (now - (this._lastLaserBounceTime || 0) < 0.05) return;
+        this._lastLaserBounceTime = now;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(520, now);
+        osc.frequency.exponentialRampToValueAtTime(840, now + 0.06);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.065);
       }
 
       playHeartbeat() {
@@ -10540,7 +10654,7 @@
         this.arenaAngle = 0;
         this.totalSegments = 32;
         this.gapSegmentCount = 2; // Default 2 segment gap (~68px): allows smooth, unjammed ball exit for all marble sizes
-        this.arenaTemplate = 'hole'; // 'hole' = Central Vortex Black Hole (Screenshot mode), 'ring' = Outer Ring Escape
+        this.arenaTemplate = 'hole'; // 'hole' = Central Vortex Black Hole, 'ring' = Outer Ring Escape, 'laser' = Laser Web Royale
         this.centerHoleRadius = 30;
         this.gameSpeed = 1.00;
         this.baseRotationSpeed = 0.022;
@@ -10911,7 +11025,32 @@
         const segLen = (2 * Math.PI * this.arenaRadius) / this.totalSegments + 6;
         const segThick = 36; // Thick solid collision hull prevents any marble tunneling
 
-        if (this.arenaTemplate === 'hole') {
+        if (this.arenaTemplate === 'laser') {
+          // =========================================================================
+          // TEMPLATE 3: LASER WEB ROYALE (CIRCULAR WALL WITH ZERO GRAVITY)
+          // =========================================================================
+          if (this.world) this.world.gravity.y = 0;
+          const laserWallSegments = 48;
+          const lSegAngle = (Math.PI * 2) / laserWallSegments;
+          const lSegLen = (2 * Math.PI * (this.arenaRadius + 18)) / laserWallSegments + 8;
+          const lSegThick = 52;
+          for (let i = 0; i < laserWallSegments; i++) {
+            const currentAng = i * lSegAngle;
+            const x = this.arenaCenter.x + Math.cos(currentAng) * (this.arenaRadius + 12);
+            const y = this.arenaCenter.y + Math.sin(currentAng) * (this.arenaRadius + 12);
+            const seg = this.Bodies.rectangle(x, y, lSegLen, lSegThick, {
+              isStatic: true,
+              angle: currentAng + Math.PI / 2,
+              restitution: 0.95,
+              friction: 0.001,
+              render: { visible: false },
+              label: 'arenaWall'
+            });
+            seg.isStationary = true;
+            this.arenaSegments.push(seg);
+            this.World.add(this.world, seg);
+          }
+        } else if (this.arenaTemplate === 'hole') {
           // =========================================================================
           // TEMPLATE 2: CENTER VORTEX HOLE (STATIONARY UNBREAKABLE CIRCULAR VAULT)
           // =========================================================================
@@ -11156,7 +11295,78 @@
         if (count <= 25) marbleRadius = 18;
         else if (count >= 80) marbleRadius = 11;
 
-        if (this.arenaTemplate === 'hole') {
+        if (this.arenaTemplate === 'laser') {
+          this.laserSparks = [];
+          this.laserWinner = null;
+          this.laserIntroTime = 1.0;
+          const laserColors = [
+            '239, 68, 68',   // Red
+            '245, 158, 11',  // Amber/Gold
+            '16, 185, 129',  // Emerald Green
+            '6, 182, 212',   // Sky Cyan
+            '59, 130, 246',  // Royal Blue
+            '168, 85, 247'   // Neon Purple
+          ];
+          const laserTeams = [
+            ['arg', 'Argentina'],
+            ['bra', 'Brazil'],
+            ['deu', 'Germany'],
+            ['fra', 'France'],
+            ['usa', 'USA'],
+            ['jpn', 'Japan']
+          ];
+          const laserBatch = [];
+          for (let i = 0; i < 6; i++) {
+            const code = laserTeams[i][0];
+            const cDef = COUNTRIES_DB.find(c => c.iso === code || c.code === code.toUpperCase()) || shuffled[i] || COUNTRIES_DB[i];
+            laserBatch.push(cDef);
+          }
+          this.initialBallCount = 6;
+          const LINKS_START = 50;
+          const HALF_ARC = 28 * Math.PI / 180;
+          const START_RADIUS = 0.33 * this.arenaRadius;
+          const lMarbleRadius = Math.max(16, Math.round(this.arenaRadius * 32 / 510));
+          this.laserBallRadius = lMarbleRadius;
+
+          laserBatch.forEach((country, idx) => {
+            const a = (-Math.PI / 2) + (idx * 2 * Math.PI / 6);
+            const dir = Math.random() * 2 * Math.PI;
+            const links = [];
+            for (let k = 0; k < LINKS_START; k++) {
+              const phi = a - HALF_ARC + (2 * HALF_ARC * k) / (LINKS_START - 1);
+              links.push(Math.cos(phi), Math.sin(phi));
+            }
+            const x = this.arenaCenter.x + Math.cos(a) * START_RADIUS;
+            const y = this.arenaCenter.y + Math.sin(a) * START_RADIUS;
+            const body = this.Bodies.circle(x, y, lMarbleRadius, {
+              restitution: 0.95,
+              friction: 0.001,
+              frictionAir: 0.000,
+              density: 0.002,
+              label: 'ball'
+            });
+            const flagCanvas = this.flagEngine.getFlagCanvas(country, lMarbleRadius * 4);
+            const ballObj = {
+              body,
+              country,
+              color: laserColors[idx % laserColors.length],
+              radius: lMarbleRadius,
+              flagCanvas,
+              links,
+              alive: true,
+              diedAt: null,
+              escaped: false,
+              hasShield: false,
+              x, y,
+              vx: Math.cos(dir),
+              vy: Math.sin(dir)
+            };
+            this.World.add(this.world, body);
+            this.balls.push(ballObj);
+          });
+          this.renderLaserLeaderboard();
+          return;
+        } else if (this.arenaTemplate === 'hole') {
           // Annular donut distribution: Marbles spawn freely between spokes and outer rim
           // NEVER directly in the center hole (r < 58px), preventing clumping completely!
           const minSpawnR = 64;
@@ -11325,6 +11535,11 @@
 
       checkBallPhysicsAndEliminations(dtSec = 1 / 60) {
         if (this.isRoundOver) return;
+
+        if (this.arenaTemplate === 'laser') {
+          this.updateLaserRoyale(dtSec);
+          return;
+        }
 
         // 1. BOUNDARY & CONTINUOUS ZERO-TOLERANCE HARD CONTAINMENT ENFORCER
         // In Hole Mode, outer wall is completely solid and impenetrable. Marbles NEVER escape outside.
@@ -11781,6 +11996,184 @@
         }
       }
 
+      onLaserCut(owner, x, y) {
+        this.audio.playLaserCut();
+        if (!this.laserSparks) this.laserSparks = [];
+        if (this.laserSparks.length > 200) return;
+        for (let i = 0; i < 3; i++) {
+          const a = Math.random() * Math.PI * 2;
+          const s = 1.2 + Math.random() * 2.8;
+          this.laserSparks.push({
+            x, y,
+            vx: Math.cos(a) * s,
+            vy: Math.sin(a) * s,
+            life: 1.0,
+            color: owner.color
+          });
+        }
+      }
+
+      updateLaserRoyale(dt) {
+        if (this.isRoundOver || !this.balls || this.balls.length === 0) return;
+        const alive = this.balls.filter(b => b.alive);
+        const speedMap = { 6: 165, 5: 195, 4: 230, 3: 275, 2: 330, 1: 330 };
+        const baseSpeed = ((speedMap[alive.length] || 220) * 1.15 / 510) * this.arenaRadius * (this.gameSpeed || 1.0);
+        const cx = this.arenaCenter.x, cy = this.arenaCenter.y;
+        const R = this.arenaRadius;
+        const SPREAD = 0.07;
+        const ballR = this.laserBallRadius || 18;
+
+        // Sub-step physics (2 sub-steps for butter smooth 120Hz stability)
+        const subSteps = 2;
+        const sdt = dt / subSteps;
+
+        for (let step = 0; step < subSteps; step++) {
+          // 1. Move balls with dynamic scaled speed
+          for (const b of alive) {
+            const mag = Math.hypot(b.vx, b.vy) || 1;
+            b.vx = (b.vx / mag) * baseSpeed;
+            b.vy = (b.vy / mag) * baseSpeed;
+            b.x += b.vx * sdt;
+            b.y += b.vy * sdt;
+            if (b.body) {
+              this.Body.setPosition(b.body, { x: b.x, y: b.y });
+              this.Body.setVelocity(b.body, { x: b.vx * 0.016, y: b.vy * 0.016 });
+            }
+          }
+
+          // 2. Wall bounce with 3-link regeneration
+          for (const b of alive) {
+            const dx = b.x - cx, dy = b.y - cy;
+            const d = Math.hypot(dx, dy);
+            if (d + ballR >= R) {
+              const nx = dx / d, ny = dy / d;
+              b.x = cx + nx * (R - ballR - 0.5);
+              b.y = cy + ny * (R - ballR - 0.5);
+              const vn = b.vx * nx + b.vy * ny;
+              if (vn > 0) {
+                b.vx -= 2 * vn * nx;
+                b.vy -= 2 * vn * ny;
+                if (!this.laserWinner || b === this.laserWinner) {
+                  const phi = Math.atan2(ny, nx);
+                  for (const p of [phi - SPREAD, phi, phi + SPREAD]) {
+                    b.links.push(Math.cos(p), Math.sin(p));
+                  }
+                  this.audio.playLaserBounce();
+                }
+              }
+            }
+          }
+
+          // 3. Elastic marble-to-marble bouncing
+          for (let a = 0; a < alive.length; a++) {
+            for (let c = a + 1; c < alive.length; c++) {
+              const p = alive[a], q = alive[c];
+              const dx = q.x - p.x, dy = q.y - p.y;
+              const dist = Math.hypot(dx, dy);
+              if (dist <= 0 || dist >= 2 * ballR) continue;
+              const nx = dx / dist, ny = dy / dist;
+              const rel = (p.vx - q.vx) * nx + (p.vy - q.vy) * ny;
+              if (rel > 0) {
+                p.vx -= rel * nx;
+                p.vy -= rel * ny;
+                q.vx += rel * nx;
+                q.vy += rel * ny;
+                this.audio.playBounce(3);
+              }
+              const push = (2 * ballR - dist) / 2;
+              p.x -= nx * push; p.y -= ny * push;
+              q.x += nx * push; q.y += ny * push;
+            }
+          }
+
+          // 4. Opponent marble slices through links
+          for (const owner of alive) {
+            if (!owner.links || !owner.links.length) continue;
+            let kept = null;
+            const L = owner.links;
+            for (let k = 0; k < L.length; k += 2) {
+              const ax = (cx + L[k] * R) - owner.x;
+              const ay = (cy + L[k + 1] * R) - owner.y;
+              const l2 = ax * ax + ay * ay;
+              let cut = false;
+              for (const o of alive) {
+                if (o === owner) continue;
+                const px = o.x - owner.x, py = o.y - owner.y;
+                let u = (px * ax + py * ay) / l2;
+                u = u < 0 ? 0 : (u > 1 ? 1 : u);
+                const qx = owner.x + u * ax, qy = owner.y + u * ay;
+                const ddx = o.x - qx, ddy = o.y - qy;
+                if (ddx * ddx + ddy * ddy < ballR * ballR) {
+                  cut = true;
+                  this.onLaserCut(owner, qx, qy);
+                  break;
+                }
+              }
+              if (cut) {
+                if (!kept) kept = L.slice(0, k);
+              } else if (kept) {
+                kept.push(L[k], L[k + 1]);
+              }
+            }
+            if (kept) owner.links = kept;
+          }
+        }
+
+        // 5. Update Sparks
+        if (this.laserSparks) {
+          for (let i = this.laserSparks.length - 1; i >= 0; i--) {
+            const s = this.laserSparks[i];
+            s.x += s.vx;
+            s.y += s.vy;
+            s.life -= 0.04;
+            if (s.life <= 0) this.laserSparks.splice(i, 1);
+          }
+        }
+
+        // 6. Eliminations when links reach 0
+        for (let i = alive.length - 1; i >= 0; i--) {
+          const b = alive[i];
+          if (!b.links || b.links.length === 0) {
+            b.alive = false;
+            b.escaped = true;
+            b.diedAt = Date.now();
+            this.particles.spawnEliminationBurst(b.x, b.y, `rgb(${b.color})`);
+            this.audio.playEliminate();
+            this.audio.speakElimination(b.country.name);
+            this.pushKillfeed(b.country);
+            this.addEliminatedTrayFlag(b.country);
+            this.updateAliveHUD();
+          }
+        }
+
+        // Refresh live links count on top
+        this.renderLaserLeaderboard();
+
+        // 7. Victory Detection
+        const surviving = this.balls.filter(b => b.alive);
+        if (surviving.length === 1 && !this.laserWinner) {
+          this.laserWinner = surviving[0];
+          this.triggerVictory(this.laserWinner);
+        }
+      }
+
+      renderLaserLeaderboard() {
+        if (!this.dom.leaderboardItems || this.arenaTemplate !== 'laser') return;
+        this.dom.leaderboardItems.innerHTML = '';
+        this.balls.forEach(b => {
+          const pill = document.createElement('div');
+          pill.className = `leaderboard-pill ${b.alive ? '' : 'out'}`;
+          const linkCount = b.alive ? Math.floor((b.links?.length || 0) / 2) : 0;
+          pill.style.borderColor = `rgba(${b.color}, 0.6)`;
+          pill.innerHTML = `
+            <img class="leaderboard-pill-flag" src="https://flagcdn.com/w40/${b.country.iso}.png" alt="${b.country.name} Flag" onerror="this.style.display='none'">
+            <span class="leaderboard-pill-code">${b.country.code}</span>
+            <span class="leaderboard-pill-score" style="color: ${b.alive ? '#fbbf24' : '#ef4444'}; font-weight: 800;">${b.alive ? linkCount : 'OUT'}</span>
+          `;
+          this.dom.leaderboardItems.appendChild(pill);
+        });
+      }
+
       // Royal Podium Victory Trigger (Page 1 Redesign)
       triggerVictory(winnerBall) {
         if (this.isRoundOver) return;
@@ -12109,7 +12502,62 @@
         }
         ctx.stroke();
 
-        if (this.arenaTemplate === 'hole') {
+        if (this.arenaTemplate === 'laser') {
+          // A. Glowing Outer Laser Ring
+          ctx.save();
+          ctx.strokeStyle = 'rgba(170, 172, 205, 0.22)';
+          ctx.lineWidth = 8;
+          ctx.beginPath();
+          ctx.arc(cx, cy, rArena, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.arc(cx, cy, rArena, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // B. Laser Strands (Glow pass + Core pass + Wall Nodes)
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.lineCap = 'round';
+          for (const b of this.balls) {
+            if (!b.alive || !b.links || !b.links.length) continue;
+            const c = b.color, L = b.links;
+            ctx.beginPath();
+            for (let k = 0; k < L.length; k += 2) {
+              ctx.moveTo(b.x, b.y);
+              ctx.lineTo(cx + L[k] * rArena, cy + L[k + 1] * rArena);
+            }
+            ctx.strokeStyle = `rgba(${c}, 0.16)`;
+            ctx.lineWidth = 5.5;
+            ctx.stroke();
+
+            ctx.strokeStyle = `rgba(${c}, 0.88)`;
+            ctx.lineWidth = 1.6;
+            ctx.stroke();
+
+            // Glowing anchor dots on perimeter
+            ctx.fillStyle = `rgba(${c}, 0.95)`;
+            ctx.beginPath();
+            for (let k = 0; k < L.length; k += 2) {
+              const ax = cx + L[k] * rArena, ay = cy + L[k + 1] * rArena;
+              ctx.moveTo(ax + 3, ay);
+              ctx.arc(ax, ay, 2.5, 0, Math.PI * 2);
+            }
+            ctx.fill();
+          }
+
+          // C. Slicing Sparks
+          if (this.laserSparks) {
+            for (const s of this.laserSparks) {
+              ctx.fillStyle = `rgba(${s.color}, ${s.life})`;
+              ctx.beginPath();
+              ctx.arc(s.x, s.y, 2.5 * s.life + 1, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+          ctx.restore();
+        } else if (this.arenaTemplate === 'hole') {
           // =========================================================================
           // TEMPLATE 2: DUAL-RAIL CYBER TURBINE & 6 PURPLE LASER SPOKES (FROM SCREENSHOT)
           // =========================================================================
@@ -12577,8 +13025,9 @@
 
       // 3D Glossy Championship Marble (Ultra-Clean, Zero Dangling Overlap)
       drawBall(ctx, ball) {
-        if (!ball || !ball.body || !ball.body.position || isNaN(ball.body.position.x) || isNaN(ball.body.position.y)) return;
-        const pos = ball.body.position;
+        if (!ball) return;
+        const pos = (ball.x !== undefined && ball.y !== undefined) ? { x: ball.x, y: ball.y } : (ball.body?.position);
+        if (!pos || isNaN(pos.x) || isNaN(pos.y)) return;
         const r = ball.radius;
 
         // Absolute Universal Visual Boundary Lock: Marbles can NEVER visually render outside the turbine wheel
@@ -12667,8 +13116,17 @@
 
 
 
+        // Country-specific glowing aura ring in Laser Royale
+        if (this.arenaTemplate === 'laser' && ball.color) {
+          ctx.beginPath();
+          ctx.arc(0, 0, r + 1.2, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgb(${ball.color})`;
+          ctx.lineWidth = 2.4;
+          ctx.stroke();
+        }
+
         // Celebratory Winner Crown & Radiant Laurel Aura (Circle is never empty, winner marble proudly celebrated!)
-        if (this.isRoundOver && this.roundWinner && ball.country && ball.country.code === this.roundWinner.code) {
+        if ((this.isRoundOver && this.roundWinner && ball.country && ball.country.code === this.roundWinner.code) || (this.arenaTemplate === 'laser' && this.laserWinner === ball)) {
           ctx.strokeStyle = '#fbbf24';
           ctx.lineWidth = 3.5;
           ctx.beginPath();
@@ -12863,7 +13321,7 @@
       // --- 10. EVENT LISTENERS & STREAMER DRAWER ---
       setupEventListeners() {
         const startGameAndAudio = (tmpl = null) => {
-          if (tmpl && (tmpl === 'hole' || tmpl === 'ring')) {
+          if (tmpl && (tmpl === 'hole' || tmpl === 'ring' || tmpl === 'laser')) {
             this.setArenaTemplate(tmpl);
           }
           if (!this.security.isAccessAllowed()) {
@@ -13011,7 +13469,7 @@
         if (this.dom.audioOverlay) {
           this.dom.audioOverlay.addEventListener('click', (e) => {
             // Keep mode selection strictly intentional: do NOT auto-start on blank background clicks
-            if (e.target.closest('#btn-launch-hole') || e.target.closest('#btn-launch-ring') || e.target.closest('#btn-launch-pass-pricing')) return;
+            if (e.target.closest('#btn-launch-hole') || e.target.closest('#btn-launch-ring') || e.target.closest('#btn-launch-laser') || e.target.closest('#btn-launch-pass-pricing')) return;
           });
         }
         window.addEventListener('keydown', (e) => {
@@ -13200,6 +13658,7 @@
         // Arena Template Selector Buttons
         const btnTmplHole = document.getElementById('btn-tmpl-hole');
         const btnTmplRing = document.getElementById('btn-tmpl-ring');
+        const btnTmplLaser = document.getElementById('btn-tmpl-laser');
         if (btnTmplHole) {
           btnTmplHole.addEventListener('click', () => {
             this.setArenaTemplate('hole');
@@ -13208,6 +13667,37 @@
         if (btnTmplRing) {
           btnTmplRing.addEventListener('click', () => {
             this.setArenaTemplate('ring');
+          });
+        }
+        if (btnTmplLaser) {
+          btnTmplLaser.addEventListener('click', () => {
+            this.setArenaTemplate('laser');
+          });
+        }
+
+        const btnLaunchLaser = document.getElementById('btn-launch-laser');
+        if (btnLaunchLaser) {
+          btnLaunchLaser.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.setArenaTemplate('laser');
+            startGameAndAudio('laser');
+          });
+        }
+
+        const btnModalSelectLaser = document.getElementById('btn-modal-select-laser');
+        const cardChoiceLaser = document.getElementById('card-choice-laser');
+        if (btnModalSelectLaser) {
+          btnModalSelectLaser.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.setArenaTemplate('laser');
+            this.closeGameModeModal();
+          });
+        }
+        if (cardChoiceLaser) {
+          cardChoiceLaser.addEventListener('click', () => {
+            this.setArenaTemplate('laser');
+            this.closeGameModeModal();
           });
         }
 
@@ -13226,7 +13716,7 @@
       }
 
       setArenaTemplate(tmpl) {
-        this.arenaTemplate = tmpl === 'ring' ? 'ring' : 'hole';
+        this.arenaTemplate = tmpl === 'ring' ? 'ring' : (tmpl === 'laser' ? 'laser' : 'hole');
         if (this.world) this.startNewRound();
         this.syncDrawerUI();
         this.saveStreamerConfig();
@@ -13237,7 +13727,7 @@
           const raw = gameStorage.getItem('flag_royale_streamer_config');
           if (raw) {
             const cfg = JSON.parse(raw);
-            if (cfg.arenaTemplate === 'hole' || cfg.arenaTemplate === 'ring') {
+            if (cfg.arenaTemplate === 'hole' || cfg.arenaTemplate === 'ring' || cfg.arenaTemplate === 'laser') {
               this.arenaTemplate = cfg.arenaTemplate;
             } else {
               this.arenaTemplate = 'hole';
@@ -13388,27 +13878,33 @@
         const valTemplate = document.getElementById('val-arena-template');
         const btnTmplHole = document.getElementById('btn-tmpl-hole');
         const btnTmplRing = document.getElementById('btn-tmpl-ring');
+        const btnTmplLaser = document.getElementById('btn-tmpl-laser');
         const hintTemplate = document.getElementById('hint-arena-template');
         if (valTemplate) {
-          valTemplate.textContent = this.arenaTemplate === 'hole' ? '🌀 CENTER VORTEX HOLE' : '⭕ OUTER RING ESCAPE';
+          valTemplate.textContent = this.arenaTemplate === 'hole' ? '🌀 CENTER VORTEX HOLE' : (this.arenaTemplate === 'laser' ? '⚡ LASER WEB ROYALE' : '⭕ OUTER RING ESCAPE');
         }
         if (btnTmplHole) btnTmplHole.classList.toggle('active', this.arenaTemplate === 'hole');
         if (btnTmplRing) btnTmplRing.classList.toggle('active', this.arenaTemplate === 'ring');
+        if (btnTmplLaser) btnTmplLaser.classList.toggle('active', this.arenaTemplate === 'laser');
         if (hintTemplate) {
           hintTemplate.textContent = this.arenaTemplate === 'hole'
             ? '🌀 Hole Mode: Closed perimeter with 6 rotating spokes. Marbles get pulled into central black hole!'
-            : '⭕ Ring Mode: Open gap on outer perimeter with 4 kinetic paddles and central pinball bumper.';
+            : (this.arenaTemplate === 'laser'
+              ? '⚡ Laser Web: 6 nations with 50 perimeter laser links. Slicing collision physics & bounce strand regeneration!'
+              : '⭕ Ring Mode: Open gap on outer perimeter with 4 kinetic paddles and central pinball bumper.');
         }
 
         const hudModeIcon = document.getElementById('hud-mode-pill-icon');
         const hudModeName = document.getElementById('hud-mode-pill-name');
-        if (hudModeIcon) hudModeIcon.textContent = this.arenaTemplate === 'hole' ? '🌀' : '⭕';
-        if (hudModeName) hudModeName.textContent = this.arenaTemplate === 'hole' ? 'HOLE' : 'RING';
+        if (hudModeIcon) hudModeIcon.textContent = this.arenaTemplate === 'hole' ? '🌀' : (this.arenaTemplate === 'laser' ? '⚡' : '⭕');
+        if (hudModeName) hudModeName.textContent = this.arenaTemplate === 'hole' ? 'HOLE' : (this.arenaTemplate === 'laser' ? 'LASER' : 'RING');
 
         const cardHole = document.getElementById('card-choice-hole');
         const cardRing = document.getElementById('card-choice-ring');
+        const cardLaser = document.getElementById('card-choice-laser');
         if (cardHole) cardHole.classList.toggle('active', this.arenaTemplate === 'hole');
         if (cardRing) cardRing.classList.toggle('active', this.arenaTemplate === 'ring');
+        if (cardLaser) cardLaser.classList.toggle('active', this.arenaTemplate === 'laser');
 
         // AI Voice Button Sync
         const btnVoice = document.getElementById('btn-toggle-voice');

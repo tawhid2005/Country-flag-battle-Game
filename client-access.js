@@ -33,15 +33,17 @@
     let notice = $('payment-notice');
     if (!notice) {
       notice = document.createElement('div'); notice.id='payment-notice'; notice.setAttribute('role','status');
-      notice.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);width:min(440px,92vw);padding:18px;background:#0f172a;border:1px solid #22d3ee;border-radius:14px;color:white;z-index:30000;font:14px/1.5 system-ui;box-shadow:0 16px 60px #0009';
+      notice.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);width:min(440px,92vw);padding:18px 20px;background:rgba(15,23,42,0.95);border:1.5px solid #00e5ff;border-radius:16px;color:#ffffff;z-index:30000;font:14px/1.5 system-ui,-apple-system,sans-serif;box-shadow:0 16px 60px rgba(0,0,0,0.8),0 0 30px rgba(0,229,255,0.2);backdrop-filter:blur(16px);text-align:center;';
       document.body.appendChild(notice);
     }
     notice.replaceChildren();
-    const text=document.createElement('p');text.textContent=message;notice.appendChild(text);
-    const link=document.createElement('a');link.textContent='Get help on WhatsApp';link.target='_blank';link.rel='noopener noreferrer';link.style.cssText='color:#4ade80;display:inline-block;margin:12px 12px 0 0';
+    const text=document.createElement('p');text.textContent=message;text.style.cssText='margin:0 0 14px 0;font-size:13px;line-height:1.5;color:#e2e8f0;font-weight:500;';notice.appendChild(text);
+    const actionRow=document.createElement('div');actionRow.style.cssText='display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;';
+    const link=document.createElement('a');link.textContent='💬 WhatsApp Support';link.target='_blank';link.rel='noopener noreferrer';link.style.cssText='display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(34,197,94,0.18);border:1px solid #4ade80;border-radius:8px;color:#4ade80;font-size:12px;font-weight:700;text-decoration:none;transition:transform 0.15s;';
     const detail=['Country Flag Battle payment support',orderId ? 'Order: '+orderId:'', 'Plan: '+(this.activePlanId || 'unknown'), 'Issue: '+message].filter(Boolean).join('\n');
-    link.href='https://wa.me/8801711729858?text='+encodeURIComponent(detail);notice.appendChild(link);
-    const close=document.createElement('button');close.type='button';close.textContent='Dismiss';close.style.cssText='padding:6px 10px';close.onclick=()=>notice.remove();notice.appendChild(close);
+    link.href='https://wa.me/8801711729858?text='+encodeURIComponent(detail);actionRow.appendChild(link);
+    const close=document.createElement('button');close.type='button';close.textContent='Dismiss';close.style.cssText='padding:7px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#cbd5e1;font-size:12px;font-weight:600;cursor:pointer;transition:background 0.15s;';close.onclick=()=>notice.remove();actionRow.appendChild(close);
+    notice.appendChild(actionRow);
   };
   proto.acceptServerSession = function(session, keepPaymentModal=false, token=null) {
     if (!session || session.role !== 'subscriber' || session.expiresAt <= Date.now()) return false;
