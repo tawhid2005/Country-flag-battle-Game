@@ -8979,15 +8979,6 @@
         const timerText = document.getElementById('hud-trial-timer');
 
         if (trial.isExpired) {
-          // Keep arena mode selection overlay front and center on initial load!
-          const overlay = document.getElementById('audio-overlay');
-          const isAwaitingModeLaunch = (!this.app || !this.app.isGameStarted) && (!overlay || !overlay.classList.contains('hidden'));
-          if (isAwaitingModeLaunch) {
-            this.showLockModal(false);
-            if (banner) banner.style.display = 'none';
-            if (hudTrial) hudTrial.style.display = 'none';
-            return;
-          }
           if (this.app) {
             this.app._interfacePaused = true;
             this.app.isGameStarted = false;
@@ -9142,14 +9133,6 @@
               <span class="cyber-plan-price" style="font-size: 17px; font-weight: 900; color: #fbbf24;">${priceFormatted}</span>
             </div>
           `;
-
-          card.addEventListener('click', () => {
-            this.openOrderModal(plan.id, this.selectedCurrency);
-          });
-
-          container.appendChild(card);
-        });
-      }
 
           card.addEventListener('click', () => {
             this.openOrderModal(plan.id, this.selectedCurrency);
@@ -13149,7 +13132,7 @@
           }
           if (!this.security.isAccessAllowed()) {
             this.security.showLockModal(true);
-            this.security.showLoginAlert('⏱️ Your 30-Minute Free Trial has ended! Please log in with your email & password or choose an affordable pass below to continue.', 'error');
+            this.security.showLoginAlert('⏱️ Your 5-Minute Free Trial has ended! Please log in with your email & password or choose an affordable pass below to continue.', 'error');
             const tabPricing = document.getElementById('tab-btn-pricing');
             if (tabPricing) tabPricing.click();
             return;
