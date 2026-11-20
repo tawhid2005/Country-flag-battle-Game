@@ -271,8 +271,9 @@ export function createHandler(env, fetcher = fetch) {
         if(!/^01[3-9][0-9]{8}$/.test(phone) || !/^01[3-9][0-9]{8}$/.test(sender))fail(400,'Enter valid Bangladesh mobile and sender numbers');
         if(!/^[A-Z0-9-]{6,40}$/.test(trxId))fail(400,'Enter the complete 6–40 character transaction ID');
         if(body.confirmed!==true)fail(400,'Confirm that the payment information is correct');
-        let account=await one('cfb_accounts?username=eq.'+enc(username));
-        if(account && (!verifyPassword(body.password,account.password_hash) || email!==account.email))fail(401,'This email already has an account. Enter its existing password.');
+        let account=await one('cfb_accounts?email=eq.'+enc(email));
+        if(!account) account=await one('cfb_accounts?username=eq.'+enc(username));
+        if(account && (!verifyPassword(body.password,account.password_hash) || (account.email && email!==account.email)))fail(401,'This email already has an account. Enter its existing password.');
         if(!account)[account]=await db('cfb_accounts','POST',{id:randomUUID(),username,email,password_hash:hashPassword(body.password)});
         const checkoutId='claim:'+method+':'+trxId;
         let order=await one('cfb_orders?checkout_id=eq.'+enc(checkoutId));
@@ -303,8 +304,9 @@ export function createHandler(env, fetcher = fetch) {
         const username=String(body.username || '').trim().toLowerCase(), email=String(body.email || '').trim().toLowerCase();
         if (!/^[a-z0-9@._+-]{3,80}$/.test(username) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length>160 || typeof body.password !== 'string' || body.password.length<10 || body.password.length>128) fail(400,'Enter a username, valid email and password of 10–128 characters');
         if (provider === 'sslcommerz' && (!/^\+?[0-9]{10,15}$/.test(body.phone || '') || !body.address || !body.city || !body.postcode)) fail(400,'Phone, billing address, city and postcode are required for Bangladesh checkout');
-        let account=await one('cfb_accounts?username=eq.'+enc(username));
-        if (account && (!verifyPassword(body.password,account.password_hash) || email !== account.email)) fail(401,'Username already exists. Use your existing password and email.');
+        let account=await one('cfb_accounts?email=eq.'+enc(email));
+        if (!account) account=await one('cfb_accounts?username=eq.'+enc(username));
+        if (account && (!verifyPassword(body.password,account.password_hash) || (account.email && email !== account.email))) fail(401,'Account exists with this email. Enter your existing password to renew.');
         if (!account) [account]=await db('cfb_accounts','POST',{id:randomUUID(),username,email,password_hash:hashPassword(body.password)});
         setSession(res,'subscriber',account.id);
         const order={id:randomUUID(),account_id:account.id,provider,plan_id:body.planId,amount_minor:provider === 'polar' ? plan.usd:plan.bdt,currency:provider === 'polar' ? 'usd':'bdt'};

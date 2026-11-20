@@ -3590,6 +3590,63 @@
       line-height: 1.4;
     }
 
+    .cyber-special-offer-banner {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(245, 158, 11, 0.22) 100%);
+      border: 1.5px solid #f59e0b;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+      text-align: left;
+    }
+    .special-offer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .special-offer-fire {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 800;
+      color: #ef4444;
+      letter-spacing: 0.5px;
+    }
+    .special-offer-timer-badge {
+      background: #0f172a;
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
+      font-family: var(--font-mono, monospace);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+    .special-offer-pitch {
+      font-size: 11.5px;
+      color: #f1f5f9;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .special-offer-pitch .old-strike {
+      color: #94a3b8;
+      text-decoration: line-through;
+      margin-right: 2px;
+    }
+    .special-offer-progress-track {
+      height: 4px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .special-offer-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444, #f59e0b);
+      transition: width 1s linear;
+    }
+
     .cyber-payment-methods-notice {
       font-size: 10.5px;
       color: #94a3b8;
@@ -5852,9 +5909,9 @@
               <span>⏱️ <strong id="hud-match-timer">00:00</strong></span>
             </div>
 
-            <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="30-Minute Free Trial Active">
+            <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="5-Minute Free Trial Active">
               <span class="dot-trial"></span>
-              <span><strong id="hud-trial-timer">30:00</strong></span>
+              <span>TRIAL: <strong id="hud-trial-timer">05:00</strong></span>
             </div>
           </div>
 
@@ -6257,11 +6314,25 @@
         <!-- Close Button (Allows closing when trial or session is active) -->
         <button class="cyber-lock-close-btn" id="btn-close-cyber-lock" title="Close Modal">&times;</button>
 
-      <!-- 30-Minute Free Trial Ended Banner (Shown after 30m) -->
+      <!-- 5-Minute Free Trial Ended Banner (Shown after 5m) -->
       <div id="cyber-trial-banner" class="cyber-trial-banner" style="display: none;">
-        <span class="cyber-trial-banner-badge">⏱️ 30-MINUTE FREE TRIAL FINISHED</span>
+        <span class="cyber-trial-banner-badge">⏱️ 5-MINUTE FREE TRIAL FINISHED</span>
         <div class="cyber-trial-banner-title">Love the battle? Unlock 24/7 Unlimited Access!</div>
-        <div class="cyber-trial-banner-desc">Your 30-minute free trial has ended for this device. Choose an affordable streamer pass below or login with your ID &amp; Password to unlock the arena 24/7!</div>
+        <div class="cyber-trial-banner-desc">Your 5-minute free trial has ended for this device. Grab the 75% Welcome Discount below or login with your ID &amp; Password to unlock the arena 24/7!</div>
+      </div>
+
+      <!-- High-Converting 10-Minute Urgency Welcome Offer Banner -->
+      <div class="cyber-special-offer-banner" id="cyber-special-offer-banner">
+        <div class="special-offer-top">
+          <span class="special-offer-fire">🔥 10-MINUTE SPECIAL WELCOME OFFER</span>
+          <span class="special-offer-timer-badge">⚡ ENDS IN: <strong id="special-offer-clock">09:59</strong></span>
+        </div>
+        <div class="special-offer-pitch">
+          পুরনো ও রেগুলার মূল্য <span class="old-strike">৩৯৯ টাকা</span> ➔ নতুন স্ট্রিমারদের জন্য সীমিত সময়ের বিশেষ অফারে <strong>৭৫% ছাড়ে মাত্র ৯৯ টাকা!</strong> (লাইফটাইম VIP পাস ২৯৯৯ টাকার বদলে মাত্র ৬৯৯ টাকা)
+        </div>
+        <div class="special-offer-progress-track">
+          <div class="special-offer-progress-fill" id="special-offer-progress-fill" style="width: 100%;"></div>
+        </div>
       </div>
 
       <!-- $199 USD Copyright-Strike Immunity Guarantee -->
@@ -8559,20 +8630,20 @@
 
     const SUBSCRIPTION_PLANS = {
       bdt: [
-        { id: '1m', name: '1 Month', price: 99, currency: 'TK', symbol: '৳', days: 30, tag: 'Starter' },
-        { id: '2m', name: '2 Months', price: 149, currency: 'TK', symbol: '৳', days: 60, tag: 'Popular', highlight: true },
-        { id: '4m', name: '4 Months', price: 239, currency: 'TK', symbol: '৳', days: 120, tag: 'Value' },
-        { id: '8m', name: '8 Months', price: 399, currency: 'TK', symbol: '৳', days: 240, tag: 'Pro' },
-        { id: '12m', name: '12 Months', price: 499, currency: 'TK', symbol: '৳', days: 365, tag: 'Yearly Pro' },
-        { id: 'lifetime', name: 'Lifetime VIP', price: 699, currency: 'TK', symbol: '৳', days: 3650, tag: '👑 BEST VALUE • LIFETIME', highlight: true, vip: true }
+        { id: '1m', name: '1 Month Starter', regularPrice: 399, price: 99, currency: 'TK', symbol: '৳', days: 30, tag: '🔥 75% OFF • 99 TK', discount: 'SAVE 300 TK' },
+        { id: '2m', name: '2 Months Streamer', regularPrice: 599, price: 149, currency: 'TK', symbol: '৳', days: 60, tag: '⭐ POPULAR • 149 TK', highlight: true, discount: 'SAVE 450 TK' },
+        { id: '4m', name: '4 Months Esports', regularPrice: 899, price: 239, currency: 'TK', symbol: '৳', days: 120, tag: 'VALUE • 239 TK', discount: 'SAVE 660 TK' },
+        { id: '8m', name: '8 Months Studio', regularPrice: 1499, price: 399, currency: 'TK', symbol: '৳', days: 240, tag: 'PRO • 399 TK', discount: 'SAVE 1100 TK' },
+        { id: '12m', name: '12 Months Annual', regularPrice: 1999, price: 499, currency: 'TK', symbol: '৳', days: 365, tag: 'YEARLY • 499 TK', discount: 'SAVE 1500 TK' },
+        { id: 'lifetime', name: 'Lifetime VIP Pass', regularPrice: 2999, price: 699, currency: 'TK', symbol: '৳', days: 3650, tag: '👑 LIFETIME • 699 TK', highlight: true, vip: true, discount: 'SAVE 2300 TK' }
       ],
       usd: [
-        { id: '1m', name: '1 Month', price: 3.99, currency: 'USD', symbol: '$', days: 30, tag: 'Starter', polarProductId: 'fb8af379-2bfd-40fa-ae41-834020eef919' },
-        { id: '2m', name: '2 Months', price: 5.99, currency: 'USD', symbol: '$', days: 60, tag: 'Popular', highlight: true, polarProductId: '1fd12c45-72c8-4131-9d4a-917c24ce5d47' },
-        { id: '4m', name: '4 Months', price: 9.99, currency: 'USD', symbol: '$', days: 120, tag: 'Value', polarProductId: '8999eb1f-1e1d-45f5-b72b-7fba422a387a' },
-        { id: '8m', name: '8 Months', price: 15.99, currency: 'USD', symbol: '$', days: 240, tag: 'Pro', polarProductId: '638101fd-a10f-46d3-8a17-9285f3e54194' },
-        { id: '12m', name: '12 Months', price: 19.99, currency: 'USD', symbol: '$', days: 365, tag: 'Yearly Pro', polarProductId: '0feee5db-ed25-4887-81d7-cc3b4089305b' },
-        { id: 'lifetime', name: 'Lifetime VIP', price: 25.99, currency: 'USD', symbol: '$', days: 3650, tag: '👑 BEST VALUE • LIFETIME', highlight: true, vip: true, polarProductId: '0d5b371e-72e6-4a8a-8ee3-cdfa55c05a7a' }
+        { id: '1m', name: '1 Month Starter', regularPrice: 14.99, price: 3.99, currency: 'USD', symbol: '$', days: 30, tag: '🔥 75% OFF • $3.99', polarProductId: 'fb8af379-2bfd-40fa-ae41-834020eef919', discount: 'SAVE $11.00' },
+        { id: '2m', name: '2 Months Streamer', regularPrice: 19.99, price: 5.99, currency: 'USD', symbol: '$', days: 60, tag: '⭐ POPULAR • $5.99', highlight: true, polarProductId: '1fd12c45-72c8-4131-9d4a-917c24ce5d47', discount: 'SAVE $14.00' },
+        { id: '4m', name: '4 Months Esports', regularPrice: 29.99, price: 9.99, currency: 'USD', symbol: '$', days: 120, tag: 'VALUE • $9.99', polarProductId: '8999eb1f-1e1d-45f5-b72b-7fba422a387a', discount: 'SAVE $20.00' },
+        { id: '8m', name: '8 Months Studio', regularPrice: 49.99, price: 15.99, currency: 'USD', symbol: '$', days: 240, tag: 'PRO • $15.99', polarProductId: '638101fd-a10f-46d3-8a17-9285f3e54194', discount: 'SAVE $34.00' },
+        { id: '12m', name: '12 Months Annual', regularPrice: 69.99, price: 19.99, currency: 'USD', symbol: '$', days: 365, tag: 'YEARLY • $19.99', polarProductId: '0feee5db-ed25-4887-81d7-cc3b4089305b', discount: 'SAVE $50.00' },
+        { id: 'lifetime', name: 'Lifetime VIP Pass', regularPrice: 99.99, price: 25.99, currency: 'USD', symbol: '$', days: 3650, tag: '👑 LIFETIME • $25.99', highlight: true, vip: true, polarProductId: '0d5b371e-72e6-4a8a-8ee3-cdfa55c05a7a', discount: 'SAVE $74.00' }
       ]
     };
 
@@ -8588,8 +8659,8 @@
         this.licenses = {};
         this.cloudSyncStatus = 'idle';
         this.selectedCurrency = 'usd';
-        this.trialDurationSec = 1800; // 30 Minutes Free Trial (Continuous active gameplay before pass wall)
-        this.trialRemainingSec = 1800;
+        this.trialDurationSec = 300; // 5 Minutes Free Trial
+        this.trialRemainingSec = 300;
         this.trialInterval = null;
         this.polarAccessToken = ''; // Secret tokens belong on a server.
         this.currentOrderMsg = '';
@@ -8829,7 +8900,7 @@
               if (c.startsWith('cfb_trial_exp=')) {
                 const val = c.substring('cfb_trial_exp='.length);
                 if (val === 'true') {
-                  trialData = { isExpired: true, remainingSec: 0, startedAt: Date.now() - 1800000 };
+                  trialData = { isExpired: true, remainingSec: 0, startedAt: Date.now() - 300000 };
                 }
               }
             }
@@ -8851,7 +8922,7 @@
           return { isExpired: false, remainingSec: remaining };
         }
 
-        // Brand new device: Start 30-Minute Free Trial!
+        // Brand new device: Start 5-Minute Free Trial!
         const newTrial = {
           startedAt: Date.now(),
           elapsed: 0,
@@ -8884,8 +8955,8 @@
 
       markTrialExpired() {
         const data = {
-          startedAt: Date.now() - 1800000,
-          elapsed: 1800,
+          startedAt: Date.now() - 300000,
+          elapsed: 300,
           isExpired: true
         };
         this.saveTrialData(data);
@@ -8917,10 +8988,14 @@
             if (hudTrial) hudTrial.style.display = 'none';
             return;
           }
+          if (this.app) {
+            this.app._interfacePaused = true;
+            this.app.isGameStarted = false;
+          }
           this.showLockModal(true);
           if (banner) banner.style.display = 'block';
           if (hudTrial) hudTrial.style.display = 'none';
-          this.showLoginAlert('⏱️ Your 30-Minute Free Trial has ended! Choose a pass below to unlock 24/7 access.', 'error');
+          this.showLoginAlert('⏱️ Your 5-Minute Free Trial has ended! Choose a pass below to unlock 24/7 access.', 'error');
           const tabPricing = document.getElementById('tab-btn-pricing');
           if (tabPricing) tabPricing.click();
           return;
@@ -8928,7 +9003,10 @@
 
         if (banner) banner.style.display = 'none';
         this.showLockModal(false);
-        if (hudTrial) hudTrial.style.display = 'none'; // Only official match timer displayed on top HUD
+        if (hudTrial) {
+          hudTrial.style.display = 'inline-flex';
+          hudTrial.title = '5-Minute Free Trial Active';
+        }
 
         const updateTimerDisplay = (sec) => {
           const m = Math.floor(sec / 60);
@@ -8958,9 +9036,13 @@
             clearInterval(this.trialInterval);
             this.markTrialExpired();
             if (hudTrial) hudTrial.style.display = 'none';
+            if (this.app) {
+              this.app._interfacePaused = true;
+              this.app.isGameStarted = false;
+            }
             this.showLockModal(true);
             if (banner) banner.style.display = 'block';
-            this.showLoginAlert('⏱️ Your 30-Minute Free Trial has ended! Subscribe to unlock 24/7 unlimited access.', 'error');
+            this.showLoginAlert('⏱️ Your 5-Minute Free Trial has ended! Subscribe to unlock 24/7 unlimited access.', 'error');
             const tabPricing = document.getElementById('tab-btn-pricing');
             if (tabPricing) tabPricing.click();
             try {
@@ -8968,6 +9050,38 @@
             } catch(e) {}
           }
         }, 1000);
+      }
+
+      initSpecialOfferTimer() {
+        let offerEnd = null;
+        try {
+          const saved = gameStorage.getItem('cfb_special_offer_end') || gameSessionStorage.getItem('cfb_special_offer_end');
+          if (saved) offerEnd = parseInt(saved, 10);
+        } catch(e) {}
+
+        const now = Date.now();
+        if (!offerEnd || isNaN(offerEnd) || offerEnd <= now) {
+          offerEnd = now + (10 * 60 * 1000); // 10 minutes from now
+          try {
+            gameStorage.setItem('cfb_special_offer_end', String(offerEnd));
+            gameSessionStorage.setItem('cfb_special_offer_end', String(offerEnd));
+          } catch(e) {}
+        }
+
+        const clockEl = document.getElementById('special-offer-clock');
+        const fillEl = document.getElementById('special-offer-progress-fill');
+
+        const updateClock = () => {
+          const diff = Math.max(0, Math.floor((offerEnd - Date.now()) / 1000));
+          const m = Math.floor(diff / 60);
+          const s = diff % 60;
+          if (clockEl) clockEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+          if (fillEl) fillEl.style.width = ((diff / 600) * 100) + '%';
+        };
+
+        updateClock();
+        if (this._offerInterval) clearInterval(this._offerInterval);
+        this._offerInterval = setInterval(updateClock, 1000);
       }
 
       renderPricingCards() {
@@ -9012,6 +9126,7 @@
           card.title = 'Click to Order via WhatsApp / Checkout';
 
           const priceFormatted = plan.currency === 'USD' ? ('$' + plan.price.toFixed(2)) : (plan.price + ' TK');
+          const regularFormatted = plan.currency === 'USD' ? ('$' + (plan.regularPrice || (plan.price * 4)).toFixed(2)) : ((plan.regularPrice || (plan.price * 4)) + ' TK');
 
           card.innerHTML = `
             <div class="cyber-plan-info">
@@ -9020,11 +9135,21 @@
                 <span class="cyber-plan-badge" style="${plan.vip ? 'background:#c084fc; color:#020617;' : (plan.highlight ? 'background:#fbbf24; color:#020617;' : 'background:#0284c7; color:#fff;')}">${plan.tag}</span>
               </div>
               <span class="cyber-plan-duration">${plan.id === 'lifetime' ? '👑 Lifetime Unlimited Access (Never Pay Again)' : (plan.days + ' Days Unlimited Access')}</span>
+              ${plan.discount ? `<div style="margin-top:4px;"><span style="font-size:10px; font-weight:800; color:#10b981; background:rgba(16,185,129,0.15); padding:2px 6px; border-radius:4px; border:1px solid rgba(16,185,129,0.3);">${plan.discount}</span></div>` : ''}
             </div>
-            <div class="cyber-plan-price-wrap">
-              <span class="cyber-plan-price" style="font-size: 16px; font-weight: 900; color: #fbbf24;">${priceFormatted}</span>
+            <div class="cyber-plan-price-wrap" style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
+              <span class="cyber-plan-old-price" style="font-size: 11px; color: #94a3b8; text-decoration: line-through; margin-bottom: 2px;">${regularFormatted}</span>
+              <span class="cyber-plan-price" style="font-size: 17px; font-weight: 900; color: #fbbf24;">${priceFormatted}</span>
             </div>
           `;
+
+          card.addEventListener('click', () => {
+            this.openOrderModal(plan.id, this.selectedCurrency);
+          });
+
+          container.appendChild(card);
+        });
+      }
 
           card.addEventListener('click', () => {
             this.openOrderModal(plan.id, this.selectedCurrency);
@@ -9310,7 +9435,7 @@
         return { success: false, message: 'Server-side payment verification required.' };
       }
 
-      init() { this.setupDOM(); this.renderPricingCards(); this.handleTrialWorkflow(); }
+      init() { this.setupDOM(); this.renderPricingCards(); this.handleTrialWorkflow(); this.initSpecialOfferTimer(); }
 
       openAdminPanel() { return false; }
 
