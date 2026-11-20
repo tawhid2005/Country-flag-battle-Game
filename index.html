@@ -5542,6 +5542,236 @@
       }
     }
 
+  
+    /* Dedicated Pre-Battle Country Selector Modal */
+    #laser-country-modal {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 6, 23, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100010;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    #laser-country-modal.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .combatant-modal-wrapper {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(10, 15, 30, 0.98) 100%);
+      border: 1.5px solid rgba(245, 158, 11, 0.5);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(245, 158, 11, 0.25);
+      padding: 20px 24px;
+      max-width: 740px;
+      width: 96%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      animation: modeModalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .combatant-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin: 10px 0 12px 0;
+    }
+    @media (max-width: 600px) {
+      .combatant-slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+      }
+    }
+    .combatant-slot-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 8px 6px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .combatant-slot-card.active-slot {
+      border-color: #fbbf24;
+      background: rgba(245, 158, 11, 0.15);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+      transform: scale(1.03);
+    }
+    .combatant-slot-badge {
+      font-size: 8px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 999px;
+      color: #fff;
+    }
+    .combatant-slot-flag {
+      width: 32px;
+      height: 22px;
+      border-radius: 4px;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+    .combatant-slot-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 75px;
+    }
+    .combatant-search-bar {
+      width: 100%;
+      padding: 9px 14px;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin: 8px 0;
+    }
+    .combatant-search-bar:focus {
+      border-color: #fbbf24;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+    }
+    .combatant-presets-row {
+      display: flex;
+      gap: 6px;
+      margin: 4px 0 6px 0;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .combatant-preset-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      color: #cbd5e1;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .combatant-preset-btn:hover {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: #fbbf24;
+      color: #fbbf24;
+    }
+    .combatant-country-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 6px;
+      overflow-y: auto;
+      max-height: 240px;
+      padding: 6px 2px;
+      margin-bottom: 12px;
+    }
+    .country-pick-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 5px 8px;
+      cursor: pointer;
+      transition: all 0.18s;
+      user-select: none;
+    }
+    .country-pick-item:hover {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: #fbbf24;
+      transform: translateY(-2px);
+    }
+    .country-pick-item.selected {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+    .country-pick-flag {
+      width: 24px;
+      height: 16px;
+      border-radius: 3px;
+      object-fit: cover;
+    }
+    .country-pick-code {
+      font-size: 10px;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+    .country-pick-name {
+      font-size: 11px;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70px;
+    }
+    .combatant-actions-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: auto;
+    }
+    .btn-combatant-random {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #f1f5f9;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-combatant-random:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: #fbbf24;
+      color: #fbbf24;
+    }
+    .btn-combatant-start {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+      border: none;
+      border-radius: 10px;
+      color: #ffffff;
+      padding: 10px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-combatant-start:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 25px rgba(245, 158, 11, 0.7);
+    }
+
   </style>
   <!-- Gumroad Overlay Checkout Widget -->
   <script src="https://gumroad.com/js/gumroad.js"></script>
@@ -5933,6 +6163,9 @@
               <span class="tmpl-pill-name">Laser Web</span>
             </div>
             <span class="tmpl-pill-sub">Tethered Links &amp; Slicing</span>
+          </button>
+          <button type="button" id="btn-drawer-open-combatants" style="grid-column: span 3; margin-top: 4px; padding: 7px 12px; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.4); border-radius: 8px; color: #fbbf24; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span>🌍 CUSTOMIZE 6 NATIONS (Pick Countries)</span>
           </button>
         </div>
         <div class="drawer-hint" id="hint-arena-template">
@@ -6357,6 +6590,9 @@
             <button type="button" class="mode-play-btn btn-play-laser" id="btn-modal-select-laser">
               ▶️ PLAY LASER WEB
             </button>
+            <button type="button" class="mode-play-btn" id="btn-open-combatant-selector" style="margin-top: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(245,158,11,0.45); color: #fbbf24;">
+              🌍 SELECT 6 COUNTRIES
+            </button>
           </div>
         </div>
 
@@ -6376,6 +6612,45 @@
     </div>
 
     <!-- PWA Installation Modal (iPhone / Android / PC Guide) -->
+    
+    <!-- Dedicated Pre-Battle Combatant Country Selector Modal -->
+    <div id="laser-country-modal" role="dialog" aria-modal="true" aria-labelledby="combatant-modal-title">
+      <div class="combatant-modal-wrapper">
+        <button class="mode-modal-close" id="btn-close-combatant-modal" type="button" aria-label="Close modal">&times;</button>
+        <p class="mode-modal-eyebrow" style="color: #fbbf24;">⚡ LASER WEB ROYALE</p>
+        <h2 id="combatant-modal-title" class="mode-modal-title" style="font-size: 18px; margin-bottom: 2px;">SELECT 6 ARENA COMBATANTS</h2>
+        <p class="mode-modal-subtitle" style="font-size: 11px; margin-bottom: 8px;">Choose exactly which 6 nations will fight in the arena:</p>
+
+        <!-- 6 Selected Slots -->
+        <div class="combatant-slots-grid" id="combatant-slots-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Presets Row -->
+        <div class="combatant-presets-row">
+          <span style="font-size: 11px; color: #94a3b8; align-self: center; font-weight: 700;">Presets:</span>
+          <button type="button" class="combatant-preset-btn" data-preset="bd_vs_giants">🇧🇩 BD vs Giants</button>
+          <button type="button" class="combatant-preset-btn" data-preset="fifa_giants">🏆 FIFA Giants</button>
+          <button type="button" class="combatant-preset-btn" data-preset="asian_derby">🌏 Asian Derby</button>
+          <button type="button" class="combatant-preset-btn" data-preset="americas">🌎 Americas</button>
+        </div>
+
+        <!-- Search Bar -->
+        <input type="text" class="combatant-search-bar" id="combatant-search-input" placeholder="🔍 Search 138+ countries (e.g. Bangladesh, Argentina, Brazil...)" autocomplete="off">
+
+        <!-- Country Picker Grid -->
+        <div class="combatant-country-picker-grid" id="combatant-picker-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="combatant-actions-footer">
+          <button type="button" class="btn-combatant-random" id="btn-combatant-random">🎲 RANDOMIZE 6</button>
+          <button type="button" class="btn-combatant-start" id="btn-combatant-start">🚀 START LASER BATTLE (6 Ready)</button>
+        </div>
+      </div>
+    </div>
+
     <div id="pwa-install-modal" class="cyber-modal-backdrop" style="display: none;" role="dialog" aria-modal="true">
       <div class="pwa-modal-card">
         <button class="order-modal-close" id="btn-close-pwa-modal">&times;</button>
@@ -7848,21 +8123,22 @@
         return this.aiVoiceEnabled;
       }
 
-      speakElimination(countryName) {
+      speakElimination(countryName, force = false) {
         if (this.muted || !this.aiVoiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
         try {
-          // Robust throttle: at most once every 3.5s prevents Windows/Chrome audio service lockup ('hang mare')
           const now = Date.now();
-          if (now - (this._lastVoiceTime || 0) < 3500) return;
+          if (!force && (now - (this._lastVoiceTime || 0) < 1200)) return;
           this._lastVoiceTime = now;
 
-          if (window.speechSynthesis.speaking) return; // Do not cancel or deadlock active speech utterance
           if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+          if (force && window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+          }
 
           const utterance = new SpeechSynthesisUtterance(`${countryName} eliminated!`);
-          utterance.rate = 1.15;
+          utterance.rate = 1.20;
           utterance.pitch = 1.0;
-          utterance.volume = 0.85;
+          utterance.volume = 0.95;
           if (this.preferredVoice) utterance.voice = this.preferredVoice;
           window.speechSynthesis.speak(utterance);
         } catch (e) {}
@@ -11299,6 +11575,7 @@
           this.laserSparks = [];
           this.laserWinner = null;
           this.laserIntroTime = 1.0;
+          this.laserEliminatedSet = new Set();
           const laserColors = [
             '239, 68, 68',   // Red
             '245, 158, 11',  // Amber/Gold
@@ -11307,21 +11584,36 @@
             '59, 130, 246',  // Royal Blue
             '168, 85, 247'   // Neon Purple
           ];
-          const laserTeams = [
-            ['arg', 'Argentina'],
-            ['bra', 'Brazil'],
-            ['deu', 'Germany'],
-            ['fra', 'France'],
-            ['usa', 'USA'],
-            ['jpn', 'Japan']
-          ];
+
+          // Use custom chosen countries or default
+          const chosenIsoList = this.getLaserSelectedIsoList();
           const laserBatch = [];
-          for (let i = 0; i < 6; i++) {
-            const code = laserTeams[i][0];
-            const cDef = COUNTRIES_DB.find(c => c.iso === code || c.code === code.toUpperCase()) || shuffled[i] || COUNTRIES_DB[i];
-            laserBatch.push(cDef);
+          chosenIsoList.forEach(iso => {
+            const found = COUNTRIES_DB.find(c => c.iso === iso.toLowerCase() || c.code === iso.toUpperCase());
+            if (found && !laserBatch.some(x => x.code === found.code)) {
+              laserBatch.push(found);
+            }
+          });
+
+          // Fill up to 6 if needed
+          if (laserBatch.length < 6) {
+            const fallbackList = ['bd', 'arg', 'bra', 'deu', 'fra', 'jpn'];
+            for (const iso of fallbackList) {
+              if (laserBatch.length >= 6) break;
+              const found = COUNTRIES_DB.find(c => c.iso === iso);
+              if (found && !laserBatch.some(x => x.code === found.code)) {
+                laserBatch.push(found);
+              }
+            }
           }
+
           this.initialBallCount = 6;
+          this.laserCombatants = laserBatch.map((country, idx) => ({
+            country,
+            color: laserColors[idx % laserColors.length],
+            initialLinks: 50
+          }));
+
           const LINKS_START = 50;
           const HALF_ARC = 28 * Math.PI / 180;
           const START_RADIUS = 0.33 * this.arenaRadius;
@@ -11996,6 +12288,103 @@
         }
       }
 
+      // --- LASER COMBATANT COUNTRY SELECTOR ENGINE ---
+      getLaserSelectedIsoList() {
+        try {
+          const raw = typeof gameStorage !== 'undefined' ? gameStorage.getItem('cfb_laser_custom_countries') : localStorage.getItem('cfb_laser_custom_countries');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length === 6) return parsed;
+          }
+        } catch (_) {}
+        return ['bd', 'arg', 'bra', 'deu', 'fra', 'jpn'];
+      }
+
+      setLaserSelectedIsoList(list) {
+        if (!Array.isArray(list) || list.length !== 6) return;
+        this._laserSelectedIsos = list;
+        try {
+          const str = JSON.stringify(list);
+          if (typeof gameStorage !== 'undefined') gameStorage.setItem('cfb_laser_custom_countries', str);
+          else localStorage.setItem('cfb_laser_custom_countries', str);
+        } catch (_) {}
+      }
+
+      openCombatantModal() {
+        const modal = document.getElementById('laser-country-modal');
+        if (!modal) return;
+        this._activeCombatantSlot = 0;
+        this._laserDraftIsos = [...this.getLaserSelectedIsoList()];
+        modal.classList.add('show');
+        this.renderCombatantSlots();
+        this.renderCombatantPickerGrid();
+      }
+
+      closeCombatantModal() {
+        const modal = document.getElementById('laser-country-modal');
+        if (modal) modal.classList.remove('show');
+      }
+
+      renderCombatantSlots() {
+        const container = document.getElementById('combatant-slots-container');
+        if (!container) return;
+        container.innerHTML = '';
+        const laserColors = ['#ef4444', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#a855f7'];
+
+        this._laserDraftIsos.forEach((iso, idx) => {
+          const country = COUNTRIES_DB.find(c => c.iso === iso.toLowerCase()) || { iso, code: iso.toUpperCase(), name: iso };
+          const card = document.createElement('div');
+          card.className = 'combatant-slot-card' + (this._activeCombatantSlot === idx ? ' active-slot' : '');
+          card.innerHTML = `
+            <span class="combatant-slot-badge" style="background: ${laserColors[idx]};">P${idx + 1}</span>
+            <img class="combatant-slot-flag" src="https://flagcdn.com/w40/${country.iso}.png" alt="${country.name}" onerror="this.style.display='none'">
+            <span class="combatant-slot-name">${country.code}</span>
+          `;
+          card.addEventListener('click', () => {
+            this._activeCombatantSlot = idx;
+            this.renderCombatantSlots();
+          });
+          container.appendChild(card);
+        });
+      }
+
+      renderCombatantPickerGrid(filter = '') {
+        const grid = document.getElementById('combatant-picker-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        const q = filter.trim().toLowerCase();
+
+        const filtered = COUNTRIES_DB.filter(c => {
+          if (!q) return true;
+          return c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q) || c.iso.toLowerCase().includes(q);
+        });
+
+        filtered.forEach(country => {
+          const isSelected = this._laserDraftIsos.includes(country.iso);
+          const item = document.createElement('div');
+          item.className = 'country-pick-item' + (isSelected ? ' selected' : '');
+          item.innerHTML = `
+            <img class="country-pick-flag" src="https://flagcdn.com/w40/${country.iso}.png" alt="${country.name}" onerror="this.style.display='none'">
+            <span class="country-pick-code">${country.code}</span>
+            <span class="country-pick-name">${country.name}</span>
+          `;
+          item.addEventListener('click', () => {
+            const targetSlot = (this._activeCombatantSlot !== undefined && this._activeCombatantSlot < 6) ? this._activeCombatantSlot : 0;
+            // Avoid duplicates: if already selected in another slot, swap
+            const existingIdx = this._laserDraftIsos.indexOf(country.iso);
+            if (existingIdx !== -1 && existingIdx !== targetSlot) {
+              const old = this._laserDraftIsos[targetSlot];
+              this._laserDraftIsos[existingIdx] = old;
+            }
+            this._laserDraftIsos[targetSlot] = country.iso;
+            this._activeCombatantSlot = (targetSlot + 1) % 6;
+            this.renderCombatantSlots();
+            this.renderCombatantPickerGrid(filter);
+          });
+          grid.appendChild(item);
+        });
+      }
+
       onLaserCut(owner, x, y) {
         this.audio.playLaserCut();
         if (!this.laserSparks) this.laserSparks = [];
@@ -12130,16 +12519,51 @@
           }
         }
 
-        // 6. Eliminations when links reach 0
+        // 6. Eliminations when links reach 0 (VANISH COMPLETELY - Zero Freezing!)
         for (let i = alive.length - 1; i >= 0; i--) {
           const b = alive[i];
           if (!b.links || b.links.length === 0) {
             b.alive = false;
             b.escaped = true;
             b.diedAt = Date.now();
-            this.particles.spawnEliminationBurst(b.x, b.y, `rgb(${b.color})`);
+
+            // 1. Remove body from Matter physics world
+            if (b.body) {
+              this.World.remove(this.world, b.body);
+            }
+
+            // 2. Add to eliminated anims for smooth fading particle vaporize effect
+            if (!this.eliminatedAnims) this.eliminatedAnims = [];
+            this.eliminatedAnims.push({
+              x: b.x,
+              y: b.y,
+              vx: (Math.random() - 0.5) * 3,
+              vy: (Math.random() - 0.5) * 3,
+              radius: b.radius,
+              country: b.country,
+              flagCanvas: b.flagCanvas,
+              alpha: 1.0,
+              scale: 1.0,
+              isLaserVanish: true,
+              trail: []
+            });
+
+            // 3. Remove immediately from this.balls so it CANNOT render frozen in the arena
+            const bIdx = this.balls.indexOf(b);
+            if (bIdx !== -1) {
+              this.balls.splice(bIdx, 1);
+            }
+
+            // 4. Record as eliminated
+            this.laserEliminatedSet = this.laserEliminatedSet || new Set();
+            this.laserEliminatedSet.add(b.country.code);
+
+            // 5. Visual explosion burst & audio & voice callout
+            this.particles.spawnEliminationBurst(b.x, b.y, b.country.color || `rgb(${b.color})`);
             this.audio.playEliminate();
-            this.audio.speakElimination(b.country.name);
+            this.audio.speakElimination(b.country.name, true);
+
+            // 6. Update tray, killfeed, HUD
             this.pushKillfeed(b.country);
             this.addEliminatedTrayFlag(b.country);
             this.updateAliveHUD();
@@ -12160,15 +12584,19 @@
       renderLaserLeaderboard() {
         if (!this.dom.leaderboardItems || this.arenaTemplate !== 'laser') return;
         this.dom.leaderboardItems.innerHTML = '';
-        this.balls.forEach(b => {
+        const combatants = this.laserCombatants || [];
+        combatants.forEach(item => {
+          const aliveBall = this.balls ? this.balls.find(b => b.country.code === item.country.code) : null;
+          const isAlive = !!aliveBall && aliveBall.alive;
+          const linkCount = isAlive ? Math.floor((aliveBall.links?.length || 0) / 2) : 0;
           const pill = document.createElement('div');
-          pill.className = `leaderboard-pill ${b.alive ? '' : 'out'}`;
-          const linkCount = b.alive ? Math.floor((b.links?.length || 0) / 2) : 0;
-          pill.style.borderColor = `rgba(${b.color}, 0.6)`;
+          pill.className = `leaderboard-pill ${isAlive ? '' : 'out'}`;
+          pill.style.borderColor = `rgba(${item.color}, ${isAlive ? '0.7' : '0.25'})`;
+          pill.style.opacity = isAlive ? '1' : '0.55';
           pill.innerHTML = `
-            <img class="leaderboard-pill-flag" src="https://flagcdn.com/w40/${b.country.iso}.png" alt="${b.country.name} Flag" onerror="this.style.display='none'">
-            <span class="leaderboard-pill-code">${b.country.code}</span>
-            <span class="leaderboard-pill-score" style="color: ${b.alive ? '#fbbf24' : '#ef4444'}; font-weight: 800;">${b.alive ? linkCount : 'OUT'}</span>
+            <img class="leaderboard-pill-flag" src="https://flagcdn.com/w40/${item.country.iso}.png" alt="${item.country.name} Flag" onerror="this.style.display='none'">
+            <span class="leaderboard-pill-code">${item.country.code}</span>
+            <span class="leaderboard-pill-score" style="color: ${isAlive ? '#fbbf24' : '#ef4444'}; font-weight: 800;">${isAlive ? linkCount : 'OUT'}</span>
           `;
           this.dom.leaderboardItems.appendChild(pill);
         });
@@ -13672,6 +14100,80 @@
         if (btnTmplLaser) {
           btnTmplLaser.addEventListener('click', () => {
             this.setArenaTemplate('laser');
+          });
+        }
+
+        // Combatant Country Selector Modal Wiring
+        const btnOpenCombatant = document.getElementById('btn-open-combatant-selector');
+        if (btnOpenCombatant) {
+          btnOpenCombatant.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.openCombatantModal();
+          });
+        }
+
+        const btnDrawerCombatant = document.getElementById('btn-drawer-open-combatants');
+        if (btnDrawerCombatant) {
+          btnDrawerCombatant.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.openCombatantModal();
+          });
+        }
+
+        const btnCloseCombatant = document.getElementById('btn-close-combatant-modal');
+        if (btnCloseCombatant) {
+          btnCloseCombatant.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.closeCombatantModal();
+          });
+        }
+
+        const searchInput = document.getElementById('combatant-search-input');
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            this.renderCombatantPickerGrid(e.target.value);
+          });
+        }
+
+        // Preset Buttons
+        document.querySelectorAll('.combatant-preset-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const preset = e.target.dataset.preset;
+            const presets = {
+              bd_vs_giants: ['bd', 'arg', 'bra', 'deu', 'fra', 'jpn'],
+              fifa_giants: ['arg', 'bra', 'fra', 'deu', 'es', 'pt'],
+              asian_derby: ['bd', 'in', 'pk', 'jp', 'kr', 'sa'],
+              americas: ['us', 'br', 'ar', 'ca', 'mx', 'co']
+            };
+            if (presets[preset]) {
+              this._laserDraftIsos = [...presets[preset]];
+              this.renderCombatantSlots();
+              this.renderCombatantPickerGrid(searchInput?.value || '');
+            }
+          });
+        });
+
+        // Randomize 6 Button
+        const btnCombatantRandom = document.getElementById('btn-combatant-random');
+        if (btnCombatantRandom) {
+          btnCombatantRandom.addEventListener('click', () => {
+            const shuffled = [...COUNTRIES_DB].sort(() => Math.random() - 0.5);
+            this._laserDraftIsos = shuffled.slice(0, 6).map(c => c.iso);
+            this.renderCombatantSlots();
+            this.renderCombatantPickerGrid(searchInput?.value || '');
+          });
+        }
+
+        // Start Battle Button
+        const btnCombatantStart = document.getElementById('btn-combatant-start');
+        if (btnCombatantStart) {
+          btnCombatantStart.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.setLaserSelectedIsoList(this._laserDraftIsos);
+            this.closeCombatantModal();
+            this.closeGameModeModal();
+            this.setArenaTemplate('laser');
+            startGameAndAudio('laser');
           });
         }
 
