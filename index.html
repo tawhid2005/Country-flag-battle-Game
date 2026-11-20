@@ -3594,7 +3594,7 @@
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(185, 28, 28, 0.12) 100%);
       border: 1.5px solid #ef4444;
       border-radius: 10px;
-      padding: 8px 12px;
+      padding: 10px 14px;
       margin: 6px 0 10px 0;
       box-shadow: 0 0 16px rgba(239, 68, 68, 0.35), inset 0 0 12px rgba(239, 68, 68, 0.12);
       text-align: left;
@@ -3605,49 +3605,76 @@
       0% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.3); border-color: #ef4444; }
       100% { box-shadow: 0 0 22px rgba(239, 68, 68, 0.65); border-color: #f87171; }
     }
-    .special-offer-top {
+    .special-offer-main-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .special-offer-deal-side {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
     }
     .special-offer-fire {
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 800;
+      font-family: var(--font-display, sans-serif);
+      font-size: 12px;
+      font-weight: 900;
       color: #f87171;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-    }
-    .special-offer-timer-badge {
-      background: #0f172a;
-      border: 1px solid #ef4444;
-      color: #fef08a;
-      font-family: var(--font-mono, monospace);
-      font-size: 12px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+      gap: 5px;
+      text-transform: uppercase;
     }
     .special-offer-pitch {
       font-size: 11px;
       color: #f1f5f9;
       line-height: 1.35;
-      margin-bottom: 6px;
+      font-weight: 500;
     }
     .special-offer-pitch .old-strike {
       color: #94a3b8;
       text-decoration: line-through;
       margin: 0 2px;
     }
-    .special-offer-pitch strong {
+    .special-offer-pitch strong, .special-offer-pitch .highlight-price {
       color: #fbbf24;
       font-weight: 800;
+    }
+    .special-offer-timer-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #090f1d;
+      border: 1.5px solid #ef4444;
+      padding: 4px 12px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+      min-width: 95px;
+      flex-shrink: 0;
+    }
+    .timer-box-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: #f87171;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: var(--font-display, sans-serif);
+      margin-bottom: -1px;
+    }
+    .special-offer-big-clock {
+      font-family: var(--font-mono, 'Courier New', monospace);
+      font-size: 24px;
+      font-weight: 900;
+      color: #fef08a;
+      letter-spacing: 1.5px;
+      line-height: 1.1;
+      text-shadow: 0 0 10px rgba(254, 240, 138, 0.6), 0 0 20px rgba(239, 68, 68, 0.4);
     }
     .special-offer-progress-track {
       width: 100%;
@@ -6410,12 +6437,17 @@
 
         <!-- High-Converting 10-Minute Urgency Welcome Offer Strip (Compact & Eye-Catching) -->
         <div class="cyber-special-offer-banner" id="cyber-special-offer-banner">
-          <div class="special-offer-top">
-            <span class="special-offer-fire">🔥 10-MIN WELCOME OFFER</span>
-            <span class="special-offer-timer-badge">⚡ ENDS IN: <strong id="special-offer-clock">09:59</strong></span>
-          </div>
-          <div class="special-offer-pitch" id="special-offer-pitch-text">
-            রেগুলার মূল্য <span class="old-strike">৩৯৯ টাকা</span> ➔ সীমিত সময়ের অফারে <strong>৭৫% ছাড়ে মাত্র ৯৯ টাকা!</strong> (লাইফটাইম VIP পাস মাত্র ৬৯৯ টাকা)
+          <div class="special-offer-main-row">
+            <div class="special-offer-deal-side">
+              <div class="special-offer-fire">🔥 75% OFF WELCOME DEAL</div>
+              <div class="special-offer-pitch" id="special-offer-pitch-text">
+                Regular <span class="old-strike">399 TK</span> ➔ <strong class="highlight-price">99 TK ONLY</strong> (75% OFF) • Lifetime VIP 699 TK
+              </div>
+            </div>
+            <div class="special-offer-timer-box">
+              <div class="timer-box-label">⚡ ENDS IN</div>
+              <div class="special-offer-big-clock" id="special-offer-clock">09:59</div>
+            </div>
           </div>
           <div class="special-offer-progress-track">
             <div class="special-offer-progress-fill" id="special-offer-progress-fill" style="width: 100%;"></div>
@@ -9122,9 +9154,9 @@
 
         if (pitchEl) {
           if (this.selectedCurrency === 'usd') {
-            pitchEl.innerHTML = 'Regular <span class="old-strike">$19.99</span> ➔ Welcome Deal at <strong style="color: #fbbf24;">$5.99 (70% OFF)!</strong> (Lifetime VIP only $29.99)';
+            pitchEl.innerHTML = 'Regular <span class="old-strike">$19.99</span> ➔ <strong class="highlight-price">$5.99 ONLY</strong> (70% OFF) • Lifetime VIP $29.99';
           } else {
-            pitchEl.innerHTML = 'রেগুলার মূল্য <span class="old-strike">৩৯৯ টাকা</span> ➔ সীমিত সময়ের অফারে <strong>৭৫% ছাড়ে মাত্র ৯৯ টাকা!</strong> (লাইফটাইম VIP মাত্র ৬৯৯ টাকা)';
+            pitchEl.innerHTML = 'Regular <span class="old-strike">399 TK</span> ➔ <strong class="highlight-price">99 TK ONLY</strong> (75% OFF) • Lifetime VIP 699 TK';
           }
         }
 
@@ -9132,7 +9164,7 @@
           if (this.selectedCurrency === 'usd') {
             notice.innerHTML = '💳 <strong>International Checkout:</strong> PayPal, Credit/Debit Card, Crypto (USDT), or WhatsApp (+8801711729858). Instant Delivery.';
           } else {
-            notice.innerHTML = '💳 <strong>বাংলাদেশ পেমেন্ট:</strong> bKash (Personal/Send Money), Nagad, অথবা Rocket (+8801711729858). তাৎক্ষণিক এক্টিভেশন।';
+            notice.innerHTML = '💳 <strong>Bangladesh Payment:</strong> bKash (Personal Send Money), Nagad, or Rocket (+8801711729858). Instant Delivery.';
           }
         }
 
