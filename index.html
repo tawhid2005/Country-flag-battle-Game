@@ -3591,59 +3591,76 @@
     }
 
     .cyber-special-offer-banner {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(245, 158, 11, 0.22) 100%);
-      border: 1.5px solid #f59e0b;
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(185, 28, 28, 0.12) 100%);
+      border: 1.5px solid #ef4444;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin: 6px 0 10px 0;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.35), inset 0 0 12px rgba(239, 68, 68, 0.12);
       text-align: left;
+      position: relative;
+      animation: pulseRedGlow 3s infinite alternate ease-in-out;
+    }
+    @keyframes pulseRedGlow {
+      0% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.3); border-color: #ef4444; }
+      100% { box-shadow: 0 0 22px rgba(239, 68, 68, 0.65); border-color: #f87171; }
     }
     .special-offer-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .special-offer-fire {
       font-family: var(--font-display);
       font-size: 11px;
       font-weight: 800;
-      color: #ef4444;
+      color: #f87171;
       letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
     .special-offer-timer-badge {
       background: #0f172a;
-      border: 1px solid #f59e0b;
-      color: #fbbf24;
+      border: 1px solid #ef4444;
+      color: #fef08a;
       font-family: var(--font-mono, monospace);
       font-size: 12px;
       font-weight: 800;
       padding: 2px 8px;
       border-radius: 6px;
       letter-spacing: 0.5px;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
     }
     .special-offer-pitch {
-      font-size: 11.5px;
+      font-size: 11px;
       color: #f1f5f9;
-      line-height: 1.4;
-      margin-bottom: 8px;
+      line-height: 1.35;
+      margin-bottom: 6px;
     }
     .special-offer-pitch .old-strike {
       color: #94a3b8;
       text-decoration: line-through;
-      margin-right: 2px;
+      margin: 0 2px;
+    }
+    .special-offer-pitch strong {
+      color: #fbbf24;
+      font-weight: 800;
     }
     .special-offer-progress-track {
-      height: 4px;
-      background: rgba(15, 23, 42, 0.6);
-      border-radius: 999px;
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 2px;
       overflow: hidden;
     }
     .special-offer-progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #ef4444, #f59e0b);
+      border-radius: 2px;
+      box-shadow: 0 0 6px #ef4444;
       transition: width 1s linear;
     }
 
@@ -6321,20 +6338,6 @@
         <div class="cyber-trial-banner-desc">Your 5-minute free trial has ended for this device. Grab the 75% Welcome Discount below or login with your ID &amp; Password to unlock the arena 24/7!</div>
       </div>
 
-      <!-- High-Converting 10-Minute Urgency Welcome Offer Banner -->
-      <div class="cyber-special-offer-banner" id="cyber-special-offer-banner">
-        <div class="special-offer-top">
-          <span class="special-offer-fire">🔥 10-MINUTE SPECIAL WELCOME OFFER</span>
-          <span class="special-offer-timer-badge">⚡ ENDS IN: <strong id="special-offer-clock">09:59</strong></span>
-        </div>
-        <div class="special-offer-pitch">
-          পুরনো ও রেগুলার মূল্য <span class="old-strike">৩৯৯ টাকা</span> ➔ নতুন স্ট্রিমারদের জন্য সীমিত সময়ের বিশেষ অফারে <strong>৭৫% ছাড়ে মাত্র ৯৯ টাকা!</strong> (লাইফটাইম VIP পাস ২৯৯৯ টাকার বদলে মাত্র ৬৯৯ টাকা)
-        </div>
-        <div class="special-offer-progress-track">
-          <div class="special-offer-progress-fill" id="special-offer-progress-fill" style="width: 100%;"></div>
-        </div>
-      </div>
-
       <!-- $199 USD Copyright-Strike Immunity Guarantee -->
       <div class="guarantee-immunity-box">
         <div class="guarantee-icon">🛡️</div>
@@ -6403,6 +6406,20 @@
         <div class="currency-toggle-wrapper">
           <button class="currency-toggle-btn active" id="btn-currency-usd" type="button">🌐 Global (USD $)</button>
           <button class="currency-toggle-btn" id="btn-currency-bdt" type="button">🇧🇩 Bangladesh (BDT ৳)</button>
+        </div>
+
+        <!-- High-Converting 10-Minute Urgency Welcome Offer Strip (Compact & Eye-Catching) -->
+        <div class="cyber-special-offer-banner" id="cyber-special-offer-banner">
+          <div class="special-offer-top">
+            <span class="special-offer-fire">🔥 10-MIN WELCOME OFFER</span>
+            <span class="special-offer-timer-badge">⚡ ENDS IN: <strong id="special-offer-clock">09:59</strong></span>
+          </div>
+          <div class="special-offer-pitch" id="special-offer-pitch-text">
+            রেগুলার মূল্য <span class="old-strike">৩৯৯ টাকা</span> ➔ সীমিত সময়ের অফারে <strong>৭৫% ছাড়ে মাত্র ৯৯ টাকা!</strong> (লাইফটাইম VIP পাস মাত্র ৬৯৯ টাকা)
+          </div>
+          <div class="special-offer-progress-track">
+            <div class="special-offer-progress-fill" id="special-offer-progress-fill" style="width: 100%;"></div>
+          </div>
         </div>
 
         <div class="cyber-pricing-list" id="cyber-pricing-list-container">
@@ -8665,6 +8682,7 @@
         this.polarAccessToken = ''; // Secret tokens belong on a server.
         this.currentOrderMsg = '';
         this.loadDatabase();
+        window.securityEngine = this;
         // Background live cloud sync
 
       }
@@ -9059,15 +9077,26 @@
           } catch(e) {}
         }
 
-        const clockEl = document.getElementById('special-offer-clock');
-        const fillEl = document.getElementById('special-offer-progress-fill');
-
         const updateClock = () => {
-          const diff = Math.max(0, Math.floor((offerEnd - Date.now()) / 1000));
+          let diff = Math.max(0, Math.floor((offerEnd - Date.now()) / 1000));
+          if (diff <= 0) {
+            offerEnd = Date.now() + (10 * 60 * 1000); // Reset for persistent urgency
+            try {
+              gameStorage.setItem('cfb_special_offer_end', String(offerEnd));
+              gameSessionStorage.setItem('cfb_special_offer_end', String(offerEnd));
+            } catch(e) {}
+            diff = 600;
+          }
           const m = Math.floor(diff / 60);
           const s = diff % 60;
-          if (clockEl) clockEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-          if (fillEl) fillEl.style.width = ((diff / 600) * 100) + '%';
+          const clockEl = document.getElementById('special-offer-clock');
+          const fillEl = document.getElementById('special-offer-progress-fill');
+          if (clockEl) {
+            clockEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+          }
+          if (fillEl) {
+            fillEl.style.width = Math.min(100, Math.max(0, (diff / 600) * 100)) + '%';
+          }
         };
 
         updateClock();
@@ -9081,13 +9110,22 @@
         const loginHint = document.getElementById('login-payment-hint');
         const btnUsd = document.getElementById('btn-currency-usd');
         const btnBdt = document.getElementById('btn-currency-bdt');
+        const pitchEl = document.getElementById('special-offer-pitch-text');
 
         if (btnUsd && btnBdt) {
-          btnBdt.hidden=!!this.isInternational;
-          btnUsd.hidden=!!this.isInternational;
-          if(this.isInternational)this.selectedCurrency='usd';
+          btnBdt.hidden = !!this.isInternational;
+          btnUsd.hidden = !!this.isInternational;
+          if (this.isInternational) this.selectedCurrency = 'usd';
           btnUsd.classList.toggle('active', this.selectedCurrency === 'usd');
           btnBdt.classList.toggle('active', this.selectedCurrency === 'bdt');
+        }
+
+        if (pitchEl) {
+          if (this.selectedCurrency === 'usd') {
+            pitchEl.innerHTML = 'Regular <span class="old-strike">$19.99</span> ➔ Welcome Deal at <strong style="color: #fbbf24;">$5.99 (70% OFF)!</strong> (Lifetime VIP only $29.99)';
+          } else {
+            pitchEl.innerHTML = 'রেগুলার মূল্য <span class="old-strike">৩৯৯ টাকা</span> ➔ সীমিত সময়ের অফারে <strong>৭৫% ছাড়ে মাত্র ৯৯ টাকা!</strong> (লাইফটাইম VIP মাত্র ৬৯৯ টাকা)';
+          }
         }
 
         if (notice) {
@@ -9125,12 +9163,15 @@
                 <span class="cyber-plan-name">${plan.name.toUpperCase()}</span>
                 <span class="cyber-plan-badge" style="${plan.vip ? 'background:#c084fc; color:#020617;' : (plan.highlight ? 'background:#fbbf24; color:#020617;' : 'background:#0284c7; color:#fff;')}">${plan.tag}</span>
               </div>
-              <span class="cyber-plan-duration">${plan.id === 'lifetime' ? '👑 Lifetime Unlimited Access (Never Pay Again)' : (plan.days + ' Days Unlimited Access')}</span>
-              ${plan.discount ? `<div style="margin-top:4px;"><span style="font-size:10px; font-weight:800; color:#10b981; background:rgba(16,185,129,0.15); padding:2px 6px; border-radius:4px; border:1px solid rgba(16,185,129,0.3);">${plan.discount}</span></div>` : ''}
+              <span class="cyber-plan-duration">${plan.id === 'lifetime' ? '👑 Lifetime Unlimited Access' : (plan.days + ' Days Unlimited Access')}</span>
+              <div class="cyber-plan-trust-row" style="display:flex; align-items:center; gap:5px; margin-top:2px;">
+                ${plan.discount ? `<span class="cyber-plan-discount-pill">${plan.discount}</span>` : ''}
+                <span class="cyber-plan-trust-pill">🔒 Instant Unlock</span>
+              </div>
             </div>
             <div class="cyber-plan-price-wrap" style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
-              <span class="cyber-plan-old-price" style="font-size: 11px; color: #94a3b8; text-decoration: line-through; margin-bottom: 2px;">${regularFormatted}</span>
-              <span class="cyber-plan-price" style="font-size: 17px; font-weight: 900; color: #fbbf24;">${priceFormatted}</span>
+              <span class="cyber-plan-old-price" style="font-size: 10px; color: #94a3b8; text-decoration: line-through; margin-bottom: 1px;">${regularFormatted}</span>
+              <span class="cyber-plan-price" style="font-size: 16px; font-weight: 900; color: #fbbf24; letter-spacing: -0.3px;">${priceFormatted}</span>
             </div>
           `;
 
@@ -9482,6 +9523,7 @@
             tabLogin.classList.remove('active');
             panelLogin.style.display = 'none';
             panelPricing.style.display = 'flex';
+            this.initSpecialOfferTimer();
           });
           if (btnSwitchLogin) {
             btnSwitchLogin.addEventListener('click', () => {
