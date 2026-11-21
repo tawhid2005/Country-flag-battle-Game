@@ -8175,16 +8175,18 @@
       }
 
       // Professional Dynamic Esports Announcer Voice Engine
-      speakElimination(countryName, force = false) {
+      speakElimination(countryName, force = false, mode = '') {
         if (this.muted || !this.aiVoiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
+
+        const template = mode || (this.app ? this.app.arenaTemplate : 'ring');
 
         // Suppress elimination announcement if round is ending or only 1 country remains so Champion announcement is instant!
         if (this.app) {
           if (this.app.isRoundOver) return;
           if (this.app.balls) {
-            if (this.app.arenaTemplate === 'laser') {
-              const alive = this.app.balls.filter(b => b.alive);
-              if (alive.length <= 1) return;
+            if (template === 'laser') {
+              const aliveCount = this.app.balls.filter(b => b.alive !== false).length;
+              if (aliveCount <= 1) return;
             } else if (this.app.balls.length <= 1) {
               return;
             }
@@ -8194,14 +8196,10 @@
         try {
           const now = Date.now();
           // Dynamic esports pacing: crisp callouts without lag or queue clogging
-          if (!force && (now - (this._lastVoiceTime || 0) < 950)) return;
+          if (!force && (now - (this._lastVoiceTime || 0) < 850)) return;
           this._lastVoiceTime = now;
 
           if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-          // Clear any stale utterance to keep voice 100% in sync with live physics
-          if (window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-          }
 
           // Clean national name pronunciation formatting
           let cleanName = (countryName || 'Competitor').replace(/\s*\([^)]*\)/g, '').trim();
@@ -8210,13 +8208,31 @@
           else if (cleanName === 'UAE') cleanName = 'United Arab Emirates';
           else if (cleanName === 'KSA') cleanName = 'Saudi Arabia';
           else if (cleanName === 'KOR') cleanName = 'South Korea';
+          else if (cleanName === 'BD') cleanName = 'Bangladesh';
+          else if (cleanName === 'BRA') cleanName = 'Brazil';
+          else if (cleanName === 'ARG') cleanName = 'Argentina';
+          else if (cleanName === 'FRA') cleanName = 'France';
+          else if (cleanName === 'DEU' || cleanName === 'GER') cleanName = 'Germany';
+          else if (cleanName === 'JPN') cleanName = 'Japan';
 
-          const template = this.app ? this.app.arenaTemplate : 'ring';
-          const remaining = this.app && this.app.balls ? this.app.balls.length : 12;
+          const remaining = this.app && this.app.balls ? this.app.balls.length : 6;
 
-          // Professional dynamic esports caster commentary
+          // Professional dynamic esports caster commentary by game mode
           let phrase = '';
-          if (remaining === 10) {
+          if (template === 'laser') {
+            const laserPhrases = [
+              `${cleanName} eliminated by the laser web!`,
+              `${cleanName} sliced and eliminated!`,
+              `${cleanName} severed from the grid!`,
+              `${cleanName} out of energy links! Eliminated!`,
+              `${cleanName} knocked out of the laser arena!`
+            ];
+            if (remaining === 2) {
+              phrase = `${cleanName} eliminated! We are down to the final two!`;
+            } else {
+              phrase = laserPhrases[Math.floor(Math.random() * laserPhrases.length)];
+            }
+          } else if (remaining === 10) {
             phrase = `${cleanName} eliminated! Top 10 nations remain!`;
           } else if (remaining === 5) {
             phrase = `${cleanName} is out! Top 5 battle underway!`;
@@ -8231,13 +8247,6 @@
               `${cleanName} slips through the outer gate!`
             ];
             phrase = ringPhrases[Math.floor(Math.random() * ringPhrases.length)];
-          } else if (template === 'laser') {
-            const laserPhrases = [
-              `${cleanName} sliced by the laser web!`,
-              `${cleanName} severed from the grid!`,
-              `${cleanName} eliminated in combat!`
-            ];
-            phrase = laserPhrases[Math.floor(Math.random() * laserPhrases.length)];
           } else {
             const holePhrases = [
               `${cleanName} swallowed by the black hole!`,
@@ -8249,10 +8258,14 @@
           }
 
           const utterance = new SpeechSynthesisUtterance(phrase);
-          utterance.rate = 1.14; // Confident, energetic broadcast cadence
+          utterance.rate = 1.15; // Confident, energetic broadcast cadence
           utterance.pitch = 1.05; // Authoritative caster tone
           utterance.volume = 1.0;
           if (this.preferredVoice) utterance.voice = this.preferredVoice;
+
+          if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+          }
           window.speechSynthesis.speak(utterance);
         } catch (e) {}
       }
@@ -11017,6 +11030,7 @@
           this.flagEngine.preloadAll(COUNTRIES_DB, 128);
         } catch(e) {}
         this.audio = new ProceduralAudioEngine();
+        this.audio.app = this;
         this.particles = new ParticleEngine();
         this.humanStreamer = new HumanStreamerEngine(this);
 
@@ -11743,7 +11757,15 @@
           const chosenIsoList = this.getLaserSelectedIsoList();
           const laserBatch = [];
           chosenIsoList.forEach(iso => {
-            const found = COUNTRIES_DB.find(c => c.iso === iso.toLowerCase() || c.code === iso.toUpperCase());
+            const found = COUNTRIES_DB.find(c => 
+              c.iso === iso.toLowerCase() || 
+              c.code.toLowerCase() === iso.toLowerCase() ||
+              (iso.toLowerCase() === 'deu' && c.iso === 'de') ||
+              (iso.toLowerCase() === 'arg' && c.iso === 'ar') ||
+              (iso.toLowerCase() === 'bra' && c.iso === 'br') ||
+              (iso.toLowerCase() === 'fra' && c.iso === 'fr') ||
+              (iso.toLowerCase() === 'jpn' && c.iso === 'jp')
+            );
             if (found && !laserBatch.some(x => x.code === found.code)) {
               laserBatch.push(found);
             }
@@ -12718,7 +12740,7 @@
             // 5. Visual explosion burst & audio & voice callout
             this.particles.spawnEliminationBurst(b.x, b.y, b.country.color || `rgb(${b.color})`);
             this.audio.playEliminate();
-            this.audio.speakElimination(b.country.name, true);
+            this.audio.speakElimination(b.country.name, false, 'laser');
 
             // 6. Update tray, killfeed, HUD
             this.pushKillfeed(b.country);
