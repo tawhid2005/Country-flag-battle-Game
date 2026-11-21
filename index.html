@@ -6309,31 +6309,49 @@
     <!-- Interactive Start / Unmute Game Overlay -->
     <div id="audio-overlay" role="button" tabindex="0">
       <div class="audio-icon-pulse" style="background: linear-gradient(135deg, #10b981, #00e5ff); box-shadow: 0 0 50px rgba(0, 229, 255, 0.8);">▶️</div>
-      <div class="audio-overlay-title" style="font-size: 18px; font-weight: 900; letter-spacing: 1px; background: linear-gradient(135deg, #ffffff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CHOOSE ARENA MODE TO PLAY</div>
-      <p class="audio-overlay-desc" style="max-width: 340px; font-size: 11.5px; color: #94a3b8; margin: 4px 0 8px 0;">Select your preferred 2D physics battle royale game mode to start:</p>
+      <!-- 1. All 3 Modes Selection on Main Hub URL -->
+      <div id="all-modes-launch-wrap" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="audio-overlay-title" style="font-size: 18px; font-weight: 900; letter-spacing: 1px; background: linear-gradient(135deg, #ffffff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CHOOSE ARENA MODE TO PLAY</div>
+        <p class="audio-overlay-desc" style="max-width: 340px; font-size: 11.5px; color: #94a3b8; margin: 4px 0 8px 0;">Select your preferred 2D physics battle royale game mode to start:</p>
 
-      <!-- 2 Game Mode Quick Select Cards on Launch -->
-      <div class="launch-mode-cards">
-        <button type="button" class="launch-mode-btn launch-hole" id="btn-launch-hole" title="Play Center Vortex Hole Mode">
-          <span class="launch-badge">🔥 MOST POPULAR</span>
-          <span class="launch-icon">🌀</span>
-          <span class="launch-name">Center Vortex Hole</span>
-          <span class="launch-sub">Cosmic Singularity &amp; Spokes</span>
-          <span class="launch-cta">▶️ PLAY VORTEX</span>
+        <!-- 3 Game Mode Quick Select Cards on Launch -->
+        <div class="launch-mode-cards">
+          <button type="button" class="launch-mode-btn launch-hole" id="btn-launch-hole" title="Play Center Vortex Hole Mode">
+            <span class="launch-badge">🔥 MOST POPULAR</span>
+            <span class="launch-icon">🌀</span>
+            <span class="launch-name">Center Vortex Hole</span>
+            <span class="launch-sub">Cosmic Singularity &amp; Spokes</span>
+            <span class="launch-cta">▶️ PLAY VORTEX</span>
+          </button>
+          <button type="button" class="launch-mode-btn launch-ring" id="btn-launch-ring" title="Play Outer Ring Escape Mode">
+            <span class="launch-badge classic">ESPORTS</span>
+            <span class="launch-icon">⭕</span>
+            <span class="launch-name">Outer Ring Escape</span>
+            <span class="launch-sub">Segmented Turbine &amp; Gate</span>
+            <span class="launch-cta">▶️ PLAY RING</span>
+          </button>
+          <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Play Laser Web Royale Mode">
+            <span class="launch-badge laser">⚡ NEW · VIRAL</span>
+            <span class="launch-icon">⚡</span>
+            <span class="launch-name">Laser Web Royale</span>
+            <span class="launch-sub">6 Nations Strand Combat</span>
+            <span class="launch-cta">▶️ PLAY LASER</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Dedicated Direct Game Start Card (Shown when entering /vortex, /ring, /laser or ?mode=...) -->
+      <div id="direct-mode-launch-wrap" style="display: none; flex-direction: column; align-items: center; width: 100%; max-width: 440px; text-align: center; padding: 4px 10px;">
+        <div id="direct-mode-badge" style="font-size: 9.5px; font-weight: 800; letter-spacing: 1px; padding: 3px 12px; border-radius: 999px; margin-bottom: 8px; text-transform: uppercase;">🔥 1-CLICK DIRECT ACCESS</div>
+        <div id="direct-mode-title" class="audio-overlay-title" style="font-size: 20px; font-weight: 900; letter-spacing: 0.8px; margin-bottom: 4px; line-height: 1.2;">CENTER VORTEX HOLE</div>
+        <p id="direct-mode-desc" class="audio-overlay-desc" style="max-width: 360px; font-size: 12px; color: #94a3b8; margin: 0 0 16px 0;">195 Nations • Gravitational Singularity &amp; 6 Kinetic Laser Spokes</p>
+
+        <button type="button" id="btn-direct-mode-launch" style="width: 100%; padding: 13px 20px; font-size: 15px; font-weight: 900; border-radius: 12px; background: linear-gradient(135deg, #10b981, #00e5ff); color: #020617; border: none; cursor: pointer; box-shadow: 0 0 30px rgba(0, 229, 255, 0.65); letter-spacing: 0.8px; transition: transform 0.15s ease, box-shadow 0.15s ease; touch-action: manipulation;">
+          ▶️ START PLAYING NOW
         </button>
-        <button type="button" class="launch-mode-btn launch-ring" id="btn-launch-ring" title="Play Outer Ring Escape Mode">
-          <span class="launch-badge classic">ESPORTS</span>
-          <span class="launch-icon">⭕</span>
-          <span class="launch-name">Outer Ring Escape</span>
-          <span class="launch-sub">Segmented Turbine &amp; Gate</span>
-          <span class="launch-cta">▶️ PLAY RING</span>
-        </button>
-        <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Play Laser Web Royale Mode">
-          <span class="launch-badge laser">⚡ NEW · VIRAL</span>
-          <span class="launch-icon">⚡</span>
-          <span class="launch-name">Laser Web Royale</span>
-          <span class="launch-sub">6 Nations Strand Combat</span>
-          <span class="launch-cta">▶️ PLAY LASER</span>
+
+        <button type="button" id="btn-show-all-modes" style="background: none; border: none; color: #94a3b8; font-size: 11.5px; text-decoration: underline; margin-top: 12px; cursor: pointer; padding: 4px 8px; touch-action: manipulation;">
+          Looking for another mode? Choose from all 3 modes
         </button>
       </div>
 
@@ -14540,7 +14558,16 @@
           try {
             const params = new URLSearchParams(window.location.search);
             const rawPath = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
-            const queryMode = (params.get('mode') || params.get('arena') || window.location.hash.replace('#', '') || rawPath).toLowerCase().trim();
+            const forcedMode = (typeof window !== 'undefined' && window.__FORCE_MODE__) ? window.__FORCE_MODE__ : null;
+            const queryMode = (forcedMode || params.get('mode') || params.get('arena') || window.location.hash.replace('#', '') || rawPath).toLowerCase().trim();
+
+            const allModesWrap = document.getElementById('all-modes-launch-wrap');
+            const directWrap = document.getElementById('direct-mode-launch-wrap');
+            const directTitle = document.getElementById('direct-mode-title');
+            const directDesc = document.getElementById('direct-mode-desc');
+            const directBadge = document.getElementById('direct-mode-badge');
+            const btnDirect = document.getElementById('btn-direct-mode-launch');
+            const btnShowAll = document.getElementById('btn-show-all-modes');
 
             const applyModeSeo = (modeName, titleText, descText) => {
               document.title = titleText;
@@ -14548,45 +14575,87 @@
               if (metaDesc) metaDesc.setAttribute('content', descText);
               const metaTitle = document.querySelector('meta[name="title"]');
               if (metaTitle) metaTitle.setAttribute('content', titleText);
-              if (this.dom.launchOverlay) {
-                this.dom.launchOverlay.classList.add('hidden');
-                this.dom.launchOverlay.style.display = 'none';
-              }
             };
 
+            let chosenDirectMode = null;
+
             if (queryMode === 'vortex' || queryMode === 'hole' || queryMode === 'singularity') {
-              console.log('[DeepLink] 1-Click Auto-launching Center Vortex Hole Battle from URL');
+              chosenDirectMode = 'hole';
+              this.arenaTemplate = 'hole';
               applyModeSeo(
                 'vortex',
                 'Vortex Hole Battle Royale (195 Flags) — Center Singularity Drop | Country Flag Battle',
                 'Play Center Vortex Hole Flag Battle Royale online! 195 sovereign nation marbles drop into a cosmic singularity vortex arena with rotating kinetic laser spokes.'
               );
-              startGameAndAudio('hole');
-              if (this.humanStreamer?.showActionFeedback) this.humanStreamer.showActionFeedback('🌀 VORTEX HOLE LOADED', '#38bdf8');
+              if (allModesWrap) allModesWrap.style.display = 'none';
+              if (directWrap) {
+                directWrap.style.display = 'flex';
+                if (directBadge) { directBadge.textContent = '🔥 1-CLICK DIRECT ACCESS'; directBadge.style.background = 'rgba(236,72,153,0.2)'; directBadge.style.color = '#f472b6'; directBadge.style.border = '1px solid #ec4899'; }
+                if (directTitle) { directTitle.textContent = '🌀 CENTER VORTEX HOLE BATTLE'; directTitle.style.background = 'linear-gradient(135deg, #f472b6, #ec4899)'; directTitle.style.webkitBackgroundClip = 'text'; directTitle.style.webkitTextFillColor = 'transparent'; }
+                if (directDesc) directDesc.textContent = '195 Nations • Gravitational Singularity & 6 Kinetic Laser Spokes';
+                if (btnDirect) btnDirect.textContent = '▶️ START VORTEX HOLE NOW';
+              }
             } else if (queryMode === 'ring' || queryMode === 'escape' || queryMode === 'turbine') {
-              console.log('[DeepLink] 1-Click Auto-launching Outer Ring Escape Royale from URL');
+              chosenDirectMode = 'ring';
+              this.arenaTemplate = 'ring';
               applyModeSeo(
                 'ring',
                 'Ring Escape Royale (195 Flags) — Concentric Ring Escape Arena | Country Flag Battle',
                 'Play Ring Escape Country Royale online! Dual-rail rotating turbine arena with timed perimeter escape gates, pinball bumpers, and kinetic paddles.'
               );
-              startGameAndAudio('ring');
-              if (this.humanStreamer?.showActionFeedback) this.humanStreamer.showActionFeedback('⭕ RING ESCAPE LOADED', '#10b981');
+              if (allModesWrap) allModesWrap.style.display = 'none';
+              if (directWrap) {
+                directWrap.style.display = 'flex';
+                if (directBadge) { directBadge.textContent = '⭕ 1-CLICK DIRECT ACCESS'; directBadge.style.background = 'rgba(16,185,129,0.2)'; directBadge.style.color = '#34d399'; directBadge.style.border = '1px solid #10b981'; }
+                if (directTitle) { directTitle.textContent = '⭕ OUTER RING ESCAPE ROYALE'; directTitle.style.background = 'linear-gradient(135deg, #34d399, #10b981)'; directTitle.style.webkitBackgroundClip = 'text'; directTitle.style.webkitTextFillColor = 'transparent'; }
+                if (directDesc) directDesc.textContent = '195 Nations • Dual Revolving Turbine Arena & Timed Exit Gate';
+                if (btnDirect) btnDirect.textContent = '▶️ START RING ESCAPE NOW';
+              }
             } else if (queryMode === 'laser' || queryMode === 'web' || queryMode === 'royale') {
-              console.log('[DeepLink] 1-Click Auto-launching Laser Web Royale from URL');
+              chosenDirectMode = 'laser';
+              this.arenaTemplate = 'laser';
               applyModeSeo(
                 'laser',
                 'Laser Web Royale (195 Flags) — Laser Slicing Sudden Death Arena | Country Flag Battle',
                 'Play Laser Web Royale online! 6 sovereign nations tethered by dynamic cutting laser strands with live link badges, cutting shockwaves, and 1v1 sudden death.'
               );
-              startGameAndAudio('laser');
-              if (this.humanStreamer?.showActionFeedback) this.humanStreamer.showActionFeedback('⚡ LASER WEB ROYALE LOADED', '#f59e0b');
+              if (allModesWrap) allModesWrap.style.display = 'none';
+              if (directWrap) {
+                directWrap.style.display = 'flex';
+                if (directBadge) { directBadge.textContent = '⚡ 1-CLICK DIRECT ACCESS'; directBadge.style.background = 'rgba(245,158,11,0.2)'; directBadge.style.color = '#fbbf24'; directBadge.style.border = '1px solid #f59e0b'; }
+                if (directTitle) { directTitle.textContent = '⚡ LASER WEB ROYALE'; directTitle.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)'; directTitle.style.webkitBackgroundClip = 'text'; directTitle.style.webkitTextFillColor = 'transparent'; }
+                if (directDesc) directDesc.textContent = '6 Nations • Dynamic Cutting Laser Strands & 1v1 Sudden Death Climax';
+                if (btnDirect) btnDirect.textContent = '▶️ START LASER WEB ROYALE NOW';
+              }
+            } else {
+              // Main Hub URL: user arrived without mode parameter -> Display the 3 options to choose!
+              if (allModesWrap) allModesWrap.style.display = 'flex';
+              if (directWrap) directWrap.style.display = 'none';
+            }
+
+            // Wire Direct Button Click
+            if (btnDirect) {
+              btnDirect.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                startGameAndAudio(chosenDirectMode || this.arenaTemplate || 'hole');
+              };
+            }
+
+            // Wire Switch to All Modes Click
+            if (btnShowAll) {
+              btnShowAll.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (directWrap) directWrap.style.display = 'none';
+                if (allModesWrap) allModesWrap.style.display = 'flex';
+              };
             }
           } catch (e) {
             console.warn('[DeepLink] Error checking URL mode:', e);
           }
         };
-        setTimeout(checkUrlDeepLinkAndLaunch, 300);
+        setTimeout(checkUrlDeepLinkAndLaunch, 150);
 
         const btnLaunchHole = document.getElementById('btn-launch-hole');
         const btnLaunchRing = document.getElementById('btn-launch-ring');
