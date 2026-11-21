@@ -2380,6 +2380,39 @@
       pointer-events: auto;
     }
 
+    @media (max-height: 720px), (max-width: 420px) {
+      #victory-modal {
+        padding: 12px 10px !important;
+        overflow-y: auto !important;
+        justify-content: flex-start !important;
+      }
+      .winner-card-container {
+        width: 130px !important;
+        height: 130px !important;
+        margin-bottom: 6px !important;
+      }
+      .winner-country-title {
+        font-size: 20px !important;
+        margin-bottom: 2px !important;
+      }
+      .winner-subtitle {
+        font-size: 11px !important;
+        margin-bottom: 8px !important;
+      }
+      .victory-stats-grid {
+        margin-bottom: 8px !important;
+        gap: 6px !important;
+      }
+      .stat-card {
+        padding: 6px 10px !important;
+      }
+      .subscribe-banner {
+        padding: 6px 12px !important;
+        margin-bottom: 8px !important;
+        font-size: 11px !important;
+      }
+    }
+
     /* Golden Celebration Sweeping Spotlights */
     .victory-spotlight-left {
       position: absolute;
@@ -5428,6 +5461,8 @@
       display: flex;
       gap: 5px;
       align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
       margin-bottom: 6px;
       transition: opacity 0.3s ease;
       z-index: 25;
@@ -11085,6 +11120,9 @@
                 x: b.body.velocity.x + rx,
                 y: Math.min(b.body.velocity.y, ry)
               });
+            } else if (b.alive && typeof b.vx === 'number') {
+              b.vx += (Math.random() - 0.5) * 3.0;
+              b.vy += (Math.random() - 0.5) * 3.0;
             }
           }
         }
@@ -11130,6 +11168,18 @@
                   y: b.body.velocity.y + Math.sin(angle) * boost
                 });
                 this.app.particles.spawnBumperHit(b.body.position.x, b.body.position.y, '#00e5ff');
+                break;
+              }
+            } else if (b.alive && typeof b.x === 'number') {
+              const dx = b.x - x;
+              const dy = b.y - y;
+              const dist = Math.hypot(dx, dy);
+              if (dist < 45) {
+                const boost = isManual ? 3.5 : 2.2;
+                const angle = Math.atan2(dy, dx) || -Math.PI / 2;
+                b.vx += Math.cos(angle) * boost;
+                b.vy += Math.sin(angle) * boost;
+                this.app.particles.spawnBumperHit(b.x, b.y, '#00e5ff');
                 break;
               }
             }
@@ -14388,6 +14438,15 @@
 
       // --- 10. EVENT LISTENERS & STREAMER DRAWER ---
       setupEventListeners() {
+        // Universal Mobile & PC Audio Unlocker on first user touch / click
+        const unlockAudioOnGesture = () => {
+          if (this.audio) this.audio.init();
+          window.removeEventListener('pointerdown', unlockAudioOnGesture);
+          window.removeEventListener('touchstart', unlockAudioOnGesture);
+        };
+        window.addEventListener('pointerdown', unlockAudioOnGesture, { passive: true });
+        window.addEventListener('touchstart', unlockAudioOnGesture, { passive: true });
+
         const startGameAndAudio = (tmpl = null) => {
           if (tmpl && (tmpl === 'hole' || tmpl === 'ring' || tmpl === 'laser')) {
             this.setArenaTemplate(tmpl);
