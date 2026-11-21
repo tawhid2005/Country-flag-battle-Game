@@ -8123,11 +8123,17 @@
             try {
               const voices = window.speechSynthesis.getVoices();
               if (voices && voices.length) {
-                // Priority to standard English voices
-                const match = voices.find(v => v.lang && (v.lang.startsWith('en-US') || v.lang.startsWith('en_US')) && !v.name.includes('Bad News')) ||
-                              voices.find(v => v.lang && v.lang.startsWith('en')) ||
-                              voices[0];
-                if (match) this.preferredVoice = match;
+                // 1st Priority: High-Fidelity Natural / Neural Studio Voices (Edge/Chrome/Safari)
+                const neuralMatch = voices.find(v => 
+                  /Natural|Neural|Online|Google US English|Microsoft Aria|Microsoft Guy|Microsoft Jenny|Microsoft David|Microsoft Mark|Samantha|Daniel/i.test(v.name) && 
+                  v.lang && (v.lang.startsWith('en-US') || v.lang.startsWith('en_US') || v.lang.startsWith('en-GB') || v.lang.startsWith('en'))
+                );
+                // 2nd Priority: Any US English Voice
+                const usMatch = voices.find(v => v.lang && (v.lang.startsWith('en-US') || v.lang.startsWith('en_US')) && !v.name.includes('Bad News'));
+                // 3rd Priority: Any English Voice
+                const enMatch = voices.find(v => v.lang && v.lang.startsWith('en'));
+
+                this.preferredVoice = neuralMatch || usMatch || enMatch || voices[0];
               }
             } catch (e) {}
           };
@@ -8168,8 +8174,10 @@
         return this.aiVoiceEnabled;
       }
 
+      // Professional Dynamic Esports Announcer Voice Engine
       speakElimination(countryName, force = false) {
         if (this.muted || !this.aiVoiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
+
         // Suppress elimination announcement if round is ending or only 1 country remains so Champion announcement is instant!
         if (this.app) {
           if (this.app.isRoundOver) return;
@@ -8182,20 +8190,68 @@
             }
           }
         }
+
         try {
           const now = Date.now();
-          if (!force && (now - (this._lastVoiceTime || 0) < 1200)) return;
+          // Dynamic esports pacing: crisp callouts without lag or queue clogging
+          if (!force && (now - (this._lastVoiceTime || 0) < 950)) return;
           this._lastVoiceTime = now;
 
           if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-          if (force && window.speechSynthesis.speaking) {
+          // Clear any stale utterance to keep voice 100% in sync with live physics
+          if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel();
           }
 
-          const utterance = new SpeechSynthesisUtterance(`${countryName} eliminated!`);
-          utterance.rate = 1.20;
-          utterance.pitch = 1.0;
-          utterance.volume = 0.95;
+          // Clean national name pronunciation formatting
+          let cleanName = (countryName || 'Competitor').replace(/\s*\([^)]*\)/g, '').trim();
+          if (cleanName === 'USA' || cleanName === 'US') cleanName = 'United States';
+          else if (cleanName === 'UK' || cleanName === 'GBR') cleanName = 'United Kingdom';
+          else if (cleanName === 'UAE') cleanName = 'United Arab Emirates';
+          else if (cleanName === 'KSA') cleanName = 'Saudi Arabia';
+          else if (cleanName === 'KOR') cleanName = 'South Korea';
+
+          const template = this.app ? this.app.arenaTemplate : 'ring';
+          const remaining = this.app && this.app.balls ? this.app.balls.length : 12;
+
+          // Professional dynamic esports caster commentary
+          let phrase = '';
+          if (remaining === 10) {
+            phrase = `${cleanName} eliminated! Top 10 nations remain!`;
+          } else if (remaining === 5) {
+            phrase = `${cleanName} is out! Top 5 battle underway!`;
+          } else if (remaining === 3) {
+            phrase = `${cleanName} takes third place! Down to the final duel!`;
+          } else if (template === 'ring') {
+            const ringPhrases = [
+              `${cleanName} has escaped the ring!`,
+              `${cleanName} knocked out of the ring!`,
+              `${cleanName} falls out of the arena!`,
+              `${cleanName} eliminated from the ring!`,
+              `${cleanName} slips through the outer gate!`
+            ];
+            phrase = ringPhrases[Math.floor(Math.random() * ringPhrases.length)];
+          } else if (template === 'laser') {
+            const laserPhrases = [
+              `${cleanName} sliced by the laser web!`,
+              `${cleanName} severed from the grid!`,
+              `${cleanName} eliminated in combat!`
+            ];
+            phrase = laserPhrases[Math.floor(Math.random() * laserPhrases.length)];
+          } else {
+            const holePhrases = [
+              `${cleanName} swallowed by the black hole!`,
+              `${cleanName} pulled into the cosmic vortex!`,
+              `${cleanName} falls into the abyss!`,
+              `${cleanName} eliminated!`
+            ];
+            phrase = holePhrases[Math.floor(Math.random() * holePhrases.length)];
+          }
+
+          const utterance = new SpeechSynthesisUtterance(phrase);
+          utterance.rate = 1.14; // Confident, energetic broadcast cadence
+          utterance.pitch = 1.05; // Authoritative caster tone
+          utterance.volume = 1.0;
           if (this.preferredVoice) utterance.voice = this.preferredVoice;
           window.speechSynthesis.speak(utterance);
         } catch (e) {}
@@ -11125,7 +11181,8 @@
 
         const onTick = () => {
           if (!this.isGameStarted || this._interfacePaused) return;
-          if (document.hidden) {
+          // On PC: When tab is hidden / minimized, execute continuous background physics & match progression
+          if (document.hidden && !this.isMobileDevice) {
             const now = Date.now();
             const elapsed = Math.min(250, now - (this._lastBgTickTime || now));
             this._lastBgTickTime = now;
@@ -11135,7 +11192,7 @@
           }
         };
 
-        // Layer 1: Dedicated Web Worker Ticker (Clean OS thread isolation, zero main thread locks)
+        // Layer 1: Dedicated Web Worker Ticker (immune to Chrome main-thread background throttling)
         try {
           const workerCode = `
             let timer = null;
@@ -11144,7 +11201,7 @@
                 if (!timer) {
                   timer = setInterval(function() {
                     self.postMessage('tick');
-                  }, 40);
+                  }, 35);
                 }
               } else if (e.data === 'stop') {
                 if (timer) {
@@ -11166,10 +11223,10 @@
         } catch (e) {
           // Layer 2: High-frequency Fallback Interval if Worker unavailable
           if (this._bgFallbackInterval) clearInterval(this._bgFallbackInterval);
-          this._bgFallbackInterval = setInterval(onTick, 50);
+          this._bgFallbackInterval = setInterval(onTick, 40);
         }
 
-        // Layer 3: Visibility change & Window focus real-time sync (Capped to prevent rubberbanding)
+        // Layer 3: Visibility change & Window focus real-time sync
         const onTabResume = () => {
           const now = Date.now();
           const elapsed = now - (this._lastBgTickTime || now);
@@ -11180,24 +11237,66 @@
           this._lastTimestamp = performance.now();
           this._physicsAccumulator = 0; // Clear accumulator: prevents rubberband backwards glitch
         };
+
+        // User Constraint Enforcer:
+        // - PC: Continuous 24/7 background playback without tab pausing no matter how many tabs are open!
+        // - Phone (Mobile): Automatically pause when exiting browser to save battery & data!
         document.addEventListener('visibilitychange', () => {
-          if (!document.hidden) onTabResume();
+          if (this.isMobileDevice) {
+            if (document.hidden) {
+              // Phone: User left the browser app -> Automatically stop / pause game
+              this.setInterfacePaused(true);
+            } else {
+              // Phone: User returned to browser app -> Automatically resume game
+              this.setInterfacePaused(false);
+              onTabResume();
+            }
+          } else {
+            // PC: Never pause! Always keep game running 24/7 in background across tabs
+            if (!document.hidden) {
+              onTabResume();
+            }
+          }
         });
-        window.addEventListener('focus', onTabResume);
+
+        window.addEventListener('focus', () => {
+          if (!this.isMobileDevice) {
+            onTabResume();
+          }
+        });
       }
 
       runBackgroundCatchup(totalElapsedMs) {
-        if (!this.isGameStarted || this.isRoundOver || this._interfacePaused) return;
+        if (!this.isGameStarted || this._interfacePaused) return;
+
+        // PC Background Continuous Match Advancer:
+        // If a round finished while hidden in background on PC, advance victory countdown & auto-launch next round!
+        if (this.isRoundOver) {
+          if (!this._bgRoundOverTime) this._bgRoundOverTime = Date.now();
+          const celebrationElapsed = Date.now() - this._bgRoundOverTime;
+          if (celebrationElapsed >= 3800) {
+            this._bgRoundOverTime = null;
+            if (this.dom.victoryModal) this.dom.victoryModal.classList.remove('show');
+            this.roundNumber++;
+            this.startNewRound();
+          }
+          return;
+        }
+        this._bgRoundOverTime = null;
+
         const simSpeed = typeof this.gameSpeed === 'number' ? this.gameSpeed : 1.0;
-        let remainingMs = Math.min(180, Math.max(16.666, totalElapsedMs * simSpeed));
+        let remainingMs = Math.min(250, Math.max(16.666, totalElapsedMs * simSpeed));
         const fixedStepMs = 16.666;
         let iterations = 0;
 
-        // Rock-solid clamp: max 3 iterations prevents any main thread freezing / hanging
-        while (remainingMs >= fixedStepMs && iterations < 3) {
+        // Clean physics stepping & autonomous AI player update in background
+        while (remainingMs >= fixedStepMs && iterations < 4) {
           this.Engine.update(this.engine, fixedStepMs);
           this.updateCircularArena(1);
           this.checkBallPhysicsAndEliminations(fixedStepMs / 1000);
+          if (this.humanStreamer) {
+            this.humanStreamer.update(fixedStepMs / 1000);
+          }
           remainingMs -= fixedStepMs;
           iterations++;
           if (this.isRoundOver) break;
