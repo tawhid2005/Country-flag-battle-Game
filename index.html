@@ -8505,19 +8505,19 @@
       playLaserCut() {
         if (this.muted || !this.ctx) return;
         const now = this.ctx.currentTime;
-        if (now - (this._lastLaserCutTime || 0) < 0.035) return;
+        if (now - (this._lastLaserCutTime || 0) < 0.03) return;
         this._lastLaserCutTime = now;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(1400, now);
-        osc.frequency.exponentialRampToValueAtTime(320, now + 0.045);
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+        osc.frequency.setValueAtTime(1850, now);
+        osc.frequency.exponentialRampToValueAtTime(240, now + 0.05);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.05);
+        osc.stop(now + 0.055);
       }
 
       playLaserBounce() {
@@ -12010,6 +12010,8 @@
         if (this.arenaTemplate === 'laser') {
           this.laserSparks = [];
           this.laserWinner = null;
+          this.laserSlices = [];
+          this.laserDuelActive = false;
           this.laserIntroTime = 1.0;
           this.laserEliminatedSet = new Set();
           const laserColors = [
@@ -12835,16 +12837,27 @@
       onLaserCut(owner, x, y) {
         this.audio.playLaserCut();
         if (!this.laserSparks) this.laserSparks = [];
-        if (this.laserSparks.length > 200) return;
-        for (let i = 0; i < 3; i++) {
-          const a = Math.random() * Math.PI * 2;
-          const s = 1.2 + Math.random() * 2.8;
-          this.laserSparks.push({
+        if (this.laserSparks.length < 200) {
+          for (let i = 0; i < 4; i++) {
+            const a = Math.random() * Math.PI * 2;
+            const s = 1.5 + Math.random() * 3.5;
+            this.laserSparks.push({
+              x, y,
+              vx: Math.cos(a) * s,
+              vy: Math.sin(a) * s,
+              life: 1.0,
+              color: owner.color
+            });
+          }
+        }
+        if (!this.laserSlices) this.laserSlices = [];
+        if (this.laserSlices.length < 35) {
+          this.laserSlices.push({
             x, y,
-            vx: Math.cos(a) * s,
-            vy: Math.sin(a) * s,
-            life: 1.0,
-            color: owner.color
+            radius: 3,
+            maxRadius: 22,
+            color: owner.color,
+            life: 1.0
           });
         }
       }
@@ -13020,8 +13033,49 @@
         // Refresh live links count on top
         this.renderLaserLeaderboard();
 
-        // 7. Victory Detection
+        // 7. 1v1 Final Duel Sudden Death Climax in Laser Web Royale
         const surviving = this.balls.filter(b => b.alive);
+        if (surviving.length === 2) {
+          if (!this.laserDuelActive) {
+            this.laserDuelActive = true;
+            if (this.dom.duelBanner) {
+              if (this.dom.leaderboardStrip) this.dom.leaderboardStrip.style.display = 'none';
+              this.dom.duelBanner.classList.remove('hidden');
+              this.dom.duelBanner.style.animation = 'none';
+              this.dom.duelBanner.offsetHeight;
+              this.dom.duelBanner.style.animation = '';
+
+              if (this.dom.climaxVignette) {
+                this.dom.climaxVignette.classList.remove('active');
+                this.dom.climaxVignette.classList.add('duel-mode');
+              }
+
+              const b1 = surviving[0];
+              const b2 = surviving[1];
+              if (this.dom.duelName1) this.dom.duelName1.textContent = b1.country.name;
+              if (this.dom.duelName2) this.dom.duelName2.textContent = b2.country.name;
+
+              if (this.dom.duelFlag1 && b1.flagCanvas) {
+                const c1 = this.dom.duelFlag1.getContext('2d');
+                c1.clearRect(0, 0, 28, 28);
+                c1.drawImage(b1.flagCanvas, 0, 0, 28, 28);
+              }
+              if (this.dom.duelFlag2 && b2.flagCanvas) {
+                const c2 = this.dom.duelFlag2.getContext('2d');
+                c2.clearRect(0, 0, 28, 28);
+                c2.drawImage(b2.flagCanvas, 0, 0, 28, 28);
+              }
+
+              this.audio.playDuelStinger();
+              this.audio.startHeartbeatLoop();
+              if (this.audio.playTensionRiser) this.audio.playTensionRiser();
+            }
+          }
+        } else {
+          this.laserDuelActive = false;
+        }
+
+        // 8. Victory Detection
         if (surviving.length === 1 && !this.laserWinner) {
           this.laserWinner = surviving[0];
           this.triggerVictory(this.laserWinner);
@@ -13402,32 +13456,36 @@
           ctx.arc(cx, cy, rArena, 0, Math.PI * 2);
           ctx.stroke();
 
-          // B. Laser Strands (Glow pass + Core pass + Wall Nodes)
+          // B. Laser Strands (Glow pass + Core pass + Wall Nodes + Critical Flashing)
           ctx.globalCompositeOperation = 'lighter';
           ctx.lineCap = 'round';
           for (const b of this.balls) {
             if (!b.alive || !b.links || !b.links.length) continue;
             const c = b.color, L = b.links;
+            const linkCount = Math.floor(L.length / 2);
+            const isCritical = linkCount <= 10;
+            const flashColor = isCritical && (Math.floor(Date.now() / 140) % 2 === 0) ? '239, 68, 68' : c;
+
             ctx.beginPath();
             for (let k = 0; k < L.length; k += 2) {
               ctx.moveTo(b.x, b.y);
               ctx.lineTo(cx + L[k] * rArena, cy + L[k + 1] * rArena);
             }
-            ctx.strokeStyle = `rgba(${c}, 0.16)`;
-            ctx.lineWidth = 5.5;
+            ctx.strokeStyle = `rgba(${flashColor}, ${isCritical ? 0.38 : 0.16})`;
+            ctx.lineWidth = isCritical ? 6.5 : 5.5;
             ctx.stroke();
 
-            ctx.strokeStyle = `rgba(${c}, 0.88)`;
-            ctx.lineWidth = 1.6;
+            ctx.strokeStyle = `rgba(${flashColor}, ${isCritical ? 1.0 : 0.88})`;
+            ctx.lineWidth = isCritical ? 2.2 : 1.6;
             ctx.stroke();
 
             // Glowing anchor dots on perimeter
-            ctx.fillStyle = `rgba(${c}, 0.95)`;
+            ctx.fillStyle = `rgba(${flashColor}, 0.95)`;
             ctx.beginPath();
             for (let k = 0; k < L.length; k += 2) {
               const ax = cx + L[k] * rArena, ay = cy + L[k + 1] * rArena;
               ctx.moveTo(ax + 3, ay);
-              ctx.arc(ax, ay, 2.5, 0, Math.PI * 2);
+              ctx.arc(ax, ay, isCritical ? 3.2 : 2.5, 0, Math.PI * 2);
             }
             ctx.fill();
           }
@@ -13439,6 +13497,24 @@
               ctx.beginPath();
               ctx.arc(s.x, s.y, 2.5 * s.life + 1, 0, Math.PI * 2);
               ctx.fill();
+            }
+          }
+
+          // D. Holographic Laser Slicing Shockwave Arcs
+          if (this.laserSlices) {
+            for (let i = this.laserSlices.length - 1; i >= 0; i--) {
+              const sl = this.laserSlices[i];
+              sl.radius += 2.0;
+              sl.life -= 0.085;
+              if (sl.life <= 0) {
+                this.laserSlices.splice(i, 1);
+                continue;
+              }
+              ctx.strokeStyle = `rgba(${sl.color}, ${sl.life * 0.9})`;
+              ctx.lineWidth = 2.2 * sl.life;
+              ctx.beginPath();
+              ctx.arc(sl.x, sl.y, sl.radius, 0, Math.PI * 2);
+              ctx.stroke();
             }
           }
           ctx.restore();
@@ -14072,13 +14148,58 @@
           ctx.restore();
         }
 
-        // 7. Country-specific glowing aura ring in Laser Royale
+        // 7. Country-specific glowing aura ring & Floating Live Links Counter in Laser Royale
         if (this.arenaTemplate === 'laser' && ball.color) {
+          const linkCount = ball.links ? Math.floor(ball.links.length / 2) : 0;
+          const isCritical = linkCount <= 10;
+
+          // A. Glowing Aura Ring around Marble
           ctx.beginPath();
-          ctx.arc(0, 0, r + 1.6, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgb(${ball.color})`;
-          ctx.lineWidth = 2.6;
+          ctx.arc(0, 0, r + 1.8, 0, Math.PI * 2);
+          ctx.strokeStyle = isCritical ? '#ef4444' : `rgb(${ball.color})`;
+          ctx.lineWidth = isCritical ? 3.4 : 2.6;
           ctx.stroke();
+
+          // If critical (<=10), pulsating outer hazard warning ring
+          if (isCritical) {
+            const dangerPulse = 0.5 + Math.sin(Date.now() * 0.012) * 0.5;
+            ctx.save();
+            ctx.strokeStyle = `rgba(239, 68, 68, ${0.4 + dangerPulse * 0.55})`;
+            ctx.lineWidth = 2.5 + dangerPulse * 2.5;
+            ctx.beginPath();
+            ctx.arc(0, 0, r + 4.5, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // B. Floating Live Link Badge above Marble
+          ctx.save();
+          const badgeY = -r - 12;
+          const badgeText = `${isCritical ? '⚠️' : '⚡'}${linkCount}`;
+          ctx.font = 'bold 9.5px var(--font-display, sans-serif)';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const textWidth = ctx.measureText(badgeText).width;
+          const padX = 5, badgeH = 15;
+          const badgeW = textWidth + padX * 2;
+
+          // Pill Background with glowing border
+          ctx.fillStyle = isCritical ? 'rgba(220, 38, 38, 0.95)' : 'rgba(15, 23, 42, 0.88)';
+          ctx.strokeStyle = isCritical ? '#fca5a5' : `rgba(${ball.color}, 0.95)`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(-badgeW / 2, badgeY - badgeH / 2, badgeW, badgeH, 999);
+          } else {
+            ctx.rect(-badgeW / 2, badgeY - badgeH / 2, badgeW, badgeH);
+          }
+          ctx.fill();
+          ctx.stroke();
+
+          // Pill Text
+          ctx.fillStyle = isCritical ? '#ffffff' : '#fbbf24';
+          ctx.fillText(badgeText, 0, badgeY);
+          ctx.restore();
         }
 
         // 8. Celebratory Winner Crown & Radiant Laurel Aura
