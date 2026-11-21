@@ -2230,6 +2230,25 @@
       }
     }
 
+    @keyframes actionFadeUp {
+      0% { opacity: 0; transform: translateY(10px) scale(0.92); }
+      20% { opacity: 1; transform: translateY(0) scale(1.05); }
+      80% { opacity: 1; transform: translateY(-4px) scale(1); }
+      100% { opacity: 0; transform: translateY(-16px) scale(0.95); }
+    }
+    .hud-hype-strip {
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .hud-hype-strip:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+    }
+    .hud-hype-strip:active {
+      transform: scale(0.97);
+    }
+    
     /* Stream Engagement Hype Bar */
     .hud-hype-strip {
       display: flex;
@@ -5289,6 +5308,8 @@
       display: none !important;
     }
     .streamer-key-pill {
+      cursor: pointer;
+      touch-action: manipulation;
       background: rgba(8, 14, 32, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 7px;
@@ -10590,6 +10611,24 @@
         }
 
         setTimeout(() => this.setKeyActive('space', false), 280);
+      }
+
+      showActionFeedback(text, color = '#00e5ff') {
+        try {
+          let container = document.getElementById('action-feedback-toast-wrap');
+          if (!container) {
+            container = document.createElement('div');
+            container.id = 'action-feedback-toast-wrap';
+            container.style.cssText = 'position:absolute; bottom:145px; left:50%; transform:translateX(-50%); z-index:90; pointer-events:none; display:flex; flex-direction:column; align-items:center; gap:6px; width:max-content;';
+            const vp = this.app.viewport || document.getElementById('broadcast-viewport');
+            if (vp) vp.appendChild(container);
+          }
+          const pill = document.createElement('div');
+          pill.style.cssText = 'background:rgba(8,14,32,0.92); border:1.5px solid ' + color + '; color:' + color + '; padding:5px 14px; border-radius:999px; font-family:var(--font-display,sans-serif); font-size:11px; font-weight:900; letter-spacing:0.8px; box-shadow:0 0 18px ' + color + '80; animation:actionFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards; text-transform:uppercase;';
+          pill.textContent = text;
+          container.appendChild(pill);
+          setTimeout(() => { if (pill && pill.parentNode) pill.remove(); }, 950);
+        } catch(_) {}
       }
 
       triggerFlickClick(x, y, isManual = false) {
