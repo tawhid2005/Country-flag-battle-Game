@@ -7802,10 +7802,21 @@
     class ProFlagTextureEngine {
       constructor() {
         this.cache = new Map();
+        this._cdnQueue = [];
+        this._concurrency = 8;
+        this._activeWorkers = 0;
+      }
+
+      preloadAll(countries, size = 128) {
+        if (!countries || !Array.isArray(countries)) return;
+        for (let i = 0; i < countries.length; i++) {
+          this.getFlagCanvas(countries[i], size);
+        }
       }
 
       getFlagCanvas(country, size = 128) {
-        const key = `${country.id}_${size}`;
+        if (!country) return document.createElement('canvas');
+        const key = `${country.id || country.code || country.iso}_${size}`;
         if (this.cache.has(key)) return this.cache.get(key);
 
         const canvas = document.createElement('canvas');
@@ -7813,35 +7824,45 @@
         canvas.height = size;
         const ctx = canvas.getContext('2d');
 
-        // Draw instant authentic procedural vector flag
+        // Draw instant authentic procedural vector flag as initial texture
         this.drawVectorFlag(ctx, country, size);
 
-        // Progressive CDN high-res load (Staggered background queue prevents 195 simultaneous HTTP requests & PC entry lag)
-        if (!this._cdnQueue) {
-          this._cdnQueue = [];
-          this._cdnRunning = false;
+        // Queue for parallel real high-definition FlagCDN loading
+        if (country.iso) {
+          this._cdnQueue.push({ country, size, ctx, canvas });
+          this._scheduleDrain();
         }
-        this._cdnQueue.push({ country, size, ctx });
-        if (!this._cdnRunning) this._drainCdnQueue();
 
         this.cache.set(key, canvas);
         return canvas;
       }
 
-      _drainCdnQueue() {
-        if (!this._cdnQueue || this._cdnQueue.length === 0) {
-          this._cdnRunning = false;
-          return;
+      _scheduleDrain() {
+        while (this._activeWorkers < this._concurrency && this._cdnQueue.length > 0) {
+          const item = this._cdnQueue.shift();
+          this._activeWorkers++;
+          this._loadFlag(item);
         }
-        this._cdnRunning = true;
-        const item = this._cdnQueue.shift();
+      }
+
+      _loadFlag(item) {
         const img = new Image();
         img.crossOrigin = 'anonymous';
-        img.src = `https://flagcdn.com/w160/${item.country.iso}.png`;
+        img.src = `https://flagcdn.com/w160/${item.country.iso.toLowerCase()}.png`;
+
+        const finish = () => {
+          img.onload = null;
+          img.onerror = null;
+          this._activeWorkers--;
+          this._scheduleDrain();
+        };
+
         img.onload = () => {
           try {
             item.ctx.clearRect(0, 0, item.size, item.size);
             item.ctx.save();
+            item.ctx.imageSmoothingEnabled = true;
+            item.ctx.imageSmoothingQuality = 'high';
             item.ctx.beginPath();
             item.ctx.arc(item.size / 2, item.size / 2, item.size / 2, 0, Math.PI * 2);
             item.ctx.clip();
@@ -7851,14 +7872,11 @@
             item.ctx.drawImage(img, (item.size - nw) / 2, (item.size - nh) / 2, nw, nh);
             item.ctx.restore();
           } catch(e) {}
-          img.onload = null;
-          img.onerror = null;
-          setTimeout(() => this._drainCdnQueue(), 45); // Smooth 45ms stagger prevents UI hitching
+          finish();
         };
+
         img.onerror = () => {
-          img.onload = null;
-          img.onerror = null;
-          setTimeout(() => this._drainCdnQueue(), 20);
+          finish();
         };
       }
 
@@ -8152,6 +8170,18 @@
 
       speakElimination(countryName, force = false) {
         if (this.muted || !this.aiVoiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return;
+        // Suppress elimination announcement if round is ending or only 1 country remains so Champion announcement is instant!
+        if (this.app) {
+          if (this.app.isRoundOver) return;
+          if (this.app.balls) {
+            if (this.app.arenaTemplate === 'laser') {
+              const alive = this.app.balls.filter(b => b.alive);
+              if (alive.length <= 1) return;
+            } else if (this.app.balls.length <= 1) {
+              return;
+            }
+          }
+        }
         try {
           const now = Date.now();
           if (!force && (now - (this._lastVoiceTime || 0) < 1200)) return;
@@ -8466,20 +8496,20 @@
             clearTimeout(this._speakTimeout);
             this._speakTimeout = null;
           }
-          try { window.speechSynthesis.cancel(); } catch(e) {}
+          // Immediate zero-latency cancel and voice launch
+          try {
+            window.speechSynthesis.cancel();
+            if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+          } catch(e) {}
           this.pendingVoiceCount = 0;
-          setTimeout(() => {
-            try {
-              if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-              const text = `${countryName} is the Champion! Winner! Outlasted all nations!`;
-              const utterance = new SpeechSynthesisUtterance(text);
-              utterance.rate = 1.05;
-              utterance.pitch = 1.08;
-              utterance.volume = 1.0;
-              if (this.preferredVoice) utterance.voice = this.preferredVoice;
-              window.speechSynthesis.speak(utterance);
-            } catch (err) {}
-          }, 120);
+
+          const text = `${countryName} is the Champion! Winner! Outlasted all nations!`;
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 1.15;
+          utterance.pitch = 1.10;
+          utterance.volume = 1.0;
+          if (this.preferredVoice) utterance.voice = this.preferredVoice;
+          window.speechSynthesis.speak(utterance);
         } catch (e) {
           console.warn("SpeechSynthesis announceWinner error:", e);
         }
@@ -10927,6 +10957,9 @@
         this.security = new SecurityEngine(this);
 
         this.flagEngine = new ProFlagTextureEngine();
+        try {
+          this.flagEngine.preloadAll(COUNTRIES_DB, 128);
+        } catch(e) {}
         this.audio = new ProceduralAudioEngine();
         this.particles = new ParticleEngine();
         this.humanStreamer = new HumanStreamerEngine(this);
@@ -12669,6 +12702,12 @@
 
         this.recordWin(this.roundWinner.code);
         this.audio.playVictory();
+        if (window.speechSynthesis) {
+          try {
+            window.speechSynthesis.cancel();
+            if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+          } catch(e) {}
+        }
         this.audio.announceWinner(this.roundWinner.name);
         if (this.humanStreamer) this.humanStreamer.onRoundVictory(this.roundWinner);
 
@@ -13455,32 +13494,90 @@
           ctx.restore();
         }
 
-        // Ambient Shadow
+        // Ambient Floor Shadow
         ctx.beginPath();
-        ctx.arc(0, 2.4, r + 0.6, 0, Math.PI * 2);
+        ctx.arc(0, r * 0.16 + 1.2, r * 1.02, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(244, 63, 94, 0.45)';
         ctx.fill();
 
-        // High-Res Flag
-        ctx.drawImage(anim.flagCanvas, -r, -r, r * 2, r * 2);
-
-        // Bevel
+        // Crisp Circular Flag Texture Clip
+        ctx.save();
         ctx.beginPath();
         ctx.arc(0, 0, r, 0, Math.PI * 2);
-        ctx.lineWidth = 2.0;
+        ctx.clip();
+
+        if (anim.flagCanvas) {
+          ctx.drawImage(anim.flagCanvas, -r, -r, r * 2, r * 2);
+        }
+
+        // 3D Spherical Ambient Occlusion & Glass Optics
+        const grads = this._get3DMarbleGradients(ctx, r);
+        ctx.fillStyle = grads.shadow;
+        ctx.fillRect(-r, -r, r * 2, r * 2);
+        ctx.fillStyle = grads.bounce;
+        ctx.fillRect(-r, -r, r * 2, r * 2);
+        ctx.fillStyle = grads.glint;
+        ctx.fillRect(-r, -r, r * 2, r * 2);
+
+        // Top-left curved rim reflection arc
+        ctx.beginPath();
+        ctx.arc(-r * 0.15, -r * 0.15, r * 0.82, Math.PI * 0.9, Math.PI * 1.6);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.lineWidth = Math.max(1, r * 0.08);
+        ctx.stroke();
+
+        ctx.restore();
+
+        // Championship Outer Bevel Rim
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.lineWidth = Math.max(1.6, r * 0.11);
         ctx.strokeStyle = '#ffffff';
         ctx.stroke();
 
-        // 3D Glass Crescent
         ctx.beginPath();
-        ctx.arc(0, 0, r - 0.5, 0, Math.PI * 2);
-        ctx.fillStyle = this.getGlintGradient(ctx, r);
-        ctx.fill();
+        ctx.arc(0, 0, r + 0.8, 0, Math.PI * 2);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(10, 16, 30, 0.65)';
+        ctx.stroke();
 
         ctx.restore();
       }
 
-      // 3D Glossy Championship Marble (Ultra-Clean, Zero Dangling Overlap)
+      // World-Class 3D Spherical Championship Marbles (Real Flags + 3D Glass Depth across all 3 game modes)
+      _get3DMarbleGradients(ctx, r) {
+        const roundedR = Math.round(r);
+        if (!this._marble3DCache) {
+          this._marble3DCache = new Map();
+        }
+        let cached = this._marble3DCache.get(roundedR);
+        if (!cached) {
+          // 1. Spherical Ambient Occlusion (Depth curvature curving inwards towards edge)
+          const shadowGrad = ctx.createRadialGradient(0, 0, roundedR * 0.35, 0, 0, roundedR);
+          shadowGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+          shadowGrad.addColorStop(0.70, 'rgba(0, 0, 0, 0.38)');
+          shadowGrad.addColorStop(0.95, 'rgba(0, 0, 0, 0.65)');
+          shadowGrad.addColorStop(1.0, 'rgba(0, 0, 0, 0.82)');
+
+          // 2. Glossy Specular Glass Gleam (Top-left primary stadium illumination)
+          const glintGrad = ctx.createRadialGradient(-roundedR * 0.38, -roundedR * 0.38, 1, -roundedR * 0.38, -roundedR * 0.38, roundedR * 0.72);
+          glintGrad.addColorStop(0, 'rgba(255, 255, 255, 0.88)');
+          glintGrad.addColorStop(0.25, 'rgba(255, 255, 255, 0.55)');
+          glintGrad.addColorStop(0.60, 'rgba(255, 255, 255, 0.12)');
+          glintGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+          // 3. Secondary Bottom-Right Ground Bounce Reflection (Arena floor light bounce)
+          const bounceGrad = ctx.createRadialGradient(roundedR * 0.32, roundedR * 0.32, 1, roundedR * 0.32, roundedR * 0.32, roundedR * 0.55);
+          bounceGrad.addColorStop(0, 'rgba(255, 255, 255, 0.32)');
+          bounceGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.10)');
+          bounceGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+          cached = { shadow: shadowGrad, glint: glintGrad, bounce: bounceGrad };
+          this._marble3DCache.set(roundedR, cached);
+        }
+        return cached;
+      }
+
       drawBall(ctx, ball) {
         if (!ball) return;
         const pos = (ball.x !== undefined && ball.y !== undefined) ? { x: ball.x, y: ball.y } : (ball.body?.position);
@@ -13503,7 +13600,7 @@
         ctx.save();
         ctx.translate(drawX, drawY);
 
-        // Shield Aura
+        // 1. Shield Aura
         if (ball.hasShield) {
           ctx.strokeStyle = '#00e5ff';
           ctx.lineWidth = 2.5;
@@ -13514,50 +13611,65 @@
           ctx.fill();
         }
 
-        // High-Performance Hardware-Accelerated 3D Shadow (Zero software blur CPU overhead)
+        // 2. Hardware-Accelerated 3D Floor Shadow
         ctx.beginPath();
-        ctx.arc(0, 2.2, r + 0.5, 0, Math.PI * 2);
-        ctx.fillStyle = ball.escaped ? 'rgba(244, 63, 94, 0.55)' : 'rgba(0, 0, 0, 0.36)';
+        ctx.arc(0, r * 0.16 + 1.2, r * 1.02, 0, Math.PI * 2);
+        ctx.fillStyle = ball.escaped ? 'rgba(244, 63, 94, 0.50)' : 'rgba(0, 0, 0, 0.42)';
         ctx.fill();
 
-        // Draw Official Flag
-        ctx.drawImage(ball.flagCanvas, -r, -r, r * 2, r * 2);
-
-        // Keep the crowded opening smooth on mobile and lower-power PCs.
-        if (this.balls.length > 100 || (this.isMobileDevice && this.balls.length > 60)) {
-          ctx.beginPath();
-          ctx.arc(0, 0, r, 0, Math.PI * 2);
-          ctx.lineWidth = 1.5;
-          ctx.strokeStyle = '#ffffff';
-          ctx.stroke();
-          ctx.restore();
-          return;
-        }
-
-        // Refined Dual-Tone Metallic Championship Bevel
+        // 3. Crisp Circular Flag Texture Clip
+        ctx.save();
         ctx.beginPath();
         ctx.arc(0, 0, r, 0, Math.PI * 2);
-        ctx.lineWidth = 2;
+        ctx.clip();
+
+        // Draw Real National Flag
+        if (ball.flagCanvas) {
+          ctx.drawImage(ball.flagCanvas, -r, -r, r * 2, r * 2);
+        }
+
+        // 4. Hyper-Realistic 3D Spherical Ambient Occlusion & Glass Optics
+        const grads = this._get3DMarbleGradients(ctx, r);
+
+        // Curvature depth shadow
+        ctx.fillStyle = grads.shadow;
+        ctx.fillRect(-r, -r, r * 2, r * 2);
+
+        // Ground bounce reflection
+        ctx.fillStyle = grads.bounce;
+        ctx.fillRect(-r, -r, r * 2, r * 2);
+
+        // Top-left primary specular glass gleam
+        ctx.fillStyle = grads.glint;
+        ctx.fillRect(-r, -r, r * 2, r * 2);
+
+        // Top-left curved rim reflection arc
+        ctx.beginPath();
+        ctx.arc(-r * 0.15, -r * 0.15, r * 0.82, Math.PI * 0.9, Math.PI * 1.6);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.lineWidth = Math.max(1, r * 0.08);
+        ctx.stroke();
+
+        ctx.restore(); // End flag clip
+
+        // 5. Championship Metallic Outer Bevel Rim
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.lineWidth = Math.max(1.6, r * 0.11);
         ctx.strokeStyle = '#ffffff';
         ctx.stroke();
 
         ctx.beginPath();
         ctx.arc(0, 0, r + 0.8, 0, Math.PI * 2);
         ctx.lineWidth = 1;
-        ctx.strokeStyle = 'rgba(10, 16, 30, 0.5)';
+        ctx.strokeStyle = 'rgba(10, 16, 30, 0.65)';
         ctx.stroke();
 
-        // 3D Spherical Glass Highlight (Cached gradient - zero GC allocations per frame!)
-        ctx.beginPath();
-        ctx.arc(0, 0, r - 0.5, 0, Math.PI * 2);
-        ctx.fillStyle = this.getGlintGradient(ctx, r);
-        ctx.fill();
-
-        // Broadcast-Quality 1v1 Final Duel Pulsing Aura (GPU-accelerated)
+        // 6. Broadcast-Quality 1v1 Final Duel Pulsing Aura (GPU-accelerated)
         if (this.isDuelMode && this.balls.length === 2) {
           const duelPulse = 0.5 + Math.sin(Date.now() * 0.008) * 0.5;
           ctx.save();
-          ctx.strokeStyle = 'rgba(192, 132, 252, 0.35)';
+          ctx.strokeStyle = 'rgba(192, 132, 252, 0.45)';
           ctx.lineWidth = 4 + duelPulse * 3;
           ctx.beginPath();
           ctx.arc(0, 0, r + 5, 0, Math.PI * 2);
@@ -13571,25 +13683,23 @@
           ctx.restore();
         }
 
-
-
-        // Country-specific glowing aura ring in Laser Royale
+        // 7. Country-specific glowing aura ring in Laser Royale
         if (this.arenaTemplate === 'laser' && ball.color) {
           ctx.beginPath();
-          ctx.arc(0, 0, r + 1.2, 0, Math.PI * 2);
+          ctx.arc(0, 0, r + 1.6, 0, Math.PI * 2);
           ctx.strokeStyle = `rgb(${ball.color})`;
-          ctx.lineWidth = 2.4;
+          ctx.lineWidth = 2.6;
           ctx.stroke();
         }
 
-        // Celebratory Winner Crown & Radiant Laurel Aura (Circle is never empty, winner marble proudly celebrated!)
+        // 8. Celebratory Winner Crown & Radiant Laurel Aura
         if ((this.isRoundOver && this.roundWinner && ball.country && ball.country.code === this.roundWinner.code) || (this.arenaTemplate === 'laser' && this.laserWinner === ball)) {
           ctx.strokeStyle = '#fbbf24';
-          ctx.lineWidth = 3.5;
+          ctx.lineWidth = 3.8;
           ctx.beginPath();
           ctx.arc(0, 0, r + 4, 0, Math.PI * 2);
           ctx.stroke();
-          ctx.font = `${Math.max(16, r * 1.1)}px sans-serif`;
+          ctx.font = `${Math.max(16, r * 1.15)}px sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';
           ctx.fillText('👑', 0, -r - 4);
@@ -13599,16 +13709,7 @@
       }
 
       getGlintGradient(ctx, r) {
-        if (!this._glintCache) this._glintCache = new Map();
-        let grad = this._glintCache.get(r);
-        if (!grad) {
-          grad = ctx.createRadialGradient(-r * 0.35, -r * 0.35, 1, -r * 0.35, -r * 0.35, r * 0.7);
-          grad.addColorStop(0, 'rgba(255, 255, 255, 0.65)');
-          grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
-          grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-          this._glintCache.set(r, grad);
-        }
-        return grad;
+        return this._get3DMarbleGradients(ctx, r).glint;
       }
 
       // Game Loop: 100% Rock-Solid Stable Camera with Fixed-Timestep Physics Accumulator & Fault Tolerance
