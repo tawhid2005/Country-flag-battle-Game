@@ -2886,26 +2886,80 @@
 
     .launch-mode-cards {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
       width: 100%;
-      max-width: 620px;
-      margin: 14px 0 6px 0;
-    }
-    @media (max-width: 580px) {
-      .launch-mode-cards {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        max-width: 320px;
-      }
+      max-width: 440px;
+      margin: 12px 0 8px 0;
     }
     .launch-mode-btn.launch-laser {
-      border-color: rgba(245, 158, 11, 0.5);
-      background: linear-gradient(145deg, rgba(180, 83, 9, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+      grid-column: span 2;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      text-align: left;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.38) 0%, rgba(15, 23, 42, 0.96) 100%);
+      border: 1.5px solid rgba(245, 158, 11, 0.7);
+      box-shadow: 0 4px 22px rgba(245, 158, 11, 0.3);
     }
     .launch-mode-btn.launch-laser:hover {
       border-color: #fbbf24;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.45) 0%, rgba(15, 23, 42, 0.98) 100%);
       box-shadow: 0 0 35px rgba(245, 158, 11, 0.6);
+      transform: translateY(-2px);
+    }
+    .launch-laser-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+    .launch-laser-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .launch-laser-tag {
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      letter-spacing: 0.5px;
+    }
+    .launch-laser-title {
+      font-family: var(--font-display, sans-serif);
+      font-size: 13.5px;
+      font-weight: 900;
+      color: #fbbf24;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .launch-laser-sub {
+      font-size: 10px;
+      color: #cbd5e1;
+      line-height: 1.3;
+    }
+    .launch-laser-cta-wrap {
+      flex-shrink: 0;
+    }
+    .launch-cta.laser-hero-cta {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 2px 12px rgba(245, 158, 11, 0.5);
+      white-space: nowrap;
+      display: inline-block;
     }
     .launch-badge.laser {
       background: rgba(245, 158, 11, 0.25);
@@ -6089,18 +6143,24 @@
           <span class="launch-cta">▶️ PLAY VORTEX</span>
         </button>
         <button type="button" class="launch-mode-btn launch-ring" id="btn-launch-ring" title="Play Outer Ring Escape Mode">
-          <span class="launch-badge classic">ESPORTS</span>
+          <span class="launch-badge classic">ESPORTS CLASSIC</span>
           <span class="launch-icon">⭕</span>
           <span class="launch-name">Outer Ring Escape</span>
           <span class="launch-sub">Segmented Turbine &amp; Timed Gate</span>
           <span class="launch-cta">▶️ PLAY RING</span>
         </button>
-        <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Play Laser Web Royale Mode">
-          <span class="launch-badge laser">⚡ NEW · VIRAL</span>
-          <span class="launch-icon">⚡</span>
-          <span class="launch-name">Laser Web Royale</span>
-          <span class="launch-sub">6 Nations · Strand Slicing Combat</span>
-          <span class="launch-cta">▶️ PLAY LASER</span>
+        <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Configure 6 Combatants &amp; Play Laser Web Royale">
+          <div class="launch-laser-info">
+            <div class="launch-laser-badge-row">
+              <span class="launch-badge laser">🌟 NEW VIRAL MODE</span>
+              <span class="launch-laser-tag">6 COMBATANTS</span>
+            </div>
+            <div class="launch-laser-title">⚡ Laser Web Royale</div>
+            <div class="launch-laser-sub">Custom 6 Nations • Slicing Laser Strand Combat</div>
+          </div>
+          <div class="launch-laser-cta-wrap">
+            <span class="launch-cta laser-hero-cta">🌍 SELECT 6 &amp; PLAY ▶️</span>
+          </div>
         </button>
       </div>
 
@@ -6447,10 +6507,10 @@
         <div class="checkout-summary"><div><strong id="order-card-plan-name">1 Month</strong><p id="order-card-plan-duration">30 days of access</p></div><strong id="order-card-plan-price">99 TK</strong></div>
         <div class="order-gateway-tabs" id="order-tabs-wrapper"><button class="order-gw-tab-btn active" id="btn-tab-bd-pay" type="button">Bangladesh</button><button class="order-gw-tab-btn" id="btn-tab-intl-pay" type="button">International</button></div>
         <div class="order-gw-panel" id="panel-bd-pay">
-          <p class="checkout-help">তিনটি তথ্য দিন। Account তৈরি হওয়ার পর নিরাপদ Bangladesh gateway-তে payment করুন। Verified payment হলে pass নিজে থেকে চালু হবে।</p>
+          <p class="checkout-help">Provide your details below. Once registered, proceed to the secure payment gateway. Your Pass activates automatically 24/7 upon verification.</p>
           <label>Email<input type="email" class="order-input" id="checkout-bd-email" autocomplete="email" maxlength="160" placeholder="you@example.com"></label>
           <label>Mobile number<input type="tel" class="order-input" id="checkout-bd-phone" autocomplete="tel" maxlength="15" placeholder="01XXXXXXXXX"></label>
-          <label>Game password<input type="password" class="order-input" id="checkout-bd-password" autocomplete="new-password" minlength="10" maxlength="128" placeholder="কমপক্ষে ১০ অক্ষর"></label>
+          <label>Game password<input type="password" class="order-input" id="checkout-bd-password" autocomplete="new-password" minlength="10" maxlength="128" placeholder="Minimum 10 characters"></label>
           <button class="checkout-polar checkout-bd-auto" id="btn-start-bd-checkout" type="button" disabled>Pay securely · <span id="bd-btn-price-display">99 TK</span> →</button>
           <p class="payment-gate-hint" id="bd-payment-gate-hint">Complete email, mobile number and password to continue.</p>
           <div id="bd-gw-status" role="status" class="checkout-help" hidden></div>
@@ -6460,15 +6520,15 @@
             <p class="method-prompt">Choose your preferred payment method</p>
             <div class="payment-brand-grid" role="group" aria-label="Payment method"><button class="payment-brand bkash selected" type="button" data-manual-method="bKash"><img src="./assets/payments/bkash-mark.png" alt=""><span>bKash</span><small>Send Money</small></button><button class="payment-brand nagad" type="button" data-manual-method="Nagad"><img src="./assets/payments/nagad-logo.png" alt=""><span>Nagad</span><small>Send Money</small></button><button class="payment-brand rocket" type="button" data-manual-method="Rocket"><img src="./assets/payments/rocket-logo.png" alt=""><span>Rocket</span><small>Send Money</small></button></div>
             <div class="payment-method-head"><span class="selected-logo"><img id="manual-method-logo" src="./assets/payments/bkash-mark.png" alt="bKash"></span><div><strong id="manual-method-title">Pay with bKash</strong><small>Send Money · Instant access</small></div><span class="secure-chip">SECURE</span></div>
-            <p class="checkout-help" id="manual-payment-instruction"><strong>bKash</strong> app থেকে এই personal number-এ Send Money করুন:</p>
+            <p class="checkout-help" id="manual-payment-instruction"><strong>bKash</strong> app: Send Money to this Personal Number:</p>
             <p class="payment-number"><strong id="order-bd-phone-number">01711729858</strong> <button id="btn-copy-bd-number" type="button">Copy number</button></p>
             <label>Sender number <input class="order-input" type="tel" id="manual-sender" autocomplete="tel" placeholder="01XXXXXXXXX"></label>
             <label>Transaction ID <input class="order-input" id="manual-transaction" maxlength="40" placeholder="Your payment reference"></label>
-            <label class="claim-confirm"><input type="checkbox" id="manual-confirm"> <span>আমি নিশ্চিত করছি যে উপরের নম্বরে সঠিক amount পাঠিয়েছি এবং সম্পূর্ণ TrxID দিয়েছি।</span></label>
+            <label class="claim-confirm"><input type="checkbox" id="manual-confirm"> <span>I confirm that I sent the exact amount to the number above and entered the complete Transaction ID (TrxID).</span></label>
             <button class="manual-claim-button" id="btn-manual-claim" type="button" aria-live="polite"><span class="claim-button-icon" aria-hidden="true">✓</span><span class="claim-button-copy"><strong id="manual-claim-label">Confirm payment & activate</strong><small>Instant account access after confirmation</small></span><span class="claim-button-arrow" aria-hidden="true">→</span></button>
             <div id="manual-claim-status" class="checkout-help" role="status" hidden></div>
-            <a class="checkout-whatsapp secondary payment-support" id="checkout-transfer-whatsapp" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">●</span> Payment সমস্যা? WhatsApp support</a>
-            <p class="checkout-footnote">একটি TrxID একবারই ব্যবহার করা যাবে। ভুল তথ্য দিলে account review বা access বন্ধ হতে পারে।</p>
+            <a class="checkout-whatsapp secondary payment-support" id="checkout-transfer-whatsapp" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">●</span> Payment issue? WhatsApp Support</a>
+            <p class="checkout-footnote">Each Transaction ID can only be used once. Providing false or invalid TrxID will lead to rejection or account suspension.</p>
           </details>
         </div>
         <div class="order-gw-panel" id="panel-intl-pay" style="display:none">
@@ -6493,7 +6553,7 @@
         <div style="text-align: center; margin-bottom: 4px;">
           <div style="font-size: 36px; margin-bottom: 2px;">⚠️</div>
           <div style="font-family: var(--font-display); font-size: 15px; font-weight: 900; color: #fca5a5;">
-            পেমেন্ট সম্পন্ন হয়নি / গেটওয়েতে সমস্যা?
+            Payment Incomplete / Gateway Issue?
           </div>
           <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px; line-height: 1.4;">
             Payment incomplete or gateway timeout. No worries!
@@ -6502,29 +6562,29 @@
 
         <div style="background: rgba(239, 68, 68, 0.12); border: 1.5px solid rgba(239, 68, 68, 0.4); border-radius: 12px; padding: 10px;">
           <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
-            <span style="color: #94a3b8;">Package / প্ল্যান:</span>
+            <span style="color: #94a3b8;">Package:</span>
             <b id="fail-modal-plan-name" style="color: #fbbf24;">1 Month Pass</b>
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
-            <span style="color: #94a3b8;">Price / মূল্য:</span>
+            <span style="color: #94a3b8;">Price:</span>
             <b id="fail-modal-plan-price" style="color: #00e5ff;">99 TK</b>
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 11px;">
-            <span style="color: #94a3b8;">Status / স্ট্যাটাস:</span>
+            <span style="color: #94a3b8;">Status:</span>
             <span id="fail-modal-reason" style="color: #f87171; font-weight: 700;">Gateway Timeout / Incomplete</span>
           </div>
         </div>
 
         <div style="font-size: 11px; color: #ffffff; line-height: 1.4; text-align: center; font-weight: 600;">
-          সরাসরি Tawhid Bhai-এর WhatsApp ইনবক্সে মেসেজ দিন — সাথে সাথে বিকাশ/নগদ/পেওনিয়ার পেমেন্ট নিয়ে গেম এক্টিভ করে দেওয়া হবে!
+          Message Creator directly on WhatsApp — We will verify your payment and activate your 24/7 VIP Pass immediately!
         </div>
 
         <a id="btn-fail-modal-wa" href="#" target="_blank" rel="noopener noreferrer" class="btn-order-whatsapp" style="text-decoration: none; padding: 13px; font-size: 12px; letter-spacing: 0.5px; box-shadow: 0 0 25px rgba(37, 211, 102, 0.7);">
-          <span>💬 WHATSAPP এ মেসেজ পাঠিয়ে কিনুন (+8801711729858) 📲</span>
+          <span>💬 ORDER VIA WHATSAPP (+8801711729858) 📲</span>
         </a>
 
         <button type="button" id="btn-fail-try-manual" class="order-btn-verify" style="padding: 10px; font-size: 11px;">
-          <span>📱 পার্সোনাল বিকাশ/নগদে Send Money করে আনলক করুন</span>
+          <span>📱 Manual bKash / Nagad Send Money Unlock</span>
         </button>
       </div>
     </div>
@@ -9378,14 +9438,14 @@
           if (orderGwBtnAmount) orderGwBtnAmount.textContent = priceBdtStr;
 
           this.currentOrderMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
-            '🎮 আমি কান্ট্রি ফ্ল্যাগ ব্যাটল গেমের ' + bdtPlan.name + ' (' + priceBdtStr + ') কিনতে চাই।\n' +
+            '🎮 I want to purchase Country Flag Battle Pass: ' + bdtPlan.name + ' (' + priceBdtStr + ')\n' +
             '━━━━━━━━━━━━━━━━━━━━━\n' +
-            '💎 প্যাকেজ: ' + bdtPlan.name + '\n' +
-            '💰 মূল্য: ' + priceBdtStr + '\n' +
-            '⏳ মেয়াদ: ' + bdtPlan.days + ' Days 24/7 Access\n' +
-            '📱 পেমেন্ট মেথড: bKash / Nagad / Rocket\n' +
+            '💎 Package: ' + bdtPlan.name + '\n' +
+            '💰 Price: ' + priceBdtStr + '\n' +
+            '⏳ Validity: ' + bdtPlan.days + ' Days 24/7 Access\n' +
+            '📱 Payment Method: bKash / Nagad / Rocket\n' +
             '━━━━━━━━━━━━━━━━━━━━━\n' +
-            'দয়া করে আপনার বিকাশ/নগদ নম্বর দিন, আমি টাকা পাঠিয়ে গেম এক্টিভ করতে চাই!';
+            'Please provide your bKash/Nagad number so I can send payment and activate my game pass!';
         }
 
         // Reset alerts
@@ -9412,13 +9472,13 @@
 
         const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
         const failMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
-          '❌ কান্ট্রি ফ্ল্যাগ ব্যাটল গেমে পেমেন্ট করতে গিয়ে সমস্যা / ফেইল হয়েছে:\n' +
+          '❌ Country Flag Battle Payment Incomplete / Issue:\n' +
           '━━━━━━━━━━━━━━━━━━━━━\n' +
-          '💎 প্যাকেজ: ' + activePlan.name + ' (' + priceStr + ')\n' +
-          '⏳ মেয়াদ: ' + activePlan.days + ' Days 24/7 Access\n' +
-          '⚠️ স্ট্যাটাস: ' + (reason || 'Incomplete / Gateway Timeout') + '\n' +
+          '💎 Package: ' + activePlan.name + ' (' + priceStr + ')\n' +
+          '⏳ Validity: ' + activePlan.days + ' Days 24/7 Access\n' +
+          '⚠️ Status: ' + (reason || 'Incomplete / Gateway Timeout') + '\n' +
           '━━━━━━━━━━━━━━━━━━━━━\n' +
-          'দয়া করে আমাকে আপনার বিকাশ/নগদ/পেওনিয়ার অ্যাকাউন্ট দিন, আমি টাকা পাঠিয়ে গেম এক্টিভ করতে চাই!';
+          'Please provide your bKash/Nagad personal number so I can send the payment and activate my game access!';
 
         const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(failMsg);
         if (waBtn) waBtn.href = waUrl;
@@ -9431,20 +9491,20 @@
       // Automatic WhatsApp Redirection when Gateway is unavailable or on error
       triggerWhatsAppFallback(customerName, customerContact, plan, errorReason = '') {
         const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
-        const reasonLine = errorReason ? ('⚠️ এরর তথ্য: ' + errorReason + '\n') : '';
+        const reasonLine = errorReason ? ('⚠️ Error Details: ' + errorReason + '\n') : '';
         const activePlan = plan || this.activeOrderPlan || getPlanDef('1m', this.selectedCurrency);
         const priceStr = activePlan.currency === 'USD' ? ('$' + activePlan.price.toFixed(2) + ' USD') : (activePlan.price + ' TK');
 
         const orderMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
-          '🎮 কান্ট্রি ফ্ল্যাগ ব্যাটল গেমে পেমেন্ট গেটওয়েতে সমস্যা হচ্ছে:\n' +
+          '🎮 Issue with Country Flag Battle Payment Gateway:\n' +
           '━━━━━━━━━━━━━━━━━━━━━\n' +
-          '💎 প্যাকেজ: ' + activePlan.name + ' (' + priceStr + ')\n' +
-          '⏳ মেয়াদ: ' + activePlan.days + ' Days 24/7 Access\n' +
-          '👤 কাস্টমার নাম: ' + customerName + '\n' +
-          '📱 কন্টাক্ট নম্বর: ' + customerContact + '\n' +
+          '💎 Package: ' + activePlan.name + ' (' + priceStr + ')\n' +
+          '⏳ Validity: ' + activePlan.days + ' Days 24/7 Access\n' +
+          '👤 Customer Name: ' + customerName + '\n' +
+          '📱 Contact Number: ' + customerContact + '\n' +
           reasonLine +
           '━━━━━━━━━━━━━━━━━━━━━\n' +
-          'দয়া করে আমাকে আপনার বিকাশ/নগদ পার্সোনাল নম্বর দিন, আমি টাকা পাঠিয়ে গেম এক্টিভ করতে চাই!';
+          'Please provide your bKash/Nagad personal number so I can send the payment and activate my game access!';
 
         const encoded = encodeURIComponent(orderMsg);
         const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
@@ -9460,7 +9520,7 @@
         const btnPay = document.getElementById('btn-start-auto-gateway');
         if (btnPay) {
           btnPay.disabled = false;
-          btnPay.innerHTML = '<span>📲 WhatsApp এ পাঠান বা পুনরায় চেষ্টা করুন</span>';
+          btnPay.innerHTML = '<span>📲 Order via WhatsApp / Retry</span>';
         }
       }
 
@@ -9484,13 +9544,13 @@
         const priceStr = plan.currency === 'USD' ? ('$' + plan.price.toFixed(2) + ' USD') : (plan.price + ' TK');
 
         const failMsg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
-          '❌ কান্ট্রি ফ্ল্যাগ ব্যাটল গেমে পেমেন্ট করতে গিয়ে সমস্যা / ফেইল হয়েছে:\n' +
+          '❌ Country Flag Battle Payment Incomplete / Gateway Issue:\n' +
           '━━━━━━━━━━━━━━━━━━━━━\n' +
-          '💎 প্যাকেজ: ' + plan.name + ' (' + priceStr + ')\n' +
-          '👤 কাস্টমার নাম: ' + customer + '\n' +
-          '⚠️ স্ট্যাটাস: ' + reason + '\n' +
+          '💎 Package: ' + plan.name + ' (' + priceStr + ')\n' +
+          '👤 Customer Name: ' + customer + '\n' +
+          '⚠️ Status: ' + reason + '\n' +
           '━━━━━━━━━━━━━━━━━━━━━\n' +
-          'দয়া করে আমাকে আপনার বিকাশ/নগদ/পেওনিয়ার অ্যাকাউন্ট দিন, আমি টাকা পাঠিয়ে গেম এক্টিভ করতে চাই!';
+          'Please provide your bKash/Nagad/Card details so I can complete payment and activate my game access!';
 
         const encoded = encodeURIComponent(failMsg);
         const waUrl = 'https://wa.me/' + phone + '?text=' + encoded;
@@ -9821,14 +9881,14 @@
             const plan = this.activeBdtPlan || getPlanDef(this.activePlanId || '1m', 'bdt');
             const phone = (this.adminWhatsApp || '8801711729858').replace(/[^0-9]/g, '');
             const msg = '👋 Assalamu Alaikum Tawhid Bhai!\n' +
-              '🎮 আমি কান্ট্রি ফ্ল্যাগ ব্যাটল গেমের ' + plan.name + ' (' + plan.price + ' TK) কিনতে চাই।\n' +
+              '🎮 I want to purchase Country Flag Battle Pass: ' + plan.name + ' (' + plan.price + ' TK)\n' +
               '━━━━━━━━━━━━━━━━━━━━━\n' +
-              '💎 প্যাকেজ: ' + plan.name + '\n' +
-              '💰 মূল্য: ' + plan.price + ' TK\n' +
-              '⏳ মেয়াদ: ' + plan.days + ' Days 24/7 Access\n' +
-              '📱 পেমেন্ট মেথড: bKash / Nagad / Rocket\n' +
+              '💎 Package: ' + plan.name + '\n' +
+              '💰 Price: ' + plan.price + ' TK\n' +
+              '⏳ Validity: ' + plan.days + ' Days 24/7 Access\n' +
+              '📱 Payment Method: bKash / Nagad / Rocket\n' +
               '━━━━━━━━━━━━━━━━━━━━━\n' +
-              'দয়া করে আপনার বিকাশ/নগদ পার্সোনাল নম্বর দিন, আমি টাকা পাঠিয়ে গেম এক্টিভ করতে চাই!';
+              'Please provide your bKash/Nagad personal number so I can send the payment and activate my game access!';
             const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
             window.open(waUrl, '_blank');
           });
@@ -14172,8 +14232,20 @@
             this.setLaserSelectedIsoList(this._laserDraftIsos);
             this.closeCombatantModal();
             this.closeGameModeModal();
-            this.setArenaTemplate('laser');
-            startGameAndAudio('laser');
+            this.arenaTemplate = 'laser';
+            if (!this.isGameStarted) {
+              startGameAndAudio('laser');
+            } else {
+              this.setArenaTemplate('laser');
+            }
+          });
+        }
+
+        // Backdrop click to cancel without starting
+        const laserModalEl = document.getElementById('laser-country-modal');
+        if (laserModalEl) {
+          laserModalEl.addEventListener('click', (e) => {
+            if (e.target === laserModalEl) this.closeCombatantModal();
           });
         }
 
@@ -14182,8 +14254,8 @@
           btnLaunchLaser.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            this.setArenaTemplate('laser');
-            startGameAndAudio('laser');
+            // ALWAYS open country selection first! Do not auto-start
+            this.openCombatantModal();
           });
         }
 
@@ -14192,14 +14264,15 @@
         if (btnModalSelectLaser) {
           btnModalSelectLaser.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.setArenaTemplate('laser');
             this.closeGameModeModal();
+            this.openCombatantModal();
           });
         }
         if (cardChoiceLaser) {
-          cardChoiceLaser.addEventListener('click', () => {
-            this.setArenaTemplate('laser');
+          cardChoiceLaser.addEventListener('click', (e) => {
+            e.stopPropagation();
             this.closeGameModeModal();
+            this.openCombatantModal();
           });
         }
 

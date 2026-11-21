@@ -114,7 +114,7 @@
     const button=$(provider === 'polar' ? 'btn-start-polar-checkout':'btn-start-bd-checkout');
     if (button) button.disabled=true;
     const status=$(provider === 'polar' ? 'polar-gw-status':'bd-gw-status');
-    if(status){status.hidden=false;status.textContent=provider === 'polar' ? 'Opening secure Polar checkout…':'নিরাপদ payment gateway খোলা হচ্ছে…';}
+    if(status){status.hidden=false;status.textContent=provider === 'polar' ? 'Opening secure Polar checkout…':'Opening secure payment gateway…';}
     try {
       const isBd=provider==='sslcommerz';
       const email=$(isBd ? 'checkout-bd-email':'checkout-contact-email').value.trim();
@@ -122,7 +122,7 @@
       const phone=isBd ? $('checkout-bd-phone').value.trim().replace(/[\s-]/g,'') : '';
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('Enter your email to continue.');
       if(password.length<10)throw new Error('Use a password of at least 10 characters.');
-      if(isBd && !/^(?:\+?880|0)1[3-9][0-9]{8}$/.test(phone))throw new Error('সঠিক Bangladesh mobile number দিন।');
+      if(isBd && !/^(?:\+?880|0)1[3-9][0-9]{8}$/.test(phone))throw new Error('Please enter a valid Bangladesh mobile number.');
       const result=await this.api('checkout',{
         provider,planId:this.activePlanId || '1m',username:isBd ? email : ($('order-checkout-username').value.trim() || email),password,email,
         ...(isBd ? {phone,address:'Digital game pass',city:'Dhaka',postcode:'1000'} : {})
@@ -175,7 +175,7 @@
   proto.updateWhatsAppLinks = function() {
     const bd=getPlanDef(this.activePlanId || '1m','bdt'),intl=getPlanDef(this.activePlanId || '1m','usd');
     const set=(id,lines)=>{const link=$(id);if(link)link.href='https://wa.me/8801711729858?text='+encodeURIComponent(lines.filter(Boolean).join('\n'));};
-    set('checkout-bd-whatsapp',['আসসালামু আলাইকুম, Country Flag Battle-এর pass কিনতে চাই।','Plan: '+bd.name,'Amount: '+bd.price+' TK','Payment: bKash / Nagad / Rocket','পেমেন্ট ও activation-এর নিয়ম জানাবেন।']);
+    set('checkout-bd-whatsapp',['Hello, I want to purchase Country Flag Battle Pass.','Plan: '+bd.name,'Amount: '+bd.price+' TK','Payment: bKash / Nagad / Rocket','Please provide payment details & activation instructions.']);
     const claimStatus=$('manual-claim-status'),issue=claimStatus?.classList.contains('failed') ? claimStatus.textContent:'Payment confirmation / login assistance requested';
     set('checkout-transfer-whatsapp',['Country Flag Battle — Bangladesh payment support','Method: '+(this.manualPaymentMethod || 'bKash'),'Plan: '+bd.name+' · '+bd.price+' TK','Email: '+($('checkout-bd-email')?.value || 'not provided'),'Mobile: '+($('checkout-bd-phone')?.value || 'not provided'),'Password entered: '+(($('checkout-bd-password')?.value || '').length>=10?'yes':'no'),'Sender: '+($('manual-sender')?.value || 'not provided'),'TrxID: '+($('manual-transaction')?.value || 'not provided'),'Problem: '+issue,'Please check the payment and send my login/activation information.']);
     set('checkout-intl-whatsapp',['Country Flag Battle — Polar payment support','Plan: '+intl.name+' · $'+intl.price.toFixed(2), 'Order: '+(gameStorage.getItem('cfb_pending_order') || 'checkout not started')]);
@@ -228,7 +228,7 @@
     document.querySelectorAll('[data-manual-method]').forEach(button=>button.addEventListener('click',()=>{
       this.manualPaymentMethod=button.dataset.manualMethod;
       document.querySelectorAll('[data-manual-method]').forEach(item=>item.classList.toggle('selected',item===button));
-      const instruction=$('manual-payment-instruction');if(instruction){instruction.replaceChildren();const strong=document.createElement('strong');strong.textContent=this.manualPaymentMethod;instruction.append(strong,document.createTextNode(' app থেকে এই personal number-এ Send Money করুন:'));}
+      const instruction=$('manual-payment-instruction');if(instruction){instruction.replaceChildren();const strong=document.createElement('strong');strong.textContent=this.manualPaymentMethod;instruction.append(strong,document.createTextNode(' app: Send Money to this personal number:'));}
       const panel=$('manual-transfer-panel'),theme=this.manualPaymentMethod.toLowerCase();if(panel)panel.className='transfer-details payment-experience theme-'+theme;
       const logo=$('manual-method-logo'),logos={bKash:'./assets/payments/bkash-mark.png',Nagad:'./assets/payments/nagad-logo.png',Rocket:'./assets/payments/rocket-logo.png'};if(logo){logo.src=logos[this.manualPaymentMethod];logo.alt=this.manualPaymentMethod;}if($('manual-method-title'))$('manual-method-title').textContent='Pay with '+this.manualPaymentMethod;
       this.updateWhatsAppLinks();
