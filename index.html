@@ -3676,22 +3676,18 @@
     /* ==========================================================================
        CYBER SECURITY ACCESS GATE & SUBSCRIPTION LOCK MODAL
        ========================================================================== */
-    /* 5-Minute Free Trial Badge in HUD */
-    .badge-trial { display: none !important; 
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.5));
-      border: 1px solid rgba(239, 68, 68, 0.8);
-      border-radius: 999px;
-      padding: 3px 8px;
-      font-size: 10px;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-      animation: trialPulse 1.5s infinite alternate ease-in-out;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    /* 5-Minute Free Trial Badge in HUD - Permanently Hidden for Unrestricted Testing */
+    .badge-trial, #hud-trial-badge {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
     }
 
     .dot-trial {
@@ -5927,6 +5923,22 @@
   <script src="https://gumroad.com/js/gumroad.js"></script>
   <link rel="stylesheet" href="./checkout.css">
   <link rel="stylesheet" href="./checkout-themes.css?v=18.0.0">
+  <script>
+    // Instant Unlimited Testing: Clear all expired trial keys on load
+    try {
+      ['cfb_trial_data', 'cfb_trial_start', 'cfb_trial_expired', 'cfb_trial_status'].forEach(k => {
+        try { localStorage.removeItem(k); } catch(_) {}
+        try { sessionStorage.removeItem(k); } catch(_) {}
+      });
+      if (typeof localStorage !== 'undefined') {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('cfb_trial_')) localStorage.removeItem(k);
+        }
+      }
+      document.cookie = 'cfb_trial_exp=; max-age=0; path=/;';
+    } catch (_) {}
+  </script>
 </head>
 
 <body>
@@ -6043,7 +6055,7 @@
               <span>⏱️ <strong id="hud-match-timer">00:00</strong></span>
             </div>
 
-            <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="5-Minute Free Trial Active">
+            <div class="badge-trial" id="hud-trial-badge" style="display: none !important;" title="5-Minute Free Trial Active">
               <span class="dot-trial"></span>
               <span>TRIAL: <strong id="hud-trial-timer">05:00</strong></span>
             </div>
