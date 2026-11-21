@@ -2886,102 +2886,32 @@
 
     .launch-mode-cards {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       width: 100%;
       max-width: 440px;
-      margin: 12px 0 8px 0;
-    }
-    .launch-mode-btn.launch-laser {
-      grid-column: span 2;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 14px;
-      text-align: left;
-      gap: 12px;
-      background: linear-gradient(135deg, rgba(217, 119, 6, 0.38) 0%, rgba(15, 23, 42, 0.96) 100%);
-      border: 1.5px solid rgba(245, 158, 11, 0.7);
-      box-shadow: 0 4px 22px rgba(245, 158, 11, 0.3);
-    }
-    .launch-mode-btn.launch-laser:hover {
-      border-color: #fbbf24;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.45) 0%, rgba(15, 23, 42, 0.98) 100%);
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.6);
-      transform: translateY(-2px);
-    }
-    .launch-laser-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-      flex: 1;
-    }
-    .launch-laser-badge-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 2px;
-    }
-    .launch-laser-tag {
-      font-size: 8.5px;
-      font-weight: 800;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(245, 158, 11, 0.2);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      letter-spacing: 0.5px;
-    }
-    .launch-laser-title {
-      font-family: var(--font-display, sans-serif);
-      font-size: 13.5px;
-      font-weight: 900;
-      color: #fbbf24;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-    }
-    .launch-laser-sub {
-      font-size: 10px;
-      color: #cbd5e1;
-      line-height: 1.3;
-    }
-    .launch-laser-cta-wrap {
-      flex-shrink: 0;
-    }
-    .launch-cta.laser-hero-cta {
-      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-      color: #ffffff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      box-shadow: 0 2px 12px rgba(245, 158, 11, 0.5);
-      white-space: nowrap;
-      display: inline-block;
-    }
-    .launch-badge.laser {
-      background: rgba(245, 158, 11, 0.25);
-      color: #fbbf24;
-      border-color: rgba(245, 158, 11, 0.45);
+      margin: 14px 0 10px 0;
     }
     .launch-mode-btn {
       background: rgba(15, 23, 42, 0.88);
       border: 1.5px solid rgba(255, 255, 255, 0.16);
       border-radius: 16px;
-      padding: 14px 10px;
+      padding: 14px 8px;
       cursor: pointer;
       text-align: center;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: space-between;
       gap: 4px;
       position: relative;
       user-select: none;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       touch-action: manipulation;
+      min-height: 204px;
+      box-sizing: border-box;
     }
     .launch-mode-btn * {
       pointer-events: none;
@@ -2992,6 +2922,7 @@
     .launch-mode-btn.launch-hole {
       border-color: rgba(236, 72, 153, 0.5);
       background: linear-gradient(145deg, rgba(88, 28, 135, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+      box-shadow: 0 4px 20px rgba(236, 72, 153, 0.25);
     }
     .launch-mode-btn.launch-hole:hover {
       border-color: #f43f5e;
@@ -3000,56 +2931,83 @@
     .launch-mode-btn.launch-ring {
       border-color: rgba(0, 229, 255, 0.5);
       background: linear-gradient(145deg, rgba(14, 116, 144, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+      box-shadow: 0 4px 20px rgba(0, 229, 255, 0.25);
     }
     .launch-mode-btn.launch-ring:hover {
       border-color: #00e5ff;
       box-shadow: 0 0 35px rgba(0, 229, 255, 0.6);
     }
+    .launch-mode-btn.launch-laser {
+      border-color: rgba(245, 158, 11, 0.55);
+      background: linear-gradient(145deg, rgba(180, 83, 9, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+    }
+    .launch-mode-btn.launch-laser:hover {
+      border-color: #fbbf24;
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.65);
+    }
     .launch-badge {
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 900;
       letter-spacing: 0.5px;
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-radius: 999px;
       background: rgba(236, 72, 153, 0.25);
       color: #f472b6;
       border: 1px solid rgba(236, 72, 153, 0.4);
       text-transform: uppercase;
       margin-bottom: 2px;
+      white-space: nowrap;
     }
     .launch-badge.classic {
       background: rgba(0, 229, 255, 0.2);
       color: #00e5ff;
       border-color: rgba(0, 229, 255, 0.4);
     }
+    .launch-badge.laser {
+      background: rgba(245, 158, 11, 0.25);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.45);
+    }
     .launch-icon {
-      font-size: 26px;
+      font-size: 28px;
       line-height: 1;
-      margin: 2px 0;
+      margin: 3px 0;
     }
     .launch-name {
-      font-family: var(--font-display);
-      font-size: 13px;
+      font-family: var(--font-display, sans-serif);
+      font-size: 12px;
       font-weight: 800;
       color: #ffffff;
-      line-height: 1.2;
+      line-height: 1.25;
+      text-align: center;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .launch-sub {
-      font-size: 10px;
+      font-size: 9.5px;
       color: #94a3b8;
-      line-height: 1.3;
+      line-height: 1.25;
+      text-align: center;
+      min-height: 24px;
     }
     .launch-cta {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      margin-top: 8px;
-      padding: 6px 16px;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 6px;
+      padding: 6px 12px;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 900;
       letter-spacing: 0.5px;
       color: #ffffff;
+      width: 90%;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
     .launch-hole .launch-cta {
       background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
@@ -3060,24 +3018,10 @@
       color: #020617;
       box-shadow: 0 3px 12px rgba(0, 229, 255, 0.45);
     }
-
-    .hud-mode-pill-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      height: 30px;
-      padding: 0 10px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.88);
-      border: 1.5px solid rgba(0, 229, 255, 0.55);
+    .launch-laser .launch-cta {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
       color: #ffffff;
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
+      box-shadow: 0 3px 12px rgba(245, 158, 11, 0.45);
     }
     .hud-mode-pill-btn:hover {
       background: rgba(0, 229, 255, 0.25);
@@ -6143,24 +6087,18 @@
           <span class="launch-cta">▶️ PLAY VORTEX</span>
         </button>
         <button type="button" class="launch-mode-btn launch-ring" id="btn-launch-ring" title="Play Outer Ring Escape Mode">
-          <span class="launch-badge classic">ESPORTS CLASSIC</span>
+          <span class="launch-badge classic">ESPORTS</span>
           <span class="launch-icon">⭕</span>
           <span class="launch-name">Outer Ring Escape</span>
           <span class="launch-sub">Segmented Turbine &amp; Timed Gate</span>
           <span class="launch-cta">▶️ PLAY RING</span>
         </button>
-        <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Configure 6 Combatants &amp; Play Laser Web Royale">
-          <div class="launch-laser-info">
-            <div class="launch-laser-badge-row">
-              <span class="launch-badge laser">🌟 NEW VIRAL MODE</span>
-              <span class="launch-laser-tag">6 COMBATANTS</span>
-            </div>
-            <div class="launch-laser-title">⚡ Laser Web Royale</div>
-            <div class="launch-laser-sub">Custom 6 Nations • Slicing Laser Strand Combat</div>
-          </div>
-          <div class="launch-laser-cta-wrap">
-            <span class="launch-cta laser-hero-cta">🌍 SELECT 6 &amp; PLAY ▶️</span>
-          </div>
+        <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Play Laser Web Royale Mode">
+          <span class="launch-badge laser">⚡ NEW · VIRAL</span>
+          <span class="launch-icon">⚡</span>
+          <span class="launch-name">Laser Web Royale</span>
+          <span class="launch-sub">6 Nations · Strand Slicing Combat</span>
+          <span class="launch-cta">▶️ PLAY LASER</span>
         </button>
       </div>
 
