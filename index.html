@@ -2819,12 +2819,16 @@
       height: 100%;
       background: rgba(4, 8, 20, 0.95);
       backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       z-index: 95;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 12px 8px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      overflow-x: hidden;
       text-align: center;
       cursor: default;
       transition: opacity 0.5s ease, visibility 0.5s ease;
@@ -2837,16 +2841,16 @@
     }
 
     .audio-icon-pulse {
-      width: 84px;
-      height: 84px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       background: linear-gradient(135deg, #00e5ff, #a855f7);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 38px;
-      box-shadow: 0 0 40px rgba(0, 229, 255, 0.7);
-      margin-bottom: 24px;
+      font-size: 26px;
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.7);
+      margin-bottom: 10px;
       animation: audioPulse 1.5s infinite ease-out;
     }
 
@@ -2886,17 +2890,18 @@
 
     .launch-mode-cards {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
       width: 100%;
       max-width: 440px;
-      margin: 14px 0 10px 0;
+      margin: 10px 0 8px 0;
+      box-sizing: border-box;
     }
     .launch-mode-btn {
       background: rgba(15, 23, 42, 0.88);
       border: 1.5px solid rgba(255, 255, 255, 0.16);
-      border-radius: 16px;
-      padding: 14px 8px;
+      border-radius: 12px;
+      padding: 10px 4px;
       cursor: pointer;
       text-align: center;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2904,60 +2909,65 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
+      gap: 3px;
       position: relative;
       user-select: none;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       touch-action: manipulation;
-      min-height: 204px;
+      min-width: 0;
+      width: 100%;
       box-sizing: border-box;
+      min-height: 184px;
+      overflow: hidden;
     }
     .launch-mode-btn * {
       pointer-events: none;
     }
     .launch-mode-btn:hover {
-      transform: translateY(-4px) scale(1.02);
+      transform: translateY(-3px) scale(1.02);
     }
     .launch-mode-btn.launch-hole {
       border-color: rgba(236, 72, 153, 0.5);
       background: linear-gradient(145deg, rgba(88, 28, 135, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
-      box-shadow: 0 4px 20px rgba(236, 72, 153, 0.25);
+      box-shadow: 0 4px 16px rgba(236, 72, 153, 0.25);
     }
     .launch-mode-btn.launch-hole:hover {
       border-color: #f43f5e;
-      box-shadow: 0 0 35px rgba(236, 72, 153, 0.6);
+      box-shadow: 0 0 30px rgba(236, 72, 153, 0.6);
     }
     .launch-mode-btn.launch-ring {
       border-color: rgba(0, 229, 255, 0.5);
       background: linear-gradient(145deg, rgba(14, 116, 144, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
-      box-shadow: 0 4px 20px rgba(0, 229, 255, 0.25);
+      box-shadow: 0 4px 16px rgba(0, 229, 255, 0.25);
     }
     .launch-mode-btn.launch-ring:hover {
       border-color: #00e5ff;
-      box-shadow: 0 0 35px rgba(0, 229, 255, 0.6);
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
     }
     .launch-mode-btn.launch-laser {
       border-color: rgba(245, 158, 11, 0.55);
       background: linear-gradient(145deg, rgba(180, 83, 9, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
-      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
     }
     .launch-mode-btn.launch-laser:hover {
       border-color: #fbbf24;
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.65);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.65);
     }
     .launch-badge {
-      font-size: 8.5px;
+      font-size: 7.5px;
       font-weight: 900;
-      letter-spacing: 0.5px;
-      padding: 2px 7px;
+      letter-spacing: 0.3px;
+      padding: 2px 5px;
       border-radius: 999px;
       background: rgba(236, 72, 153, 0.25);
       color: #f472b6;
       border: 1px solid rgba(236, 72, 153, 0.4);
       text-transform: uppercase;
-      margin-bottom: 2px;
       white-space: nowrap;
+      max-width: 95%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .launch-badge.classic {
       background: rgba(0, 229, 255, 0.2);
@@ -2970,64 +2980,62 @@
       border-color: rgba(245, 158, 11, 0.45);
     }
     .launch-icon {
-      font-size: 28px;
+      font-size: 24px;
       line-height: 1;
-      margin: 3px 0;
+      margin: 2px 0;
     }
     .launch-name {
       font-family: var(--font-display, sans-serif);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       color: #ffffff;
-      line-height: 1.25;
+      line-height: 1.2;
       text-align: center;
-      min-height: 30px;
+      min-height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
+      word-break: break-word;
     }
     .launch-sub {
-      font-size: 9.5px;
+      font-size: 8.5px;
       color: #94a3b8;
-      line-height: 1.25;
+      line-height: 1.2;
       text-align: center;
-      min-height: 24px;
+      min-height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .launch-cta {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      margin-top: 6px;
-      padding: 6px 12px;
+      gap: 3px;
+      margin-top: 4px;
+      padding: 5px 4px;
       border-radius: 999px;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 900;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       color: #ffffff;
-      width: 90%;
+      width: 94%;
       white-space: nowrap;
       box-sizing: border-box;
     }
     .launch-hole .launch-cta {
       background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-      box-shadow: 0 3px 12px rgba(236, 72, 153, 0.45);
+      box-shadow: 0 3px 10px rgba(236, 72, 153, 0.45);
     }
     .launch-ring .launch-cta {
       background: linear-gradient(135deg, #0284c7 0%, #00e5ff 100%);
       color: #020617;
-      box-shadow: 0 3px 12px rgba(0, 229, 255, 0.45);
+      box-shadow: 0 3px 10px rgba(0, 229, 255, 0.45);
     }
     .launch-laser .launch-cta {
       background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
       color: #ffffff;
-      box-shadow: 0 3px 12px rgba(245, 158, 11, 0.45);
-    }
-    .hud-mode-pill-btn:hover {
-      background: rgba(0, 229, 255, 0.25);
-      border-color: #00e5ff;
-      box-shadow: 0 0 22px rgba(0, 229, 255, 0.6);
-      transform: scale(1.05);
+      box-shadow: 0 3px 10px rgba(245, 158, 11, 0.45);
     }
 
     .hud-pass-pill-btn {
@@ -6074,31 +6082,31 @@
     <!-- Interactive Start / Unmute Game Overlay -->
     <div id="audio-overlay" role="button" tabindex="0">
       <div class="audio-icon-pulse" style="background: linear-gradient(135deg, #10b981, #00e5ff); box-shadow: 0 0 50px rgba(0, 229, 255, 0.8);">▶️</div>
-      <div class="audio-overlay-title" style="font-size: 22px; font-weight: 900; letter-spacing: 1.5px; background: linear-gradient(135deg, #ffffff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CHOOSE ARENA MODE TO PLAY</div>
-      <p class="audio-overlay-desc" style="max-width: 380px; font-size: 13px; color: #94a3b8; margin: 8px 0 16px 0;">Select your preferred 2D physics battle royale game mode to start:</p>
+      <div class="audio-overlay-title" style="font-size: 18px; font-weight: 900; letter-spacing: 1px; background: linear-gradient(135deg, #ffffff, #00e5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">CHOOSE ARENA MODE TO PLAY</div>
+      <p class="audio-overlay-desc" style="max-width: 340px; font-size: 11.5px; color: #94a3b8; margin: 4px 0 8px 0;">Select your preferred 2D physics battle royale game mode to start:</p>
 
       <!-- 2 Game Mode Quick Select Cards on Launch -->
       <div class="launch-mode-cards">
         <button type="button" class="launch-mode-btn launch-hole" id="btn-launch-hole" title="Play Center Vortex Hole Mode">
-          <span class="launch-badge">🔥 MOST POPULAR</span>
+          <span class="launch-badge">🔥 POPULAR</span>
           <span class="launch-icon">🌀</span>
           <span class="launch-name">Center Vortex Hole</span>
-          <span class="launch-sub">Cosmic Singularity &amp; 6 Laser Spokes</span>
-          <span class="launch-cta">▶️ PLAY VORTEX</span>
+          <span class="launch-sub">Cosmic Singularity &amp; Spokes</span>
+          <span class="launch-cta">▶️ VORTEX</span>
         </button>
         <button type="button" class="launch-mode-btn launch-ring" id="btn-launch-ring" title="Play Outer Ring Escape Mode">
           <span class="launch-badge classic">ESPORTS</span>
           <span class="launch-icon">⭕</span>
           <span class="launch-name">Outer Ring Escape</span>
-          <span class="launch-sub">Segmented Turbine &amp; Timed Gate</span>
-          <span class="launch-cta">▶️ PLAY RING</span>
+          <span class="launch-sub">Segmented Turbine &amp; Gate</span>
+          <span class="launch-cta">▶️ RING</span>
         </button>
-        <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Play Laser Web Royale Mode">
-          <span class="launch-badge laser">⚡ NEW · VIRAL</span>
+        <button type="button" class="launch-mode-btn launch-laser" id="btn-launch-laser" title="Configure 6 Combatants &amp; Play Laser Web Royale">
+          <span class="launch-badge laser">⚡ VIRAL</span>
           <span class="launch-icon">⚡</span>
           <span class="launch-name">Laser Web Royale</span>
-          <span class="launch-sub">6 Nations · Strand Slicing Combat</span>
-          <span class="launch-cta">▶️ PLAY LASER</span>
+          <span class="launch-sub">6 Combatants &amp; Lasers</span>
+          <span class="launch-cta">▶️ LASER</span>
         </button>
       </div>
 
