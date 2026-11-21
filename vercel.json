@@ -7,6 +7,22 @@
       "destination": "/api/service?endpoint=:endpoint*"
     },
     {
+      "source": "/vortex",
+      "destination": "/index.html?mode=vortex"
+    },
+    {
+      "source": "/hole",
+      "destination": "/index.html?mode=hole"
+    },
+    {
+      "source": "/ring",
+      "destination": "/index.html?mode=ring"
+    },
+    {
+      "source": "/laser",
+      "destination": "/index.html?mode=laser"
+    },
+    {
       "source": "/(server|database|tests|scripts|_seo_live_lab|live_seo_workspace)/:path*",
       "destination": "/404.html"
     },

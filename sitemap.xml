@@ -6,9 +6,10 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd
         http://www.google.com/schemas/sitemap-image/1.1
         http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd">
+  <!-- 1. Main Game Colosseum Hub -->
   <url>
     <loc>https://www.countryflagbattle.xyz/</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -21,5 +22,64 @@
       <image:title>Country Flag Battle Game Official App Icon</image:title>
       <image:caption>Country Flag Battle Royale App Icon - 195 Sovereign Nations Marble Race Arena</image:caption>
     </image:image>
+  </url>
+
+  <!-- 2. Mode 1: Vortex Hole Battle (Cosmic Singularity Drop) -->
+  <url>
+    <loc>https://www.countryflagbattle.xyz/?mode=vortex</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.countryflagbattle.xyz/og-preview.png</image:loc>
+      <image:title>Vortex Hole Battle Royale — Center Hole Singularity Drop Game</image:title>
+      <image:caption>Play Center Vortex Hole flag battle online! 195 sovereign countries orbit a rotating centrifugal arena and fall into the central gravitational hazard hole.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 3. Mode 2: Ring Escape Royale (Concentric Outer Escape Turbine) -->
+  <url>
+    <loc>https://www.countryflagbattle.xyz/?mode=ring</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.countryflagbattle.xyz/og-preview.png</image:loc>
+      <image:title>Ring Escape Royale — Multi-Ring Outer Escape Arena Game</image:title>
+      <image:caption>Play Outer Ring Escape flag battle online! Dynamic rotating obstacle gates, kinetic flippers, and centrifugal marble ejection.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 4. Mode 3: Laser Web Royale (6-Nation Strand Slicing Sudden Death) -->
+  <url>
+    <loc>https://www.countryflagbattle.xyz/?mode=laser</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.countryflagbattle.xyz/og-preview.png</image:loc>
+      <image:title>Laser Web Royale — Laser Slicing Sudden Death Arena Game</image:title>
+      <image:caption>Play Laser Web Royale online! 6 sovereign nations tethered by dynamic laser strands inside a neon colosseum with slicing shockwaves and 1v1 sudden death climax.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 5. Clean URL Aliases -->
+  <url>
+    <loc>https://www.countryflagbattle.xyz/vortex</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.countryflagbattle.xyz/ring</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.countryflagbattle.xyz/laser</loc>
+    <lastmod>2026-11-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
 </urlset>
