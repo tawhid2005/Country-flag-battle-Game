@@ -3583,7 +3583,7 @@
        CYBER SECURITY ACCESS GATE & SUBSCRIPTION LOCK MODAL
        ========================================================================== */
     /* 5-Minute Free Trial Badge in HUD */
-    .badge-trial {
+    .badge-trial { display: none !important; 
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -8829,6 +8829,17 @@
         this.polarAccessToken = ''; // Secret tokens belong on a server.
         this.currentOrderMsg = '';
         this.loadDatabase();
+        try {
+          if (typeof gameStorage !== 'undefined') {
+            gameStorage.removeItem('cfb_trial_data');
+            for (let i = 0; i < localStorage.length; i++) {
+              const k = localStorage.key(i);
+              if (k && k.startsWith('cfb_trial_')) localStorage.removeItem(k);
+            }
+          }
+          if (typeof gameSessionStorage !== 'undefined') gameSessionStorage.removeItem('cfb_trial_data');
+          document.cookie = 'cfb_trial_exp=; max-age=0; path=/;';
+        } catch(_) {}
         window.securityEngine = this;
         // Background live cloud sync
 
@@ -8931,13 +8942,11 @@
       }
 
       isTrialActive() {
-        if (this.isAuthenticated()) return true;
-        const status = this.getTrialStatus();
-        return !status.isExpired && status.remainingSec > 0;
+        return true; // Timing disabled for unrestricted testing
       }
 
       isAccessAllowed() {
-        return this.isAuthenticated() || this.isTrialActive();
+        return true; // Timing disabled for unrestricted testing
       }
 
       logout() {
@@ -9041,171 +9050,27 @@
       }
 
       // Check multi-storage 5-minute trial status
+      // Unlimited Testing Mode: Free trial timing is disabled as requested by user
       getTrialStatus() {
-        const fp = this.getDeviceFingerprint();
-        let trialData = null;
-
-        try {
-          const raw = gameStorage.getItem('cfb_trial_device_' + fp) || gameStorage.getItem('cfb_trial_data');
-          if (raw) trialData = JSON.parse(raw);
-        } catch(e) {}
-
-        if (!trialData) {
-          try {
-            const raw = gameSessionStorage.getItem('cfb_trial_data');
-            if (raw) trialData = JSON.parse(raw);
-          } catch(e) {}
-        }
-
-        if (!trialData) {
-          try {
-            const cookies = document.cookie.split(';');
-            for (let c of cookies) {
-              c = c.trim();
-              if (c.startsWith('cfb_trial_exp=')) {
-                const val = c.substring('cfb_trial_exp='.length);
-                if (val === 'true') {
-                  trialData = { isExpired: true, remainingSec: 0, startedAt: Date.now() - 300000 };
-                }
-              }
-            }
-          } catch(e) {}
-        }
-
-        if (trialData) {
-          if (trialData.isExpired) {
-            return { isExpired: true, remainingSec: 0 };
-          }
-          const now = Date.now();
-          const elapsedSinceStart = Math.floor((now - (trialData.startedAt || now)) / 1000);
-          const totalElapsed = Math.max(trialData.elapsed || 0, elapsedSinceStart);
-          const remaining = Math.max(0, this.trialDurationSec - totalElapsed);
-          if (remaining <= 0) {
-            this.markTrialExpired();
-            return { isExpired: true, remainingSec: 0 };
-          }
-          return { isExpired: false, remainingSec: remaining };
-        }
-
-        // Brand new device: Start 5-Minute Free Trial!
-        const newTrial = {
-          startedAt: Date.now(),
-          elapsed: 0,
-          isExpired: false
-        };
-        this.saveTrialData(newTrial);
-        return { isExpired: false, remainingSec: this.trialDurationSec };
+        return { isExpired: false, remainingSec: 999999 };
       }
 
-      saveTrialProgress(currentRemainingSec) {
-        const elapsed = Math.max(0, this.trialDurationSec - currentRemainingSec);
-        const data = {
-          startedAt: Date.now() - (elapsed * 1000),
-          elapsed: elapsed,
-          isExpired: currentRemainingSec <= 0
-        };
-        this.saveTrialData(data);
-      }
-
-      saveTrialData(data) {
-        const fp = this.getDeviceFingerprint();
-        const str = JSON.stringify(data);
-        try { gameStorage.setItem('cfb_trial_device_' + fp, str); } catch(e) {}
-        try { gameStorage.setItem('cfb_trial_data', str); } catch(e) {}
-        try { gameSessionStorage.setItem('cfb_trial_data', str); } catch(e) {}
-        try {
-          document.cookie = 'cfb_trial_exp=' + (data.isExpired ? 'true' : 'active') + '; max-age=31536000; path=/; SameSite=Lax';
-        } catch(e) {}
-      }
-
-      markTrialExpired() {
-        const data = {
-          startedAt: Date.now() - 300000,
-          elapsed: 300,
-          isExpired: true
-        };
-        this.saveTrialData(data);
-      }
+      saveTrialProgress() {}
+      saveTrialData() {}
+      markTrialExpired() {}
 
       handleTrialWorkflow() {
-        if (this.isAuthenticated() || (this.session && this.session.expiresAt > Date.now())) {
-          this.showLockModal(false);
-          const modal = document.getElementById('cyber-lock-modal');
-          if (modal) modal.classList.remove('show');
-          const banner = document.getElementById('cyber-trial-banner');
-          if (banner) banner.style.display = 'none';
-          const hudTrial = document.getElementById('hud-trial-badge');
-          if (hudTrial) hudTrial.style.display = 'none';
-          return;
-        }
-        const trial = this.getTrialStatus();
-        const banner = document.getElementById('cyber-trial-banner');
-        const hudTrial = document.getElementById('hud-trial-badge');
-        const timerText = document.getElementById('hud-trial-timer');
-
-        if (trial.isExpired) {
-          if (this.app) {
-            this.app._interfacePaused = true;
-            this.app.isGameStarted = false;
-          }
-          this.showLockModal(true);
-          if (banner) banner.style.display = 'block';
-          if (hudTrial) hudTrial.style.display = 'none';
-          this.showLoginAlert('⏱️ Your 5-Minute Free Trial has ended! Choose a pass below to unlock 24/7 access.', 'error');
-          const tabPricing = document.getElementById('tab-btn-pricing');
-          if (tabPricing) tabPricing.click();
-          return;
-        }
-
-        if (banner) banner.style.display = 'none';
-        this.showLockModal(false);
-        if (hudTrial) {
-          hudTrial.style.display = 'inline-flex';
-          hudTrial.title = '5-Minute Free Trial Active';
-        }
-
-        const updateTimerDisplay = (sec) => {
-          const m = Math.floor(sec / 60);
-          const s = sec % 60;
-          if (timerText) timerText.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-        };
-        updateTimerDisplay(trial.remainingSec);
-
         if (this.trialInterval) clearInterval(this.trialInterval);
-
-        let currentSec = trial.remainingSec;
-        this.trialInterval = setInterval(() => {
-          if (this.isAuthenticated()) {
-            clearInterval(this.trialInterval);
-            if (hudTrial) hudTrial.style.display = 'none';
-            return;
-          }
-
-          currentSec--;
-          updateTimerDisplay(Math.max(0, currentSec));
-
-          if (currentSec % 5 === 0) {
-            this.saveTrialProgress(currentSec);
-          }
-
-          if (currentSec <= 0) {
-            clearInterval(this.trialInterval);
-            this.markTrialExpired();
-            if (hudTrial) hudTrial.style.display = 'none';
-            if (this.app) {
-              this.app._interfacePaused = true;
-              this.app.isGameStarted = false;
-            }
-            this.showLockModal(true);
-            if (banner) banner.style.display = 'block';
-            this.showLoginAlert('⏱️ Your 5-Minute Free Trial has ended! Subscribe to unlock 24/7 unlimited access.', 'error');
-            const tabPricing = document.getElementById('tab-btn-pricing');
-            if (tabPricing) tabPricing.click();
-            try {
-              if (this.app && this.app.audio) this.app.audio.playVictoryHorn();
-            } catch(e) {}
-          }
-        }, 1000);
+        this.showLockModal(false);
+        const modal = document.getElementById('cyber-lock-modal');
+        if (modal) modal.classList.remove('show');
+        const banner = document.getElementById('cyber-trial-banner');
+        if (banner) banner.style.display = 'none';
+        const hudTrial = document.getElementById('hud-trial-badge');
+        if (hudTrial) hudTrial.style.display = 'none';
+        if (this.app) {
+          this.app._interfacePaused = false;
+        }
       }
 
       initSpecialOfferTimer() {
