@@ -8503,6 +8503,43 @@
         } catch(e) {}
       }
 
+      playHeavyImpact() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.exponentialRampToValueAtTime(32, now + 0.35);
+          gain.gain.setValueAtTime(0.32, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.38);
+        } catch(e) {}
+      }
+
+      playTensionRiser() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(680, now + 1.2);
+          gain.gain.setValueAtTime(0.01, now);
+          gain.gain.linearRampToValueAtTime(0.12, now + 0.8);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 1.25);
+        } catch(e) {}
+      }
+
       playMouseClick() {
         if (this.muted || !this.ctx) return;
         try {
@@ -10258,7 +10295,12 @@
         this.keySimTimer = 0;
         this.nextKeyActionTime = 3.5;
         this.tiltTimer = 0;
-        this.nextTiltInterval = 16.0;
+        this.nextTiltInterval = 14.0;
+        this.flickTimer = 0;
+        this.nextFlickInterval = 7.0;
+        this.chatBoostTimer = 0;
+        this.nextChatBoostInterval = 22.0;
+        this.suddenDeathTimer = 0;
 
         // BPM Heart Rate
         this.currentBpm = 78;
@@ -10544,48 +10586,118 @@
 
       // --- 2. KEYPRESS SIMULATION (A, D, SPACE) ---
       updateKeySimulation(dt) {
-        if (!this.showKeyOverlay) return;
+        if (!this.app || !this.app.isGameStarted || this.app.isRoundOver) return;
 
-        // Periodic arena steering (A / D)
+        // 1. Autonomous Pro Steering (◀ A / D ▶)
         this.keySimTimer += dt;
         if (this.keySimTimer > this.nextKeyActionTime) {
           this.keySimTimer = 0;
-          this.nextKeyActionTime = 3.2 + Math.random() * 4.8;
+          this.nextKeyActionTime = 2.8 + Math.random() * 3.4;
 
           const roll = Math.random();
-          if (roll < 0.45) {
+          if (roll < 0.5) {
             // Steer Left (A)
             this.setKeyActive('a', true);
-            if (this.enableMechanicalSfx) this.app.audio.playMechanicalKeyClick();
-            this.app.currentRotationSpeed = this.app.baseRotationSpeed * 1.35;
+            if (this.enableMechanicalSfx && this.app.audio) this.app.audio.playMechanicalKeyClick();
+            this.app.currentRotationSpeed = this.app.baseRotationSpeed * 1.45;
+            this.showActionFeedback('◀ STEER LEFT', '#00e5ff');
             setTimeout(() => {
               this.setKeyActive('a', false);
               this.app.currentRotationSpeed = this.app.baseRotationSpeed;
-            }, 450 + Math.random() * 600);
-          } else if (roll < 0.9) {
+            }, 420 + Math.random() * 450);
+          } else {
             // Steer Right (D)
             this.setKeyActive('d', true);
-            if (this.enableMechanicalSfx) this.app.audio.playMechanicalKeyClick();
-            this.app.currentRotationSpeed = this.app.baseRotationSpeed * 0.75;
+            if (this.enableMechanicalSfx && this.app.audio) this.app.audio.playMechanicalKeyClick();
+            this.app.currentRotationSpeed = this.app.baseRotationSpeed * 0.65;
+            this.showActionFeedback('STEER RIGHT ▶', '#00e5ff');
             setTimeout(() => {
               this.setKeyActive('d', false);
               this.app.currentRotationSpeed = this.app.baseRotationSpeed;
-            }, 450 + Math.random() * 600);
+            }, 420 + Math.random() * 450);
           }
         }
 
-        // Periodic Manual Tilt Shake (SPACE)
+        // 2. Autonomous Pro Stadium Tilt (SPACE: TILT)
         this.tiltTimer += dt;
         if (this.tiltTimer > this.nextTiltInterval) {
           this.tiltTimer = 0;
-          this.nextTiltInterval = 14.0 + Math.random() * 12.0;
+          this.nextTiltInterval = 13.0 + Math.random() * 9.0;
           this.triggerTiltShake(false);
+          this.showActionFeedback('⚡ STADIUM TILT SHOCKWAVE!', '#fbbf24');
+        }
+
+        // 3. Autonomous Pro Kinetic Flick (🖱️ FLICK)
+        this.flickTimer += dt;
+        if (this.flickTimer > this.nextFlickInterval) {
+          this.flickTimer = 0;
+          this.nextFlickInterval = 6.5 + Math.random() * 4.5;
+          let targetBall = null;
+          if (this.app.balls && this.app.balls.length > 0) {
+            const living = this.app.balls.filter(b => b.body);
+            if (living.length > 0) {
+              targetBall = living[Math.floor(Math.random() * living.length)];
+            }
+          }
+          if (targetBall && targetBall.body) {
+            const fx = targetBall.body.position.x;
+            const fy = targetBall.body.position.y;
+            this.triggerFlickClick(fx, fy, true);
+            this.showActionFeedback('💥 KINETIC FLICK!', '#f43f5e');
+          }
+        }
+
+        // 4. Autonomous Pro Chat Boost (⚡ CHAT BOOST)
+        this.chatBoostTimer += dt;
+        if (this.chatBoostTimer > this.nextChatBoostInterval) {
+          this.chatBoostTimer = 0;
+          this.nextChatBoostInterval = 20.0 + Math.random() * 12.0;
+          if (this.app.balls && this.app.balls.length > 0) {
+            const living = this.app.balls.filter(b => b.body);
+            if (living.length > 0) {
+              const luckyBall = living[Math.floor(Math.random() * living.length)];
+              const boostSpeed = 8.5;
+              const angle = Math.random() * Math.PI * 2;
+              Matter.Body.setVelocity(luckyBall.body, {
+                x: Math.cos(angle) * boostSpeed,
+                y: Math.sin(angle) * boostSpeed
+              });
+              if (this.app.particles) {
+                this.app.particles.spawnElimination(luckyBall.body.position.x, luckyBall.body.position.y, '#fbbf24');
+              }
+              const name = luckyBall.country?.name || 'Nation';
+              this.showActionFeedback('🚀 CHAT BOOST: ' + name.toUpperCase() + ' SURGE!', '#fbbf24');
+              if (this.app.audio) this.app.audio.playHeavyImpact();
+            }
+          }
+        }
+
+        // 5. Overtime Sudden Death Calamity (>75s)
+        if (this.app.matchElapsedSec > 75 && this.app.balls && this.app.balls.length > 2) {
+          this.suddenDeathTimer += dt;
+          if (this.suddenDeathTimer > 12.0) {
+            this.suddenDeathTimer = 0;
+            const living = this.app.balls.filter(b => b.body);
+            if (living.length > 0) {
+              const zapped = living[Math.floor(Math.random() * living.length)];
+              const zapAngle = Math.random() * Math.PI * 2;
+              Matter.Body.setVelocity(zapped.body, {
+                x: zapped.body.velocity.x + Math.cos(zapAngle) * 9.0,
+                y: zapped.body.velocity.y + Math.sin(zapAngle) * 9.0
+              });
+              if (this.app.particles) {
+                this.app.particles.spawnElimination(zapped.body.position.x, zapped.body.position.y, '#f59e0b');
+              }
+              this.showActionFeedback('⚠️ SUDDEN DEATH: LIGHTNING OVERDRIVE! ⚡', '#f59e0b');
+              if (this.app.audio) this.app.audio.playHeavyImpact();
+            }
+          }
         }
       }
 
       triggerTiltShake(isManual = false) {
         this.setKeyActive('space', true);
-        if (this.enableMechanicalSfx) this.app.audio.playMechanicalKeyClick();
+        if (this.enableMechanicalSfx && this.app.audio) { this.app.audio.playMechanicalKeyClick(); this.app.audio.playHeavyImpact(); }
 
         // Shudder viewport
         if (this.app.viewport) {
@@ -11720,6 +11832,9 @@
 
           this.audio.playDuelStinger();
           this.audio.startHeartbeatLoop();
+          if (this.audio.playTensionRiser) this.audio.playTensionRiser();
+          if (this.humanStreamer) this.humanStreamer.targetBpm = 148;
+          this.targetZoom = 1.18; // Dramatic cinematic zoom into final 2 showdown
           this.currentRotationSpeed = this.baseRotationSpeed * 1.45;
         } else if (alive <= 3 && alive > 2) {
           this.dom.climaxVignette.classList.add('active');
@@ -12593,7 +12708,7 @@
         this.particles.spawnVictoryConfetti(this.V_WIDTH, this.V_HEIGHT);
 
         // Organic Human Streamer Delay: Random between 7.0s and 15.0s (e.g. 7.6s, 10.2s, 14.5s)
-        const totalDurationSec = +(7.0 + Math.random() * 8.0).toFixed(1);
+        const totalDurationSec = 3.8; // Fast, energetic 3.8s championship celebration for 24/7 continuous stream
         const startTime = Date.now();
         const totalDurationMs = totalDurationSec * 1000;
 
@@ -12634,6 +12749,10 @@
         }
 
         if (this._victoryTimer) clearInterval(this._victoryTimer);
+        // 24/7 Stream Watchdog: Guarantees next round launches even if browser tab was backgrounded
+        setTimeout(() => {
+          if (!launched && this.isRoundOver) doHumanLaunch();
+        }, 4200);
         this._victoryTimer = setInterval(() => {
           const elapsed = Date.now() - startTime;
           const remainingSec = Math.max(0, (totalDurationMs - elapsed) / 1000);
