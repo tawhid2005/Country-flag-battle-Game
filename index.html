@@ -3676,20 +3676,29 @@
     /* ==========================================================================
        CYBER SECURITY ACCESS GATE & SUBSCRIPTION LOCK MODAL
        ========================================================================== */
-    /* 5-Minute Free Trial Badge in HUD - Permanently Hidden for Unrestricted Testing */
-    .badge-trial, #hud-trial-badge {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-      width: 0 !important;
-      height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      border: none !important;
-      box-shadow: none !important;
+    /* 5-Minute Free Trial Badge in HUD */
+    .badge-trial {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.28), rgba(220, 38, 38, 0.55));
+      border: 1.5px solid rgba(239, 68, 68, 0.85);
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      animation: trialPulse 1.5s infinite alternate ease-in-out;
+      cursor: pointer;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.6);
+      transition: all 0.2s ease;
     }
-
+    .badge-trial:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.9);
+      border-color: #f87171;
+    }
     .dot-trial {
       width: 6px;
       height: 6px;
@@ -5923,23 +5932,7 @@
   <script src="https://gumroad.com/js/gumroad.js"></script>
   <link rel="stylesheet" href="./checkout.css">
   <link rel="stylesheet" href="./checkout-themes.css?v=18.0.0">
-  <script>
-    // Instant Unlimited Testing: Clear all expired trial keys on load
-    try {
-      ['cfb_trial_data', 'cfb_trial_start', 'cfb_trial_expired', 'cfb_trial_status'].forEach(k => {
-        try { localStorage.removeItem(k); } catch(_) {}
-        try { sessionStorage.removeItem(k); } catch(_) {}
-      });
-      if (typeof localStorage !== 'undefined') {
-        for (let i = 0; i < localStorage.length; i++) {
-          const k = localStorage.key(i);
-          if (k && k.startsWith('cfb_trial_')) localStorage.removeItem(k);
-        }
-      }
-      document.cookie = 'cfb_trial_exp=; max-age=0; path=/;';
-    } catch (_) {}
-  </script>
-</head>
+  </head>
 
 <body>
 
@@ -6055,7 +6048,7 @@
               <span>⏱️ <strong id="hud-match-timer">00:00</strong></span>
             </div>
 
-            <div class="badge-trial" id="hud-trial-badge" style="display: none !important;" title="5-Minute Free Trial Active">
+            <div class="badge-trial" id="hud-trial-badge" style="display: none;" title="5-Minute Free Trial Active">
               <span class="dot-trial"></span>
               <span>TRIAL: <strong id="hud-trial-timer">05:00</strong></span>
             </div>
@@ -9067,17 +9060,7 @@
         this.polarAccessToken = ''; // Secret tokens belong on a server.
         this.currentOrderMsg = '';
         this.loadDatabase();
-        try {
-          if (typeof gameStorage !== 'undefined') {
-            gameStorage.removeItem('cfb_trial_data');
-            for (let i = 0; i < localStorage.length; i++) {
-              const k = localStorage.key(i);
-              if (k && k.startsWith('cfb_trial_')) localStorage.removeItem(k);
-            }
-          }
-          if (typeof gameSessionStorage !== 'undefined') gameSessionStorage.removeItem('cfb_trial_data');
-          document.cookie = 'cfb_trial_exp=; max-age=0; path=/;';
-        } catch(_) {}
+        
         window.securityEngine = this;
         // Background live cloud sync
 
@@ -9180,11 +9163,13 @@
       }
 
       isTrialActive() {
-        return true; // Timing disabled for unrestricted testing
+        if (this.isAuthenticated()) return true;
+        const status = this.getTrialStatus();
+        return !status.isExpired && status.remainingSec > 0;
       }
 
       isAccessAllowed() {
-        return true; // Timing disabled for unrestricted testing
+        return this.isAuthenticated() || this.isTrialActive();
       }
 
       logout() {
@@ -9288,27 +9273,175 @@
       }
 
       // Check multi-storage 5-minute trial status
-      // Unlimited Testing Mode: Free trial timing is disabled as requested by user
       getTrialStatus() {
-        return { isExpired: false, remainingSec: 999999 };
+        const fp = this.getDeviceFingerprint();
+        let trialData = null;
+
+        try {
+          const raw = gameStorage.getItem('cfb_trial_device_' + fp) || gameStorage.getItem('cfb_trial_data');
+          if (raw) trialData = JSON.parse(raw);
+        } catch(e) {}
+
+        if (!trialData) {
+          try {
+            const raw = gameSessionStorage.getItem('cfb_trial_data');
+            if (raw) trialData = JSON.parse(raw);
+          } catch(e) {}
+        }
+
+        if (!trialData) {
+          try {
+            const cookies = document.cookie.split(';');
+            for (let c of cookies) {
+              c = c.trim();
+              if (c.startsWith('cfb_trial_exp=')) {
+                const val = c.substring('cfb_trial_exp='.length);
+                if (val === 'true') {
+                  trialData = { isExpired: true, remainingSec: 0, startedAt: Date.now() - 300000 };
+                }
+              }
+            }
+          } catch(e) {}
+        }
+
+        if (trialData) {
+          if (trialData.isExpired) {
+            return { isExpired: true, remainingSec: 0 };
+          }
+          const now = Date.now();
+          const elapsedSinceStart = Math.floor((now - (trialData.startedAt || now)) / 1000);
+          const totalElapsed = Math.max(trialData.elapsed || 0, elapsedSinceStart);
+          const remaining = Math.max(0, this.trialDurationSec - totalElapsed);
+          if (remaining <= 0) {
+            this.markTrialExpired();
+            return { isExpired: true, remainingSec: 0 };
+          }
+          return { isExpired: false, remainingSec: remaining };
+        }
+
+        // Brand new device: Start 5-Minute Free Trial!
+        const newTrial = {
+          startedAt: Date.now(),
+          elapsed: 0,
+          isExpired: false
+        };
+        this.saveTrialData(newTrial);
+        return { isExpired: false, remainingSec: this.trialDurationSec };
       }
 
-      saveTrialProgress() {}
-      saveTrialData() {}
-      markTrialExpired() {}
+      saveTrialProgress(currentRemainingSec) {
+        const elapsed = Math.max(0, this.trialDurationSec - currentRemainingSec);
+        const data = {
+          startedAt: Date.now() - (elapsed * 1000),
+          elapsed: elapsed,
+          isExpired: currentRemainingSec <= 0
+        };
+        this.saveTrialData(data);
+      }
+
+      saveTrialData(data) {
+        const fp = this.getDeviceFingerprint();
+        const str = JSON.stringify(data);
+        try { gameStorage.setItem('cfb_trial_device_' + fp, str); } catch(e) {}
+        try { gameStorage.setItem('cfb_trial_data', str); } catch(e) {}
+        try { gameSessionStorage.setItem('cfb_trial_data', str); } catch(e) {}
+        try {
+          document.cookie = 'cfb_trial_exp=' + (data.isExpired ? 'true' : 'active') + '; max-age=31536000; path=/; SameSite=Lax';
+        } catch(e) {}
+      }
+
+      markTrialExpired() {
+        const data = {
+          startedAt: Date.now() - 300000,
+          elapsed: 300,
+          isExpired: true
+        };
+        this.saveTrialData(data);
+      }
 
       handleTrialWorkflow() {
-        if (this.trialInterval) clearInterval(this.trialInterval);
-        this.showLockModal(false);
-        const modal = document.getElementById('cyber-lock-modal');
-        if (modal) modal.classList.remove('show');
-        const banner = document.getElementById('cyber-trial-banner');
-        if (banner) banner.style.display = 'none';
-        const hudTrial = document.getElementById('hud-trial-badge');
-        if (hudTrial) hudTrial.style.display = 'none';
-        if (this.app) {
-          this.app._interfacePaused = false;
+        if (this.isAuthenticated() || (this.session && this.session.expiresAt > Date.now())) {
+          this.showLockModal(false);
+          const modal = document.getElementById('cyber-lock-modal');
+          if (modal) modal.classList.remove('show');
+          const banner = document.getElementById('cyber-trial-banner');
+          if (banner) banner.style.display = 'none';
+          const hudTrial = document.getElementById('hud-trial-badge');
+          if (hudTrial) hudTrial.style.display = 'none';
+          if (this.app) {
+            this.app._interfacePaused = false;
+          }
+          return;
         }
+        const trial = this.getTrialStatus();
+        const banner = document.getElementById('cyber-trial-banner');
+        const hudTrial = document.getElementById('hud-trial-badge');
+        const timerText = document.getElementById('hud-trial-timer');
+
+        if (trial.isExpired) {
+          if (this.app) {
+            this.app._interfacePaused = true;
+            this.app.isGameStarted = false;
+          }
+          this.showLockModal(true);
+          if (banner) banner.style.display = 'block';
+          if (hudTrial) hudTrial.style.display = 'none';
+          this.showLoginAlert('⏱️ Your 5-Minute Free Trial has ended! Please log in or choose a pass below to unlock 24/7 unlimited access.', 'error');
+          const tabPricing = document.getElementById('tab-btn-pricing');
+          if (tabPricing) tabPricing.click();
+          return;
+        }
+
+        if (banner) banner.style.display = 'none';
+        this.showLockModal(false);
+        if (hudTrial) {
+          hudTrial.style.display = 'inline-flex';
+          hudTrial.title = '5-Minute Free Trial Active';
+        }
+
+        const updateTimerDisplay = (sec) => {
+          const m = Math.floor(sec / 60);
+          const s = sec % 60;
+          if (timerText) timerText.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        };
+        updateTimerDisplay(trial.remainingSec);
+
+        if (this.trialInterval) clearInterval(this.trialInterval);
+
+        let currentSec = trial.remainingSec;
+        this.trialInterval = setInterval(() => {
+          if (this.isAuthenticated()) {
+            clearInterval(this.trialInterval);
+            if (hudTrial) hudTrial.style.display = 'none';
+            if (this.app) this.app._interfacePaused = false;
+            return;
+          }
+
+          currentSec--;
+          updateTimerDisplay(Math.max(0, currentSec));
+
+          if (currentSec % 5 === 0) {
+            this.saveTrialProgress(currentSec);
+          }
+
+          if (currentSec <= 0) {
+            clearInterval(this.trialInterval);
+            this.markTrialExpired();
+            if (hudTrial) hudTrial.style.display = 'none';
+            if (this.app) {
+              this.app._interfacePaused = true;
+              this.app.isGameStarted = false;
+            }
+            this.showLockModal(true);
+            if (banner) banner.style.display = 'block';
+            this.showLoginAlert('⏱️ Your 5-Minute Free Trial has ended! Choose a pass below to unlock 24/7 unlimited access.', 'error');
+            const tabPricing = document.getElementById('tab-btn-pricing');
+            if (tabPricing) tabPricing.click();
+            try {
+              if (this.app && this.app.audio) this.app.audio.playVictoryHorn();
+            } catch(e) {}
+          }
+        }, 1000);
       }
 
       initSpecialOfferTimer() {
