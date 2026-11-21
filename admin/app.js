@@ -18,8 +18,33 @@
   function action(cell,label,fn){const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=async()=>{button.disabled=true;message('');try{await fn();}catch(error){message(error.message);}finally{button.disabled=false;}};cell.appendChild(button);}
   function account(id){return data.accounts?.find(item=>item.id===id);}
   function paymentReference(order){
-    if(order.checkout_id?.startsWith('claim:')){const parts=order.checkout_id.split(':');return {method:parts[1],reference:parts.slice(2).join(':')};}
-    return {method:order.provider,reference:order.provider_id || order.checkout_id || 'Pending'};
+    let sender = '';
+    let phone = '';
+    if(order.checkout_id?.startsWith('claim:')){
+      const parts = order.checkout_id.split(':');
+      sender = parts[3] || '';
+      phone = parts[4] || '';
+      return {
+        method: parts[1] || 'bKash/Nagad',
+        reference: parts[2] || 'Manual Claim',
+        sender,
+        phone
+      };
+    }
+    const claimEvent = data.events?.find(e => e.order_id === order.id || (e.action === 'customer_claim_activated' && e.detail?.includes(order.id)));
+    if (claimEvent && claimEvent.detail) {
+      try {
+        const parsed = JSON.parse(claimEvent.detail);
+        if (parsed.sender) sender = parsed.sender;
+        if (parsed.phone) phone = parsed.phone;
+      } catch (err) {}
+    }
+    return {
+      method: order.provider,
+      reference: order.provider_id || order.checkout_id || 'Pending',
+      sender,
+      phone
+    };
   }
   async function deliverAccess(item,plan,result){
     const draft=onboarding.get(item.id);
@@ -35,7 +60,7 @@
     $('create-panel').hidden=!isAccounts;$('summary-panel').hidden=view!=='overview';$('clear-events').hidden=!isEvents;
     const titles={overview:'Overview',orders:'All orders','orders-bd':'Bangladesh payments','orders-intl':'International payments',accounts:'Player access',events:'Activity log'};
     $('page-title').textContent=titles[view];$('table-title').textContent=isAccounts?'Player accounts':isEvents?'Recent activity':isBd?'Bangladesh payment confirmations':isIntl?'International gateway payments':'Payment orders';
-    const columns=isAccounts?['Player / account','Email','Access until (Dhaka)','Status','Actions']:isEvents?['Time (Dhaka)','Event','Order','Detail']:['Order','Player','Plan','Gateway / TrxID','Amount','Status','Created (Dhaka)','Actions'];
+    const columns=isAccounts?['Player / account','Email','Access until (Dhaka)','Status','Actions']:isEvents?['Time (Dhaka)','Event','Order','Detail']:isBd?['Order','Player','Plan','Gateway / TrxID','bKash / Sender No.','Contact Phone','Amount','Status','Created (Dhaka)','Actions']:['Order','Player','Plan','Gateway / TrxID','Amount','Status','Created (Dhaka)','Actions'];
     $('table-head').replaceChildren();const tr=document.createElement('tr');for(const title of columns){const th=document.createElement('th');th.textContent=title;tr.appendChild(th);}$('table-head').appendChild(tr);
     let records=isAccounts?data.accounts||[]:isEvents?data.events||[]:data.orders||[];
     if(isBd)records=records.filter(item=>item.currency==='bdt');if(isIntl)records=records.filter(item=>item.currency==='usd');
@@ -51,11 +76,24 @@
         if(active)action(cell,'Revoke',async()=>{if(!confirm('Revoke access for '+item.username+'?'))return;await api('admin/revoke',{accountId:item.id});await refresh();});
         action(cell,'Delete player',async()=>{const typed=prompt('This permanently deletes the player and their orders. Type the username to continue:');if(typed===null)return;await api('admin/delete-account',{accountId:item.id,confirmUsername:typed});onboarding.delete(item.id);message('Player and related records deleted.');await refresh();});
       }else if(isEvents){td(row,date(item.created_at));td(row,item.kind);td(row,item.order_id);td(row,item.detail);}
-      else{const payment=paymentReference(item);td(row,item.id.slice(0,8),item.provider);td(row,account(item.account_id)?.username || item.account_id);td(row,data.plans?.[item.plan_id]?.name || item.plan_id);td(row,payment.reference,payment.method);td(row,money(item.amount_minor,item.currency));pill(row,item.status);td(row,date(item.created_at));const cell=td(row,'');
+      else{const payment=paymentReference(item);td(row,item.id.slice(0,8),item.provider);td(row,account(item.account_id)?.username || item.account_id);td(row,data.plans?.[item.plan_id]?.name || item.plan_id);td(row,payment.reference,payment.method);
+        if(isBd){
+          td(row, payment.sender || '—', 'bKash/Nagad Sender');
+          td(row, payment.phone || '—', 'Contact Phone');
+        }
+        td(row,money(item.amount_minor,item.currency));pill(row,item.status);td(row,date(item.created_at));const cell=td(row,'');
         if(item.provider!=='manual')action(cell,'Verify again',async()=>{await api('admin/reconcile',{orderId:item.id});message('Gateway verification completed.');await refresh();});
         if(item.status==='paid'){
           action(cell,'Copy activation link',async()=>{const result=await api('admin/activation',{orderId:item.id});await navigator.clipboard.writeText(result.link);message('Activation link copied. It opens the game, never the admin page.');});
           action(cell,'Copy WhatsApp reply',async()=>{const result=await api('admin/activation',{orderId:item.id}),player=account(item.account_id),plan=data.plans?.[item.plan_id]?.name || item.plan_id,payment=paymentReference(item);const text=['🎮 Country Flag Battle payment confirmed','',`Login ID: ${player?.username || player?.email || 'your registered email'}`,`Email: ${player?.email || 'your registered email'}`,'Password: use the password you created during payment',`Plan: ${plan}`,`Payment: ${payment.method} · ${payment.reference}`,'',`One-click activation: ${result.link}`,'','Keep your login information private.'].join('\n');await navigator.clipboard.writeText(text);message('Ready-to-send WhatsApp login reply copied.');});
+        }
+        if(item.status==='paid' || item.status==='completed' || (isBd && item.status!=='cancelled')){
+          action(cell,'❌ Cancel subscription',async()=>{
+            if(!confirm('Cancel and revoke subscription for order '+item.id.slice(0,8)+'?\nThis immediately revokes player access if payment was unverified or fake.'))return;
+            await api('admin/cancel-subscription',{orderId:item.id,accountId:item.account_id});
+            message('Subscription cancelled and access revoked.');
+            await refresh();
+          });
         }
       }$('table-body').appendChild(row);
     }
@@ -90,7 +128,16 @@
   document.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>{view=button.dataset.view;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('selected',b===button));render();});
   $('previous').onclick=()=>{if(page>0){page--;refresh();}};$('next').onclick=()=>{page++;refresh();};
   $('create-form').onsubmit=async event=>{event.preventDefault();const button=event.target.querySelector('button'),password=$('new-password').value,phone=$('new-phone').value.replace(/[^0-9]/g,'').replace(/^0/,'88');button.disabled=true;try{if(phone&&!/^8801[3-9][0-9]{8}$/.test(phone))throw new Error('Enter a valid WhatsApp number or leave it blank.');const result=await api('admin/account',{username:$('new-username').value,email:$('new-email').value,password});onboarding.set(result.accountId,{password,phone});$('new-password').value='';$('new-phone').value='';message('Account created. Grant its verified plan to prepare the WhatsApp access message.');await refresh();}catch(error){message(error.message);}finally{button.disabled=false;}};
-  $('clear-events').onclick=async()=>{const typed=prompt('Type CLEAR ACTIVITY LOG to permanently clear the activity log:');if(typed===null)return;try{await api('admin/clear-events',{confirm:typed});message('Activity log cleared.');await refresh();}catch(error){message(error.message);}};
+  $('clear-events').onclick=async()=>{
+    if(!confirm('Clear all activity logs in 1-click?\n(Automatic cleaner also runs every 5 hours to prevent database load).'))return;
+    try{
+      await api('admin/clear-events',{confirm:'CLEAR'});
+      message('Activity log cleared successfully.');
+      await refresh();
+    }catch(error){
+      message(error.message);
+    }
+  };
   async function bootstrap(){
     if(window.__cfbActivationRedirect)return;
     try {

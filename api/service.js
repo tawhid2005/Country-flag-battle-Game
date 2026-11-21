@@ -188,6 +188,12 @@ export function createHandler(env, fetcher = fetch) {
         if (!session(req,'admin')) fail(401,'Administrator login required');
         if (route === 'admin/logout' && req.method === 'POST') {setSession(res,'admin','',0);return json(200,{success:true});}
         if (route === 'admin/monitor' && req.method === 'GET') {
+          // Auto-clean activity logs older than 5 hours to prevent database bloat
+          try {
+            const fiveHoursAgo = new Date(Date.now() - 5 * 3600 * 1000).toISOString();
+            db('cfb_events?created_at=lt.' + fiveHoursAgo, 'DELETE').catch(() => {});
+          } catch (_) {}
+
           const page = Math.max(0,Math.min(100000,Number(new URL(req.url,'https://local').searchParams.get('page')) || 0));
           const offset = Math.floor(page)*200;
           const [orders,accounts,entitlements,events] = await Promise.all([
@@ -214,6 +220,20 @@ export function createHandler(env, fetcher = fetch) {
           await db('cfb_entitlements?account_id=eq.'+body.accountId,'PATCH',{revoked:true});
           await event(null,'admin_revoked',body.accountId); return json(200,{success:true});
         }
+        if (route === 'admin/cancel-subscription' && req.method === 'POST') {
+          const accountId = body.accountId;
+          const orderId = body.orderId;
+          if (uuid(accountId)) {
+            await db('cfb_entitlements?account_id=eq.'+accountId,'PATCH',{revoked:true});
+          }
+          if (uuid(orderId)) {
+            await db('cfb_orders?id=eq.'+orderId,'PATCH',{status:'cancelled'});
+            await event(orderId,'admin_subscription_cancelled',accountId || 'manual_review_unpaid');
+          } else if (uuid(accountId)) {
+            await event(null,'admin_subscription_cancelled',accountId);
+          }
+          return json(200,{success:true});
+        }
         if (route === 'admin/grant' && req.method === 'POST' && uuid(body.accountId) && PLANS[body.planId]) {
           const bucket=Math.floor(Date.now()/300000),checkoutId=`admin:${body.accountId}:${body.planId}:${bucket}`;
           const existing=await one('cfb_orders?checkout_id=eq.'+enc(checkoutId));
@@ -237,7 +257,7 @@ export function createHandler(env, fetcher = fetch) {
           return json(200,{success:true});
         }
         if (route === 'admin/clear-events' && req.method === 'POST') {
-          if(body.confirm!=='CLEAR ACTIVITY LOG')fail(400,'Confirmation phrase does not match');
+          if(body.confirm!=='CLEAR ACTIVITY LOG' && body.confirm!=='CLEAR')fail(400,'Confirmation phrase does not match');
           await db('cfb_events?id=not.is.null','DELETE');
           return json(200,{success:true});
         }
@@ -275,11 +295,11 @@ export function createHandler(env, fetcher = fetch) {
         if(!account) account=await one('cfb_accounts?username=eq.'+enc(username));
         if(account && (!verifyPassword(body.password,account.password_hash) || (account.email && email!==account.email)))fail(401,'This email already has an account. Enter its existing password.');
         if(!account)[account]=await db('cfb_accounts','POST',{id:randomUUID(),username,email,password_hash:hashPassword(body.password)});
-        const checkoutId='claim:'+method+':'+trxId;
-        let order=await one('cfb_orders?checkout_id=eq.'+enc(checkoutId));
+        const checkoutId='claim:'+method+':'+trxId+':'+sender+':'+phone;
+        let order=await one('cfb_orders?checkout_id=like.'+enc('claim:'+method+':'+trxId+'%'));
         if(order && order.account_id!==account.id)fail(409,'This transaction ID has already been used');
         if(!order){order={id:randomUUID(),account_id:account.id,provider:'manual',plan_id:body.planId,amount_minor:plan.bdt,currency:'bdt',checkout_id:checkoutId};await db('cfb_orders','POST',order);}
-        if(order.status!=='paid'){await complete(order,'claim:'+method+':'+trxId);await event(order.id,'customer_claim_activated',methods[method]);order=await orderBy(order.id);}
+        if(order.status!=='paid'){await complete(order,'claim:'+method+':'+trxId);await event(order.id,'customer_claim_activated',JSON.stringify({method:methods[method],sender,phone,trxId}));order=await orderBy(order.id);}
         const token = setSession(res,'subscriber',account.id,2592000);
         const entitlement=await one('cfb_entitlements?account_id=eq.'+account.id+'&revoked=eq.false&order=expires_at.desc');
         return json(200,{success:true,token,orderId:order.id,link:origin()+'/#activate='+activationKey(order,secret()),session:publicSession(account,entitlement)});
