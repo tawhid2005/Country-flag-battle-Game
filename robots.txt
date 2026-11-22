@@ -68,3 +68,4 @@ Disallow: /api/
 
 # Canonical Sitemap Declaration
 Sitemap: https://www.countryflagbattle.xyz/sitemap.xml
+Sitemap: https://www.countryflagbattle.xyz/sitemap.txt

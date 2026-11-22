@@ -39,6 +39,10 @@
       "destination": "/vendor/:path*"
     },
     {
+      "source": "/sitemap.txt",
+      "destination": "/sitemap.txt"
+    },
+    {
       "source": "/sitemap",
       "destination": "/sitemap.xml"
     },
@@ -127,7 +131,7 @@
       ]
     },
     {
-      "source": "/(sitemap\\.xml|sitemap|sitemap_index\\.xml)",
+      "source": "/(sitemap\\.xml|sitemap|sitemap_index\\.xml|sitemap\\.txt)",
       "headers": [
         {
           "key": "Content-Type",
@@ -200,6 +204,23 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "all"
         }
       ]
     }
