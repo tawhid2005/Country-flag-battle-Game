@@ -39,6 +39,14 @@
       "destination": "/vendor/:path*"
     },
     {
+      "source": "/sitemap",
+      "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/sitemap_index.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
       "source": "/(sitemap\\.xml|robots\\.txt|googlee59d340a4eeb0771\\.html|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|apple-touch-icon\\.png|favicon\\.png|favicon\\.ico|og-preview\\.png|og-preview\\.jpg|404\\.html)",
       "destination": "/$1"
     }
@@ -119,7 +127,7 @@
       ]
     },
     {
-      "source": "/sitemap.xml",
+      "source": "/(sitemap\\.xml|sitemap|sitemap_index\\.xml)",
       "headers": [
         {
           "key": "Content-Type",
