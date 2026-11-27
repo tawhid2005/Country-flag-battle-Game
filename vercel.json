@@ -8,19 +8,19 @@
     },
     {
       "source": "/vortex",
-      "destination": "/index.html?mode=vortex"
+      "destination": "/vortex/index.html"
     },
     {
       "source": "/hole",
-      "destination": "/index.html?mode=hole"
+      "destination": "/vortex/index.html"
     },
     {
       "source": "/ring",
-      "destination": "/index.html?mode=ring"
+      "destination": "/ring/index.html"
     },
     {
       "source": "/laser",
-      "destination": "/index.html?mode=laser"
+      "destination": "/laser/index.html"
     },
     {
       "source": "/(server|database|tests|scripts|_seo_live_lab|live_seo_workspace)/:path*",
@@ -131,11 +131,28 @@
       ]
     },
     {
-      "source": "/(sitemap\\.xml|sitemap|sitemap_index\\.xml|sitemap\\.txt)",
+      "source": "/(sitemap\\.xml|sitemap|sitemap_index\\.xml)",
       "headers": [
         {
           "key": "Content-Type",
           "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "all"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap\\.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
         },
         {
           "key": "Cache-Control",

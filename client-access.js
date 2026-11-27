@@ -223,6 +223,33 @@
     }
     this.updateDrawerStatus();
     for(const id of ['checkout-bd-email','checkout-bd-phone','checkout-bd-password'])$(id)?.addEventListener('input',()=>this.updateBangladeshPaymentGate());
+    const bindPassHelper = (inputId, counterId, btnId) => {
+      const inp = $(inputId), cnt = $(counterId), btn = $(btnId);
+      const syncCnt = () => {
+        if (!inp || !cnt) return;
+        const len = inp.value.length;
+        cnt.textContent = len >= 10 ? '✓ ' + len + ' chars (Ready)' : '(' + len + '/10 chars min)';
+        cnt.style.color = len >= 10 ? '#4ade80' : (len > 0 ? '#fbbf24' : '#94a3b8');
+      };
+      inp?.addEventListener('input', syncCnt);
+      btn?.addEventListener('click', () => {
+        if (!inp) return;
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#';
+        let pw = 'CFB';
+        for (let i = 0; i < 9; i++) pw += chars[Math.floor(Math.random() * chars.length)];
+        inp.value = pw;
+        inp.type = 'text';
+        inp.dispatchEvent(new Event('input', { bubbles: true }));
+        syncCnt();
+      });
+      syncCnt();
+    };
+    bindPassHelper('checkout-bd-password', 'bd-pass-counter', 'btn-gen-bd-pass');
+    bindPassHelper('order-checkout-password', 'intl-pass-counter', 'btn-gen-intl-pass');
+    $('hud-trial-badge')?.addEventListener('click', () => {
+      this.showLockModal(true);
+      $('tab-btn-pricing')?.click();
+    });
     for(const id of ['manual-sender','manual-transaction'])$(id)?.addEventListener('input',()=>this.updateWhatsAppLinks());
     this.manualPaymentMethod='bKash';
     document.querySelectorAll('[data-manual-method]').forEach(button=>button.addEventListener('click',()=>{

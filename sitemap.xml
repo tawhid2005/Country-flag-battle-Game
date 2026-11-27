@@ -4,7 +4,7 @@
   <!-- 1. Home / Main Colosseum Hub -->
   <url>
     <loc>https://www.countryflagbattle.xyz/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -22,7 +22,7 @@
   <!-- 2. Mode 1: Center Vortex Hole Battle -->
   <url>
     <loc>https://www.countryflagbattle.xyz/vortex/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -35,7 +35,7 @@
   <!-- 3. Mode 2: Outer Ring Escape Royale -->
   <url>
     <loc>https://www.countryflagbattle.xyz/ring/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -48,7 +48,7 @@
   <!-- 4. Mode 3: Laser Web Royale -->
   <url>
     <loc>https://www.countryflagbattle.xyz/laser/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
