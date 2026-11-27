@@ -162,6 +162,8 @@
       "softwareVersion": "4.0.0",
       "description": "Play Outer Ring Escape flag battle online! 195 sovereign nations battle inside a rotating segmented cyber turbine with 4 kinetic pinball paddles and timed outer escape gates.",
       "url": "https://www.countryflagbattle.xyz/ring/",
+      "image": "https://www.countryflagbattle.xyz/og-preview.png",
+      "screenshot": "https://www.countryflagbattle.xyz/og-preview.png",
       "applicationCategory": "GameApplication",
       "gamePlatform": [
         "Web Browser",
@@ -252,8 +254,7 @@
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD",
-        "availability": "https://schema.org/InStock",
-        "category": "Free Online Game"
+        "availability": "https://schema.org/InStock"
       }
     },
     {
@@ -498,7 +499,7 @@
           "name": "How does the 5-Minute Free Trial work?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Every new visitor receives an instant 5-Minute Free Trial with zero registration, zero credit card, and zero software downloads required. You get full access to 60 FPS rigid-body physics, all 195 sovereign nation flags, sound effects, streamer controls, and both arena templates. Once the 5 minutes expire, you can unlock 24/7 continuous access with an affordable streamer pass."
+            "text": "Every new visitor receives an instant 5-Minute Free Trial with zero registration, zero credit card, and zero software downloads required. You get full access to 60 FPS rigid-body physics, all 195 sovereign nation flags, sound effects, streamer controls, and both arena templates. Once the 10-minute free trial expires, you can unlock 24/7 continuous access with an affordable streamer pass."
           }
         },
         {
@@ -531,21 +532,21 @@
           "position": 1,
           "name": "Center Vortex Hole Battle Royale (Singularity Drop)",
           "description": "195 sovereign countries orbit an annular donut arena. Marbles knocked into the central gravitational hazard hole are eliminated until one national champion survives.",
-          "url": "https://www.countryflagbattle.xyz/?mode=vortex"
+          "url": "https://www.countryflagbattle.xyz/vortex/"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "Outer Ring Escape Royale (Concentric Turbine Arena)",
           "description": "Multi-layered revolving ring barriers with dynamic escape gaps, pinball bumpers, and kinetic flippers. Flags battle across outer, middle, and inner circles.",
-          "url": "https://www.countryflagbattle.xyz/?mode=ring"
+          "url": "https://www.countryflagbattle.xyz/ring/"
         },
         {
           "@type": "ListItem",
           "position": 3,
           "name": "Laser Web Royale (6-Nation Strand Slicing Sudden Death)",
           "description": "6 sovereign nations tethered by cutting laser strands with live link counters, hazard warning auras, holographic cutting shockwaves, and 1v1 sudden death climax.",
-          "url": "https://www.countryflagbattle.xyz/?mode=laser"
+          "url": "https://www.countryflagbattle.xyz/laser/"
         },
         {
           "@type": "ListItem",
@@ -605,17 +606,17 @@
         {
           "@type": "WebPage",
           "name": "Vortex Hole Battle Royale",
-          "url": "https://www.countryflagbattle.xyz/?mode=vortex"
+          "url": "https://www.countryflagbattle.xyz/vortex/"
         },
         {
           "@type": "WebPage",
           "name": "Ring Escape Royale",
-          "url": "https://www.countryflagbattle.xyz/?mode=ring"
+          "url": "https://www.countryflagbattle.xyz/ring/"
         },
         {
           "@type": "WebPage",
           "name": "Laser Web Royale",
-          "url": "https://www.countryflagbattle.xyz/?mode=laser"
+          "url": "https://www.countryflagbattle.xyz/laser/"
         }
       ]
     }
@@ -624,14 +625,11 @@
   </script>
 
   <!-- Preconnect & DNS-Prefetch for Speed & Zero Latency -->
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://flagcdn.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
   <link rel="dns-prefetch" href="https://flagcdn.com">
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="dns-prefetch" href="https://api.restful-api.dev">
 
   <!-- Matter.js Physics Engine CDN (Deferred for Maximum FCP/LCP Lighthouse Performance) -->
   <script defer src="./vendor/matter.min.js"></script>
@@ -5977,7 +5975,7 @@
 
   </style>
   <!-- Gumroad Overlay Checkout Widget -->
-  <script src="https://gumroad.com/js/gumroad.js"></script>
+  <script defer src="https://gumroad.com/js/gumroad.js"></script>
   <link rel="stylesheet" href="./checkout.css">
   <link rel="stylesheet" href="./checkout-themes.css?v=18.0.0">
   </head>
